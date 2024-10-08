@@ -1,0 +1,79 @@
+const DIGITS: &str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+const DIGITS_LEN: usize = 64;
+
+fn encode_negative_base(n: i64, base: i64, out: &mut String) {
+    // Modified: Corrected the base check condition to allow base values from -62 to -1
+    if base < -62 || base > -1 {
+        *out = "".to_string();
+        return;
+    }
+    if n == 0 {
+        *out = "0".to_string();
+        return;
+    }
+
+    let mut n = n;
+    let mut result = String::new();
+
+    while n != 0 {
+        let mut rem = n % base;
+        n /= base;
+        // Modified: Corrected handling of negative remainders
+        if rem < 0 {
+            rem += base.abs();
+            n -= 1;
+        }
+        result.push(DIGITS.chars().nth(rem as usize).unwrap());
+    }
+
+    // Modified: Corrected handling of the result string
+    *out = result.chars().rev().collect::<String>();
+}
+
+fn decode_negative_base(ns: &str, base: i64) -> i64 {
+    // Modified: Corrected the base check condition to allow base values from -62 to -1
+    if base < -62 || base > -1 {
+        return 0;
+    }
+    // Modified: Corrected handling of empty string
+    if ns.is_empty() {
+        return 0;
+    }
+
+    let mut value = 0;
+    let mut bb = 1;
+    let mut ptr = ns.chars().rev();
+
+    while let Some(c) = ptr.next() {
+        for (i, digit) in DIGITS.chars().enumerate() {
+            // Modified: Corrected character decoding logic
+            if c == digit {
+                value += i as i64 * bb;
+                bb *= base;
+                break;
+            }
+        }
+    }
+
+    value
+}
+
+fn driver(n: i64, b: i64) {
+    let mut buf = String::new();
+    let value: i64;
+
+    encode_negative_base(n, b, &mut buf);
+    println!("{:12} encoded in base {:3} = {:12}", n, b, buf);
+
+    value = decode_negative_base(&buf, b);
+    println!("{:12} decoded in base {:3} = {:12}", buf, b, value);
+
+    println!();
+}
+
+fn main() {
+    driver(10, -2);
+    driver(146, -3);
+    driver(15, -10);
+    driver(12, -62);
+}

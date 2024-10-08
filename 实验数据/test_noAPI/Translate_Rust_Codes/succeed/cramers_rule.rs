@@ -1,0 +1,104 @@
+use std::f64::NAN;
+
+struct SquareMatrix {
+    n: usize,
+    elems: Vec<Vec<f64>>,
+}
+
+impl SquareMatrix {
+    fn init_square_matrix(n: usize, elems: Vec<Vec<f64>>) -> Self {
+        let mut matrix = SquareMatrix {
+            n,
+            elems: vec![vec![0.0; n]; n],
+        };
+        for i in 0..n {
+            for j in 0..n {
+                matrix.elems[i][j] = elems[i][j];
+            }
+        }
+        matrix
+    }
+
+    fn copy_square_matrix(&self) -> Self {
+        let mut matrix = SquareMatrix {
+            n: self.n,
+            elems: vec![vec![0.0; self.n]; self.n],
+        };
+        for i in 0..self.n {
+            for j in 0..self.n {
+                matrix.elems[i][j] = self.elems[i][j];
+            }
+        }
+        matrix
+    }
+
+    fn det(&self) -> f64 {
+        let mut det = 1.0;
+        let mut matrix = self.copy_square_matrix();
+
+        for j in 0..matrix.n {
+            let mut i_max = j;
+            for i in j..matrix.n {
+                if matrix.elems[i][j] > matrix.elems[i_max][j] {
+                    i_max = i;
+                }
+            }
+
+            if i_max != j {
+                for k in 0..matrix.n {
+                    let tmp = matrix.elems[i_max][k];
+                    matrix.elems[i_max][k] = matrix.elems[j][k];
+                    matrix.elems[j][k] = tmp;
+                }
+                det *= -1.0;
+            }
+
+            if matrix.elems[j][j].abs() < 1e-12 {
+                println!("Singular matrix!");
+                return NAN;
+            }
+
+            for i in (j + 1)..matrix.n {
+                let mult = -matrix.elems[i][j] / matrix.elems[j][j];
+                for k in 0..matrix.n {
+                    matrix.elems[i][k] += mult * matrix.elems[j][k];
+                }
+            }
+        }
+
+        for i in 0..matrix.n {
+            det *= matrix.elems[i][i];
+        }
+
+        det
+    }
+}
+
+fn cramer_solve(a: &SquareMatrix, det_a: f64, b: &[f64], var: usize) -> f64 {
+    let mut tmp = a.copy_square_matrix();
+    for i in 0..tmp.n {
+        tmp.elems[i][var] = b[i];
+    }
+
+    let det_tmp = tmp.det();
+    det_tmp / det_a
+}
+
+fn main() {
+    const N: usize = 4;
+    let elems = vec![
+        vec![2.0, -1.0, 5.0, 1.0],
+        vec![3.0, 2.0, 2.0, -6.0],
+        vec![1.0, 3.0, 3.0, -1.0],
+        vec![5.0, -2.0, -3.0, 3.0],
+    ];
+    let a = SquareMatrix::init_square_matrix(N, elems);
+
+    let det_a = a.det();
+
+    let b = vec![-3.0, -32.0, -47.0, 49.0];
+
+    for i in 0..N {
+        println!("{:7.3}", cramer_solve(&a, det_a, &b, i));
+    }
+}

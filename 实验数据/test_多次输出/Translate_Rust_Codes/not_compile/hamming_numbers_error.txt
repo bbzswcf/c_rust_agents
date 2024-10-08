@@ -1,0 +1,23 @@
+warning: unused import: `std::mem`
+ --> main.rs:1:5
+  |
+1 | use std::mem;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: variable does not need to be mutable
+  --> main.rs:44:17
+   |
+44 |             let mut t = self.data[self.size - 1];
+   |                 ----^
+   |                 |
+   |                 help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` on by default
+
+
+thread 'main' panicked at 'index out of bounds: the len is 0 but the index is 0', /rustc/73528e339aae0f17a15ffa49a8ac608f50c6cf14/src/libcore/slice/mod.rs:2802:14
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace.
+
+Exited with error status 101

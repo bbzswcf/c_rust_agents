@@ -1,0 +1,19 @@
+Rust 编译失败:
+error[E0432]: unresolved import `libc`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:3:5
+  |
+3 | use libc::setlocale; // Ensure libc crate is included in Cargo.toml
+  |     ^^^^ maybe a missing crate `libc`?
+  |
+  = help: consider adding `extern crate libc` to use the `libc` crate
+
+error[E0433]: failed to resolve: use of undeclared crate or module `libc`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:58:19
+   |
+58 |         setlocale(libc::LC_ALL, CString::new("").unwrap().as_ptr());
+   |                   ^^^^ use of undeclared crate or module `libc`
+
+error: aborting due to 2 previous errors
+
+Some errors have detailed explanations: E0432, E0433.
+For more information about an error, try `rustc --explain E0432`.

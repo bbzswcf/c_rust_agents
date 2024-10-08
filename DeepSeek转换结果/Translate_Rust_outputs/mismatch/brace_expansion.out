@@ -1,0 +1,22 @@
+Pattern: ~/{Downloads,Pictures}/*.{jpg,gif,png}
+~/Downloads/*.jpg
+~/Pictures/*.jpg
+~/Downloads/*.gif
+~/Pictures/*.gif
+~/Downloads/*.png
+~/Pictures/*.png
+
+Pattern: It{{em,alic}iz,erat}e{d,}, please.
+Itemized, please.
+Italicized, please.
+Iterated, please.
+Itemize, please.
+Italicize, please.
+Iterate, please.
+
+Pattern: {,{,gotta have{ ,\, again\, }}more }cowbell!
+cowbell!
+more cowbell!
+gotta have more cowbell!
+gotta have\, again\, more cowbell!
+

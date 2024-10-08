@@ -1,0 +1,58 @@
+Rust 编译失败:
+error[E0502]: cannot borrow `c` as immutable because it is also borrowed as mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:40:33
+   |
+40 |         let c_slice = &mut c[1..c.len() - 2]; // Removed `mut` keyword
+   |                            -----^-----------
+   |                            ||   |
+   |                            ||   immutable borrow occurs here
+   |                            |mutable borrow later used here
+   |                            mutable borrow occurs here
+   |
+help: try adding a local storing this...
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:40:33
+   |
+40 |         let c_slice = &mut c[1..c.len() - 2]; // Removed `mut` keyword
+   |                                 ^^^^^^^
+help: ...and then using that local here
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:40:29
+   |
+40 |         let c_slice = &mut c[1..c.len() - 2]; // Removed `mut` keyword
+   |                             ^^^^^^^^^^^^^^^^
+
+error[E0502]: cannot borrow `b` as immutable because it is also borrowed as mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:41:33
+   |
+41 |         let b_slice = &mut b[1..b.len() - 2]; // Removed `mut` keyword
+   |                            -----^-----------
+   |                            ||   |
+   |                            ||   immutable borrow occurs here
+   |                            |mutable borrow later used here
+   |                            mutable borrow occurs here
+   |
+help: try adding a local storing this...
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:41:33
+   |
+41 |         let b_slice = &mut b[1..b.len() - 2]; // Removed `mut` keyword
+   |                                 ^^^^^^^
+help: ...and then using that local here
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:41:29
+   |
+41 |         let b_slice = &mut b[1..b.len() - 2]; // Removed `mut` keyword
+   |                             ^^^^^^^^^^^^^^^^
+
+error[E0502]: cannot borrow `c` as immutable because it is also borrowed as mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:45:26
+   |
+40 |         let c_slice = &mut c[1..c.len() - 2]; // Removed `mut` keyword
+   |                            - mutable borrow occurs here
+...
+43 |         while evolve(c_slice, b_slice, len) > 0 {
+   |                      ------- mutable borrow later used here
+44 |             // Print the state of `c` before the next mutable borrow
+45 |             print!("{}", c.iter().collect::<String>());
+   |                          ^ immutable borrow occurs here
+
+error: aborting due to 3 previous errors
+
+For more information about this error, try `rustc --explain E0502`.

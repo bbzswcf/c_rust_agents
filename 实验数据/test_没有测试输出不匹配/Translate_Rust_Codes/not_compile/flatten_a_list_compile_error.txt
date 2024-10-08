@@ -1,0 +1,78 @@
+Rust 编译失败:
+error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:34:28
+   |
+34 |                     if let Some(e) = e {
+   |                            ^^^^^^^   - this expression has type `&mut usize`
+   |                            |
+   |                            expected `usize`, found `Option<_>`
+   |
+   = note: expected type `usize`
+              found enum `Option<_>`
+
+error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:41:28
+   |
+41 |                     if let Some(ref mut p) = parent {
+   |                            ^^^^^^^^^^^^^^^   ------ this expression has type `&mut List`
+   |                            |
+   |                            expected `List`, found `Option<_>`
+   |
+   = note: expected struct `List`
+                found enum `Option<_>`
+
+error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:54:28
+   |
+54 |                     if let Some(ref mut p) = parent {
+   |                            ^^^^^^^^^^^^^^^   ------ this expression has type `&mut List`
+   |                            |
+   |                            expected `List`, found `Option<_>`
+   |
+   = note: expected struct `List`
+                found enum `Option<_>`
+
+error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:64:16
+   |
+64 |         if let Some(e) = e {
+   |                ^^^^^^^   - this expression has type `&mut usize`
+   |                |
+   |                expected `usize`, found `Option<_>`
+   |
+   = note: expected type `usize`
+              found enum `Option<_>`
+
+error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:96:20
+   |
+96 |             if let Some(ref mut to) = to {
+   |                    ^^^^^^^^^^^^^^^^   -- this expression has type `&mut List`
+   |                    |
+   |                    expected `List`, found `Option<_>`
+   |
+   = note: expected struct `List`
+                found enum `Option<_>`
+
+error[E0599]: the method `as_mut` exists for mutable reference `&mut List`, but its trait bounds were not satisfied
+   --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:101:38
+    |
+2   | struct List {
+    | ----------- doesn't satisfy `List: AsMut<_>`
+...
+101 |                 item.flatten(Some(to.as_mut().unwrap())); // Modified: Use unwrap instead of as_mut
+    |                                      ^^^^^^ method cannot be called on `&mut List` due to unsatisfied trait bounds
+    |
+    = note: the following trait bounds were not satisfied:
+            `List: AsMut<_>`
+            which is required by `&mut List: AsMut<_>`
+note: the trait `AsMut` must be implemented
+   --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c\library\core\src\convert\mod.rs:369:1
+    = help: items from traits can only be used if the trait is implemented and in scope
+    = note: the following trait defines an item `as_mut`, perhaps you need to implement it:
+            candidate #1: `AsMut`
+
+error: aborting due to 6 previous errors
+
+Some errors have detailed explanations: E0308, E0599.
+For more information about an error, try `rustc --explain E0308`.

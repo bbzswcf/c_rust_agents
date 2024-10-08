@@ -1,0 +1,4 @@
+Rust 程序运行失败:
+thread 'main' panicked at C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:101:36:
+attempt to subtract with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

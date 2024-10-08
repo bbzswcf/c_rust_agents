@@ -1,0 +1,471 @@
+编译错误: error: macro expansion ends with an incomplete expression: expected `{`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:19:14
+   |
+12 |               $loop {
+   |  ___________________-
+13 | |                 if n >= $num {
+14 | |                     s.push($c);
+15 | |                     n -= $num;
+...  |
+18 | |                 }
+19 | |             }
+   | |             -^ expected `{`
+   | |_____________|
+   |               this `while` condition successfully parsed
+...
+37 |       digit!(while, 1000, b'M');
+   |              ----- while parsing the body of this `while` expression
+
+error: missing condition for `if` expression
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:25:18
+   |
+25 |             $loop {
+   |                  ^- if this block is the condition of the `if` expression, then it must be followed by another block
+   |                  |
+   |                  expected condition here
+...
+38 |     digits!(if, 900, b'C', b'M');
+   |     ---------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: missing condition for `if` expression
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:12:18
+   |
+12 |             $loop {
+   |                  ^- if this block is the condition of the `if` expression, then it must be followed by another block
+   |                  |
+   |                  expected condition here
+...
+39 |     digit!(if, 500, b'D');
+   |     --------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digit` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: missing condition for `if` expression
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:25:18
+   |
+25 |             $loop {
+   |                  ^- if this block is the condition of the `if` expression, then it must be followed by another block
+   |                  |
+   |                  expected condition here
+...
+40 |     digits!(if, 400, b'C', b'D');
+   |     ---------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: macro expansion ends with an incomplete expression: expected `{`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:19:14
+   |
+12 |               $loop {
+   |  ___________________-
+13 | |                 if n >= $num {
+14 | |                     s.push($c);
+15 | |                     n -= $num;
+...  |
+18 | |                 }
+19 | |             }
+   | |             -^ expected `{`
+   | |_____________|
+   |               this `while` condition successfully parsed
+...
+41 |       digit!(while, 100, b'C');
+   |              ----- while parsing the body of this `while` expression
+
+error: missing condition for `if` expression
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:25:18
+   |
+25 |             $loop {
+   |                  ^- if this block is the condition of the `if` expression, then it must be followed by another block
+   |                  |
+   |                  expected condition here
+...
+42 |     digits!(if, 90, b'X', b'C');
+   |     --------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: missing condition for `if` expression
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:12:18
+   |
+12 |             $loop {
+   |                  ^- if this block is the condition of the `if` expression, then it must be followed by another block
+   |                  |
+   |                  expected condition here
+...
+43 |     digit!(if, 50, b'L');
+   |     -------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digit` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: missing condition for `if` expression
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:25:18
+   |
+25 |             $loop {
+   |                  ^- if this block is the condition of the `if` expression, then it must be followed by another block
+   |                  |
+   |                  expected condition here
+...
+44 |     digits!(if, 40, b'X', b'L');
+   |     --------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: macro expansion ends with an incomplete expression: expected `{`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:19:14
+   |
+12 |               $loop {
+   |  ___________________-
+13 | |                 if n >= $num {
+14 | |                     s.push($c);
+15 | |                     n -= $num;
+...  |
+18 | |                 }
+19 | |             }
+   | |             -^ expected `{`
+   | |_____________|
+   |               this `while` condition successfully parsed
+...
+45 |       digit!(while, 10, b'X');
+   |              ----- while parsing the body of this `while` expression
+
+error: missing condition for `if` expression
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:25:18
+   |
+25 |             $loop {
+   |                  ^- if this block is the condition of the `if` expression, then it must be followed by another block
+   |                  |
+   |                  expected condition here
+...
+46 |     digits!(if, 9, b'I', b'X');
+   |     -------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: missing condition for `if` expression
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:12:18
+   |
+12 |             $loop {
+   |                  ^- if this block is the condition of the `if` expression, then it must be followed by another block
+   |                  |
+   |                  expected condition here
+...
+47 |     digit!(if, 5, b'V');
+   |     ------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digit` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: missing condition for `if` expression
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:25:18
+   |
+25 |             $loop {
+   |                  ^- if this block is the condition of the `if` expression, then it must be followed by another block
+   |                  |
+   |                  expected condition here
+...
+48 |     digits!(if, 4, b'I', b'V');
+   |     -------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: macro expansion ends with an incomplete expression: expected `{`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:19:14
+   |
+12 |               $loop {
+   |  ___________________-
+13 | |                 if n >= $num {
+14 | |                     s.push($c);
+15 | |                     n -= $num;
+...  |
+18 | |                 }
+19 | |             }
+   | |             -^ expected `{`
+   | |_____________|
+   |               this `while` condition successfully parsed
+...
+49 |       digit!(while, 1, b'I');
+   |              ----- while parsing the body of this `while` expression
+
+warning: unused imports: `Write` and `self`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:2:15
+  |
+2 | use std::io::{self, Write};
+  |               ^^^^  ^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+error[E0268]: `break` outside of a loop or labeled block
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:31:21
+   |
+31 |                     break;
+   |                     ^^^^^ cannot `break` outside of a loop or labeled block
+...
+38 |     digits!(if, 900, b'C', b'M');
+   |     ---------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0268]: `break` outside of a loop or labeled block
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:17:21
+   |
+17 |                     break;
+   |                     ^^^^^ cannot `break` outside of a loop or labeled block
+...
+39 |     digit!(if, 500, b'D');
+   |     --------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digit` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0268]: `break` outside of a loop or labeled block
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:31:21
+   |
+31 |                     break;
+   |                     ^^^^^ cannot `break` outside of a loop or labeled block
+...
+40 |     digits!(if, 400, b'C', b'D');
+   |     ---------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0268]: `break` outside of a loop or labeled block
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:31:21
+   |
+31 |                     break;
+   |                     ^^^^^ cannot `break` outside of a loop or labeled block
+...
+42 |     digits!(if, 90, b'X', b'C');
+   |     --------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0268]: `break` outside of a loop or labeled block
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:17:21
+   |
+17 |                     break;
+   |                     ^^^^^ cannot `break` outside of a loop or labeled block
+...
+43 |     digit!(if, 50, b'L');
+   |     -------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digit` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0268]: `break` outside of a loop or labeled block
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:31:21
+   |
+31 |                     break;
+   |                     ^^^^^ cannot `break` outside of a loop or labeled block
+...
+44 |     digits!(if, 40, b'X', b'L');
+   |     --------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0268]: `break` outside of a loop or labeled block
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:31:21
+   |
+31 |                     break;
+   |                     ^^^^^ cannot `break` outside of a loop or labeled block
+...
+46 |     digits!(if, 9, b'I', b'X');
+   |     -------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0268]: `break` outside of a loop or labeled block
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:17:21
+   |
+17 |                     break;
+   |                     ^^^^^ cannot `break` outside of a loop or labeled block
+...
+47 |     digit!(if, 5, b'V');
+   |     ------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digit` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0268]: `break` outside of a loop or labeled block
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:31:21
+   |
+31 |                     break;
+   |                     ^^^^^ cannot `break` outside of a loop or labeled block
+...
+48 |     digits!(if, 4, b'I', b'V');
+   |     -------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:27:23
+   |
+27 |                     s.push($c1);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+38 |     digits!(if, 900, b'C', b'M');
+   |     ---------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:28:23
+   |
+28 |                     s.push($c2);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+38 |     digits!(if, 900, b'C', b'M');
+   |     ---------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:14:23
+   |
+14 |                     s.push($c);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+39 |     digit!(if, 500, b'D');
+   |     --------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digit` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:27:23
+   |
+27 |                     s.push($c1);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+40 |     digits!(if, 400, b'C', b'D');
+   |     ---------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:28:23
+   |
+28 |                     s.push($c2);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+40 |     digits!(if, 400, b'C', b'D');
+   |     ---------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:27:23
+   |
+27 |                     s.push($c1);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+42 |     digits!(if, 90, b'X', b'C');
+   |     --------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:28:23
+   |
+28 |                     s.push($c2);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+42 |     digits!(if, 90, b'X', b'C');
+   |     --------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:14:23
+   |
+14 |                     s.push($c);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+43 |     digit!(if, 50, b'L');
+   |     -------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digit` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:27:23
+   |
+27 |                     s.push($c1);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+44 |     digits!(if, 40, b'X', b'L');
+   |     --------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:28:23
+   |
+28 |                     s.push($c2);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+44 |     digits!(if, 40, b'X', b'L');
+   |     --------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:27:23
+   |
+27 |                     s.push($c1);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+46 |     digits!(if, 9, b'I', b'X');
+   |     -------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:28:23
+   |
+28 |                     s.push($c2);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+46 |     digits!(if, 9, b'I', b'X');
+   |     -------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:14:23
+   |
+14 |                     s.push($c);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+47 |     digit!(if, 5, b'V');
+   |     ------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digit` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:27:23
+   |
+27 |                     s.push($c1);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+48 |     digits!(if, 4, b'I', b'V');
+   |     -------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:28:23
+   |
+28 |                     s.push($c2);
+   |                       ^^^^ method not found in `&mut [u8]`
+...
+48 |     digits!(if, 4, b'I', b'V');
+   |     -------------------------- in this macro invocation
+   |
+   = note: this error originates in the macro `digits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `push` found for mutable reference `&mut [u8]` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:51:7
+   |
+51 |     s.push(b'\0');
+   |       ^^^^ method not found in `&mut [u8]`
+
+error: aborting due to 38 previous errors; 1 warning emitted
+
+Some errors have detailed explanations: E0268, E0599.
+For more information about an error, try `rustc --explain E0268`.

@@ -1,0 +1,38 @@
+编译错误: error[E0277]: the trait bound `Option<_>: Clone` is not satisfied
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:95:26
+   |
+95 |     let mut codes = vec![None; BYTES];
+   |                     -----^^^^--------
+   |                     |    |
+   |                     |    the trait `Clone` is not implemented for `Option<_>`
+   |                     required by a bound introduced by this call
+   |
+   = note: required for `Option<HuffCode>` to implement `Clone`
+note: required by a bound in `from_elem`
+  --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c\library\alloc\src\vec\mod.rs:2743:1
+help: consider borrowing here
+   |
+95 |     let mut codes = vec![&None; BYTES];
+   |                          +
+
+error[E0277]: `[char; 100]` doesn't implement `std::fmt::Display`
+   --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:148:64
+    |
+148 |             println!("{} ({}) {}", i as u8 as char, code.code, strbit);
+    |                                                                ^^^^^^ `[char; 100]` cannot be formatted with the default formatter
+    |
+    = help: the trait `std::fmt::Display` is not implemented for `[char; 100]`
+    = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
+    = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unused variable: `codes`
+   --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:117:23
+    |
+117 | fn free_huffman_codes(codes: Vec<Option<HuffCode>>) {
+    |                       ^^^^^ help: if this is intentional, prefix it with an underscore: `_codes`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+error: aborting due to 2 previous errors; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0277`.

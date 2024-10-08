@@ -1,0 +1,35 @@
+Rust 编译失败:
+error[E0463]: can't find crate for `lazy_static`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:2:1
+  |
+2 | extern crate lazy_static; // Modified: Added `#[macro_use]` to import the `lazy_static` macro correctly
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^ can't find crate
+
+error: cannot find macro `lazy_static` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:15:1
+   |
+15 | lazy_static! {
+   | ^^^^^^^^^^^
+   |
+note: `lazy_static` is imported here, but it is an unresolved item, not a macro
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:2:1
+   |
+2  | extern crate lazy_static; // Modified: Added `#[macro_use]` to import the `lazy_static` macro correctly
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0425]: cannot find value `MONTHS` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:39:22
+   |
+39 |     let mut months = MONTHS.lock().unwrap(); // Modified: Ensured `MONTHS` is in scope
+   |                      ^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `MONTHS` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:64:18
+   |
+64 |     let months = MONTHS.lock().unwrap(); // Modified: Ensured `MONTHS` is in scope
+   |                  ^^^^^^ not found in this scope
+
+error: aborting due to 4 previous errors
+
+Some errors have detailed explanations: E0425, E0463.
+For more information about an error, try `rustc --explain E0425`.
