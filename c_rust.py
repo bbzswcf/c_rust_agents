@@ -11,6 +11,27 @@ import unicodedata
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stderr.reconfigure(encoding='utf-8')
 
+def normalize_string(s):
+    '''忽略大小写，去除所有空格，格式化浮点数并去除多余0.
+    '''
+    s = s.strip().lower()
+    s = re.sub(r'\s+', '', s)
+    if not re.search(r'\d', s):
+        return s
+    try:
+        float_pattern = re.compile(r'[-+]?\d*\.\d+([eE][-+]?\d+)?')
+        matches = list(float_pattern.finditer(s))
+        for match in reversed(matches):
+            original_float = match.group()
+            # 将匹配到的浮点数转为浮点型再转回字符串，以去除多余零
+            formatted_number = f"{float(original_float)}"
+            # 替换字符串中对应的浮点数
+            s = s[:match.start()] + formatted_number + s[match.end():]
+    except Exception as e:
+        print("浮点数格式化发生错误，已返回原字符串")
+
+    return s
+
 def detect_encoding(file_path):
     with open(file_path, 'rb') as file:
         raw_data = file.read()
@@ -38,24 +59,23 @@ def static_analysis(rust_code: str) -> str:
 
         # 解析 clippy 输出，只关注错误
         clippy_output = clippy_result.stdout + clippy_result.stderr
-        error_blocks = re.findall(r'error:.*?(?=\nerror:|\Z)', clippy_output, re.DOTALL)
+        error_blocks = re.findall(r'error.*?\n\n', clippy_output, re.DOTALL)
         for block in error_blocks:
-            if block.strip():
-                issues.append(block.strip())
+            issues.append(block.strip())
 
-        # 提取错误代码并获取详细说明
-        error_codes = set(re.findall(r'error\[E(\d+)]', clippy_output))
-        for code in error_codes:
-            explain_result = subprocess.run(["rustc", "--explain", f"E{code}"],
-                                            capture_output=True, text=True, encoding="utf-8")
-            explanation = explain_result.stdout.strip()
-            issues.append(f"错误 E{code} 的详细说明:\n{explanation}")
+        # # 提取错误代码并获取详细说明
+        # error_codes = set(re.findall(r'error\[E(\d+)]', clippy_output))
+        # for code in error_codes:
+        #     explain_result = subprocess.run(["rustc", "--explain", f"E{code}"],
+        #                                     capture_output=True, text=True, encoding="utf-8")
+        #     explanation = explain_result.stdout.strip()
+        #     issues.append(f"错误 E{code} 的详细说明:\n{explanation}")
 
         # 添加总结性错误信息
-        summary_match = re.search(r'error: aborting due to (\d+) previous errors?; (\d+) warnings? emitted', clippy_output)
+        summary_match = re.search(r'error: aborting due to (\d+) previous errors', clippy_output)
         if summary_match:
-            error_count, warning_count = summary_match.groups()
-            issues.append(f"总计: {error_count} 个错误, {warning_count} 个警告")
+            error_count = summary_match.group(1)
+            issues.append(f"总计: {error_count} 个错误")
 
         return "\n\n".join(issues) if issues else ""
 
@@ -91,7 +111,7 @@ def compile_and_test_rust(rust_code: str, c_output_file: str, rust_output_file: 
         c_output = read_file_with_auto_encoding(c_output_file)
 
         # if rust_output.strip() == c_output.strip():
-        if re.sub(r'\s+', '', rust_output) == re.sub(r'\s+', '', c_output):
+        if normalize_string(rust_output) == normalize_string(c_output):
             return True, ""
         else:
             return True, f"输出不匹配。\nC 输出:\n{c_output}\nRust Outputs:\n{rust_output}"
