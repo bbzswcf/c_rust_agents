@@ -14,7 +14,7 @@ sys.stderr.reconfigure(encoding='utf-8')
 def normalize_string(s):
     '''忽略大小写，去除所有空格，格式化浮点数并去除多余0.
     '''
-    s = s.strip().lower()
+    s = s.lower()
     s = re.sub(r'\s+', '', s)
     if not re.search(r'\d', s):
         return s
@@ -31,6 +31,22 @@ def normalize_string(s):
         print("浮点数格式化发生错误，已返回原字符串")
 
     return s
+
+def extract_rust_code(review_text: str) -> str:
+    if review_text is None:
+        print("警告：从该专家收到空响应")
+        return ""
+    code_blocks = re.findall(r'```rust\n(.*?)```', review_text, re.DOTALL)
+    if code_blocks:
+        return code_blocks[0].strip()
+    print("警告：无法从该专家的回复中提取 Rust 代码")
+    return ""
+
+def sanitize_string(s):
+    """
+    将字符串中的非ASCII字符替换为它们的ASCII表示或删除。
+    """
+    return ''.join(c for c in unicodedata.normalize('NFKD', s) if ord(c) < 128)
 
 def detect_encoding(file_path):
     with open(file_path, 'rb') as file:
@@ -79,7 +95,7 @@ def static_analysis(rust_code: str) -> str:
 
         return "\n\n".join(issues) if issues else ""
 
-def compile_and_test_rust(rust_code: str, c_output_file: str, rust_output_file: str) -> tuple[bool, str]:
+def compile_and_test_rust(rust_code: str, c_output_file: str, rust_code_file: str, rust_output_file: str) -> tuple[bool, str]:
     current_dir = os.getcwd()
     rust_file = os.path.join(current_dir, "temp_main.rs")
     rust_exe = os.path.join(current_dir, "temp_main.exe" if sys.platform == "win32" else "temp_main")
@@ -105,10 +121,11 @@ def compile_and_test_rust(rust_code: str, c_output_file: str, rust_output_file: 
         if run_result.returncode != 0:
             return False, f"Rust 程序运行失败:\n{run_result.stderr}"
 
-        rust_output = run_result.stdout
+        rust_output = run_result.stdout.strip()
         write_file_with_utf8(rust_output_file, rust_output)
+        write_file_with_utf8(rust_code_file, rust_code)
 
-        c_output = read_file_with_auto_encoding(c_output_file)
+        c_output = read_file_with_auto_encoding(c_output_file).strip()
 
         # if rust_output.strip() == c_output.strip():
         if normalize_string(rust_output) == normalize_string(c_output):
@@ -122,14 +139,7 @@ def compile_and_test_rust(rust_code: str, c_output_file: str, rust_output_file: 
         if os.path.exists(rust_exe):
             os.remove(rust_exe)
 
-def sanitize_string(s):
-    """
-    将字符串中的非ASCII字符替换为它们的ASCII表示或删除。
-    """
-    return ''.join(c for c in unicodedata.normalize('NFKD', s) if ord(c) < 128)
-
-
-def convert_c_to_rust(c_code: str, c_output_file: str, rust_output_file: str) -> str:
+def convert_c_to_rust(c_code: str, c_output_file: str, rust_code_file:str, rust_output_file: str) -> str:
     if c_code is None or c_code.strip() == "":
         print("错误：没有提供有效的 C 代码进行转换")
         return ""
@@ -155,57 +165,50 @@ def convert_c_to_rust(c_code: str, c_output_file: str, rust_output_file: str) ->
     rust_code = syntax_agent.generate_response(combined_syntax_input)
     rust_code = extract_rust_code(rust_code)
 
-    max_static_analysis_attempts = 4
-    max_compile_attempts = 7
+    max_static_analysis_and_test_attempts = 11
+    static_analysis_and_test_count = 0
 
-    static_analysis_count = 0
-    compile_count = 0
-
-    while compile_count < max_compile_attempts:
+    while static_analysis_and_test_count < max_static_analysis_and_test_attempts:
         # 如果静态分析次数未达到阈值，进行静态分析
-        if static_analysis_count < max_static_analysis_attempts:
-            print(f"静态分析尝试 #{static_analysis_count + 1}")
-            static_analysis_count += 1
-            analysis_result = static_analysis(rust_code)
+        static_analysis_and_test_count += 1
+        print(f"静态分析尝试 #{static_analysis_and_test_count}")
+        analysis_result = static_analysis(rust_code)
 
-            if analysis_result:
-                print("发现静态分析问题，正在优化...")
-                feedback_input = f"""
-                Analyze the following static analysis results:
-                Issue description:
-                {sanitize_string(analysis_result)}
-                Current Rust code:
-                {sanitize_string(rust_code)}
-                Please provide specific fix suggestions, but do not generate improved code.
-                """
-                feedback = feedback_agent.generate_response(feedback_input)
-                optimize_input = f"""
-                Optimize the Rust code based on the following specific feedback:
-                Feedback:
-                {sanitize_string(feedback)}
-                Current Rust code:
-                {sanitize_string(rust_code)}
-                Please strictly follow the steps mentioned in the prompt to optimize the code. 
-                Ensure all issues mentioned in the feedback are resolved, and add comments for each modification explaining the reason.
-                Only return the complete optimized Rust code without additional explanations.
-                """
-                optimized = optimize_agent.generate_response(optimize_input)
-                new_rust_code = extract_rust_code(optimized)
-                if new_rust_code.strip():
-                    rust_code = new_rust_code
-                    print(f"代码已针对静态分析进行优化 #{static_analysis_count}")
-                else:
-                    print("警告：代码优化专家没有返回有效的Rust代码。保持原代码不变。")
-                continue  # 优化后重新进行静态分析
+        if analysis_result:
+            print("发现静态分析问题，正在优化...")
+            feedback_input = f"""
+            Analyze the following static analysis results:
+            Issue description:
+            {sanitize_string(analysis_result)}
+            Current Rust code:
+            {sanitize_string(rust_code)}
+            Please provide specific fix suggestions, but do not generate improved code.
+            """
+            feedback = feedback_agent.generate_response(feedback_input)
+            optimize_input = f"""
+            Optimize the Rust code based on the following specific feedback:
+            Feedback:
+            {sanitize_string(feedback)}
+            Current Rust code:
+            {sanitize_string(rust_code)}
+            Please strictly follow the steps mentioned in the prompt to optimize the code. 
+            Ensure all issues mentioned in the feedback are resolved, and add comments for each modification explaining the reason.
+            Only return the complete optimized Rust code without additional explanations.
+            """
+            optimized = optimize_agent.generate_response(optimize_input)
+            new_rust_code = extract_rust_code(optimized)
+            if new_rust_code.strip():
+                rust_code = new_rust_code
+                print(f"代码已针对静态分析进行优化 #{static_analysis_and_test_count}\n")
             else:
-                print("静态分析未发现错误，进入编译和测试阶段。")
-        else:
-            print("静态分析次数已达到阈值，直接进入编译和测试阶段。")
+                print("警告：代码优化专家没有返回有效的Rust代码。保持原代码不变。")
 
+            continue  # 优化后重新进行静态分析
+        
         # 进行编译和测试
-        print(f"编译和测试尝试 #{compile_count + 1}")
-        compile_count += 1
-        compile_success, error_or_mismatch_info = compile_and_test_rust(rust_code, c_output_file, rust_output_file)
+        print("静态分析未发现错误，进入编译和测试阶段。")
+        print(f"编译和测试尝试")
+        compile_success, error_or_mismatch_info = compile_and_test_rust(rust_code, c_output_file, rust_code_file, rust_output_file)
 
         if compile_success and not error_or_mismatch_info:
             print("编译和测试成功")
@@ -215,7 +218,7 @@ def convert_c_to_rust(c_code: str, c_output_file: str, rust_output_file: str) ->
         #     print("编译成功但输出不匹配")
         #     return rust_code
 
-        # 编译失败，进行优化
+        # 编译失败或输出不匹配，进行优化
         print("编译失败或者输出不匹配，继续优化")
         feedback_input = f"""
         Analyze the following compilation error:
@@ -240,23 +243,13 @@ def convert_c_to_rust(c_code: str, c_output_file: str, rust_output_file: str) ->
         new_rust_code = extract_rust_code(optimized)
         if new_rust_code.strip():
             rust_code = new_rust_code
-            print(f"代码已针对编译错误进行优化 #{compile_count}")
+            print(f"代码已针对编译或输出不匹配进行优化 #{static_analysis_and_test_count}")
         else:
             print("警告：代码优化专家没有返回有效的Rust代码。保持原代码不变。")
-        # 优化后重新进行循环，如果静态分析次数未达到阈值，将重新进行静态分析
+        # 优化后重新进行循环，如果未达到阈值，将重新进行静态分析
 
-    print("达到最大编译尝试次数，转换未完全成功，但这是最后的结果")
+    print("达到最大静态分析和测试次数，转换未完全成功，但这是最后的结果")
     return rust_code
-
-def extract_rust_code(review_text: str) -> str:
-    if review_text is None:
-        print("警告：从该专家收到空响应")
-        return ""
-    code_blocks = re.findall(r'```rust\n(.*?)```', review_text, re.DOTALL)
-    if code_blocks:
-        return code_blocks[0].strip()
-    print("警告：无法从该专家的回复中提取 Rust 代码")
-    return ""
 
 def process_files():
     c_code_dir = "test1\c_codes"
@@ -299,11 +292,13 @@ def process_files():
             continue
         c_code = read_file_with_auto_encoding(c_file_path)
         print(f"开始转换 {problem_folder}")
-        rust_code = convert_c_to_rust(c_code, c_out_file_path, temp_rust_out_file_path)
-        # 保存转换后的代码到临时位置
-        write_file_with_utf8(temp_rust_file_path, rust_code)
+        rust_code = convert_c_to_rust(c_code, c_out_file_path, temp_rust_file_path, temp_rust_out_file_path)
+        with open(temp_rust_file_path, "r", encoding="utf-8")as f:
+            if f.read() == '':
+                write_file_with_utf8(temp_rust_file_path, rust_code)
+        
         # 进行编译和测试
-        compile_success, mismatch_info = compile_and_test_rust(rust_code, c_out_file_path, temp_rust_out_file_path)
+        compile_success, mismatch_info = compile_and_test_rust(rust_code, c_out_file_path, temp_rust_file_path, temp_rust_out_file_path)
 
         if compile_success and not mismatch_info:
             successful_conversions += 1
@@ -319,12 +314,11 @@ def process_files():
             shutil.move(temp_rust_out_file_path, os.path.join(mismatch_out_dir, f"{problem_folder}.out"))
         else:
             compile_failures += 1
-            print(f"转换 {problem_folder} 失败：编译错误")
-            # 移动编译失败的文件到 not_compile 文件夹
+            print(f"转换 {problem_folder} 失败：编译错误或运行失败")
+            # 保留最后一次可以成功运行的rust代码和运行结果
             shutil.move(temp_rust_file_path, os.path.join(not_compile_dir, f"{problem_folder}.rs"))
-            # 如果编译失败时创建了输出文件，也需要删除它
-            if os.path.exists(temp_rust_out_file_path):
-                os.remove(temp_rust_out_file_path)
+            shutil.move(temp_rust_out_file_path, os.path.join(not_compile_dir, f"{problem_folder}.out"))
+            write_file_with_utf8(os.path.join(not_compile_dir, f"{problem_folder}_compile_error.out"), mismatch_info)
 
     print("\n转换统计:")
     print(f"总文件数: {total_files}")
