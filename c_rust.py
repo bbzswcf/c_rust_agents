@@ -212,11 +212,8 @@ def convert_c_to_rust(c_code: str, c_output_file: str, rust_code_file:str, rust_
 
         if compile_success and not error_or_mismatch_info:
             print("编译和测试成功")
+            print(f"优化迭代次数 #{static_analysis_and_test_count}")
             return rust_code
-
-        # if compile_success:
-        #     print("编译成功但输出不匹配")
-        #     return rust_code
 
         # 编译失败或输出不匹配，进行优化
         print("编译失败或者输出不匹配，继续优化")
@@ -293,9 +290,8 @@ def process_files():
         c_code = read_file_with_auto_encoding(c_file_path)
         print(f"开始转换 {problem_folder}")
         rust_code = convert_c_to_rust(c_code, c_out_file_path, temp_rust_file_path, temp_rust_out_file_path)
-        with open(temp_rust_file_path, "r", encoding="utf-8")as f:
-            if f.read() == '':
-                write_file_with_utf8(temp_rust_file_path, rust_code)
+        if not os.path.exists(temp_rust_file_path):
+            write_file_with_utf8(temp_rust_file_path, rust_code)
         
         # 进行编译和测试
         compile_success, mismatch_info = compile_and_test_rust(rust_code, c_out_file_path, temp_rust_file_path, temp_rust_out_file_path)
@@ -317,7 +313,8 @@ def process_files():
             print(f"转换 {problem_folder} 失败：编译错误或运行失败")
             # 保留最后一次可以成功运行的rust代码和运行结果
             shutil.move(temp_rust_file_path, os.path.join(not_compile_dir, f"{problem_folder}.rs"))
-            shutil.move(temp_rust_out_file_path, os.path.join(not_compile_dir, f"{problem_folder}.out"))
+            if os.path.exists(temp_rust_out_file_path):
+                shutil.move(temp_rust_out_file_path, os.path.join(not_compile_dir, f"{problem_folder}.out"))
             write_file_with_utf8(os.path.join(not_compile_dir, f"{problem_folder}_compile_error.out"), mismatch_info)
 
     print("\n转换统计:")
