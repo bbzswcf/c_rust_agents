@@ -1,0 +1,45 @@
+Rust 编译失败:
+error[E0308]: mismatched types
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:33:58
+    |
+33  |     let mut aby_addr_local = aby_addr.as_mut().unwrap_or(binding); // Modified: Dereference binding to match the expected type
+    |                                                --------- ^^^^^^^ expected `&mut &mut [u8; 16]`, found `[u8; 16]`
+    |                                                |
+    |                                                arguments to this method are incorrect
+    |
+help: the return type of this call is `[u8; 16]` due to the type of the argument passed
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:33:30
+    |
+33  |     let mut aby_addr_local = aby_addr.as_mut().unwrap_or(binding); // Modified: Dereference binding to match the expected type
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^-------^
+    |                                                          |
+    |                                                          this argument influences the return type of `unwrap_or`
+note: method defined here
+   --> C:\Users\wang\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib/rustlib/src/rust\library\core\src\option.rs:955:12
+    |
+955 |     pub fn unwrap_or(self, default: T) -> T {
+    |            ^^^^^^^^^
+
+warning: type annotations needed
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:132:35
+    |
+132 |                 if !pby_zeros_loc.is_null() {
+    |                                   ^^^^^^^
+    |
+    = warning: this is accepted in the current edition (Rust 2015) but is a hard error in Rust 2018!
+    = note: for more information, see issue #46906 <https://github.com/rust-lang/rust/issues/46906>
+    = note: `#[warn(tyvar_behind_raw_pointer)]` on by default
+
+warning: variable does not need to be mutable
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:257:9
+    |
+257 |     let mut b_success;
+    |         ----^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` on by default
+
+error: aborting due to 1 previous error; 2 warnings emitted
+
+For more information about this error, try `rustc --explain E0308`.

@@ -64,12 +64,20 @@ def write_file_with_utf8(file_path, content):
 
 def static_analysis(rust_code: str) -> str:
     with tempfile.TemporaryDirectory() as tmpdir:
+        cur_dir = os.getcwd()
+        rust_pdb = os.path.join(cur_dir, "temp.pdb")
+        rust_exe = os.path.join(cur_dir, "temp.exe")
         rust_file = os.path.join(tmpdir, "temp.rs")
         write_file_with_utf8(rust_file, rust_code)
 
         # 使用 clippy 进行静态分析
         clippy_result = subprocess.run(["clippy-driver", rust_file],
                                        capture_output=True, text=True, encoding="utf-8")
+        
+        if os.path.exists(rust_pdb):
+            os.remove(rust_pdb)
+        if os.path.exists(rust_exe):
+            os.remove(rust_exe)
 
         issues = []
 
