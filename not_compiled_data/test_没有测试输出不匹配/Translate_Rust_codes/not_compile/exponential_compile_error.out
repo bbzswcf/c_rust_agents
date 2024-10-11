@@ -1,0 +1,27 @@
+Rust 编译失败:
+error[E0605]: non-primitive cast: `&mut Gen` as `&mut PowerGen`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:46:17
+   |
+46 |         let s = s as &mut PowerGen;
+   |                 ^^^^^^^^^^^^^^^^^^ an `as` expression can only be used to convert between primitive types or to coerce to a specific trait object
+
+error[E0605]: non-primitive cast: `&mut Gen` as `&mut FilterGen`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:85:17
+   |
+85 |         let s = s as &mut FilterGen;
+   |                 ^^^^^^^^^^^^^^^^^^^ an `as` expression can only be used to convert between primitive types or to coerce to a specific trait object
+
+error[E0499]: cannot borrow `*self` as mutable more than once at a time
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:16:25
+   |
+15 |         let f = &mut self.f;
+   |                 ----------- first mutable borrow occurs here
+16 |         self.output = f(self);
+   |                       - ^^^^ second mutable borrow occurs here
+   |                       |
+   |                       first borrow later used by call
+
+error: aborting due to 3 previous errors
+
+Some errors have detailed explanations: E0499, E0605.
+For more information about an error, try `rustc --explain E0499`.

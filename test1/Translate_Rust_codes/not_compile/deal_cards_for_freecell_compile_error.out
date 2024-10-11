@@ -1,0 +1,24 @@
+Rust 编译失败:
+error[E0463]: can't find crate for `libc`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:4:1
+  |
+4 | extern crate libc; // Ensure the `libc` crate is imported
+  | ^^^^^^^^^^^^^^^^^^ can't find crate
+
+warning: unused import: `std::ffi::CString`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:2:5
+  |
+2 | use std::ffi::CString;
+  |     ^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `std::os::raw::c_char`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:3:5
+  |
+3 | use std::os::raw::c_char;
+  |     ^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 1 previous error; 2 warnings emitted
+
+For more information about this error, try `rustc --explain E0463`.

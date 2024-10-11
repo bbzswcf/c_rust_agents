@@ -107,6 +107,7 @@ def compile_and_test_rust(rust_code: str, c_output_file: str, rust_code_file: st
     current_dir = os.getcwd()
     rust_file = os.path.join(current_dir, "temp_main.rs")
     rust_exe = os.path.join(current_dir, "temp_main.exe" if sys.platform == "win32" else "temp_main")
+    rust_pdb = os.path.join(current_dir, "temp_main.pdb")
 
     try:
         write_file_with_utf8(rust_file, rust_code)
@@ -146,6 +147,8 @@ def compile_and_test_rust(rust_code: str, c_output_file: str, rust_code_file: st
             os.remove(rust_file)
         if os.path.exists(rust_exe):
             os.remove(rust_exe)
+        if os.path.exists(rust_pdb):
+            os.remove(rust_pdb)
 
 def convert_c_to_rust(c_code: str, c_output_file: str, rust_code_file:str, rust_output_file: str) -> str:
     if c_code is None or c_code.strip() == "":

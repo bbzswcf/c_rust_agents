@@ -1,0 +1,57 @@
+编译错误: warning: unused import: `std::mem`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:1:5
+  |
+1 | use std::mem;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `std::ptr`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:2:5
+  |
+2 | use std::ptr;
+  |     ^^^^^^^^
+
+warning: unused import: `std::fmt`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:3:5
+  |
+3 | use std::fmt;
+  |     ^^^^^^^^
+
+error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:48:28
+   |
+48 |             base: Gen::new(Self::power_next),
+   |                   -------- ^^^^^^^^^^^^^^^^ expected fn pointer, found fn item
+   |                   |
+   |                   arguments to this function are incorrect
+   |
+   = note: expected fn pointer `for<'a> fn(&'a mut (dyn Seq + 'a)) -> _`
+                 found fn item `for<'a> fn(&'a mut PowerGen) -> _ {PowerGen::power_next}`
+   = help: `PowerGen` implements `Seq` so you could box the found value and coerce it to the trait object `Box<dyn Seq>`, you will have to change the expected type as well
+note: associated function defined here
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:19:8
+   |
+19 |     fn new(f: SeqFunc) -> Self {
+   |        ^^^ ----------
+
+error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:85:28
+   |
+85 |             base: Gen::new(Self::filter_next),
+   |                   -------- ^^^^^^^^^^^^^^^^^ expected fn pointer, found fn item
+   |                   |
+   |                   arguments to this function are incorrect
+   |
+   = note: expected fn pointer `for<'a> fn(&'a mut (dyn Seq + 'a)) -> _`
+                 found fn item `for<'a> fn(&'a mut FilterGen) -> _ {FilterGen::filter_next}`
+   = help: `FilterGen` implements `Seq` so you could box the found value and coerce it to the trait object `Box<dyn Seq>`, you will have to change the expected type as well
+note: associated function defined here
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:19:8
+   |
+19 |     fn new(f: SeqFunc) -> Self {
+   |        ^^^ ----------
+
+error: aborting due to 2 previous errors; 3 warnings emitted
+
+For more information about this error, try `rustc --explain E0308`.

@@ -1,0 +1,27 @@
+Rust 编译失败:
+error: argument never used
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:11:79
+   |
+11 |             print!("{}", format!("{}", FMT).replace("{}", &format!("{}", FMT, y))); // Fixed: Added string literal for format argument
+   |                                                                    ----       ^ argument never used
+   |                                                                    |
+   |                                                                    formatting specifier missing
+
+error: argument never used
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:23:75
+   |
+23 |         print!("{}", format!("{}", FMT).replace("{}", &format!("{}", FMT, t))); // Fixed: Added string literal for format argument
+   |                                                                ----       ^ argument never used
+   |                                                                |
+   |                                                                formatting specifier missing
+
+error: argument never used
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:30:75
+   |
+30 | ...   print!("{}", format!("{}", FMT).replace("{}", &format!("{}", FMT, 20.0 + 80.0 * ((-0.07 * t as f64).exp())))); // Fixed: Added stri...
+   |                                                              ----       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ argument never used
+   |                                                              |
+   |                                                              formatting specifier missing
+
+error: aborting due to 3 previous errors
+

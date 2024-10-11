@@ -1,0 +1,28 @@
+编译错误: error: unknown start of token: `
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:1:1
+  |
+1 | ```rust
+  | ^^^
+  |
+  = note: character appears 2 more times
+help: Unicode character '`' (Grave Accent) looks like ''' (Single Quote), but it is not
+  |
+1 | '''rust
+  | ~~~
+
+error: this file contains an unclosed delimiter
+   --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:214:12
+    |
+41  | ) -> bool {
+    |           - unclosed delimiter
+...
+130 |     } else {
+    |            - unclosed delimiter
+...
+213 |         if ipv4_detected {
+    |                          - unclosed delimiter
+214 |            
+    |            ^
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,26 @@
+Rust 编译失败:
+error[E0596]: cannot borrow `ab` as mutable, as it is not declared as mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:15:17
+   |
+15 |                 ab[a2 + b * b] = 1;
+   |                 ^^ cannot borrow as mutable
+   |
+help: consider changing this to be mutable
+   |
+9  |     let mut ab = vec![0; N2 + 1];
+   |         +++
+
+error[E0596]: cannot borrow `r` as mutable, as it is not declared as mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:27:17
+   |
+27 |                 r[d] = 1;
+   |                 ^ cannot borrow as mutable
+   |
+help: consider changing this to be mutable
+   |
+7  |     let mut r = vec![0; N + 1];
+   |         +++
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0596`.

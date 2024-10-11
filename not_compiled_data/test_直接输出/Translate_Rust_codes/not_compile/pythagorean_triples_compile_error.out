@@ -1,0 +1,66 @@
+Rust 编译失败:
+warning: unused import: `std::io`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:1:5
+  |
+1 | use std::io;
+  |     ^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+error[E0600]: cannot apply unary operator `-` to type `u64`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:6:9
+  |
+6 |     [1, -2, 2, 2, -1, 2, 2, -2, 3],
+  |         ^^ cannot apply unary operator `-`
+  |
+  = note: unsigned values cannot be negated
+
+error[E0600]: cannot apply unary operator `-` to type `u64`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:6:19
+  |
+6 |     [1, -2, 2, 2, -1, 2, 2, -2, 3],
+  |                   ^^
+  |                   |
+  |                   cannot apply unary operator `-`
+  |                   help: you may have meant the maximum value of `u64`: `u64::MAX`
+  |
+  = note: unsigned values cannot be negated
+
+error[E0600]: cannot apply unary operator `-` to type `u64`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:6:29
+  |
+6 |     [1, -2, 2, 2, -1, 2, 2, -2, 3],
+  |                             ^^ cannot apply unary operator `-`
+  |
+  = note: unsigned values cannot be negated
+
+error[E0600]: cannot apply unary operator `-` to type `u64`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:8:6
+  |
+8 |     [-1, 2, 2, -2, 1, 2, -2, 2, 3],
+  |      ^^
+  |      |
+  |      cannot apply unary operator `-`
+  |      help: you may have meant the maximum value of `u64`: `u64::MAX`
+  |
+  = note: unsigned values cannot be negated
+
+error[E0600]: cannot apply unary operator `-` to type `u64`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:8:16
+  |
+8 |     [-1, 2, 2, -2, 1, 2, -2, 2, 3],
+  |                ^^ cannot apply unary operator `-`
+  |
+  = note: unsigned values cannot be negated
+
+error[E0600]: cannot apply unary operator `-` to type `u64`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:8:26
+  |
+8 |     [-1, 2, 2, -2, 1, 2, -2, 2, 3],
+  |                          ^^ cannot apply unary operator `-`
+  |
+  = note: unsigned values cannot be negated
+
+error: aborting due to 6 previous errors; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0600`.

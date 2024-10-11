@@ -1,0 +1,30 @@
+编译错误: error[E0433]: failed to resolve: use of undeclared crate or module `lazy_static`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:93:1
+   |
+93 | lazy_static::lazy_static! {
+   | ^^^^^^^^^^^ use of undeclared crate or module `lazy_static`
+
+error[E0425]: cannot find value `CHR_IDX` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:37:23
+   |
+37 |             let idx = CHR_IDX.get(&c).copied().unwrap_or(0);
+   |                       ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `IDX_CHR` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:66:21
+   |
+66 |             let c = IDX_CHR[i];
+   |                     ^^^^^^^ not found in this scope
+
+warning: unused import: `std::collections::HashMap`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:1:5
+  |
+1 | use std::collections::HashMap;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+error: aborting due to 3 previous errors; 1 warning emitted
+
+Some errors have detailed explanations: E0425, E0433.
+For more information about an error, try `rustc --explain E0425`.

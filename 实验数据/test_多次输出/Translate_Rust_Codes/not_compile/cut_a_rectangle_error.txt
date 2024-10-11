@@ -1,0 +1,57 @@
+编译错误: error[E0282]: type annotations needed
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:30:9
+   |
+30 |     let mut t;
+   |         ^^^^^
+   |
+help: consider giving `t` an explicit type
+   |
+30 |     let mut t: /* Type */;
+   |              ++++++++++++
+
+error[E0502]: cannot borrow `*grid` as immutable because it is also borrowed as mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:15:10
+   |
+15 |     grid[grid.len() - 1 - t] += 1;
+   |     -----^^^^---------------
+   |     |   ||
+   |     |   |immutable borrow occurs here
+   |     |   mutable borrow later used here
+   |     mutable borrow occurs here
+   |
+help: try adding a local storing this...
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:15:10
+   |
+15 |     grid[grid.len() - 1 - t] += 1;
+   |          ^^^^^^^^^^
+help: ...and then using that local here
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:15:9
+   |
+15 |     grid[grid.len() - 1 - t] += 1;
+   |         ^^^^^^^^^^^^^^^^^^^^
+
+error[E0502]: cannot borrow `*grid` as immutable because it is also borrowed as mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:24:10
+   |
+24 |     grid[grid.len() - 1 - t] -= 1;
+   |     -----^^^^---------------
+   |     |   ||
+   |     |   |immutable borrow occurs here
+   |     |   mutable borrow later used here
+   |     mutable borrow occurs here
+   |
+help: try adding a local storing this...
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:24:10
+   |
+24 |     grid[grid.len() - 1 - t] -= 1;
+   |          ^^^^^^^^^^
+help: ...and then using that local here
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:24:9
+   |
+24 |     grid[grid.len() - 1 - t] -= 1;
+   |         ^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 3 previous errors
+
+Some errors have detailed explanations: E0282, E0502.
+For more information about an error, try `rustc --explain E0282`.

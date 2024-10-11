@@ -1,0 +1,137 @@
+Rust 编译失败:
+error: unknown character escape: `b`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:41:14
+   |
+41 |     print!("\b]");
+   |              ^ unknown character escape
+   |
+   = help: for more information, visit <https://doc.rust-lang.org/reference/tokens.html#literals>
+help: if you meant to write a literal backslash (perhaps escaping in a regular expression), consider a raw string literal
+   |
+41 |     print!(r"\b]");
+   |            ~~~~~~
+
+error: unknown character escape: `b`
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:175:18
+    |
+175 |         print!("\b] ");
+    |                  ^ unknown character escape
+    |
+    = help: for more information, visit <https://doc.rust-lang.org/reference/tokens.html#literals>
+help: if you meant to write a literal backslash (perhaps escaping in a regular expression), consider a raw string literal
+    |
+175 |         print!(r"\b] ");
+    |                ~~~~~~~
+
+error: unknown character escape: `b`
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:177:14
+    |
+177 |     print!("\b]\n\n");
+    |              ^ unknown character escape
+    |
+    = help: for more information, visit <https://doc.rust-lang.org/reference/tokens.html#literals>
+help: if you meant to write a literal backslash (perhaps escaping in a regular expression), consider a raw string literal
+    |
+177 |     print!(r"\b]\n\n");
+    |            ~~~~~~~~~~
+
+error: unknown character escape: `b`
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:183:18
+    |
+183 |         print!("\b] ");
+    |                  ^ unknown character escape
+    |
+    = help: for more information, visit <https://doc.rust-lang.org/reference/tokens.html#literals>
+help: if you meant to write a literal backslash (perhaps escaping in a regular expression), consider a raw string literal
+    |
+183 |         print!(r"\b] ");
+    |                ~~~~~~~
+
+error: unknown character escape: `b`
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:185:14
+    |
+185 |     print!("\b]\n\n");
+    |              ^ unknown character escape
+    |
+    = help: for more information, visit <https://doc.rust-lang.org/reference/tokens.html#literals>
+help: if you meant to write a literal backslash (perhaps escaping in a regular expression), consider a raw string literal
+    |
+185 |     print!(r"\b]\n\n");
+    |            ~~~~~~~~~~
+
+error: unknown character escape: `b`
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:191:18
+    |
+191 |         print!("\b] ");
+    |                  ^ unknown character escape
+    |
+    = help: for more information, visit <https://doc.rust-lang.org/reference/tokens.html#literals>
+help: if you meant to write a literal backslash (perhaps escaping in a regular expression), consider a raw string literal
+    |
+191 |         print!(r"\b] ");
+    |                ~~~~~~~
+
+error: unknown character escape: `b`
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:193:14
+    |
+193 |     print!("\b]\n\n");
+    |              ^ unknown character escape
+    |
+    = help: for more information, visit <https://doc.rust-lang.org/reference/tokens.html#literals>
+help: if you meant to write a literal backslash (perhaps escaping in a regular expression), consider a raw string literal
+    |
+193 |     print!(r"\b]\n\n");
+    |            ~~~~~~~~~~
+
+error: unknown character escape: `b`
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:199:18
+    |
+199 |         print!("\b] ");
+    |                  ^ unknown character escape
+    |
+    = help: for more information, visit <https://doc.rust-lang.org/reference/tokens.html#literals>
+help: if you meant to write a literal backslash (perhaps escaping in a regular expression), consider a raw string literal
+    |
+199 |         print!(r"\b] ");
+    |                ~~~~~~~
+
+error: unknown character escape: `b`
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:201:14
+    |
+201 |     print!("\b]\n\n");
+    |              ^ unknown character escape
+    |
+    = help: for more information, visit <https://doc.rust-lang.org/reference/tokens.html#literals>
+help: if you meant to write a literal backslash (perhaps escaping in a regular expression), consider a raw string literal
+    |
+201 |     print!(r"\b]\n\n");
+    |            ~~~~~~~~~~
+
+error: unknown character escape: `b`
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:206:14
+    |
+206 |     print!("\b]\n");
+    |              ^ unknown character escape
+    |
+    = help: for more information, visit <https://doc.rust-lang.org/reference/tokens.html#literals>
+help: if you meant to write a literal backslash (perhaps escaping in a regular expression), consider a raw string literal
+    |
+206 |     print!(r"\b]\n");
+    |            ~~~~~~~~
+
+warning: unused import: `std::cmp::Ordering`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:1:5
+  |
+1 | use std::cmp::Ordering;
+  |     ^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `std::mem`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:2:5
+  |
+2 | use std::mem;
+  |     ^^^^^^^^
+
+error: aborting due to 10 previous errors; 2 warnings emitted
+

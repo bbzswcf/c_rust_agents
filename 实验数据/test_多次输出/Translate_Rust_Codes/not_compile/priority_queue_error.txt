@@ -1,0 +1,59 @@
+编译错误: error[E0599]: the method `resize` exists for struct `Vec<Node>`, but its trait bounds were not satisfied
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:24:24
+   |
+1  | struct Node {
+   | ----------- doesn't satisfy `Node: Clone`
+...
+24 |             self.nodes.resize(self.size, Node { priority: 0, data: String::new() });
+   |                        ^^^^^^
+   |
+   = note: the following trait bounds were not satisfied:
+           `Node: Clone`
+help: consider annotating `Node` with `#[derive(Clone)]`
+   |
+1  + #[derive(Clone)]
+2  | struct Node {
+   |
+
+error[E0599]: no method named `clone` found for struct `Node` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:31:43
+   |
+1  | struct Node {
+   | ----------- method `clone` not found for this struct
+...
+31 |             self.nodes[i] = self.nodes[j].clone();
+   |                                           ^^^^^ method not found in `Node`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following trait defines an item `clone`, perhaps you need to implement it:
+           candidate #1: `Clone`
+
+error[E0599]: no method named `clone` found for struct `Node` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:46:46
+   |
+1  | struct Node {
+   | ----------- method `clone` not found for this struct
+...
+46 |         self.nodes[1] = self.nodes[self.len].clone();
+   |                                              ^^^^^ method not found in `Node`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following trait defines an item `clone`, perhaps you need to implement it:
+           candidate #1: `Clone`
+
+error[E0599]: no method named `clone` found for struct `Node` in the current scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:62:43
+   |
+1  | struct Node {
+   | ----------- method `clone` not found for this struct
+...
+62 |             self.nodes[i] = self.nodes[k].clone();
+   |                                           ^^^^^ method not found in `Node`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following trait defines an item `clone`, perhaps you need to implement it:
+           candidate #1: `Clone`
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0599`.

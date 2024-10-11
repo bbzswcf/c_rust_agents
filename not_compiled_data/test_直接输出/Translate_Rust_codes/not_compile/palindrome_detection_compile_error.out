@@ -1,0 +1,25 @@
+Rust 编译失败:
+error: format argument must be a string literal
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:26:14
+   |
+26 |     println!(template, t, if palindrome(t) { "" } else { "n't" });
+   |              ^^^^^^^^
+   |
+help: you might be missing a string literal to format with
+   |
+26 |     println!("{} {} {}", template, t, if palindrome(t) { "" } else { "n't" });
+   |              +++++++++++
+
+error: format argument must be a string literal
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:27:14
+   |
+27 |     println!(template, t, if palindrome_r(t, 0, l) { "" } else { "n't" });
+   |              ^^^^^^^^
+   |
+help: you might be missing a string literal to format with
+   |
+27 |     println!("{} {} {}", template, t, if palindrome_r(t, 0, l) { "" } else { "n't" });
+   |              +++++++++++
+
+error: aborting due to 2 previous errors
+

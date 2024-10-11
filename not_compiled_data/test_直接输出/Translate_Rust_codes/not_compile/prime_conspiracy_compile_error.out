@@ -1,0 +1,19 @@
+Rust 编译失败:
+error[E0277]: the trait bound `Transition: Copy` is not satisfied
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:113:60
+    |
+113 |     let mut transitions: [Transition; TRANSITIONS_SIZE] = [Transition { a: 0, b: 0, c: 0 }; TRANSITIONS_SIZE];
+    |                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Copy` is not implemented for `Transition`
+    |
+    = note: the `Copy` trait is required because this value will be copied for each element of the array
+    = help: consider using `core::array::from_fn` to initialize the array
+    = help: see https://doc.rust-lang.org/stable/std/array/fn.from_fn.html for more information
+help: consider annotating `Transition` with `#[derive(Copy)]`
+    |
+5   + #[derive(Copy)]
+6   | struct Transition {
+    |
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0277`.

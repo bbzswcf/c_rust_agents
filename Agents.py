@@ -1,11 +1,13 @@
 # 设置Agent
-from Agent_prompt_complex import *
-# from NO_API_Prompt import *  # w/o api agent
+from Agent_prompt_simple import *
 from openai import OpenAI
+
+siliconflow_key = "sk-rawkqgnttfoqtgivkdtisvzsaymhmhtrshrfdaolsiahfbjt"
+siliconflow_base_url = "https://api.siliconflow.cn/v1"
 
 deepseek_key = "sk-764372d3e899489480a9a0deda637953"
 deepseek_base_url = "https://api.deepseek.com/beta"
-client = OpenAI(api_key=deepseek_key, base_url=deepseek_base_url)
+client = OpenAI(api_key=siliconflow_key, base_url=siliconflow_base_url)
 
 class Agent:
     def __init__(self, role: str, prompt: str, temperature: float, top_p: float):
@@ -18,7 +20,7 @@ class Agent:
         print(f"{self.role} 正在回答:")
         try:
             response = client.chat.completions.create(
-                model="deepseek-coder",
+                model="deepseek-ai/DeepSeek-V2.5",
 
                 messages=[
                     {"role": "system", "content": self.prompt},

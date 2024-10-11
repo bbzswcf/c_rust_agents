@@ -1,0 +1,15 @@
+Original:       "rosetta code phrase reversal"
+Reversed:       "lasrever esarhp edoc attesor"
+warning: unused variable: `lenstr`
+  --> main.rs:44:9
+   |
+44 |     let lenstr = str.len();
+   |         ^^^^^^ help: consider prefixing with an underscore: `_lenstr`
+   |
+   = note: `#[warn(unused_variables)]` on by default
+
+
+thread 'main' panicked at 'attempt to subtract with overflow', main.rs:23:43
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace.
+
+Exited with error status 101

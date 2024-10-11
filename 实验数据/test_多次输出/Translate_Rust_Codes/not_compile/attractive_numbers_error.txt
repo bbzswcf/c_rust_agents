@@ -1,0 +1,14 @@
+编译错误: error[E0384]: cannot assign to immutable argument `n`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:39:13
+   |
+39 |             n /= f;
+   |             ^^^^^^ cannot assign to immutable argument
+   |
+help: consider making this binding mutable
+   |
+27 | fn count_prime_factors(mut n: i32) -> i32 {
+   |                        +++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0384`.

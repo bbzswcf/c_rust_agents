@@ -1,0 +1,11 @@
+Number of sexy prime less than pairs = 1000035
+The last 5 are:
+  [[999371 999377 \b]\b] [999431 999437 \b]\b] [999721 999727 \b]\b] [999763 999769 \b]\b] [999953 999959 \b]\b] \b]\n\nNumber of sexy prime less than triplets = 1000035
+The last 5 are:
+  [[997427 997433 997439 \b]\b] [997541 997547 997553 \b]\b] [998071 998077 998083 \b]\b] [998617 998623 998629 \b]\b] [998737 998743 998749 \b]\b] \b]\n\nNumber of sexy prime less than quadruplets = 1000035
+The last 5 are:
+  [[977351 977357 977363 977369 \b]\b] [983771 983777 983783 983789 \b]\b] [986131 986137 986143 986149 \b]\b] [990371 990377 990383 990389 \b]\b] [997091 997097 997103 997109 \b]\b] \b]\n\nNumber of sexy prime less than quintuplets = 1000035
+The last 5 are:
+  [[5 11 17 23 29 \b]\b] [0 0 0 0 0 \b]\b] [0 0 0 0 0 \b]\b] [0 0 0 0 0 \b]\b] [0 0 0 0 0 \b]\b] \b]\n\nNumber of less than unsexy primes = 1000035
+The last 10 are:
+  [[999853 999863 999883 999907 999917 999931 999961 999979 999983 1000003 \b]\b]\n
