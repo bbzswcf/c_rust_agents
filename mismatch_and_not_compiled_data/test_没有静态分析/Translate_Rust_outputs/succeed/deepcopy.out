@@ -1,0 +1,16 @@
+Cake 1 is : 
+
+cake.d = 1
+cake.e = 2
+cake.l1.a = 3
+cake.l2.b = 4.000000
+cake.l2.l1.a = 5
+
+
+Cake 2 is : 
+
+cake.d = 1
+cake.e = 2
+cake.l1.a = 3
+cake.l2.b = 9.000000
+cake.l2.l1.a = 5

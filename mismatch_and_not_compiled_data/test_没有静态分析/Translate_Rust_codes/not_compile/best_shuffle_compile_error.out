@@ -1,0 +1,4 @@
+Rust 程序运行失败:
+thread 'main' panicked at D:\code\C_Rust_BETA\temp_main.rs:68:17:
+Index out of bounds in `ndx1` reassignment
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

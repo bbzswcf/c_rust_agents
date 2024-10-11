@@ -2,9 +2,9 @@ import os
 import shutil
 
 # 定义文件夹路径
-not_compile_folder = r'实验数据\test_完整流程\Translate_Rust_Codes\mismatch'
-c_code_folder = r'实验数据\test_完整流程\c_codes'
-c_not_compile_code_folder = r'test1\c_codes'
+not_compile_folder = r'实验数据\test_没有静态分析\Translate_Rust_Codes\not_compile'
+c_code_folder = r'实验数据\test_没有静态分析\c_codes'
+c_not_compile_code_folder = r'test2\c_codes'
 
 # 移动的文件数量计数
 moved_count = 0

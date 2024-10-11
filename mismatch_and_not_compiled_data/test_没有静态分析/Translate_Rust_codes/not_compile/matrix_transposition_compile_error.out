@@ -1,0 +1,34 @@
+Rust 编译失败:
+error[E0425]: cannot find value `src_h` in this scope
+  --> D:\code\C_Rust_BETA\temp_main.rs:25:40
+   |
+25 |     let mut dest: Vec<f64> = vec![0.0; src_h * src_w];
+   |                                        ^^^^^ not found in this scope
+
+error[E0425]: cannot find value `src_w` in this scope
+  --> D:\code\C_Rust_BETA\temp_main.rs:25:48
+   |
+25 |     let mut dest: Vec<f64> = vec![0.0; src_h * src_w];
+   |                                                ^^^^^ not found in this scope
+
+error[E0382]: use of moved value: `d`
+ --> D:\code\C_Rust_BETA\temp_main.rs:7:41
+  |
+2 |     let d = dest.chunks_mut(src_h);
+  |         - move occurs because `d` has type `ChunksMut<'_, f64>`, which does not implement the `Copy` trait
+3 |     let s = src.chunks(src_w);
+4 |     for (i, row) in s.enumerate() {
+  |     ----------------------------- inside of this loop
+5 |         for (j, &value) in row.iter().enumerate() {
+  |         ----------------------------------------- inside of this loop
+6 |             // Modified: Directly use `d.enumerate()` on the `ChunksMut` iterator
+7 |             for (chunk_index, chunk) in d.enumerate() {
+  |                                         ^ ----------- `d` moved due to this method call, in previous iteration of loop
+  |
+note: `enumerate` takes ownership of the receiver `self`, which moves `d`
+ --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c\library\core\src\iter\traits\iterator.rs:978:18
+
+error: aborting due to 3 previous errors
+
+Some errors have detailed explanations: E0382, E0425.
+For more information about an error, try `rustc --explain E0382`.

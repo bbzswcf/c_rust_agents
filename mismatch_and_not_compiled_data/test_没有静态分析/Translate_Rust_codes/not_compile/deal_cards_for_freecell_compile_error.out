@@ -1,0 +1,10 @@
+Rust 编译失败:
+error[E0463]: can't find crate for `libc`
+ --> D:\code\C_Rust_BETA\temp_main.rs:1:1
+  |
+1 | extern crate libc; // Ensure the `libc` crate is properly imported
+  | ^^^^^^^^^^^^^^^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.

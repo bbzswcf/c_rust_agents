@@ -1,0 +1,28 @@
+Rust 编译失败:
+error[E0277]: the trait bound `Node: Default` is not satisfied
+  --> D:\code\C_Rust_BETA\temp_main.rs:29:13
+   |
+29 |             self.nodes.resize_with(self.size, Default::default);
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Default` is not implemented for `Node`
+   |
+help: consider annotating `Node` with `#[derive(Default)]`
+   |
+3  + #[derive(Default)]
+4  | struct Node {
+   |
+
+error[E0277]: the trait bound `Node: Default` is not satisfied
+  --> D:\code\C_Rust_BETA\temp_main.rs:29:47
+   |
+29 |             self.nodes.resize_with(self.size, Default::default);
+   |                                               ^^^^^^^^^^^^^^^^ the trait `Default` is not implemented for `Node`
+   |
+help: consider annotating `Node` with `#[derive(Default)]`
+   |
+3  + #[derive(Default)]
+4  | struct Node {
+   |
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0277`.
