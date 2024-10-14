@@ -1,0 +1,28 @@
+Rust 编译失败:
+error[E0502]: cannot borrow `left[_]` as immutable because it is also borrowed as mutable
+  --> D:\code\C_Rust_BETA\temp_main.rs:36:38
+   |
+24 |             let e = &mut left[i][j];
+   |                          ------- mutable borrow occurs here
+...
+36 |                     let delb_clone = left[i][j + 1].clone(); // Modified: Clone delb before mutable borrow ends
+   |                                      ^^^^^^^ immutable borrow occurs here
+37 |                     let delb = &delb_clone;
+38 |                     e.next = Some(Box::new(delb.clone())); // Modified: Clone delb
+   |                     ------ mutable borrow later used here
+
+error[E0502]: cannot borrow `left[_]` as immutable because it is also borrowed as mutable
+  --> D:\code\C_Rust_BETA\temp_main.rs:60:34
+   |
+24 |             let e = &mut left[i][j];
+   |                          ------- mutable borrow occurs here
+...
+60 |                 let delb_clone = left[i][j + 1].clone(); // Modified: Clone delb before mutable borrow ends
+   |                                  ^^^^^^^ immutable borrow occurs here
+61 |                 let delb = &delb_clone;
+62 |                 if e.next.as_ref().unwrap().n > delb.n {
+   |                    ------ mutable borrow later used here
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0502`.

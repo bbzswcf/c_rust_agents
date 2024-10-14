@@ -1,0 +1,71 @@
+Rust 编译失败:
+error[E0599]: no method named `is_some` found for mutable reference `&mut usize` in the current scope
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:29:22
+   |
+29 |                 if e.is_some() {
+   |                      ^^^^^^^ method not found in `&mut usize`
+
+error[E0599]: the method `len` exists for struct `Box<List>`, but its trait bounds were not satisfied
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:39:88
+    |
+3   |   struct List {
+    |   ----------- doesn't satisfy `List: ExactSizeIterator`
+...
+39  |                   let (_, rest) = rest.split_at(List::from_string(rest, e, Some(parent)).len());
+    |                                                                                          ^^^ method cannot be called on `Box<List>` due to unsatisfied trait bounds
+    |
+   ::: C:\Users\wang\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib/rustlib/src/rust\library\alloc\src\boxed.rs:237:1
+    |
+237 | / pub struct Box<
+238 | |     T: ?Sized,
+239 | |     #[unstable(feature = "allocator_api", issue = "32838")] A: Allocator = Global,
+240 | | >(Unique<T>, A);
+    | |_- doesn't satisfy `Box<List>: ExactSizeIterator`
+    |
+    = note: the following trait bounds were not satisfied:
+            `List: ExactSizeIterator`
+            which is required by `Box<List>: ExactSizeIterator`
+note: the trait `ExactSizeIterator` must be implemented
+   --> C:\Users\wang\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib/rustlib/src/rust\library\core\src\iter\traits\exact_size.rs:86:1
+    |
+86  | pub trait ExactSizeIterator: Iterator {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = help: items from traits can only be used if the trait is implemented and in scope
+    = note: the following trait defines an item `len`, perhaps you need to implement it:
+            candidate #1: `ExactSizeIterator`
+
+error[E0599]: no method named `is_some` found for mutable reference `&mut usize` in the current scope
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:55:14
+   |
+55 |         if e.is_some() {
+   |              ^^^^^^^ method not found in `&mut usize`
+
+error[E0599]: the method `clone` exists for struct `Box<List>`, but its trait bounds were not satisfied
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:85:38
+    |
+3   |   struct List {
+    |   ----------- doesn't satisfy `List: Clone`
+...
+85  |                   item.flatten(Some(to.clone()));
+    |                                        ^^^^^ method cannot be called on `Box<List>` due to unsatisfied trait bounds
+    |
+   ::: C:\Users\wang\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib/rustlib/src/rust\library\alloc\src\boxed.rs:237:1
+    |
+237 | / pub struct Box<
+238 | |     T: ?Sized,
+239 | |     #[unstable(feature = "allocator_api", issue = "32838")] A: Allocator = Global,
+240 | | >(Unique<T>, A);
+    | |_- doesn't satisfy `Box<List>: Clone`
+    |
+    = note: the following trait bounds were not satisfied:
+            `List: Clone`
+            which is required by `Box<List>: Clone`
+help: consider annotating `List` with `#[derive(Clone)]`
+    |
+3   + #[derive(Clone)]
+4   | struct List {
+    |
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0599`.

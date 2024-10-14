@@ -1,0 +1,39 @@
+Rust 编译失败:
+warning: unused import: `std::mem`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:3:5
+  |
+3 | use std::mem;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:16:9
+   |
+15 |     fn seq_next(&mut self) -> i32 {
+   |                               --- expected `i32` because of return type
+16 |         self.output = (self.f)(self) // Modified: Ensure that the function `self.f` returns an `i32`.
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `i32`, found `()`
+
+error[E0605]: non-primitive cast: `for<'a> fn(&'a mut PowerGen) -> i32 {PowerGen::power_next}` as `for<'a> fn(&'a mut Gen) -> i32`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:42:20
+   |
+42 |                 f: PowerGen::power_next as SeqFunc,
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ invalid cast
+
+error[E0605]: non-primitive cast: `for<'a> fn(&'a mut FilterGen) -> i32 {FilterGen::filter_next}` as `for<'a> fn(&'a mut Gen) -> i32`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:91:20
+   |
+91 |                 f: FilterGen::filter_next as SeqFunc,
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ invalid cast
+
+error[E0606]: casting `&mut Gen` as `*mut FilterGen` is invalid
+   --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:122:30
+    |
+122 |             let filter_gen = s as *mut FilterGen;
+    |                              ^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 4 previous errors; 1 warning emitted
+
+Some errors have detailed explanations: E0308, E0605, E0606.
+For more information about an error, try `rustc --explain E0308`.

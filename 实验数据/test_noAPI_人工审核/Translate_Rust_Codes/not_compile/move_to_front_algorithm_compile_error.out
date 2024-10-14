@@ -1,0 +1,4 @@
+Rust 程序运行失败:
+thread 'main' panicked at C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:43:5:
+index out of bounds: the len is 6 but the index is 6
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

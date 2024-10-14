@@ -1,0 +1,29 @@
+Rust 编译失败:
+warning: unused import: `std::mem`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:1:5
+  |
+1 | use std::mem;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+error[E0277]: the trait bound `u8: Neg` is not satisfied
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:50:53
+   |
+50 |         chars[tail] = (chars[tail] as u8 + if neg { -1 } else { 1 }) as char;
+   |                                                     ^^ the trait `Neg` is not implemented for `u8`
+   |
+   = help: the following other types implement trait `Neg`:
+             &f128
+             &f16
+             &f32
+             &f64
+             &i128
+             &i16
+             &i32
+             &i64
+           and 12 others
+
+error: aborting due to 1 previous error; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0277`.

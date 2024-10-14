@@ -1,0 +1,154 @@
+Rust 编译失败:
+error: expected identifier, found keyword `fn`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:2:5
+  |
+1 | struct DoubleToDouble {
+  |        -------------- while parsing this struct
+2 |     fn: fn(&DoubleToDouble, f64) -> f64,
+  |     ^^ expected identifier, found keyword
+  |
+help: escape `fn` to use it as an identifier
+  |
+2 |     r#fn: fn(&DoubleToDouble, f64) -> f64,
+  |     ++
+
+error: expected identifier, found keyword `fn`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:6:5
+  |
+5 | struct ComposeFunctor {
+  |        -------------- while parsing this struct
+6 |     fn: fn(&ComposeFunctor, f64) -> f64,
+  |     ^^ expected identifier, found keyword
+  |
+help: escape `fn` to use it as an identifier
+  |
+6 |     r#fn: fn(&ComposeFunctor, f64) -> f64,
+  |     ++
+
+error: expected identifier, found keyword `fn`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:12:13
+   |
+12 |     (this.f.fn)(&*this.f, (this.g.fn)(&*this.g, x))
+   |             ^^ expected identifier, found keyword
+   |
+help: escape `fn` to use it as an identifier
+   |
+12 |     (this.f.r#fn)(&*this.f, (this.g.fn)(&*this.g, x))
+   |             ++
+
+error: expected identifier, found keyword `fn`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:12:35
+   |
+12 |     (this.f.fn)(&*this.f, (this.g.fn)(&*this.g, x))
+   |                                   ^^ expected identifier, found keyword
+   |
+help: escape `fn` to use it as an identifier
+   |
+12 |     (this.f.fn)(&*this.f, (this.g.r#fn)(&*this.g, x))
+   |                                   ++
+
+error: expected identifier, found keyword `fn`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:17:9
+   |
+17 |         fn: compose_call,
+   |         ^^ expected identifier, found keyword
+   |
+help: escape `fn` to use it as an identifier
+   |
+17 |         r#fn: compose_call,
+   |         ++
+
+error: expected identifier, found keyword `fn`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:21:31
+   |
+21 |     Box::new(DoubleToDouble { fn: |this, x| (result.fn)(&*result, x) })
+   |                               ^^ expected identifier, found keyword
+   |
+help: escape `fn` to use it as an identifier
+   |
+21 |     Box::new(DoubleToDouble { r#fn: |this, x| (result.fn)(&*result, x) })
+   |                               ++
+
+error: expected identifier, found keyword `fn`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:21:53
+   |
+21 |     Box::new(DoubleToDouble { fn: |this, x| (result.fn)(&*result, x) })
+   |                                                     ^^ expected identifier, found keyword
+   |
+help: escape `fn` to use it as an identifier
+   |
+21 |     Box::new(DoubleToDouble { fn: |this, x| (result.r#fn)(&*result, x) })
+   |                                                     ++
+
+error: expected identifier, found keyword `fn`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:33:44
+   |
+33 |     let my_sin = Box::new(DoubleToDouble { fn: sin_call });
+   |                                            ^^ expected identifier, found keyword
+   |
+help: escape `fn` to use it as an identifier
+   |
+33 |     let my_sin = Box::new(DoubleToDouble { r#fn: sin_call });
+   |                                            ++
+
+error: expected identifier, found keyword `fn`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:34:45
+   |
+34 |     let my_asin = Box::new(DoubleToDouble { fn: asin_call });
+   |                                             ^^ expected identifier, found keyword
+   |
+help: escape `fn` to use it as an identifier
+   |
+34 |     let my_asin = Box::new(DoubleToDouble { r#fn: asin_call });
+   |                                             ++
+
+error: expected identifier, found keyword `fn`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:38:30
+   |
+38 |     println!("{}", (sin_asin.fn)(&*sin_asin, 0.5)); // prints "0.500000"
+   |                              ^^ expected identifier, found keyword
+   |
+help: escape `fn` to use it as an identifier
+   |
+38 |     println!("{}", (sin_asin.r#fn)(&*sin_asin, 0.5)); // prints "0.500000"
+   |                              ++
+
+error[E0609]: no field `f` on type `&ComposeFunctor`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:12:11
+   |
+12 |     (this.f.fn)(&*this.f, (this.g.fn)(&*this.g, x))
+   |           ^ unknown field
+
+error[E0609]: no field `f` on type `&ComposeFunctor`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:12:24
+   |
+12 |     (this.f.fn)(&*this.f, (this.g.fn)(&*this.g, x))
+   |                        ^ unknown field
+
+error[E0609]: no field `g` on type `&ComposeFunctor`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:12:33
+   |
+12 |     (this.f.fn)(&*this.f, (this.g.fn)(&*this.g, x))
+   |                                 ^ unknown field
+
+error[E0609]: no field `g` on type `&ComposeFunctor`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:12:46
+   |
+12 |     (this.f.fn)(&*this.f, (this.g.fn)(&*this.g, x))
+   |                                              ^ unknown field
+
+error[E0609]: no field `r#fn` on type `Box<ComposeFunctor>`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:21:53
+   |
+21 |     Box::new(DoubleToDouble { fn: |this, x| (result.fn)(&*result, x) })
+   |                                                     ^^ unknown field
+
+error[E0609]: no field `r#fn` on type `Box<DoubleToDouble>`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:38:30
+   |
+38 |     println!("{}", (sin_asin.fn)(&*sin_asin, 0.5)); // prints "0.500000"
+   |                              ^^ unknown field
+
+error: aborting due to 16 previous errors
+
+For more information about this error, try `rustc --explain E0609`.

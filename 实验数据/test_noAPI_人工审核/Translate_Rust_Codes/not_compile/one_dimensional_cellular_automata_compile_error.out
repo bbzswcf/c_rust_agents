@@ -1,0 +1,47 @@
+Rust 编译失败:
+warning: variable does not need to be mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:41:17
+   |
+41 |             let mut c_slice = &mut c[1..c.len() - 2];
+   |                 ----^^^^^^^
+   |                 |
+   |                 help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` on by default
+
+error[E0502]: cannot borrow `c` as mutable because it is also borrowed as immutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:41:36
+   |
+36 |     let c_immutable = &c;
+   |                       -- immutable borrow occurs here
+...
+41 |             let mut c_slice = &mut c[1..c.len() - 2];
+   |                                    ^ mutable borrow occurs here
+...
+46 |         print!("{}", c_immutable.iter().skip(1).collect::<String>());
+   |                      ----------- immutable borrow later used here
+
+error[E0502]: cannot borrow `c` as immutable because it is also borrowed as mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:41:41
+   |
+41 |             let mut c_slice = &mut c[1..c.len() - 2];
+   |                                    -----^-----------
+   |                                    ||   |
+   |                                    ||   immutable borrow occurs here
+   |                                    |mutable borrow later used here
+   |                                    mutable borrow occurs here
+   |
+help: try adding a local storing this...
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:41:41
+   |
+41 |             let mut c_slice = &mut c[1..c.len() - 2];
+   |                                         ^^^^^^^
+help: ...and then using that local here
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:41:37
+   |
+41 |             let mut c_slice = &mut c[1..c.len() - 2];
+   |                                     ^^^^^^^^^^^^^^^^
+
+error: aborting due to 2 previous errors; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0502`.

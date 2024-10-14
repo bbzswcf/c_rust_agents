@@ -1,0 +1,54 @@
+Rust 编译失败:
+error[E0502]: cannot borrow `c` as immutable because it is also borrowed as mutable
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:35:29
+   |
+35 |         if evolve(&mut c[1..c.len() - 2], &mut b[1..b.len() - 2], c.len() - 3) == 0 {
+   |                        -----^-----------
+   |                        ||   |
+   |                        ||   immutable borrow occurs here
+   |                        |mutable borrow later used here
+   |                        mutable borrow occurs here
+   |
+help: try adding a local storing this...
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:35:29
+   |
+35 |         if evolve(&mut c[1..c.len() - 2], &mut b[1..b.len() - 2], c.len() - 3) == 0 {
+   |                             ^^^^^^^
+help: ...and then using that local here
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:35:25
+   |
+35 |         if evolve(&mut c[1..c.len() - 2], &mut b[1..b.len() - 2], c.len() - 3) == 0 {
+   |                         ^^^^^^^^^^^^^^^^
+
+error[E0502]: cannot borrow `b` as immutable because it is also borrowed as mutable
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:35:53
+   |
+35 |         if evolve(&mut c[1..c.len() - 2], &mut b[1..b.len() - 2], c.len() - 3) == 0 {
+   |                                                -----^-----------
+   |                                                ||   |
+   |                                                ||   immutable borrow occurs here
+   |                                                |mutable borrow later used here
+   |                                                mutable borrow occurs here
+   |
+help: try adding a local storing this...
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:35:53
+   |
+35 |         if evolve(&mut c[1..c.len() - 2], &mut b[1..b.len() - 2], c.len() - 3) == 0 {
+   |                                                     ^^^^^^^
+help: ...and then using that local here
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:35:49
+   |
+35 |         if evolve(&mut c[1..c.len() - 2], &mut b[1..b.len() - 2], c.len() - 3) == 0 {
+   |                                                 ^^^^^^^^^^^^^^^^
+
+error[E0502]: cannot borrow `c` as immutable because it is also borrowed as mutable
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:35:67
+   |
+35 |         if evolve(&mut c[1..c.len() - 2], &mut b[1..b.len() - 2], c.len() - 3) == 0 {
+   |            ------      - mutable borrow occurs here               ^ immutable borrow occurs here
+   |            |
+   |            mutable borrow later used by call
+
+error: aborting due to 3 previous errors
+
+For more information about this error, try `rustc --explain E0502`.

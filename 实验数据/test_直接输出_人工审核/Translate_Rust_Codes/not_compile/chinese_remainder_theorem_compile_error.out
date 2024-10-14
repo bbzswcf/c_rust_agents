@@ -1,0 +1,23 @@
+Rust 编译失败:
+warning: variable does not need to be mutable
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:2:9
+  |
+2 |     let mut b0 = b;
+  |         ----^^
+  |         |
+  |         help: remove this `mut`
+  |
+  = note: `#[warn(unused_mut)]` on by default
+
+error[E0384]: cannot assign to immutable argument `b`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:14:9
+   |
+1  | fn mul_inv(a: i32, b: i32) -> i32 {
+   |                    - help: consider making this binding mutable: `mut b`
+...
+14 |         b = a % b;
+   |         ^^^^^^^^^ cannot assign to immutable argument
+
+error: aborting due to 1 previous error; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0384`.

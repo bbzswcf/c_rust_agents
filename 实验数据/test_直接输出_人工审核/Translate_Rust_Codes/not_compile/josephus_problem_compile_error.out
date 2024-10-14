@@ -1,0 +1,13 @@
+Rust 编译失败:
+error[E0384]: cannot assign to immutable argument `m`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:28:9
+   |
+11 | fn jos_large(n: Xint, k: Xint, m: Xint) -> Xint {
+   |                                - help: consider making this binding mutable: `mut m`
+...
+28 |         m = (m + q * k) % (a + q);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign to immutable argument
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0384`.

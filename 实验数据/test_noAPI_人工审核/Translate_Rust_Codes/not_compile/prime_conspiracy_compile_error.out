@@ -1,0 +1,79 @@
+Rust 编译失败:
+error[E0432]: unresolved import `lazy_static`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:18:5
+   |
+18 | use lazy_static::lazy_static;
+   |     ^^^^^^^^^^^ maybe a missing crate `lazy_static`?
+   |
+   = help: consider adding `extern crate lazy_static` to use the `lazy_static` crate
+
+error[E0425]: cannot find value `transitions` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:28:15
+   |
+28 |             (*transitions)[idx].a = i as Byte;
+   |               ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `transitions` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:29:15
+   |
+29 |             (*transitions)[idx].b = j as Byte;
+   |               ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `transitions` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:30:15
+   |
+30 |             (*transitions)[idx].c = 0;
+   |               ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `transitions` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:41:14
+   |
+41 |         if (*transitions)[i].a == pd {
+   |              ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `transitions` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:42:18
+   |
+42 |             if (*transitions)[i].b == cd {
+   |                  ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `transitions` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:43:19
+   |
+43 |                 (*transitions)[i].c += 1;
+   |                   ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `transitions` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:55:14
+   |
+55 |         if (*transitions)[i].c > 0 {
+   |              ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `transitions` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:56:65
+   |
+56 | ...   println!("{}->{}  count: {:5}  frequency: {:.2}", (*transitions)[i].a, (*transitions)[i].b, (*transitions)[i].c, 100.0 * (*transiti...
+   |                                                           ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `transitions` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:56:86
+   |
+56 | ...   println!("{}->{}  count: {:5}  frequency: {:.2}", (*transitions)[i].a, (*transitions)[i].b, (*transitions)[i].c, 100.0 * (*transiti...
+   |                                                                                ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `transitions` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:56:107
+   |
+56 | ...2}", (*transitions)[i].a, (*transitions)[i].b, (*transitions)[i].c, 100.0 * (*transitions)[i].c as f64 / limit as f64);
+   |                                                     ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `transitions` in this scope
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:56:136
+   |
+56 | ...ransitions)[i].b, (*transitions)[i].c, 100.0 * (*transitions)[i].c as f64 / limit as f64);
+   |                                                     ^^^^^^^^^^^ not found in this scope
+
+error: aborting due to 12 previous errors
+
+Some errors have detailed explanations: E0425, E0432.
+For more information about an error, try `rustc --explain E0425`.

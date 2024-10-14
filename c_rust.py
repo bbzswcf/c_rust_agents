@@ -13,23 +13,25 @@ sys.stderr.reconfigure(encoding='utf-8')
 
 def normalize_string(s):
     '''忽略大小写，去除所有空格，格式化浮点数并去除多余0.
-    '''
-    s = s.lower()
-    s = re.sub(r'\s+', '', s)
+    '''    
     if not re.search(r'\d', s):
         return s
     try:
         float_pattern = re.compile(r'[-+]?\d*\.\d+([eE][-+]?\d+)?')
         matches = list(float_pattern.finditer(s))
         for match in reversed(matches):
-            original_float = match.group()
+            original_float = float(match.group())
+            if original_float.is_integer():
+                original_float = int(original_float)
             # 将匹配到的浮点数转为浮点型再转回字符串，以去除多余零
-            formatted_number = f"{float(original_float)}"
+            formatted_number = f"{original_float}"
             # 替换字符串中对应的浮点数
             s = s[:match.start()] + formatted_number + s[match.end():]
     except Exception as e:
         print("浮点数格式化发生错误，已返回原字符串")
 
+    s = s.lower()
+    s = re.sub(r'\s+', '', s)
     return s
 
 def extract_rust_code(review_text: str) -> str:

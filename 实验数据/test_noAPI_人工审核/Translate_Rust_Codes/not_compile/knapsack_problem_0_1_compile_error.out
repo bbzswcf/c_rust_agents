@@ -1,0 +1,45 @@
+Rust 编译失败:
+error[E0425]: cannot find value `s_layout` in this scope
+   --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:102:31
+    |
+102 |         dealloc(s as *mut u8, s_layout);
+    |                               ^^^^^^^^ not found in this scope
+
+warning: unused import: `std::mem`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:2:5
+  |
+2 | use std::mem;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `std::ptr`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:3:5
+  |
+3 | use std::ptr;
+  |     ^^^^^^^^
+
+error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:56:48
+   |
+56 |                     **m.add(i).add(j) = if a > b { a } else { b };
+   |                                            -   ^ expected `*mut i32`, found `i32`
+   |                                            |
+   |                                            expected because this is `*mut i32`
+   |
+   = note: expected raw pointer `*mut i32`
+                     found type `i32`
+
+error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:56:52
+   |
+56 |                     **m.add(i).add(j) = if a > b { a } else { b };
+   |                                                    ^ expected `i32`, found `*mut i32`
+   |
+   = note:     expected type `i32`
+           found raw pointer `*mut i32`
+
+error: aborting due to 3 previous errors; 2 warnings emitted
+
+Some errors have detailed explanations: E0308, E0425.
+For more information about an error, try `rustc --explain E0308`.

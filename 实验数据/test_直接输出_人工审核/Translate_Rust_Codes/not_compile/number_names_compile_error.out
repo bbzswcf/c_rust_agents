@@ -1,0 +1,22 @@
+Rust 编译失败:
+error[E0384]: cannot assign to immutable argument `has_lead`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:30:9
+   |
+14 | fn say_hundred(s: &str, len: usize, depth: usize, has_lead: bool) -> bool {
+   |                                                   -------- help: consider making this binding mutable: `mut has_lead`
+...
+30 |         has_lead = true;
+   |         ^^^^^^^^^^^^^^^ cannot assign to immutable argument
+
+warning: value assigned to `got_sign` is never read
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:94:13
+   |
+94 |     let mut got_sign = 0;
+   |             ^^^^^^^^
+   |
+   = help: maybe it is overwritten before being read?
+   = note: `#[warn(unused_assignments)]` on by default
+
+error: aborting due to 1 previous error; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0384`.
