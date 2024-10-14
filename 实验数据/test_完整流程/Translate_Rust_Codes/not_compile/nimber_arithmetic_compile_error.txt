@@ -1,4 +1,0 @@
-Rust 程序运行失败:
-thread 'main' panicked at C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:37:21:
-attempt to shift right with overflow
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

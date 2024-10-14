@@ -1,9 +1,0 @@
-error[E0277]: the trait bound `u8: std::ops::Neg` is not satisfied
-  --> main.rs:46:29
-   |
-46 |         s[tail] += if neg { -1 } else { 1 };
-   |                             ^^ the trait `std::ops::Neg` is not implemented for `u8`
-
-error: aborting due to previous error
-
-For more information about this error, try `rustc --explain E0277`.
