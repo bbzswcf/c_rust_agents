@@ -1,0 +1,71 @@
+编译错误: error[E0599]: cannot write into `&mut &mut String`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:14:29
+   |
+14 |                 a += write!(s, "{}", if a > 0 { "," } else { "" }).unwrap();
+   |                             ^
+   |
+note: must implement `io::Write`, `fmt::Write`, or have a `write_fmt` method
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:14:29
+   |
+14 |                 a += write!(s, "{}", if a > 0 { "," } else { "" }).unwrap();
+   |                             ^
+   = help: items from traits can only be used if the trait is in scope
+help: trait `Write` which provides `write_fmt` is implemented but not in scope; perhaps you want to import it
+   |
+1  + use std::fmt::Write;
+   |
+
+error[E0599]: cannot write into `&mut &mut String`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:15:29
+   |
+15 |                 a += write!(s, "{}-{}", x[i], x[j]).unwrap();
+   |                             ^
+   |
+note: must implement `io::Write`, `fmt::Write`, or have a `write_fmt` method
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:15:29
+   |
+15 |                 a += write!(s, "{}-{}", x[i], x[j]).unwrap();
+   |                             ^
+   = help: items from traits can only be used if the trait is in scope
+help: trait `Write` which provides `write_fmt` is implemented but not in scope; perhaps you want to import it
+   |
+1  + use std::fmt::Write;
+   |
+
+error[E0599]: cannot write into `&mut &mut String`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:18:33
+   |
+18 |                     a += write!(s, "{}", if a > 0 { "," } else { "" }).unwrap();
+   |                                 ^
+   |
+note: must implement `io::Write`, `fmt::Write`, or have a `write_fmt` method
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:18:33
+   |
+18 |                     a += write!(s, "{}", if a > 0 { "," } else { "" }).unwrap();
+   |                                 ^
+   = help: items from traits can only be used if the trait is in scope
+help: trait `Write` which provides `write_fmt` is implemented but not in scope; perhaps you want to import it
+   |
+1  + use std::fmt::Write;
+   |
+
+error[E0599]: cannot write into `&mut &mut String`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:19:33
+   |
+19 |                     a += write!(s, "{}", x[i]).unwrap();
+   |                                 ^
+   |
+note: must implement `io::Write`, `fmt::Write`, or have a `write_fmt` method
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:19:33
+   |
+19 |                     a += write!(s, "{}", x[i]).unwrap();
+   |                                 ^
+   = help: items from traits can only be used if the trait is in scope
+help: trait `Write` which provides `write_fmt` is implemented but not in scope; perhaps you want to import it
+   |
+1  + use std::fmt::Write;
+   |
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0599`.

@@ -1,0 +1,29 @@
+使用不同的top_p以及temperature参数，每次生成五个答案，从中选取合适的
+测试集一共187个C代码程序，有八个运行失败
+成功：110+17=127
+输出不匹配：36-17=21
+编译失败：41
+AS-P: 100%
+CS-P: 95.87%
+
+输出不匹配进行人工审核
+匹配：
+ABC_problem_rust：true与1表示不一样
+approximate_equility_rust：小数点位数不一样导致四舍五入的结果不一致
+arithmetic_mean_rust：语言特征导致输出NAN格式不一样
+binary_search_rust：rust没找到数组返回not found c是返回-1
+calculating_the_value_of_e_rust：一个回答的c语言，一个回答的rust语言
+continued_fraction_rust：小数点位数不一致
+cumulative_standard_deviation_rust：小数点位数保留不一致
+deepcopy_rust：小数点位数保留不一致
+extreme_floating_point_values_rust： 小数点以及NAN
+gaussian_elimination_rust：小数点位数
+increasing_gaps_between_consecutive_niven_numbers_rust：空格数不一样
+knapsack_problem_continuous_rust：小数点位数
+map_range_rust：小数点位数
+quaternion_type_rust：小数点位数
+root_mean_square_rust：小数点位数
+roots_of_unity_rust：小数点位数
+runge_kutta_method_rust：小数点位数
+不匹配：
+

@@ -1,0 +1,26 @@
+Rust 编译失败:
+error[E0308]: mismatched types
+  --> D:\code\C_Rust_BETA\temp_main.rs:34:30
+   |
+34 |                         *e = Some(chars.as_str().len() + 1); // Fixed: Correctly assign Option<usize>
+   |                         --   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `Option<usize>`
+   |                         |
+   |                         expected due to the type of this binding
+   |
+   = note: expected type `usize`
+              found enum `Option<usize>`
+
+error[E0308]: mismatched types
+  --> D:\code\C_Rust_BETA\temp_main.rs:67:18
+   |
+67 |             *e = Some(chars.as_str().len()); // Fixed: Correctly assign Option<usize>
+   |             --   ^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `Option<usize>`
+   |             |
+   |             expected due to the type of this binding
+   |
+   = note: expected type `usize`
+              found enum `Option<usize>`
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0308`.

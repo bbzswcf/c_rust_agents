@@ -1,0 +1,32 @@
+直接由API专家+语法专家+静态分析+代码编译，少去了测试输出是否匹配
+测试集一共187个C代码程序
+成功转换个数：112+22 = 134
+输出不匹配个数：60-22=38
+编译失败个数：15
+AS-P: 100%
+CS-P: 97.34%
+
+人工审核：
+匹配：
+ABC_problem：true和1
+accumulator_factory：小数点位数
+approximate_equility：小数点以及true和1
+base64_decode_data：好像本来就是一样的？
+binary_digits：二进制有的前面多了个0，结果是一样的
+casting_out_nines：小数点位数不一样
+continued_fraction：小数点位数以及空格
+cumulative_standard_deviation：小数点位数
+deepcopy：小数点位数以及换行
+first_class_functions：小数点位数
+formatted_numeric_output：前置0
+knapsack_problem_continuous：小数点位数
+map_range：小数点位数
+matrix_chain_multiplication：算法正确
+mean_angle：小数点位数
+numerical_integration：表达不一致，e-1之类的，但是结果是对的
+parse_an_ip_address：被认为是正确的，因为它保留了原程序的核心功能，只是去掉了测试用例的说明输出。
+quaternion_type：小数点位数
+root_mean_square：小数点位数
+roots_of_unity：小数点位数
+runge_kutta_method：小数点位数
+short_circuit_evaluation：多了个“”但是算法是对的

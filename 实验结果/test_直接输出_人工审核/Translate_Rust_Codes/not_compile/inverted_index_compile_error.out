@@ -1,0 +1,24 @@
+Rust 编译失败:
+warning: unused import: `std::process::Command`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:3:5
+  |
+3 | use std::process::Command;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused imports: `BufRead` and `self`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:4:15
+  |
+4 | use std::io::{self, BufRead};
+  |               ^^^^  ^^^^^^^
+
+error[E0599]: no method named `unwrap_or` found for type `bool` in the current scope
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:65:89
+   |
+65 |         if (*root).eow != 0 && !callback(std::str::from_utf8_unchecked(&path[..depth])).unwrap_or(false) {
+   |                                                                                         ^^^^^^^^^ method not found in `bool`
+
+error: aborting due to 1 previous error; 2 warnings emitted
+
+For more information about this error, try `rustc --explain E0599`.

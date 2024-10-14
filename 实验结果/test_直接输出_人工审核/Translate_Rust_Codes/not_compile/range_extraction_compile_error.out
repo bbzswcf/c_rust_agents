@@ -1,0 +1,38 @@
+Rust 编译失败:
+warning: unused import: `std::io`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:1:5
+  |
+1 | use std::io;
+  |     ^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+error[E0716]: temporary value dropped while borrowed
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:15:17
+   |
+15 |             a = format!("{}{}{}-{}", a, if a.is_empty() { "" } else { "," }, x[i], x[j]).as_mut_str();
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^             - temporary value is freed at the end of this statement
+   |                 |
+   |                 creates a temporary value which is freed while still in use
+...
+24 |     a.len()
+   |     - borrow later used here
+   |
+   = note: consider using a `let` binding to create a longer lived value
+   = note: this error originates in the macro `format` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0716]: temporary value dropped while borrowed
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:18:21
+   |
+18 |                 a = format!("{}{}{}", a, if a.is_empty() { "" } else { "," }, x[i]).as_mut_str();
+   |                     ^^^^^^^^^^^^^^^^^^-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^             - temporary value is freed at the end of this statement
+   |                     |                 |
+   |                     |                 borrow later used here
+   |                     creates a temporary value which is freed while still in use
+   |
+   = note: consider using a `let` binding to create a longer lived value
+   = note: this error originates in the macro `format` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 2 previous errors; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0716`.

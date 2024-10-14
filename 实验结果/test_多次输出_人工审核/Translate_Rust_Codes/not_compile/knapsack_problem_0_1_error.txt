@@ -1,0 +1,238 @@
+编译错误: error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:8:24
+  |
+8 |     Item { name: "map".to_string(), weight: 9, value: 150 },
+  |                        ^^^^^^^^^^^
+  |
+  = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:9:28
+  |
+9 |     Item { name: "compass".to_string(), weight: 13, value: 35 },
+  |                            ^^^^^^^^^^^
+  |
+  = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:10:26
+   |
+10 |     Item { name: "water".to_string(), weight: 153, value: 200 },
+   |                          ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:11:29
+   |
+11 |     Item { name: "sandwich".to_string(), weight: 50, value: 160 },
+   |                             ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:12:28
+   |
+12 |     Item { name: "glucose".to_string(), weight: 15, value: 60 },
+   |                            ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:13:24
+   |
+13 |     Item { name: "tin".to_string(), weight: 68, value: 45 },
+   |                        ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:14:27
+   |
+14 |     Item { name: "banana".to_string(), weight: 27, value: 60 },
+   |                           ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:15:26
+   |
+15 |     Item { name: "apple".to_string(), weight: 39, value: 40 },
+   |                          ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:16:27
+   |
+16 |     Item { name: "cheese".to_string(), weight: 23, value: 30 },
+   |                           ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:17:25
+   |
+17 |     Item { name: "beer".to_string(), weight: 52, value: 10 },
+   |                         ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:18:33
+   |
+18 |     Item { name: "suntan cream".to_string(), weight: 11, value: 70 },
+   |                                 ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:19:27
+   |
+19 |     Item { name: "camera".to_string(), weight: 32, value: 30 },
+   |                           ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:20:28
+   |
+20 |     Item { name: "T-shirt".to_string(), weight: 24, value: 15 },
+   |                            ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:21:29
+   |
+21 |     Item { name: "trousers".to_string(), weight: 48, value: 10 },
+   |                             ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:22:29
+   |
+22 |     Item { name: "umbrella".to_string(), weight: 73, value: 40 },
+   |                             ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:23:40
+   |
+23 |     Item { name: "waterproof trousers".to_string(), weight: 42, value: 70 },
+   |                                        ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:24:43
+   |
+24 |     Item { name: "waterproof overclothes".to_string(), weight: 43, value: 75 },
+   |                                           ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:25:30
+   |
+25 |     Item { name: "note-case".to_string(), weight: 22, value: 80 },
+   |                              ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:26:31
+   |
+26 |     Item { name: "sunglasses".to_string(), weight: 7, value: 20 },
+   |                               ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:27:26
+   |
+27 |     Item { name: "towel".to_string(), weight: 18, value: 12 },
+   |                          ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:28:26
+   |
+28 |     Item { name: "socks".to_string(), weight: 4, value: 50 },
+   |                          ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0015]: cannot call non-const fn `<str as ToString>::to_string` in constants
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:29:25
+   |
+29 |     Item { name: "book".to_string(), weight: 30, value: 10 },
+   |                         ^^^^^^^^^^^
+   |
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
+
+error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:35:12
+   |
+35 |     m[0] = &mut mm[..];
+   |     ----   ^^^^^^^^^^^ expected integer, found `&mut [{integer}]`
+   |     |
+   |     expected due to the type of this binding
+
+error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:38:16
+   |
+38 |         m[i] = &mut mm[(i * (w as usize + 1))..];
+   |         ----   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected integer, found `&mut [{integer}]`
+   |         |
+   |         expected due to the type of this binding
+
+error[E0608]: cannot index into a value of type `{integer}`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:41:21
+   |
+41 |                 m[i][j] = m[i - 1][j];
+   |                     ^^^
+
+error[E0608]: cannot index into a value of type `{integer}`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:41:35
+   |
+41 |                 m[i][j] = m[i - 1][j];
+   |                                   ^^^
+
+error[E0608]: cannot index into a value of type `{integer}`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:43:33
+   |
+43 |                 let a = m[i - 1][j];
+   |                                 ^^^
+
+error[E0608]: cannot index into a value of type `{integer}`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:44:33
+   |
+44 |                 let b = m[i - 1][j - items[i - 1].weight as usize] + items[i - 1].value;
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0608]: cannot index into a value of type `{integer}`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:45:21
+   |
+45 |                 m[i][j] = a.max(b);
+   |                     ^^^
+
+error[E0608]: cannot index into a value of type `{integer}`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:53:16
+   |
+53 |         if m[i][j] > m[i - 1][j] {
+   |                ^^^
+
+error[E0608]: cannot index into a value of type `{integer}`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:53:30
+   |
+53 |         if m[i][j] > m[i - 1][j] {
+   |                              ^^^
+
+error: aborting due to 31 previous errors
+
+Some errors have detailed explanations: E0015, E0308, E0608.
+For more information about an error, try `rustc --explain E0015`.

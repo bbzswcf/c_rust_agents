@@ -1,0 +1,30 @@
+编译错误: error[E0308]: mismatched types
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:39:20
+   |
+39 |         cards[i] = 51 - i;
+   |         --------   ^^^^^^ expected `i32`, found `usize`
+   |         |
+   |         expected due to the type of this binding
+
+error[E0308]: arguments to this method are incorrect
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:43:15
+   |
+43 |         cards.swap(i, j);
+   |               ^^^^ -  - expected `usize`, found `i32`
+   |                    |
+   |                    expected `usize`, found `i32`
+   |
+note: method defined here
+  --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c\library\core\src\slice\mod.rs:900:18
+help: you can convert an `i32` to a `usize` and panic if the converted value doesn't fit
+   |
+43 |         cards.swap(i.try_into().unwrap(), j);
+   |                     ++++++++++++++++++++
+help: you can convert an `i32` to a `usize` and panic if the converted value doesn't fit
+   |
+43 |         cards.swap(i, j.try_into().unwrap());
+   |                        ++++++++++++++++++++
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0308`.

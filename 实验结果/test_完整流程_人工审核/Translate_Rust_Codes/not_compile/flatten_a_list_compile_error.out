@@ -1,0 +1,39 @@
+Rust 编译失败:
+error[E0308]: mismatched types
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:42:58
+    |
+42  |                 List::from_string(rest, e, Some(Box::new(value.clone())));
+    |                                                 -------- ^^^^^^^^^^^^^ expected `List`, found `Box<List>`
+    |                                                 |
+    |                                                 arguments to this function are incorrect
+    |
+    = note: expected struct `List`
+               found struct `Box<List>`
+note: associated function defined here
+   --> C:\Users\wang\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib/rustlib/src/rust\library\alloc\src\boxed.rs:257:12
+    |
+257 |     pub fn new(x: T) -> Self {
+    |            ^^^
+help: consider unboxing the value
+    |
+42  |                 List::from_string(rest, e, Some(Box::new(*value.clone())));
+    |                                                          +
+
+error[E0308]: `if` and `else` have incompatible types
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:86:56
+   |
+86 |         let mut to = if let Some(t) = to { *t } else { List::new_list() };
+   |                                            --          ^^^^^^^^^^^^^^^^ expected `List`, found `Box<List>`
+   |                                            |
+   |                                            expected because of this
+   |
+   = note: expected struct `List`
+              found struct `Box<List>`
+help: consider unboxing the value
+   |
+86 |         let mut to = if let Some(t) = to { *t } else { *List::new_list() };
+   |                                                        +
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0308`.

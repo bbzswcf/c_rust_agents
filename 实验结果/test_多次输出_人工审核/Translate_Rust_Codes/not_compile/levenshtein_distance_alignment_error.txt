@@ -1,0 +1,84 @@
+编译错误: warning: unused import: `std::mem`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:1:5
+  |
+1 | use std::mem;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+error[E0277]: the trait bound `Edit: Clone` is not satisfied
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:20:36
+   |
+20 |     let mut data: Vec<Edit> = vec![Edit { c1: 0, c2: 0, n: 0, next: ptr::null_mut() }; (la + 1) * (lb + 1)];
+   |                               -----^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^----------------------
+   |                               |    |
+   |                               |    the trait `Clone` is not implemented for `Edit`
+   |                               required by a bound introduced by this call
+   |
+note: required by a bound in `from_elem`
+  --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c\library\alloc\src\vec\mod.rs:2743:1
+help: consider annotating `Edit` with `#[derive(Clone)]`
+   |
+6  + #[derive(Clone)]
+7  | struct Edit {
+   |
+
+error[E0608]: cannot index into a value of type `*mut Edit`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:34:32
+   |
+34 |             let e = &mut tbl[i][j];
+   |                                ^^^
+   |
+help: consider using `wrapping_add` or `add` for indexing into raw pointer
+   |
+34 |             let e = &mut tbl[i].wrapping_add(j);
+   |                                ~~~~~~~~~~~~~~ ~
+
+error[E0608]: cannot index into a value of type `*mut Edit`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:35:39
+   |
+35 |             let repl = &mut tbl[i + 1][j + 1];
+   |                                       ^^^^^^^
+   |
+help: consider using `wrapping_add` or `add` for indexing into raw pointer
+   |
+35 |             let repl = &mut tbl[i + 1].wrapping_add(j + 1);
+   |                                       ~~~~~~~~~~~~~~     ~
+
+error[E0608]: cannot index into a value of type `*mut Edit`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:36:39
+   |
+36 |             let dela = &mut tbl[i + 1][j];
+   |                                       ^^^
+   |
+help: consider using `wrapping_add` or `add` for indexing into raw pointer
+   |
+36 |             let dela = &mut tbl[i + 1].wrapping_add(j);
+   |                                       ~~~~~~~~~~~~~~ ~
+
+error[E0608]: cannot index into a value of type `*mut Edit`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:37:35
+   |
+37 |             let delb = &mut tbl[i][j + 1];
+   |                                   ^^^^^^^
+   |
+help: consider using `wrapping_add` or `add` for indexing into raw pointer
+   |
+37 |             let delb = &mut tbl[i].wrapping_add(j + 1);
+   |                                   ~~~~~~~~~~~~~~     ~
+
+error[E0608]: cannot index into a value of type `*mut Edit`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:71:20
+   |
+71 |     let p = &tbl[0][0];
+   |                    ^^^
+   |
+help: consider using `wrapping_add` or `add` for indexing into raw pointer
+   |
+71 |     let p = &tbl[0].wrapping_add(0);
+   |                    ~~~~~~~~~~~~~~ ~
+
+error: aborting due to 6 previous errors; 1 warning emitted
+
+Some errors have detailed explanations: E0277, E0608.
+For more information about an error, try `rustc --explain E0277`.

@@ -1,0 +1,15 @@
+warning: variable does not need to be mutable
+ --> main.rs:8:17
+  |
+8 |             let mut st = state;
+  |                 ----^^
+  |                 |
+  |                 help: remove this `mut`
+  |
+  = note: `#[warn(unused_mut)]` on by default
+
+
+thread 'main' panicked at 'attempt to shift right with overflow', main.rs:13:39
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace.
+
+Exited with error status 101

@@ -1,0 +1,123 @@
+Rust 编译失败:
+warning: variable does not need to be mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:10:9
+   |
+10 |     let mut end = s;
+   |         ----^^^
+   |         |
+   |         help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` on by default
+
+error[E0499]: cannot borrow `s` as mutable more than once at a time
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:30:20
+   |
+25 |         let rnge_result = get_rnge(&mut s);
+   |                                    ------ first mutable borrow occurs here
+...
+30 |         skip_space(&mut s);
+   |                    ^^^^^^
+   |                    |
+   |                    second mutable borrow occurs here
+   |                    first borrow later used here
+
+error[E0502]: cannot borrow `*s` as immutable because it is also borrowed as mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:32:12
+   |
+25 |         let rnge_result = get_rnge(&mut s);
+   |                                    ------ mutable borrow occurs here
+...
+32 |         if s.is_empty() {
+   |            ^
+   |            |
+   |            immutable borrow occurs here
+   |            mutable borrow later used here
+
+error[E0502]: cannot borrow `*s` as immutable because it is also borrowed as mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:36:12
+   |
+25 |         let rnge_result = get_rnge(&mut s);
+   |                                    ------ mutable borrow occurs here
+...
+36 |         if s.starts_with(',') {
+   |            ^
+   |            |
+   |            immutable borrow occurs here
+   |            mutable borrow later used here
+
+error[E0506]: cannot assign to `s` because it is borrowed
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:37:13
+   |
+25 |         let rnge_result = get_rnge(&mut s);
+   |                                    ------ `s` is borrowed here
+...
+37 |             s = &s[1..];
+   |             ^^^^^^^^^^^
+   |             |
+   |             `s` is assigned to here but it was already borrowed
+   |             borrow later used here
+
+error[E0502]: cannot borrow `*s` as immutable because it is also borrowed as mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:37:18
+   |
+25 |         let rnge_result = get_rnge(&mut s);
+   |                                    ------ mutable borrow occurs here
+...
+37 |             s = &s[1..];
+   |                  ^
+   |                  |
+   |                  immutable borrow occurs here
+   |                  mutable borrow later used here
+
+error[E0502]: cannot borrow `s` as immutable because it is also borrowed as mutable
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:42:38
+   |
+25 |         let rnge_result = get_rnge(&mut s);
+   |                                    ------ mutable borrow occurs here
+...
+42 |     println!("\nSyntax error at {}", s);
+   |                                      ^
+   |                                      |
+   |                                      immutable borrow occurs here
+   |                                      mutable borrow later used here
+   |
+   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0382]: borrow of moved value: `s`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:54:9
+   |
+48 | fn get_rnge<'a>(s: &'a mut &'a str) -> Result<(), &'a str> {
+   |                 - move occurs because `s` has type `&mut &str`, which does not implement the `Copy` trait
+49 |     // Modified: Used `map_err` to convert the error type
+50 |     let (x, s1) = get_number(s).ok_or(s).map_err(|e| *e)?;
+   |                                       - value moved here
+...
+54 |     if !s.starts_with('-') {
+   |         ^ value borrowed here after move
+   |
+help: consider creating a fresh reborrow of `s` here
+   |
+50 |     let (x, s1) = get_number(s).ok_or(&mut *s).map_err(|e| *e)?;
+   |                                       ++++++
+
+error[E0382]: borrow of moved value: `s`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:63:20
+   |
+48 | fn get_rnge<'a>(s: &'a mut &'a str) -> Result<(), &'a str> {
+   |                 - move occurs because `s` has type `&mut &str`, which does not implement the `Copy` trait
+...
+59 |     let (y, s2) = get_number(s).ok_or(s).map_err(|e| *e)?;
+   |                                       - value moved here
+...
+63 |         return Err(s);
+   |                    ^ value borrowed here after move
+   |
+help: consider creating a fresh reborrow of `s` here
+   |
+59 |     let (y, s2) = get_number(s).ok_or(&mut *s).map_err(|e| *e)?;
+   |                                       ++++++
+
+error: aborting due to 8 previous errors; 1 warning emitted
+
+Some errors have detailed explanations: E0382, E0499, E0502, E0506.
+For more information about an error, try `rustc --explain E0382`.

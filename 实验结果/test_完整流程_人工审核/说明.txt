@@ -1,0 +1,30 @@
+测试集一共187个C代码程序的时候
+成功：156+4=160
+不匹配：18-4=14
+编译失败：13
+AS-P: 100%
+CS-P: 97.44%
+
+对于不匹配的18样例进行人工审核
+
+匹配：
+circles_of_given_radius_through_two_points：输出顺序不一样
+lu_decomposition：小数点位数不一样
+map_range：0.0 多保留了个小数点
+one_dimensional_cellular_automata：程序正确地执行了元胞自动机的规则。不同的显示方式（是否包含初始状态）都可以正确地反映系统的演化。
+不匹配：
+approximate_equility 算法错误，计算错误
+convert_decimal_number_to_rational算法错误
+cut_a_rectangle 算法出错，计算错误
+euler_method 算法出错
+filter 算法出错，多输出了
+floyds_triangle 算法出错
+gaussian_elimination 算法出错，计算错误
+hamming_numbers 算法出错
+increasing_gaps_between_consecutive_niven_numbers 算法出错
+random_number_generator 算法出错
+range_expansion 算法出错
+roots_of_unity 算法出错，计算错误
+runge_kutta_method 算法出错
+sexy_primes 算法出错
+匹配 

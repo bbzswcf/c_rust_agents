@@ -1,0 +1,25 @@
+编译错误: error[E0384]: cannot assign to immutable argument `f`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:15:9
+   |
+15 |         f = -f;
+   |         ^^^^^^ cannot assign to immutable argument
+   |
+help: consider making this binding mutable
+   |
+3  | fn rat_approx(mut f: f64, md: i64) -> (i64, i64) {
+   |               +++
+
+error[E0384]: cannot assign to immutable argument `f`
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:20:9
+   |
+20 |         f *= 2.0;
+   |         ^^^^^^^^ cannot assign to immutable argument
+   |
+help: consider making this binding mutable
+   |
+3  | fn rat_approx(mut f: f64, md: i64) -> (i64, i64) {
+   |               +++
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0384`.

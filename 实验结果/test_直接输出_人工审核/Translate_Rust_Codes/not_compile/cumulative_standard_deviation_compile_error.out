@@ -1,0 +1,88 @@
+Rust 编译失败:
+warning: unused import: `std::mem`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:1:5
+  |
+1 | use std::mem;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+error[E0369]: binary operation `==` cannot be applied to type `Action`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:33:19
+   |
+33 |         if action == Action::Count {
+   |            ------ ^^ ------------- Action
+   |            |
+   |            Action
+   |
+note: an implementation of `PartialEq` might be missing for `Action`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:4:1
+   |
+4  | enum Action {
+   | ^^^^^^^^^^^ must implement `PartialEq`
+help: consider annotating `Action` with `#[derive(PartialEq)]`
+   |
+4  + #[derive(PartialEq)]
+5  | enum Action {
+   |
+
+error[E0369]: binary operation `==` cannot be applied to type `Action`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:37:19
+   |
+37 |         if action == Action::Mean {
+   |            ------ ^^ ------------ Action
+   |            |
+   |            Action
+   |
+note: an implementation of `PartialEq` might be missing for `Action`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:4:1
+   |
+4  | enum Action {
+   | ^^^^^^^^^^^ must implement `PartialEq`
+help: consider annotating `Action` with `#[derive(PartialEq)]`
+   |
+4  + #[derive(PartialEq)]
+5  | enum Action {
+   |
+
+error[E0369]: binary operation `==` cannot be applied to type `Action`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:41:19
+   |
+41 |         if action == Action::Var {
+   |            ------ ^^ ----------- Action
+   |            |
+   |            Action
+   |
+note: an implementation of `PartialEq` might be missing for `Action`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:4:1
+   |
+4  | enum Action {
+   | ^^^^^^^^^^^ must implement `PartialEq`
+help: consider annotating `Action` with `#[derive(PartialEq)]`
+   |
+4  + #[derive(PartialEq)]
+5  | enum Action {
+   |
+
+error[E0369]: binary operation `==` cannot be applied to type `Action`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:45:19
+   |
+45 |         if action == Action::StdDev {
+   |            ------ ^^ -------------- Action
+   |            |
+   |            Action
+   |
+note: an implementation of `PartialEq` might be missing for `Action`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:4:1
+   |
+4  | enum Action {
+   | ^^^^^^^^^^^ must implement `PartialEq`
+help: consider annotating `Action` with `#[derive(PartialEq)]`
+   |
+4  + #[derive(PartialEq)]
+5  | enum Action {
+   |
+
+error: aborting due to 4 previous errors; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0369`.

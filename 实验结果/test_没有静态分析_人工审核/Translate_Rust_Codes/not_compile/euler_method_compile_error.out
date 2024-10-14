@@ -1,0 +1,19 @@
+Rust 编译失败:
+error: argument never used
+  --> D:\code\C_Rust_BETA\temp_main.rs:14:45
+   |
+14 |             print!("{}", format!("{}", FMT, y));
+   |                                  ----       ^ argument never used
+   |                                  |
+   |                                  formatting specifier missing
+
+error: argument never used
+  --> D:\code\C_Rust_BETA\temp_main.rs:32:41
+   |
+32 |         print!("{}", format!("{}", FMT, 20.0 + 80.0 * (-0.07 * t as f64).exp()));
+   |                              ----       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ argument never used
+   |                              |
+   |                              formatting specifier missing
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,18 @@
+Rust 编译失败:
+error[E0284]: type annotations needed
+   --> D:\code\rscode\C_Rust_BETA\temp_main.rs:110:31
+    |
+110 |             if count % LITTLE.into() == 0 {
+    |                      -        ^^^^
+    |                      |
+    |                      type must be known at this point
+    |
+    = note: cannot satisfy `<i64 as Rem<_>>::Output == _`
+help: try using a fully qualified path to specify the expected types
+    |
+110 |             if count % <i32 as Into<T>>::into(LITTLE) == 0 {
+    |                        +++++++++++++++++++++++      ~
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0284`.

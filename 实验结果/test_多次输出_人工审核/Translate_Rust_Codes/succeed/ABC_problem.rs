@@ -1,0 +1,46 @@
+fn can_make_words(blocks: &mut [&str], word: &str) -> bool {
+    let c = word.chars().next().map(|c| c.to_ascii_uppercase());
+
+    if c.is_none() {
+        return true;
+    }
+
+    let c = c.unwrap();
+
+    if blocks.is_empty() {
+        return false;
+    }
+
+    for i in 0..blocks.len() {
+        if !blocks[i].contains(c) {
+            continue;
+        }
+
+        blocks.swap(i, 0);
+        let result = can_make_words(&mut blocks[1..], &word[1..]);
+        blocks.swap(i, 0);
+
+        if result {
+            return true;
+        }
+    }
+
+    false
+}
+
+fn main() {
+    let blocks = [
+        "BO", "XK", "DQ", "CP", "NA", 
+        "GT", "RE", "TG", "QD", "FS", 
+        "JW", "HU", "VI", "AN", "OB", 
+        "ER", "FS", "LY", "PC", "ZM",
+    ];
+
+    let words = [
+        "", "A", "BARK", "BOOK", "TREAT", "COMMON", "SQUAD", "Confuse",
+    ];
+
+    for &word in words.iter() {
+        println!("{}:\t{}", word, can_make_words(&mut blocks.to_vec(), word));
+    }
+}

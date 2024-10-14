@@ -1,0 +1,68 @@
+Rust 编译失败:
+warning: unused import: `std::mem`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:1:5
+  |
+1 | use std::mem;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `std::slice`
+ --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:3:5
+  |
+3 | use std::slice;
+  |     ^^^^^^^^^^
+
+warning: unnecessary `unsafe` block
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:68:41
+   |
+68 |             if unsafe { (*e.next).n } > unsafe { (*delb).n } {
+   |                                         ^^^^^^ unnecessary `unsafe` block
+   |
+   = note: `#[warn(unused_unsafe)]` on by default
+
+warning: unnecessary `unsafe` block
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:72:41
+   |
+72 |             if unsafe { (*e.next).n } > unsafe { (*dela).n } {
+   |                                         ^^^^^^ unnecessary `unsafe` block
+
+error[E0499]: cannot borrow `data` as mutable more than once at a time
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:40:30
+   |
+38 |             let (_, right) = data.split_at_mut(i * (lb + 1) + j);
+   |                              ---- first mutable borrow occurs here
+39 |             let e = &mut right[0];
+40 |             let (_, right) = data.split_at_mut((i + 1) * (lb + 1) + j + 1);
+   |                              ^^^^ second mutable borrow occurs here
+...
+48 |             e.c1 = *aa.first().unwrap_or(&0);
+   |             -------------------------------- first borrow later used here
+
+error[E0499]: cannot borrow `data` as mutable more than once at a time
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:42:30
+   |
+38 |             let (_, right) = data.split_at_mut(i * (lb + 1) + j);
+   |                              ---- first mutable borrow occurs here
+...
+42 |             let (_, right) = data.split_at_mut((i + 1) * (lb + 1) + j);
+   |                              ^^^^ second mutable borrow occurs here
+...
+48 |             e.c1 = *aa.first().unwrap_or(&0);
+   |             -------------------------------- first borrow later used here
+
+error[E0499]: cannot borrow `data` as mutable more than once at a time
+  --> C:\Users\muzhi\Desktop\C_Rust_BETA\temp_main.rs:44:30
+   |
+38 |             let (_, right) = data.split_at_mut(i * (lb + 1) + j);
+   |                              ---- first mutable borrow occurs here
+...
+44 |             let (_, right) = data.split_at_mut(i * (lb + 1) + j + 1);
+   |                              ^^^^ second mutable borrow occurs here
+...
+48 |             e.c1 = *aa.first().unwrap_or(&0);
+   |             -------------------------------- first borrow later used here
+
+error: aborting due to 3 previous errors; 4 warnings emitted
+
+For more information about this error, try `rustc --explain E0499`.

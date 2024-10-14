@@ -1,0 +1,20 @@
+100000 primes, last prime considered: 1299709
+1->1  count:  4104  frequency: 4.10
+1->3  count:  7961  frequency: 7.96
+1->7  count:  8297  frequency: 8.30
+1->9  count:  4605  frequency: 4.61
+2->3  count:     1  frequency: 0.00
+3->1  count:  5596  frequency: 5.60
+3->3  count:  3604  frequency: 3.60
+3->5  count:     1  frequency: 0.00
+3->7  count:  7419  frequency: 7.42
+3->9  count:  8387  frequency: 8.39
+5->7  count:     1  frequency: 0.00
+7->1  count:  6438  frequency: 6.44
+7->3  count:  6928  frequency: 6.93
+7->7  count:  3627  frequency: 3.63
+7->9  count:  8022  frequency: 8.02
+9->1  count:  8829  frequency: 8.83
+9->3  count:  6513  frequency: 6.51
+9->7  count:  5671  frequency: 5.67
+9->9  count:  3995  frequency: 4.00

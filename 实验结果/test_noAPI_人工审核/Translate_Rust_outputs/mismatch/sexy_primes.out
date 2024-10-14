@@ -1,0 +1,19 @@
+Number of sexy prime pairs less than 1000035 = 2901
+The last 5 are:
+  [[997433 997439 ] [997547 997553 ] [998077 998083 ] [998623 998629 ] [998743 998749 ] ]
+
+Number of sexy prime triplets less than 1000035 = 326
+The last 5 are:
+  [[977357 977363 977369 ] [983777 983783 983789 ] [986137 986143 986149 ] [990377 990383 990389 ] [997097 997103 997109 ] ]
+
+Number of sexy prime quadruplets less than 1000035 = 5
+The last 5 are:
+  [[5 11 17 23 ] [11 17 23 29 ] [0 0 0 0 ] [0 0 0 0 ] [0 0 0 0 ] ]
+
+Number of sexy prime quintuplets less than 1000035 = 1
+The last 1 is:
+  [[5 11 17 23 29 ] ]
+
+Number of unsexy primes less than 1000035 = 75598
+The last 10 are:
+  [[999883 999907 999917 999931 999953 999959 999961 999979 999983 1000003 ]]

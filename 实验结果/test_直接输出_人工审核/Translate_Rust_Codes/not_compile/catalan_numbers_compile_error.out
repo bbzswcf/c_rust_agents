@@ -1,0 +1,75 @@
+Rust 编译失败:
+error[E0308]: mismatched types
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:42:24
+   |
+42 |     (2 * (2 * n - 1) * catalan3(n - 1)) / (1 + n) as u64
+   |                        ^^^^^^^^^^^^^^^ expected `i32`, found `u64`
+
+error[E0277]: cannot multiply `i32` by `u64`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:42:22
+   |
+42 |     (2 * (2 * n - 1) * catalan3(n - 1)) / (1 + n) as u64
+   |                      ^ no implementation for `i32 * u64`
+   |
+   = help: the trait `Mul<u64>` is not implemented for `i32`
+   = help: the following other types implement trait `Mul<Rhs>`:
+             <&'a i32 as Mul<i32>>
+             <&i32 as Mul<&i32>>
+             <i32 as Mul<&i32>>
+             <i32 as Mul>
+
+error[E0308]: mismatched types
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:42:43
+   |
+42 |     (2 * (2 * n - 1) * catalan3(n - 1)) / (1 + n) as u64
+   |                                           ^^^^^^^^^^^^^^ expected `i32`, found `u64`
+
+error[E0308]: mismatched types
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:42:5
+   |
+38 | fn catalan3(n: i32) -> u64 {
+   |                        --- expected `u64` because of return type
+...
+42 |     (2 * (2 * n - 1) * catalan3(n - 1)) / (1 + n) as u64
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `u64`, found `i32`
+   |
+help: you can convert an `i32` to a `u64` and panic if the converted value doesn't fit
+   |
+42 |     ((2 * (2 * n - 1) * catalan3(n - 1)) / (1 + n) as u64).try_into().unwrap()
+   |     +                                                    +++++++++++++++++++++
+
+error[E0277]: cannot divide `i32` by `u64`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:42:41
+   |
+42 |     (2 * (2 * n - 1) * catalan3(n - 1)) / (1 + n) as u64
+   |                                         ^ no implementation for `i32 / u64`
+   |
+   = help: the trait `Div<u64>` is not implemented for `i32`
+   = help: the following other types implement trait `Div<Rhs>`:
+             <&'a i32 as Div<i32>>
+             <&i32 as Div<&i32>>
+             <i32 as Div<&i32>>
+             <i32 as Div>
+
+error[E0384]: cannot assign to immutable argument `n`
+ --> D:\code\rscode\C_Rust_BETA\temp_main.rs:6:9
+  |
+1 | fn binomial(m: u64, n: u64) -> u64 {
+  |                     - help: consider making this binding mutable: `mut n`
+...
+6 |         n = d;
+  |         ^^^^^ cannot assign to immutable argument
+
+error[E0384]: cannot assign to immutable argument `m`
+  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:12:9
+   |
+1  | fn binomial(m: u64, n: u64) -> u64 {
+   |             - help: consider making this binding mutable: `mut m`
+...
+12 |         m -= 1;
+   |         ^^^^^^ cannot assign to immutable argument
+
+error: aborting due to 7 previous errors
+
+Some errors have detailed explanations: E0277, E0308, E0384.
+For more information about an error, try `rustc --explain E0277`.

@@ -1,0 +1,4 @@
+Rust 程序运行失败:
+thread 'main' panicked at D:\code\rscode\C_Rust_BETA\temp_main.rs:34:19:
+index out of bounds: the len is 0 but the index is 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
