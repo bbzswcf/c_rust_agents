@@ -5,6 +5,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain.docstore.document import Document
+
 gpt4_key = "sk-******"
 gpt_base_url = "******"
 def create_knowledge_base(c_code_dir, rust_code_dir):
