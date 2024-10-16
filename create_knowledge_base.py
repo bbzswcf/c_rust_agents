@@ -5,8 +5,8 @@ from langchain_openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain.docstore.document import Document
-gpt4_key = "sk-0nFckwELXxZo0okP826a9c548d5e4932916930A78e07A5E8"
-gpt_base_url = "https://xiaoai.plus/v1"
+gpt4_key = "sk-******"
+gpt_base_url = "******"
 def create_knowledge_base(c_code_dir, rust_code_dir):
     documents = []
     
