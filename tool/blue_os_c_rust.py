@@ -2,17 +2,23 @@ import os
 import re
 import shutil
 import tempfile
-from Agents import *
 import subprocess
 import sys
 import chardet
 import unicodedata
+import argparse
+
+from Agents import *
+from tree_sitter_analyzer import analyze_directory, get_translation_order, extract_test_functions, extract_func_dependencies, head_info_extraction
+from preprocess.c_code_preprocess import preprocess
+from c_code_decomposition import decompose, code_decomposition
 # 设置默认编码为UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stderr.reconfigure(encoding='utf-8')
 
 def normalize_string(s):
-    '''忽略大小写，去除所有空格，格式化浮点数并去除多余0.
+    '''
+    忽略大小写，去除所有空格，格式化浮点数并去除多余0.
     '''    
     if not re.search(r'\d', s):
         return s
@@ -50,15 +56,12 @@ def sanitize_string(s):
     """
     return ''.join(c for c in unicodedata.normalize('NFKD', s) if ord(c) < 128)
 
-def detect_encoding(file_path):
+def read_file_with_auto_encoding(file_path):
     with open(file_path, 'rb') as file:
         raw_data = file.read()
-    return chardet.detect(raw_data)['encoding']
-
-def read_file_with_auto_encoding(file_path):
-    encoding = detect_encoding(file_path)
-    with open(file_path, 'r', encoding=encoding, errors='replace') as file:
-        return file.read()
+    encoding = chardet.detect(raw_data)['encoding']
+    with open(file_path, 'r', encoding=encoding, errors='replace') as f:
+        return f.read()
 
 def write_file_with_utf8(file_path, content):
     with open(file_path, 'w', encoding='utf-8', errors='ignore') as file:
@@ -262,22 +265,17 @@ def convert_c_to_rust(c_code: str, c_output_file: str, rust_code_file:str, rust_
     return rust_code
 
 def process_files():
-    c_code_dir = "test1\c_codes"
-    c_out_dir = "test1\c_outputs"
-    rust_code_dir = "test1\Translate_Rust_codes"
-    rust_out_dir = "test1\Translate_Rust_outputs"
+    parser = argparse.ArgumentParser(description='Process C files and convert them to Rust.')
+    parser.add_argument('--c_code_dir', default='./Input/01-Primary', type=str, help='Directory path to analyze')
+    args = parser.parse_args()
 
     # 创建新的结果文件夹
+    rust_code_dir = "Output/01-Primary/Translate_Rust_codes"
     succeed_rust_dir = os.path.join(rust_code_dir, "succeed")
-    succeed_out_dir = os.path.join(rust_out_dir, "succeed")
+    not_compile_dir = os.path.join(rust_code_dir, "not_compile")    
     mismatch_rust_dir = os.path.join(rust_code_dir, "mismatch")
-    mismatch_out_dir = os.path.join(rust_out_dir, "mismatch")
-    not_compile_dir = os.path.join(rust_code_dir, "not_compile")
-
     os.makedirs(succeed_rust_dir, exist_ok=True)
-    os.makedirs(succeed_out_dir, exist_ok=True)
     os.makedirs(mismatch_rust_dir, exist_ok=True)
-    os.makedirs(mismatch_out_dir, exist_ok=True)
     os.makedirs(not_compile_dir, exist_ok=True)
 
     successful_conversions = 0
@@ -285,57 +283,54 @@ def process_files():
     mismatch_failures = 0
     total_files = 0
 
-    for problem_folder in os.listdir(c_code_dir):
-        problem_path = os.path.join(c_code_dir, problem_folder)
-        if not os.path.isdir(problem_path):
-            continue
+    # Get dependencies and suggested translation order
+    dependencies = analyze_directory(args.c_code_dir)
+    translation_order = get_translation_order(dependencies)
 
-        total_files += 1
-        c_file_path = os.path.join(problem_path, "main.c")
-        c_out_file_path = os.path.join(c_out_dir, f"{problem_folder}.out")
-
-        # 直接在临时位置创建 Rust 文件和输出文件
-        temp_rust_file_path = os.path.join(rust_code_dir, f"{problem_folder}.rs")
-        temp_rust_out_file_path = os.path.join(rust_out_dir, f"{problem_folder}.out")
-        if not os.path.exists(c_file_path):
-            print(f"C 文件不存在: {c_file_path}")
+    for problem_folder in translation_order:
+        if not problem_folder.startswith("test"):
             continue
-        c_code = read_file_with_auto_encoding(c_file_path)
-        print(f"开始转换 {problem_folder}")
-        rust_code = convert_c_to_rust(c_code, c_out_file_path, temp_rust_file_path, temp_rust_out_file_path)
-        if not os.path.exists(temp_rust_file_path):
-            write_file_with_utf8(temp_rust_file_path, rust_code)
         
-        # 进行编译和测试
-        compile_success, mismatch_info = compile_and_test_rust(rust_code, c_out_file_path, temp_rust_file_path, temp_rust_out_file_path)
+        problem_path = os.path.join(args.c_code_dir, problem_folder)
+        test_funcs = extract_test_functions(problem_path)
+        for test_func in test_funcs:
+            # todo: 递归函数，按顺序返回依赖文件中的函数
+            # 目前只实现了test_func依赖的查找，并未实现test_func依赖的依赖文件的查找
+            depend_files_and_funcs = extract_func_dependencies(args.c_code_dir, problem_folder, test_func)
+            for depend_file, depend_funcs in depend_files_and_funcs.items():
+                # 对depend_file进行分割，再进行函数级翻译
+                funcs_codes = code_decomposition(args.c_code_dir, depend_file, depend_funcs)
 
-        if compile_success and not mismatch_info:
-            successful_conversions += 1
-            print(f"成功转换 {problem_folder}")
-            # 移动成功的文件到 succeed 文件夹
-            shutil.move(temp_rust_file_path, os.path.join(succeed_rust_dir, f"{problem_folder}.rs"))
-            shutil.move(temp_rust_out_file_path, os.path.join(succeed_out_dir, f"{problem_folder}.out"))
-        elif compile_success:
-            mismatch_failures += 1
-            print(f"转换 {problem_folder} 失败：输出不匹配")
-            # 移动不匹配的文件到 mismatch 文件夹
-            shutil.move(temp_rust_file_path, os.path.join(mismatch_rust_dir, f"{problem_folder}.rs"))
-            shutil.move(temp_rust_out_file_path, os.path.join(mismatch_out_dir, f"{problem_folder}.out"))
-        else:
-            compile_failures += 1
-            print(f"转换 {problem_folder} 失败：编译错误或运行失败")
-            # 保留最后一次可以成功运行的rust代码和运行结果
-            shutil.move(temp_rust_file_path, os.path.join(not_compile_dir, f"{problem_folder}.rs"))
-            if os.path.exists(temp_rust_out_file_path):
-                shutil.move(temp_rust_out_file_path, os.path.join(not_compile_dir, f"{problem_folder}.out"))
-            write_file_with_utf8(os.path.join(not_compile_dir, f"{problem_folder}_compile_error.out"), mismatch_info)
+                # todo: 提供上下文
+                # 目前想法：head_infos作为funcs_codes翻译过程中的上下文
+                # 具体每个函数翻译时的内部调用关系，需要额外上下文
+                head_infos = head_info_extraction(args.c_code_dir, depend_file)
+                # todo:修改convert_c_to_rust函数，
+                rust_code = convert_c_to_rust(funcs_codes, head_infos)
 
-    print("\n转换统计:")
-    print(f"总文件数: {total_files}")
-    print(f"成功转换数: {successful_conversions}")
-    print(f"编译失败数: {compile_failures}")
-    print(f"输出不匹配数: {mismatch_failures}")
-    print(f"转换成功率: {successful_conversions / total_files:.2%}")
+                # todo: 先静态分析
+                if rust_code:
+                    static_errors = static_analysis(rust_code)
+                    if static_errors:
+                        print(f"{depend_file} 静态分析错误:\n {static_errors}")
+                        # todo: 修复规划和修复
+
+                    # todo: 静态分析通过，更新上下文
+                    write_file_with_utf8(os.path.join(succeed_rust_dir, f"{depend_file}.rs"), rust_code)
+
+            # todo: 测试函数的所有依赖项翻译完毕，对测试函数进行翻译
+            # todo: 提供上下文
+            rust_test = convert_c_to_rust(test_func, context)
+
+            # todo: 构建测试环境
+            dynamic_errors = compile_and_test_rust(rust_test)
+            if dynamic_errors:
+                print(f"{test_func} 动态测试错误:\n {dynamic_errors}")
+                # todo: 错误定位
+                # todo: 修复规划和修复
+            
+            # todo: 动态测试通过，写入文件，更新上下文
+            write_file_with_utf8(os.path.join(succeed_rust_dir, f"{test_func}.rs"), rust_test)
 
 if __name__ == "__main__":
     process_files()

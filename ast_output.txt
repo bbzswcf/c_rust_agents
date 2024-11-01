@@ -1,0 +1,4535 @@
+Abstract Syntax Tree for test-arraylist.c:
+translation_unit: /*
+
+Copyright (c) 2005-2008, Simon Howard
+
+Permission to use, copy, modify, and/or distribute this software
+for any purpose with or without fee is hereby granted, provided
+that the above copyright notice and this permission notice appear
+in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+ */
+
+/* ArrayList test cases */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#include "alloc-testing.h"
+#include "framework.h"
+
+#include "arraylist.h"
+#include "compare-int.h"
+
+int variable1, variable2, variable3, variable4;
+
+ArrayList *generate_arraylist(void)
+{
+	ArrayList *arraylist;
+	int i;
+
+	arraylist = arraylist_new(0);
+
+	for (i=0; i<4; ++i) {
+		arraylist_append(arraylist, &variable1);
+		arraylist_append(arraylist, &variable2);
+		arraylist_append(arraylist, &variable3);
+		arraylist_append(arraylist, &variable4);
+	}
+
+	return arraylist;
+}
+
+void test_arraylist_new_free(void)
+{
+	ArrayList *arraylist;
+
+	/* Use a default size when given zero */
+
+	arraylist = arraylist_new(0);
+	assert(arraylist != NULL);
+	arraylist_free(arraylist);
+
+	/* Normal allocated */
+
+	arraylist = arraylist_new(10);
+	assert(arraylist != NULL);
+	arraylist_free(arraylist);
+
+	/* Freeing a null arraylist works */
+
+	arraylist_free(NULL);
+
+	/* Test low memory scenarios (failed malloc) */
+
+	alloc_test_set_limit(0);
+	arraylist = arraylist_new(0);
+	assert(arraylist == NULL);
+
+	alloc_test_set_limit(1);
+	arraylist = arraylist_new(100);
+	assert(arraylist == NULL);
+}
+
+void test_arraylist_append(void)
+{
+	ArrayList *arraylist;
+	int i;
+
+	arraylist = arraylist_new(0);
+
+	assert(arraylist->length == 0);
+
+	/* Append some entries */
+
+	assert(arraylist_append(arraylist, &variable1) != 0);
+	assert(arraylist->length == 1);
+
+	assert(arraylist_append(arraylist, &variable2) != 0);
+	assert(arraylist->length == 2);
+
+	assert(arraylist_append(arraylist, &variable3) != 0);
+	assert(arraylist->length == 3);
+
+	assert(arraylist_append(arraylist, &variable4) != 0);
+	assert(arraylist->length == 4);
+
+	assert(arraylist->data[0] == &variable1);
+	assert(arraylist->data[1] == &variable2);
+	assert(arraylist->data[2] == &variable3);
+	assert(arraylist->data[3] == &variable4);
+
+	/* Test appending many entries */
+
+	for (i=0; i<10000; ++i) {
+		assert(arraylist_append(arraylist, NULL) != 0);
+	}
+
+	arraylist_free(arraylist);
+
+	/* Test low memory scenario */
+
+	arraylist = arraylist_new(100);
+
+	alloc_test_set_limit(0);
+
+	for (i=0; i<100; ++i) {
+		assert(arraylist_append(arraylist, NULL) != 0);
+	}
+
+	assert(arraylist->length == 100);
+	assert(arraylist_append(arraylist, NULL) == 0);
+	assert(arraylist->length == 100);
+
+	arraylist_free(arraylist);
+}
+
+
+void test_arraylist_prepend(void)
+{
+	ArrayList *arraylist;
+	int i;
+
+	arraylist = arraylist_new(0);
+
+	assert(arraylist->length == 0);
+
+	/* Append some entries */
+
+	assert(arraylist_prepend(arraylist, &variable1) != 0);
+	assert(arraylist->length == 1);
+
+	assert(arraylist_prepend(arraylist, &variable2) != 0);
+	assert(arraylist->length == 2);
+
+	assert(arraylist_prepend(arraylist, &variable3) != 0);
+	assert(arraylist->length == 3);
+
+	assert(arraylist_prepend(arraylist, &variable4) != 0);
+	assert(arraylist->length == 4);
+
+	assert(arraylist->data[0] == &variable4);
+	assert(arraylist->data[1] == &variable3);
+	assert(arraylist->data[2] == &variable2);
+	assert(arraylist->data[3] == &variable1);
+
+	/* Test prepending many entries */
+
+	for (i=0; i<10000; ++i) {
+		assert(arraylist_prepend(arraylist, NULL) != 0);
+	}
+
+	arraylist_free(arraylist);
+
+	/* Test low memory scenario */
+
+	arraylist = arraylist_new(100);
+
+	alloc_test_set_limit(0);
+
+	for (i=0; i<100; ++i) {
+		assert(arraylist_prepend(arraylist, NULL) != 0);
+	}
+
+	assert(arraylist->length == 100);
+	assert(arraylist_prepend(arraylist, NULL) == 0);
+	assert(arraylist->length == 100);
+
+	arraylist_free(arraylist);
+}
+
+void test_arraylist_insert(void)
+{
+	ArrayList *arraylist;
+	int i;
+
+	arraylist = generate_arraylist();
+
+	/* Check for out of range insert */
+
+	assert(arraylist->length == 16);
+	assert(arraylist_insert(arraylist, 17, &variable1) == 0);
+	assert(arraylist->length == 16);
+
+	/* Insert a new entry at index 5 */
+
+	assert(arraylist->length == 16);
+	assert(arraylist->data[4] == &variable1);
+	assert(arraylist->data[5] == &variable2);
+	assert(arraylist->data[6] == &variable3);
+
+	assert(arraylist_insert(arraylist, 5, &variable4) != 0);
+
+	assert(arraylist->length == 17);
+	assert(arraylist->data[4] == &variable1);
+	assert(arraylist->data[5] == &variable4);
+	assert(arraylist->data[6] == &variable2);
+	assert(arraylist->data[7] == &variable3);
+
+	/* Inserting at the start */
+
+	assert(arraylist->data[0] == &variable1);
+	assert(arraylist->data[1] == &variable2);
+	assert(arraylist->data[2] == &variable3);
+
+	assert(arraylist_insert(arraylist, 0, &variable4) != 0);
+
+	assert(arraylist->length == 18);
+	assert(arraylist->data[0] == &variable4);
+	assert(arraylist->data[1] == &variable1);
+	assert(arraylist->data[2] == &variable2);
+	assert(arraylist->data[3] == &variable3);
+
+	/* Inserting at the end */
+
+	assert(arraylist->data[15] == &variable2);
+	assert(arraylist->data[16] == &variable3);
+	assert(arraylist->data[17] == &variable4);
+
+	assert(arraylist_insert(arraylist, 18, &variable1) != 0);
+
+	assert(arraylist->length == 19);
+	assert(arraylist->data[15] == &variable2);
+	assert(arraylist->data[16] == &variable3);
+	assert(arraylist->data[17] == &variable4);
+	assert(arraylist->data[18] == &variable1);
+
+	/* Test inserting many entries */
+
+	for (i=0; i<10000; ++i) {
+		arraylist_insert(arraylist, 10, &variable1);
+	}
+
+	arraylist_free(arraylist);
+}
+
+void test_arraylist_remove_range(void)
+{
+	ArrayList *arraylist;
+
+	arraylist = generate_arraylist();
+
+	assert(arraylist->length == 16);
+	assert(arraylist->data[3] == &variable4);
+	assert(arraylist->data[4] == &variable1);
+	assert(arraylist->data[5] == &variable2);
+	assert(arraylist->data[6] == &variable3);
+
+	arraylist_remove_range(arraylist, 4, 3);
+
+	assert(arraylist->length == 13);
+	assert(arraylist->data[3] == &variable4);
+	assert(arraylist->data[4] == &variable4);
+	assert(arraylist->data[5] == &variable1);
+	assert(arraylist->data[6] == &variable2);
+
+	/* Try some invalid ones and check they don't do anything */
+
+	arraylist_remove_range(arraylist, 10, 10);
+	arraylist_remove_range(arraylist, 0, 16);
+
+	assert(arraylist->length == 13);
+
+	arraylist_free(arraylist);
+}
+
+void test_arraylist_remove(void)
+{
+	ArrayList *arraylist;
+
+	arraylist = generate_arraylist();
+
+	assert(arraylist->length == 16);
+	assert(arraylist->data[3] == &variable4);
+	assert(arraylist->data[4] == &variable1);
+	assert(arraylist->data[5] == &variable2);
+	assert(arraylist->data[6] == &variable3);
+
+	arraylist_remove(arraylist, 4);
+
+	assert(arraylist->length == 15);
+	assert(arraylist->data[3] == &variable4);
+	assert(arraylist->data[4] == &variable2);
+	assert(arraylist->data[5] == &variable3);
+	assert(arraylist->data[6] == &variable4);
+
+	/* Try some invalid removes */
+
+	arraylist_remove(arraylist, 15);
+
+	assert(arraylist->length == 15);
+
+	arraylist_free(arraylist);
+}
+
+void test_arraylist_index_of(void)
+{
+	int entries[] = { 89, 4, 23, 42, 16, 15, 8, 99, 50, 30 };
+	int num_entries;
+	ArrayList *arraylist;
+	int i;
+	int index;
+	int val;
+
+	/* Generate an arraylist containing the entries in the array */
+
+	num_entries = sizeof(entries) / sizeof(int);
+	arraylist = arraylist_new(0);
+
+	for (i=0; i<num_entries; ++i) {
+		arraylist_append(arraylist, &entries[i]);
+	}
+
+	/* Check all values get found correctly */
+
+	for (i=0; i<num_entries; ++i) {
+
+		val = entries[i];
+
+		index = arraylist_index_of(arraylist, int_equal, &val);
+
+		assert(index == i);
+	}
+
+	/* Check invalid values */
+
+	val = 0;
+	assert(arraylist_index_of(arraylist, int_equal, &val) < 0);
+	val = 57;
+	assert(arraylist_index_of(arraylist, int_equal, &val) < 0);
+
+	arraylist_free(arraylist);
+}
+
+void test_arraylist_clear(void)
+{
+	ArrayList *arraylist;
+
+	arraylist = arraylist_new(0);
+
+	/* Emptying an already-empty arraylist */
+
+	arraylist_clear(arraylist);
+	assert(arraylist->length == 0);
+
+	/* Add some items and then empty it */
+
+	arraylist_append(arraylist, &variable1);
+	arraylist_append(arraylist, &variable2);
+	arraylist_append(arraylist, &variable3);
+	arraylist_append(arraylist, &variable4);
+
+	arraylist_clear(arraylist);
+
+	assert(arraylist->length == 0);
+
+	arraylist_free(arraylist);
+}
+
+void test_arraylist_sort(void)
+{
+	ArrayList *arraylist;
+	int entries[] = { 89, 4, 23, 42, 4, 16, 15, 4, 8, 99, 50, 30, 4 };
+	int sorted[]  = { 4, 4, 4, 4, 8, 15, 16, 23, 30, 42, 50, 89, 99 };
+	unsigned int num_entries = sizeof(entries) / sizeof(int);
+	unsigned int i;
+
+	arraylist = arraylist_new(10);
+
+	for (i=0; i<num_entries; ++i) {
+		arraylist_prepend(arraylist, &entries[i]);
+	}
+
+	arraylist_sort(arraylist, int_compare);
+
+	/* List length is unchanged */
+
+	assert(arraylist->length == num_entries);
+
+	/* Check the list is sorted */
+
+	for (i=0; i<num_entries; ++i) {
+		int *value;
+
+		value = (int *) arraylist->data[i];
+		assert(*value == sorted[i]);
+	}
+
+	arraylist_free(arraylist);
+
+	/* Check sorting an empty list */
+
+	arraylist = arraylist_new(5);
+
+	arraylist_sort(arraylist, int_compare);
+
+	assert(arraylist->length == 0);
+
+	arraylist_free(arraylist);
+
+	/* Check sorting a list with 1 entry */
+
+	arraylist = arraylist_new(5);
+
+	arraylist_prepend(arraylist, &entries[0]);
+	arraylist_sort(arraylist, int_compare);
+
+	assert(arraylist->length == 1);
+	assert(arraylist->data[0] == &entries[0]);
+
+	arraylist_free(arraylist);
+}
+
+static UnitTestFunction tests[] = {
+	test_arraylist_new_free,
+	test_arraylist_append,
+	test_arraylist_prepend,
+	test_arraylist_insert,
+	test_arraylist_remove,
+	test_arraylist_remove_range,
+	test_arraylist_index_of,
+	test_arraylist_clear,
+	test_arraylist_sort,
+	NULL
+};
+
+int main(int argc, char *argv[])
+{
+	run_tests(tests);
+
+	return 0;
+}
+
+
+  comment: /*
+
+Copyright (c) 2005-2008, Simon Howard
+
+Permission to use, copy, modify, and/or distribute this software
+for any purpose with or without fee is hereby granted, provided
+that the above copyright notice and this permission notice appear
+in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+ */
+  comment: /* ArrayList test cases */
+  preproc_include: #include <stdio.h>
+
+    #include: #include
+    system_lib_string: <stdio.h>
+  preproc_include: #include <stdlib.h>
+
+    #include: #include
+    system_lib_string: <stdlib.h>
+  preproc_include: #include <assert.h>
+
+    #include: #include
+    system_lib_string: <assert.h>
+  preproc_include: #include "alloc-testing.h"
+
+    #include: #include
+    string_literal: "alloc-testing.h"
+      ": "
+      string_content: alloc-testing.h
+      ": "
+  preproc_include: #include "framework.h"
+
+    #include: #include
+    string_literal: "framework.h"
+      ": "
+      string_content: framework.h
+      ": "
+  preproc_include: #include "arraylist.h"
+
+    #include: #include
+    string_literal: "arraylist.h"
+      ": "
+      string_content: arraylist.h
+      ": "
+  preproc_include: #include "compare-int.h"
+
+    #include: #include
+    string_literal: "compare-int.h"
+      ": "
+      string_content: compare-int.h
+      ": "
+  declaration: int variable1, variable2, variable3, variable4;
+    primitive_type: int
+    identifier: variable1
+    ,: ,
+    identifier: variable2
+    ,: ,
+    identifier: variable3
+    ,: ,
+    identifier: variable4
+    ;: ;
+  function_definition: ArrayList *generate_arraylist(void)
+{
+	ArrayList *arraylist;
+	int i;
+
+	arraylist = arraylist_new(0);
+
+	for (i=0; i<4; ++i) {
+		arraylist_append(arraylist, &variable1);
+		arraylist_append(arraylist, &variable2);
+		arraylist_append(arraylist, &variable3);
+		arraylist_append(arraylist, &variable4);
+	}
+
+	return arraylist;
+}
+    type_identifier: ArrayList
+    pointer_declarator: *generate_arraylist(void)
+      *: *
+      function_declarator: generate_arraylist(void)
+        identifier: generate_arraylist
+        parameter_list: (void)
+          (: (
+          parameter_declaration: void
+            primitive_type: void
+          ): )
+    compound_statement: {
+	ArrayList *arraylist;
+	int i;
+
+	arraylist = arraylist_new(0);
+
+	for (i=0; i<4; ++i) {
+		arraylist_append(arraylist, &variable1);
+		arraylist_append(arraylist, &variable2);
+		arraylist_append(arraylist, &variable3);
+		arraylist_append(arraylist, &variable4);
+	}
+
+	return arraylist;
+}
+      {: {
+      declaration: ArrayList *arraylist;
+        type_identifier: ArrayList
+        pointer_declarator: *arraylist
+          *: *
+          identifier: arraylist
+        ;: ;
+      declaration: int i;
+        primitive_type: int
+        identifier: i
+        ;: ;
+      expression_statement: arraylist = arraylist_new(0);
+        assignment_expression: arraylist = arraylist_new(0)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(0)
+            identifier: arraylist_new
+            argument_list: (0)
+              (: (
+              number_literal: 0
+              ): )
+        ;: ;
+      for_statement: for (i=0; i<4; ++i) {
+		arraylist_append(arraylist, &variable1);
+		arraylist_append(arraylist, &variable2);
+		arraylist_append(arraylist, &variable3);
+		arraylist_append(arraylist, &variable4);
+	}
+        for: for
+        (: (
+        assignment_expression: i=0
+          identifier: i
+          =: =
+          number_literal: 0
+        ;: ;
+        binary_expression: i<4
+          identifier: i
+          <: <
+          number_literal: 4
+        ;: ;
+        update_expression: ++i
+          ++: ++
+          identifier: i
+        ): )
+        compound_statement: {
+		arraylist_append(arraylist, &variable1);
+		arraylist_append(arraylist, &variable2);
+		arraylist_append(arraylist, &variable3);
+		arraylist_append(arraylist, &variable4);
+	}
+          {: {
+          expression_statement: arraylist_append(arraylist, &variable1);
+            call_expression: arraylist_append(arraylist, &variable1)
+              identifier: arraylist_append
+              argument_list: (arraylist, &variable1)
+                (: (
+                identifier: arraylist
+                ,: ,
+                pointer_expression: &variable1
+                  &: &
+                  identifier: variable1
+                ): )
+            ;: ;
+          expression_statement: arraylist_append(arraylist, &variable2);
+            call_expression: arraylist_append(arraylist, &variable2)
+              identifier: arraylist_append
+              argument_list: (arraylist, &variable2)
+                (: (
+                identifier: arraylist
+                ,: ,
+                pointer_expression: &variable2
+                  &: &
+                  identifier: variable2
+                ): )
+            ;: ;
+          expression_statement: arraylist_append(arraylist, &variable3);
+            call_expression: arraylist_append(arraylist, &variable3)
+              identifier: arraylist_append
+              argument_list: (arraylist, &variable3)
+                (: (
+                identifier: arraylist
+                ,: ,
+                pointer_expression: &variable3
+                  &: &
+                  identifier: variable3
+                ): )
+            ;: ;
+          expression_statement: arraylist_append(arraylist, &variable4);
+            call_expression: arraylist_append(arraylist, &variable4)
+              identifier: arraylist_append
+              argument_list: (arraylist, &variable4)
+                (: (
+                identifier: arraylist
+                ,: ,
+                pointer_expression: &variable4
+                  &: &
+                  identifier: variable4
+                ): )
+            ;: ;
+          }: }
+      return_statement: return arraylist;
+        return: return
+        identifier: arraylist
+        ;: ;
+      }: }
+  function_definition: void test_arraylist_new_free(void)
+{
+	ArrayList *arraylist;
+
+	/* Use a default size when given zero */
+
+	arraylist = arraylist_new(0);
+	assert(arraylist != NULL);
+	arraylist_free(arraylist);
+
+	/* Normal allocated */
+
+	arraylist = arraylist_new(10);
+	assert(arraylist != NULL);
+	arraylist_free(arraylist);
+
+	/* Freeing a null arraylist works */
+
+	arraylist_free(NULL);
+
+	/* Test low memory scenarios (failed malloc) */
+
+	alloc_test_set_limit(0);
+	arraylist = arraylist_new(0);
+	assert(arraylist == NULL);
+
+	alloc_test_set_limit(1);
+	arraylist = arraylist_new(100);
+	assert(arraylist == NULL);
+}
+    primitive_type: void
+    function_declarator: test_arraylist_new_free(void)
+      identifier: test_arraylist_new_free
+      parameter_list: (void)
+        (: (
+        parameter_declaration: void
+          primitive_type: void
+        ): )
+    compound_statement: {
+	ArrayList *arraylist;
+
+	/* Use a default size when given zero */
+
+	arraylist = arraylist_new(0);
+	assert(arraylist != NULL);
+	arraylist_free(arraylist);
+
+	/* Normal allocated */
+
+	arraylist = arraylist_new(10);
+	assert(arraylist != NULL);
+	arraylist_free(arraylist);
+
+	/* Freeing a null arraylist works */
+
+	arraylist_free(NULL);
+
+	/* Test low memory scenarios (failed malloc) */
+
+	alloc_test_set_limit(0);
+	arraylist = arraylist_new(0);
+	assert(arraylist == NULL);
+
+	alloc_test_set_limit(1);
+	arraylist = arraylist_new(100);
+	assert(arraylist == NULL);
+}
+      {: {
+      declaration: ArrayList *arraylist;
+        type_identifier: ArrayList
+        pointer_declarator: *arraylist
+          *: *
+          identifier: arraylist
+        ;: ;
+      comment: /* Use a default size when given zero */
+      expression_statement: arraylist = arraylist_new(0);
+        assignment_expression: arraylist = arraylist_new(0)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(0)
+            identifier: arraylist_new
+            argument_list: (0)
+              (: (
+              number_literal: 0
+              ): )
+        ;: ;
+      expression_statement: assert(arraylist != NULL);
+        call_expression: assert(arraylist != NULL)
+          identifier: assert
+          argument_list: (arraylist != NULL)
+            (: (
+            binary_expression: arraylist != NULL
+              identifier: arraylist
+              !=: !=
+              null: NULL
+                NULL: NULL
+            ): )
+        ;: ;
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      comment: /* Normal allocated */
+      expression_statement: arraylist = arraylist_new(10);
+        assignment_expression: arraylist = arraylist_new(10)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(10)
+            identifier: arraylist_new
+            argument_list: (10)
+              (: (
+              number_literal: 10
+              ): )
+        ;: ;
+      expression_statement: assert(arraylist != NULL);
+        call_expression: assert(arraylist != NULL)
+          identifier: assert
+          argument_list: (arraylist != NULL)
+            (: (
+            binary_expression: arraylist != NULL
+              identifier: arraylist
+              !=: !=
+              null: NULL
+                NULL: NULL
+            ): )
+        ;: ;
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      comment: /* Freeing a null arraylist works */
+      expression_statement: arraylist_free(NULL);
+        call_expression: arraylist_free(NULL)
+          identifier: arraylist_free
+          argument_list: (NULL)
+            (: (
+            null: NULL
+              NULL: NULL
+            ): )
+        ;: ;
+      comment: /* Test low memory scenarios (failed malloc) */
+      expression_statement: alloc_test_set_limit(0);
+        call_expression: alloc_test_set_limit(0)
+          identifier: alloc_test_set_limit
+          argument_list: (0)
+            (: (
+            number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: arraylist = arraylist_new(0);
+        assignment_expression: arraylist = arraylist_new(0)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(0)
+            identifier: arraylist_new
+            argument_list: (0)
+              (: (
+              number_literal: 0
+              ): )
+        ;: ;
+      expression_statement: assert(arraylist == NULL);
+        call_expression: assert(arraylist == NULL)
+          identifier: assert
+          argument_list: (arraylist == NULL)
+            (: (
+            binary_expression: arraylist == NULL
+              identifier: arraylist
+              ==: ==
+              null: NULL
+                NULL: NULL
+            ): )
+        ;: ;
+      expression_statement: alloc_test_set_limit(1);
+        call_expression: alloc_test_set_limit(1)
+          identifier: alloc_test_set_limit
+          argument_list: (1)
+            (: (
+            number_literal: 1
+            ): )
+        ;: ;
+      expression_statement: arraylist = arraylist_new(100);
+        assignment_expression: arraylist = arraylist_new(100)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(100)
+            identifier: arraylist_new
+            argument_list: (100)
+              (: (
+              number_literal: 100
+              ): )
+        ;: ;
+      expression_statement: assert(arraylist == NULL);
+        call_expression: assert(arraylist == NULL)
+          identifier: assert
+          argument_list: (arraylist == NULL)
+            (: (
+            binary_expression: arraylist == NULL
+              identifier: arraylist
+              ==: ==
+              null: NULL
+                NULL: NULL
+            ): )
+        ;: ;
+      }: }
+  function_definition: void test_arraylist_append(void)
+{
+	ArrayList *arraylist;
+	int i;
+
+	arraylist = arraylist_new(0);
+
+	assert(arraylist->length == 0);
+
+	/* Append some entries */
+
+	assert(arraylist_append(arraylist, &variable1) != 0);
+	assert(arraylist->length == 1);
+
+	assert(arraylist_append(arraylist, &variable2) != 0);
+	assert(arraylist->length == 2);
+
+	assert(arraylist_append(arraylist, &variable3) != 0);
+	assert(arraylist->length == 3);
+
+	assert(arraylist_append(arraylist, &variable4) != 0);
+	assert(arraylist->length == 4);
+
+	assert(arraylist->data[0] == &variable1);
+	assert(arraylist->data[1] == &variable2);
+	assert(arraylist->data[2] == &variable3);
+	assert(arraylist->data[3] == &variable4);
+
+	/* Test appending many entries */
+
+	for (i=0; i<10000; ++i) {
+		assert(arraylist_append(arraylist, NULL) != 0);
+	}
+
+	arraylist_free(arraylist);
+
+	/* Test low memory scenario */
+
+	arraylist = arraylist_new(100);
+
+	alloc_test_set_limit(0);
+
+	for (i=0; i<100; ++i) {
+		assert(arraylist_append(arraylist, NULL) != 0);
+	}
+
+	assert(arraylist->length == 100);
+	assert(arraylist_append(arraylist, NULL) == 0);
+	assert(arraylist->length == 100);
+
+	arraylist_free(arraylist);
+}
+    primitive_type: void
+    function_declarator: test_arraylist_append(void)
+      identifier: test_arraylist_append
+      parameter_list: (void)
+        (: (
+        parameter_declaration: void
+          primitive_type: void
+        ): )
+    compound_statement: {
+	ArrayList *arraylist;
+	int i;
+
+	arraylist = arraylist_new(0);
+
+	assert(arraylist->length == 0);
+
+	/* Append some entries */
+
+	assert(arraylist_append(arraylist, &variable1) != 0);
+	assert(arraylist->length == 1);
+
+	assert(arraylist_append(arraylist, &variable2) != 0);
+	assert(arraylist->length == 2);
+
+	assert(arraylist_append(arraylist, &variable3) != 0);
+	assert(arraylist->length == 3);
+
+	assert(arraylist_append(arraylist, &variable4) != 0);
+	assert(arraylist->length == 4);
+
+	assert(arraylist->data[0] == &variable1);
+	assert(arraylist->data[1] == &variable2);
+	assert(arraylist->data[2] == &variable3);
+	assert(arraylist->data[3] == &variable4);
+
+	/* Test appending many entries */
+
+	for (i=0; i<10000; ++i) {
+		assert(arraylist_append(arraylist, NULL) != 0);
+	}
+
+	arraylist_free(arraylist);
+
+	/* Test low memory scenario */
+
+	arraylist = arraylist_new(100);
+
+	alloc_test_set_limit(0);
+
+	for (i=0; i<100; ++i) {
+		assert(arraylist_append(arraylist, NULL) != 0);
+	}
+
+	assert(arraylist->length == 100);
+	assert(arraylist_append(arraylist, NULL) == 0);
+	assert(arraylist->length == 100);
+
+	arraylist_free(arraylist);
+}
+      {: {
+      declaration: ArrayList *arraylist;
+        type_identifier: ArrayList
+        pointer_declarator: *arraylist
+          *: *
+          identifier: arraylist
+        ;: ;
+      declaration: int i;
+        primitive_type: int
+        identifier: i
+        ;: ;
+      expression_statement: arraylist = arraylist_new(0);
+        assignment_expression: arraylist = arraylist_new(0)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(0)
+            identifier: arraylist_new
+            argument_list: (0)
+              (: (
+              number_literal: 0
+              ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 0);
+        call_expression: assert(arraylist->length == 0)
+          identifier: assert
+          argument_list: (arraylist->length == 0)
+            (: (
+            binary_expression: arraylist->length == 0
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 0
+            ): )
+        ;: ;
+      comment: /* Append some entries */
+      expression_statement: assert(arraylist_append(arraylist, &variable1) != 0);
+        call_expression: assert(arraylist_append(arraylist, &variable1) != 0)
+          identifier: assert
+          argument_list: (arraylist_append(arraylist, &variable1) != 0)
+            (: (
+            binary_expression: arraylist_append(arraylist, &variable1) != 0
+              call_expression: arraylist_append(arraylist, &variable1)
+                identifier: arraylist_append
+                argument_list: (arraylist, &variable1)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  pointer_expression: &variable1
+                    &: &
+                    identifier: variable1
+                  ): )
+              !=: !=
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 1);
+        call_expression: assert(arraylist->length == 1)
+          identifier: assert
+          argument_list: (arraylist->length == 1)
+            (: (
+            binary_expression: arraylist->length == 1
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 1
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist_append(arraylist, &variable2) != 0);
+        call_expression: assert(arraylist_append(arraylist, &variable2) != 0)
+          identifier: assert
+          argument_list: (arraylist_append(arraylist, &variable2) != 0)
+            (: (
+            binary_expression: arraylist_append(arraylist, &variable2) != 0
+              call_expression: arraylist_append(arraylist, &variable2)
+                identifier: arraylist_append
+                argument_list: (arraylist, &variable2)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  pointer_expression: &variable2
+                    &: &
+                    identifier: variable2
+                  ): )
+              !=: !=
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 2);
+        call_expression: assert(arraylist->length == 2)
+          identifier: assert
+          argument_list: (arraylist->length == 2)
+            (: (
+            binary_expression: arraylist->length == 2
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist_append(arraylist, &variable3) != 0);
+        call_expression: assert(arraylist_append(arraylist, &variable3) != 0)
+          identifier: assert
+          argument_list: (arraylist_append(arraylist, &variable3) != 0)
+            (: (
+            binary_expression: arraylist_append(arraylist, &variable3) != 0
+              call_expression: arraylist_append(arraylist, &variable3)
+                identifier: arraylist_append
+                argument_list: (arraylist, &variable3)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  pointer_expression: &variable3
+                    &: &
+                    identifier: variable3
+                  ): )
+              !=: !=
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 3);
+        call_expression: assert(arraylist->length == 3)
+          identifier: assert
+          argument_list: (arraylist->length == 3)
+            (: (
+            binary_expression: arraylist->length == 3
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 3
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist_append(arraylist, &variable4) != 0);
+        call_expression: assert(arraylist_append(arraylist, &variable4) != 0)
+          identifier: assert
+          argument_list: (arraylist_append(arraylist, &variable4) != 0)
+            (: (
+            binary_expression: arraylist_append(arraylist, &variable4) != 0
+              call_expression: arraylist_append(arraylist, &variable4)
+                identifier: arraylist_append
+                argument_list: (arraylist, &variable4)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  pointer_expression: &variable4
+                    &: &
+                    identifier: variable4
+                  ): )
+              !=: !=
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 4);
+        call_expression: assert(arraylist->length == 4)
+          identifier: assert
+          argument_list: (arraylist->length == 4)
+            (: (
+            binary_expression: arraylist->length == 4
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[0] == &variable1);
+        call_expression: assert(arraylist->data[0] == &variable1)
+          identifier: assert
+          argument_list: (arraylist->data[0] == &variable1)
+            (: (
+            binary_expression: arraylist->data[0] == &variable1
+              subscript_expression: arraylist->data[0]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 0
+                ]: ]
+              ==: ==
+              pointer_expression: &variable1
+                &: &
+                identifier: variable1
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[1] == &variable2);
+        call_expression: assert(arraylist->data[1] == &variable2)
+          identifier: assert
+          argument_list: (arraylist->data[1] == &variable2)
+            (: (
+            binary_expression: arraylist->data[1] == &variable2
+              subscript_expression: arraylist->data[1]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 1
+                ]: ]
+              ==: ==
+              pointer_expression: &variable2
+                &: &
+                identifier: variable2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[2] == &variable3);
+        call_expression: assert(arraylist->data[2] == &variable3)
+          identifier: assert
+          argument_list: (arraylist->data[2] == &variable3)
+            (: (
+            binary_expression: arraylist->data[2] == &variable3
+              subscript_expression: arraylist->data[2]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 2
+                ]: ]
+              ==: ==
+              pointer_expression: &variable3
+                &: &
+                identifier: variable3
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[3] == &variable4);
+        call_expression: assert(arraylist->data[3] == &variable4)
+          identifier: assert
+          argument_list: (arraylist->data[3] == &variable4)
+            (: (
+            binary_expression: arraylist->data[3] == &variable4
+              subscript_expression: arraylist->data[3]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 3
+                ]: ]
+              ==: ==
+              pointer_expression: &variable4
+                &: &
+                identifier: variable4
+            ): )
+        ;: ;
+      comment: /* Test appending many entries */
+      for_statement: for (i=0; i<10000; ++i) {
+		assert(arraylist_append(arraylist, NULL) != 0);
+	}
+        for: for
+        (: (
+        assignment_expression: i=0
+          identifier: i
+          =: =
+          number_literal: 0
+        ;: ;
+        binary_expression: i<10000
+          identifier: i
+          <: <
+          number_literal: 10000
+        ;: ;
+        update_expression: ++i
+          ++: ++
+          identifier: i
+        ): )
+        compound_statement: {
+		assert(arraylist_append(arraylist, NULL) != 0);
+	}
+          {: {
+          expression_statement: assert(arraylist_append(arraylist, NULL) != 0);
+            call_expression: assert(arraylist_append(arraylist, NULL) != 0)
+              identifier: assert
+              argument_list: (arraylist_append(arraylist, NULL) != 0)
+                (: (
+                binary_expression: arraylist_append(arraylist, NULL) != 0
+                  call_expression: arraylist_append(arraylist, NULL)
+                    identifier: arraylist_append
+                    argument_list: (arraylist, NULL)
+                      (: (
+                      identifier: arraylist
+                      ,: ,
+                      null: NULL
+                        NULL: NULL
+                      ): )
+                  !=: !=
+                  number_literal: 0
+                ): )
+            ;: ;
+          }: }
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      comment: /* Test low memory scenario */
+      expression_statement: arraylist = arraylist_new(100);
+        assignment_expression: arraylist = arraylist_new(100)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(100)
+            identifier: arraylist_new
+            argument_list: (100)
+              (: (
+              number_literal: 100
+              ): )
+        ;: ;
+      expression_statement: alloc_test_set_limit(0);
+        call_expression: alloc_test_set_limit(0)
+          identifier: alloc_test_set_limit
+          argument_list: (0)
+            (: (
+            number_literal: 0
+            ): )
+        ;: ;
+      for_statement: for (i=0; i<100; ++i) {
+		assert(arraylist_append(arraylist, NULL) != 0);
+	}
+        for: for
+        (: (
+        assignment_expression: i=0
+          identifier: i
+          =: =
+          number_literal: 0
+        ;: ;
+        binary_expression: i<100
+          identifier: i
+          <: <
+          number_literal: 100
+        ;: ;
+        update_expression: ++i
+          ++: ++
+          identifier: i
+        ): )
+        compound_statement: {
+		assert(arraylist_append(arraylist, NULL) != 0);
+	}
+          {: {
+          expression_statement: assert(arraylist_append(arraylist, NULL) != 0);
+            call_expression: assert(arraylist_append(arraylist, NULL) != 0)
+              identifier: assert
+              argument_list: (arraylist_append(arraylist, NULL) != 0)
+                (: (
+                binary_expression: arraylist_append(arraylist, NULL) != 0
+                  call_expression: arraylist_append(arraylist, NULL)
+                    identifier: arraylist_append
+                    argument_list: (arraylist, NULL)
+                      (: (
+                      identifier: arraylist
+                      ,: ,
+                      null: NULL
+                        NULL: NULL
+                      ): )
+                  !=: !=
+                  number_literal: 0
+                ): )
+            ;: ;
+          }: }
+      expression_statement: assert(arraylist->length == 100);
+        call_expression: assert(arraylist->length == 100)
+          identifier: assert
+          argument_list: (arraylist->length == 100)
+            (: (
+            binary_expression: arraylist->length == 100
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 100
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist_append(arraylist, NULL) == 0);
+        call_expression: assert(arraylist_append(arraylist, NULL) == 0)
+          identifier: assert
+          argument_list: (arraylist_append(arraylist, NULL) == 0)
+            (: (
+            binary_expression: arraylist_append(arraylist, NULL) == 0
+              call_expression: arraylist_append(arraylist, NULL)
+                identifier: arraylist_append
+                argument_list: (arraylist, NULL)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  null: NULL
+                    NULL: NULL
+                  ): )
+              ==: ==
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 100);
+        call_expression: assert(arraylist->length == 100)
+          identifier: assert
+          argument_list: (arraylist->length == 100)
+            (: (
+            binary_expression: arraylist->length == 100
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 100
+            ): )
+        ;: ;
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      }: }
+  function_definition: void test_arraylist_prepend(void)
+{
+	ArrayList *arraylist;
+	int i;
+
+	arraylist = arraylist_new(0);
+
+	assert(arraylist->length == 0);
+
+	/* Append some entries */
+
+	assert(arraylist_prepend(arraylist, &variable1) != 0);
+	assert(arraylist->length == 1);
+
+	assert(arraylist_prepend(arraylist, &variable2) != 0);
+	assert(arraylist->length == 2);
+
+	assert(arraylist_prepend(arraylist, &variable3) != 0);
+	assert(arraylist->length == 3);
+
+	assert(arraylist_prepend(arraylist, &variable4) != 0);
+	assert(arraylist->length == 4);
+
+	assert(arraylist->data[0] == &variable4);
+	assert(arraylist->data[1] == &variable3);
+	assert(arraylist->data[2] == &variable2);
+	assert(arraylist->data[3] == &variable1);
+
+	/* Test prepending many entries */
+
+	for (i=0; i<10000; ++i) {
+		assert(arraylist_prepend(arraylist, NULL) != 0);
+	}
+
+	arraylist_free(arraylist);
+
+	/* Test low memory scenario */
+
+	arraylist = arraylist_new(100);
+
+	alloc_test_set_limit(0);
+
+	for (i=0; i<100; ++i) {
+		assert(arraylist_prepend(arraylist, NULL) != 0);
+	}
+
+	assert(arraylist->length == 100);
+	assert(arraylist_prepend(arraylist, NULL) == 0);
+	assert(arraylist->length == 100);
+
+	arraylist_free(arraylist);
+}
+    primitive_type: void
+    function_declarator: test_arraylist_prepend(void)
+      identifier: test_arraylist_prepend
+      parameter_list: (void)
+        (: (
+        parameter_declaration: void
+          primitive_type: void
+        ): )
+    compound_statement: {
+	ArrayList *arraylist;
+	int i;
+
+	arraylist = arraylist_new(0);
+
+	assert(arraylist->length == 0);
+
+	/* Append some entries */
+
+	assert(arraylist_prepend(arraylist, &variable1) != 0);
+	assert(arraylist->length == 1);
+
+	assert(arraylist_prepend(arraylist, &variable2) != 0);
+	assert(arraylist->length == 2);
+
+	assert(arraylist_prepend(arraylist, &variable3) != 0);
+	assert(arraylist->length == 3);
+
+	assert(arraylist_prepend(arraylist, &variable4) != 0);
+	assert(arraylist->length == 4);
+
+	assert(arraylist->data[0] == &variable4);
+	assert(arraylist->data[1] == &variable3);
+	assert(arraylist->data[2] == &variable2);
+	assert(arraylist->data[3] == &variable1);
+
+	/* Test prepending many entries */
+
+	for (i=0; i<10000; ++i) {
+		assert(arraylist_prepend(arraylist, NULL) != 0);
+	}
+
+	arraylist_free(arraylist);
+
+	/* Test low memory scenario */
+
+	arraylist = arraylist_new(100);
+
+	alloc_test_set_limit(0);
+
+	for (i=0; i<100; ++i) {
+		assert(arraylist_prepend(arraylist, NULL) != 0);
+	}
+
+	assert(arraylist->length == 100);
+	assert(arraylist_prepend(arraylist, NULL) == 0);
+	assert(arraylist->length == 100);
+
+	arraylist_free(arraylist);
+}
+      {: {
+      declaration: ArrayList *arraylist;
+        type_identifier: ArrayList
+        pointer_declarator: *arraylist
+          *: *
+          identifier: arraylist
+        ;: ;
+      declaration: int i;
+        primitive_type: int
+        identifier: i
+        ;: ;
+      expression_statement: arraylist = arraylist_new(0);
+        assignment_expression: arraylist = arraylist_new(0)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(0)
+            identifier: arraylist_new
+            argument_list: (0)
+              (: (
+              number_literal: 0
+              ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 0);
+        call_expression: assert(arraylist->length == 0)
+          identifier: assert
+          argument_list: (arraylist->length == 0)
+            (: (
+            binary_expression: arraylist->length == 0
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 0
+            ): )
+        ;: ;
+      comment: /* Append some entries */
+      expression_statement: assert(arraylist_prepend(arraylist, &variable1) != 0);
+        call_expression: assert(arraylist_prepend(arraylist, &variable1) != 0)
+          identifier: assert
+          argument_list: (arraylist_prepend(arraylist, &variable1) != 0)
+            (: (
+            binary_expression: arraylist_prepend(arraylist, &variable1) != 0
+              call_expression: arraylist_prepend(arraylist, &variable1)
+                identifier: arraylist_prepend
+                argument_list: (arraylist, &variable1)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  pointer_expression: &variable1
+                    &: &
+                    identifier: variable1
+                  ): )
+              !=: !=
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 1);
+        call_expression: assert(arraylist->length == 1)
+          identifier: assert
+          argument_list: (arraylist->length == 1)
+            (: (
+            binary_expression: arraylist->length == 1
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 1
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist_prepend(arraylist, &variable2) != 0);
+        call_expression: assert(arraylist_prepend(arraylist, &variable2) != 0)
+          identifier: assert
+          argument_list: (arraylist_prepend(arraylist, &variable2) != 0)
+            (: (
+            binary_expression: arraylist_prepend(arraylist, &variable2) != 0
+              call_expression: arraylist_prepend(arraylist, &variable2)
+                identifier: arraylist_prepend
+                argument_list: (arraylist, &variable2)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  pointer_expression: &variable2
+                    &: &
+                    identifier: variable2
+                  ): )
+              !=: !=
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 2);
+        call_expression: assert(arraylist->length == 2)
+          identifier: assert
+          argument_list: (arraylist->length == 2)
+            (: (
+            binary_expression: arraylist->length == 2
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist_prepend(arraylist, &variable3) != 0);
+        call_expression: assert(arraylist_prepend(arraylist, &variable3) != 0)
+          identifier: assert
+          argument_list: (arraylist_prepend(arraylist, &variable3) != 0)
+            (: (
+            binary_expression: arraylist_prepend(arraylist, &variable3) != 0
+              call_expression: arraylist_prepend(arraylist, &variable3)
+                identifier: arraylist_prepend
+                argument_list: (arraylist, &variable3)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  pointer_expression: &variable3
+                    &: &
+                    identifier: variable3
+                  ): )
+              !=: !=
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 3);
+        call_expression: assert(arraylist->length == 3)
+          identifier: assert
+          argument_list: (arraylist->length == 3)
+            (: (
+            binary_expression: arraylist->length == 3
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 3
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist_prepend(arraylist, &variable4) != 0);
+        call_expression: assert(arraylist_prepend(arraylist, &variable4) != 0)
+          identifier: assert
+          argument_list: (arraylist_prepend(arraylist, &variable4) != 0)
+            (: (
+            binary_expression: arraylist_prepend(arraylist, &variable4) != 0
+              call_expression: arraylist_prepend(arraylist, &variable4)
+                identifier: arraylist_prepend
+                argument_list: (arraylist, &variable4)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  pointer_expression: &variable4
+                    &: &
+                    identifier: variable4
+                  ): )
+              !=: !=
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 4);
+        call_expression: assert(arraylist->length == 4)
+          identifier: assert
+          argument_list: (arraylist->length == 4)
+            (: (
+            binary_expression: arraylist->length == 4
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[0] == &variable4);
+        call_expression: assert(arraylist->data[0] == &variable4)
+          identifier: assert
+          argument_list: (arraylist->data[0] == &variable4)
+            (: (
+            binary_expression: arraylist->data[0] == &variable4
+              subscript_expression: arraylist->data[0]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 0
+                ]: ]
+              ==: ==
+              pointer_expression: &variable4
+                &: &
+                identifier: variable4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[1] == &variable3);
+        call_expression: assert(arraylist->data[1] == &variable3)
+          identifier: assert
+          argument_list: (arraylist->data[1] == &variable3)
+            (: (
+            binary_expression: arraylist->data[1] == &variable3
+              subscript_expression: arraylist->data[1]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 1
+                ]: ]
+              ==: ==
+              pointer_expression: &variable3
+                &: &
+                identifier: variable3
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[2] == &variable2);
+        call_expression: assert(arraylist->data[2] == &variable2)
+          identifier: assert
+          argument_list: (arraylist->data[2] == &variable2)
+            (: (
+            binary_expression: arraylist->data[2] == &variable2
+              subscript_expression: arraylist->data[2]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 2
+                ]: ]
+              ==: ==
+              pointer_expression: &variable2
+                &: &
+                identifier: variable2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[3] == &variable1);
+        call_expression: assert(arraylist->data[3] == &variable1)
+          identifier: assert
+          argument_list: (arraylist->data[3] == &variable1)
+            (: (
+            binary_expression: arraylist->data[3] == &variable1
+              subscript_expression: arraylist->data[3]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 3
+                ]: ]
+              ==: ==
+              pointer_expression: &variable1
+                &: &
+                identifier: variable1
+            ): )
+        ;: ;
+      comment: /* Test prepending many entries */
+      for_statement: for (i=0; i<10000; ++i) {
+		assert(arraylist_prepend(arraylist, NULL) != 0);
+	}
+        for: for
+        (: (
+        assignment_expression: i=0
+          identifier: i
+          =: =
+          number_literal: 0
+        ;: ;
+        binary_expression: i<10000
+          identifier: i
+          <: <
+          number_literal: 10000
+        ;: ;
+        update_expression: ++i
+          ++: ++
+          identifier: i
+        ): )
+        compound_statement: {
+		assert(arraylist_prepend(arraylist, NULL) != 0);
+	}
+          {: {
+          expression_statement: assert(arraylist_prepend(arraylist, NULL) != 0);
+            call_expression: assert(arraylist_prepend(arraylist, NULL) != 0)
+              identifier: assert
+              argument_list: (arraylist_prepend(arraylist, NULL) != 0)
+                (: (
+                binary_expression: arraylist_prepend(arraylist, NULL) != 0
+                  call_expression: arraylist_prepend(arraylist, NULL)
+                    identifier: arraylist_prepend
+                    argument_list: (arraylist, NULL)
+                      (: (
+                      identifier: arraylist
+                      ,: ,
+                      null: NULL
+                        NULL: NULL
+                      ): )
+                  !=: !=
+                  number_literal: 0
+                ): )
+            ;: ;
+          }: }
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      comment: /* Test low memory scenario */
+      expression_statement: arraylist = arraylist_new(100);
+        assignment_expression: arraylist = arraylist_new(100)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(100)
+            identifier: arraylist_new
+            argument_list: (100)
+              (: (
+              number_literal: 100
+              ): )
+        ;: ;
+      expression_statement: alloc_test_set_limit(0);
+        call_expression: alloc_test_set_limit(0)
+          identifier: alloc_test_set_limit
+          argument_list: (0)
+            (: (
+            number_literal: 0
+            ): )
+        ;: ;
+      for_statement: for (i=0; i<100; ++i) {
+		assert(arraylist_prepend(arraylist, NULL) != 0);
+	}
+        for: for
+        (: (
+        assignment_expression: i=0
+          identifier: i
+          =: =
+          number_literal: 0
+        ;: ;
+        binary_expression: i<100
+          identifier: i
+          <: <
+          number_literal: 100
+        ;: ;
+        update_expression: ++i
+          ++: ++
+          identifier: i
+        ): )
+        compound_statement: {
+		assert(arraylist_prepend(arraylist, NULL) != 0);
+	}
+          {: {
+          expression_statement: assert(arraylist_prepend(arraylist, NULL) != 0);
+            call_expression: assert(arraylist_prepend(arraylist, NULL) != 0)
+              identifier: assert
+              argument_list: (arraylist_prepend(arraylist, NULL) != 0)
+                (: (
+                binary_expression: arraylist_prepend(arraylist, NULL) != 0
+                  call_expression: arraylist_prepend(arraylist, NULL)
+                    identifier: arraylist_prepend
+                    argument_list: (arraylist, NULL)
+                      (: (
+                      identifier: arraylist
+                      ,: ,
+                      null: NULL
+                        NULL: NULL
+                      ): )
+                  !=: !=
+                  number_literal: 0
+                ): )
+            ;: ;
+          }: }
+      expression_statement: assert(arraylist->length == 100);
+        call_expression: assert(arraylist->length == 100)
+          identifier: assert
+          argument_list: (arraylist->length == 100)
+            (: (
+            binary_expression: arraylist->length == 100
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 100
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist_prepend(arraylist, NULL) == 0);
+        call_expression: assert(arraylist_prepend(arraylist, NULL) == 0)
+          identifier: assert
+          argument_list: (arraylist_prepend(arraylist, NULL) == 0)
+            (: (
+            binary_expression: arraylist_prepend(arraylist, NULL) == 0
+              call_expression: arraylist_prepend(arraylist, NULL)
+                identifier: arraylist_prepend
+                argument_list: (arraylist, NULL)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  null: NULL
+                    NULL: NULL
+                  ): )
+              ==: ==
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 100);
+        call_expression: assert(arraylist->length == 100)
+          identifier: assert
+          argument_list: (arraylist->length == 100)
+            (: (
+            binary_expression: arraylist->length == 100
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 100
+            ): )
+        ;: ;
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      }: }
+  function_definition: void test_arraylist_insert(void)
+{
+	ArrayList *arraylist;
+	int i;
+
+	arraylist = generate_arraylist();
+
+	/* Check for out of range insert */
+
+	assert(arraylist->length == 16);
+	assert(arraylist_insert(arraylist, 17, &variable1) == 0);
+	assert(arraylist->length == 16);
+
+	/* Insert a new entry at index 5 */
+
+	assert(arraylist->length == 16);
+	assert(arraylist->data[4] == &variable1);
+	assert(arraylist->data[5] == &variable2);
+	assert(arraylist->data[6] == &variable3);
+
+	assert(arraylist_insert(arraylist, 5, &variable4) != 0);
+
+	assert(arraylist->length == 17);
+	assert(arraylist->data[4] == &variable1);
+	assert(arraylist->data[5] == &variable4);
+	assert(arraylist->data[6] == &variable2);
+	assert(arraylist->data[7] == &variable3);
+
+	/* Inserting at the start */
+
+	assert(arraylist->data[0] == &variable1);
+	assert(arraylist->data[1] == &variable2);
+	assert(arraylist->data[2] == &variable3);
+
+	assert(arraylist_insert(arraylist, 0, &variable4) != 0);
+
+	assert(arraylist->length == 18);
+	assert(arraylist->data[0] == &variable4);
+	assert(arraylist->data[1] == &variable1);
+	assert(arraylist->data[2] == &variable2);
+	assert(arraylist->data[3] == &variable3);
+
+	/* Inserting at the end */
+
+	assert(arraylist->data[15] == &variable2);
+	assert(arraylist->data[16] == &variable3);
+	assert(arraylist->data[17] == &variable4);
+
+	assert(arraylist_insert(arraylist, 18, &variable1) != 0);
+
+	assert(arraylist->length == 19);
+	assert(arraylist->data[15] == &variable2);
+	assert(arraylist->data[16] == &variable3);
+	assert(arraylist->data[17] == &variable4);
+	assert(arraylist->data[18] == &variable1);
+
+	/* Test inserting many entries */
+
+	for (i=0; i<10000; ++i) {
+		arraylist_insert(arraylist, 10, &variable1);
+	}
+
+	arraylist_free(arraylist);
+}
+    primitive_type: void
+    function_declarator: test_arraylist_insert(void)
+      identifier: test_arraylist_insert
+      parameter_list: (void)
+        (: (
+        parameter_declaration: void
+          primitive_type: void
+        ): )
+    compound_statement: {
+	ArrayList *arraylist;
+	int i;
+
+	arraylist = generate_arraylist();
+
+	/* Check for out of range insert */
+
+	assert(arraylist->length == 16);
+	assert(arraylist_insert(arraylist, 17, &variable1) == 0);
+	assert(arraylist->length == 16);
+
+	/* Insert a new entry at index 5 */
+
+	assert(arraylist->length == 16);
+	assert(arraylist->data[4] == &variable1);
+	assert(arraylist->data[5] == &variable2);
+	assert(arraylist->data[6] == &variable3);
+
+	assert(arraylist_insert(arraylist, 5, &variable4) != 0);
+
+	assert(arraylist->length == 17);
+	assert(arraylist->data[4] == &variable1);
+	assert(arraylist->data[5] == &variable4);
+	assert(arraylist->data[6] == &variable2);
+	assert(arraylist->data[7] == &variable3);
+
+	/* Inserting at the start */
+
+	assert(arraylist->data[0] == &variable1);
+	assert(arraylist->data[1] == &variable2);
+	assert(arraylist->data[2] == &variable3);
+
+	assert(arraylist_insert(arraylist, 0, &variable4) != 0);
+
+	assert(arraylist->length == 18);
+	assert(arraylist->data[0] == &variable4);
+	assert(arraylist->data[1] == &variable1);
+	assert(arraylist->data[2] == &variable2);
+	assert(arraylist->data[3] == &variable3);
+
+	/* Inserting at the end */
+
+	assert(arraylist->data[15] == &variable2);
+	assert(arraylist->data[16] == &variable3);
+	assert(arraylist->data[17] == &variable4);
+
+	assert(arraylist_insert(arraylist, 18, &variable1) != 0);
+
+	assert(arraylist->length == 19);
+	assert(arraylist->data[15] == &variable2);
+	assert(arraylist->data[16] == &variable3);
+	assert(arraylist->data[17] == &variable4);
+	assert(arraylist->data[18] == &variable1);
+
+	/* Test inserting many entries */
+
+	for (i=0; i<10000; ++i) {
+		arraylist_insert(arraylist, 10, &variable1);
+	}
+
+	arraylist_free(arraylist);
+}
+      {: {
+      declaration: ArrayList *arraylist;
+        type_identifier: ArrayList
+        pointer_declarator: *arraylist
+          *: *
+          identifier: arraylist
+        ;: ;
+      declaration: int i;
+        primitive_type: int
+        identifier: i
+        ;: ;
+      expression_statement: arraylist = generate_arraylist();
+        assignment_expression: arraylist = generate_arraylist()
+          identifier: arraylist
+          =: =
+          call_expression: generate_arraylist()
+            identifier: generate_arraylist
+            argument_list: ()
+              (: (
+              ): )
+        ;: ;
+      comment: /* Check for out of range insert */
+      expression_statement: assert(arraylist->length == 16);
+        call_expression: assert(arraylist->length == 16)
+          identifier: assert
+          argument_list: (arraylist->length == 16)
+            (: (
+            binary_expression: arraylist->length == 16
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 16
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist_insert(arraylist, 17, &variable1) == 0);
+        call_expression: assert(arraylist_insert(arraylist, 17, &variable1) == 0)
+          identifier: assert
+          argument_list: (arraylist_insert(arraylist, 17, &variable1) == 0)
+            (: (
+            binary_expression: arraylist_insert(arraylist, 17, &variable1) == 0
+              call_expression: arraylist_insert(arraylist, 17, &variable1)
+                identifier: arraylist_insert
+                argument_list: (arraylist, 17, &variable1)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  number_literal: 17
+                  ,: ,
+                  pointer_expression: &variable1
+                    &: &
+                    identifier: variable1
+                  ): )
+              ==: ==
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 16);
+        call_expression: assert(arraylist->length == 16)
+          identifier: assert
+          argument_list: (arraylist->length == 16)
+            (: (
+            binary_expression: arraylist->length == 16
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 16
+            ): )
+        ;: ;
+      comment: /* Insert a new entry at index 5 */
+      expression_statement: assert(arraylist->length == 16);
+        call_expression: assert(arraylist->length == 16)
+          identifier: assert
+          argument_list: (arraylist->length == 16)
+            (: (
+            binary_expression: arraylist->length == 16
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 16
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[4] == &variable1);
+        call_expression: assert(arraylist->data[4] == &variable1)
+          identifier: assert
+          argument_list: (arraylist->data[4] == &variable1)
+            (: (
+            binary_expression: arraylist->data[4] == &variable1
+              subscript_expression: arraylist->data[4]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 4
+                ]: ]
+              ==: ==
+              pointer_expression: &variable1
+                &: &
+                identifier: variable1
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[5] == &variable2);
+        call_expression: assert(arraylist->data[5] == &variable2)
+          identifier: assert
+          argument_list: (arraylist->data[5] == &variable2)
+            (: (
+            binary_expression: arraylist->data[5] == &variable2
+              subscript_expression: arraylist->data[5]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 5
+                ]: ]
+              ==: ==
+              pointer_expression: &variable2
+                &: &
+                identifier: variable2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[6] == &variable3);
+        call_expression: assert(arraylist->data[6] == &variable3)
+          identifier: assert
+          argument_list: (arraylist->data[6] == &variable3)
+            (: (
+            binary_expression: arraylist->data[6] == &variable3
+              subscript_expression: arraylist->data[6]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 6
+                ]: ]
+              ==: ==
+              pointer_expression: &variable3
+                &: &
+                identifier: variable3
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist_insert(arraylist, 5, &variable4) != 0);
+        call_expression: assert(arraylist_insert(arraylist, 5, &variable4) != 0)
+          identifier: assert
+          argument_list: (arraylist_insert(arraylist, 5, &variable4) != 0)
+            (: (
+            binary_expression: arraylist_insert(arraylist, 5, &variable4) != 0
+              call_expression: arraylist_insert(arraylist, 5, &variable4)
+                identifier: arraylist_insert
+                argument_list: (arraylist, 5, &variable4)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  number_literal: 5
+                  ,: ,
+                  pointer_expression: &variable4
+                    &: &
+                    identifier: variable4
+                  ): )
+              !=: !=
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 17);
+        call_expression: assert(arraylist->length == 17)
+          identifier: assert
+          argument_list: (arraylist->length == 17)
+            (: (
+            binary_expression: arraylist->length == 17
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 17
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[4] == &variable1);
+        call_expression: assert(arraylist->data[4] == &variable1)
+          identifier: assert
+          argument_list: (arraylist->data[4] == &variable1)
+            (: (
+            binary_expression: arraylist->data[4] == &variable1
+              subscript_expression: arraylist->data[4]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 4
+                ]: ]
+              ==: ==
+              pointer_expression: &variable1
+                &: &
+                identifier: variable1
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[5] == &variable4);
+        call_expression: assert(arraylist->data[5] == &variable4)
+          identifier: assert
+          argument_list: (arraylist->data[5] == &variable4)
+            (: (
+            binary_expression: arraylist->data[5] == &variable4
+              subscript_expression: arraylist->data[5]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 5
+                ]: ]
+              ==: ==
+              pointer_expression: &variable4
+                &: &
+                identifier: variable4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[6] == &variable2);
+        call_expression: assert(arraylist->data[6] == &variable2)
+          identifier: assert
+          argument_list: (arraylist->data[6] == &variable2)
+            (: (
+            binary_expression: arraylist->data[6] == &variable2
+              subscript_expression: arraylist->data[6]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 6
+                ]: ]
+              ==: ==
+              pointer_expression: &variable2
+                &: &
+                identifier: variable2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[7] == &variable3);
+        call_expression: assert(arraylist->data[7] == &variable3)
+          identifier: assert
+          argument_list: (arraylist->data[7] == &variable3)
+            (: (
+            binary_expression: arraylist->data[7] == &variable3
+              subscript_expression: arraylist->data[7]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 7
+                ]: ]
+              ==: ==
+              pointer_expression: &variable3
+                &: &
+                identifier: variable3
+            ): )
+        ;: ;
+      comment: /* Inserting at the start */
+      expression_statement: assert(arraylist->data[0] == &variable1);
+        call_expression: assert(arraylist->data[0] == &variable1)
+          identifier: assert
+          argument_list: (arraylist->data[0] == &variable1)
+            (: (
+            binary_expression: arraylist->data[0] == &variable1
+              subscript_expression: arraylist->data[0]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 0
+                ]: ]
+              ==: ==
+              pointer_expression: &variable1
+                &: &
+                identifier: variable1
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[1] == &variable2);
+        call_expression: assert(arraylist->data[1] == &variable2)
+          identifier: assert
+          argument_list: (arraylist->data[1] == &variable2)
+            (: (
+            binary_expression: arraylist->data[1] == &variable2
+              subscript_expression: arraylist->data[1]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 1
+                ]: ]
+              ==: ==
+              pointer_expression: &variable2
+                &: &
+                identifier: variable2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[2] == &variable3);
+        call_expression: assert(arraylist->data[2] == &variable3)
+          identifier: assert
+          argument_list: (arraylist->data[2] == &variable3)
+            (: (
+            binary_expression: arraylist->data[2] == &variable3
+              subscript_expression: arraylist->data[2]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 2
+                ]: ]
+              ==: ==
+              pointer_expression: &variable3
+                &: &
+                identifier: variable3
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist_insert(arraylist, 0, &variable4) != 0);
+        call_expression: assert(arraylist_insert(arraylist, 0, &variable4) != 0)
+          identifier: assert
+          argument_list: (arraylist_insert(arraylist, 0, &variable4) != 0)
+            (: (
+            binary_expression: arraylist_insert(arraylist, 0, &variable4) != 0
+              call_expression: arraylist_insert(arraylist, 0, &variable4)
+                identifier: arraylist_insert
+                argument_list: (arraylist, 0, &variable4)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  number_literal: 0
+                  ,: ,
+                  pointer_expression: &variable4
+                    &: &
+                    identifier: variable4
+                  ): )
+              !=: !=
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 18);
+        call_expression: assert(arraylist->length == 18)
+          identifier: assert
+          argument_list: (arraylist->length == 18)
+            (: (
+            binary_expression: arraylist->length == 18
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 18
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[0] == &variable4);
+        call_expression: assert(arraylist->data[0] == &variable4)
+          identifier: assert
+          argument_list: (arraylist->data[0] == &variable4)
+            (: (
+            binary_expression: arraylist->data[0] == &variable4
+              subscript_expression: arraylist->data[0]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 0
+                ]: ]
+              ==: ==
+              pointer_expression: &variable4
+                &: &
+                identifier: variable4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[1] == &variable1);
+        call_expression: assert(arraylist->data[1] == &variable1)
+          identifier: assert
+          argument_list: (arraylist->data[1] == &variable1)
+            (: (
+            binary_expression: arraylist->data[1] == &variable1
+              subscript_expression: arraylist->data[1]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 1
+                ]: ]
+              ==: ==
+              pointer_expression: &variable1
+                &: &
+                identifier: variable1
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[2] == &variable2);
+        call_expression: assert(arraylist->data[2] == &variable2)
+          identifier: assert
+          argument_list: (arraylist->data[2] == &variable2)
+            (: (
+            binary_expression: arraylist->data[2] == &variable2
+              subscript_expression: arraylist->data[2]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 2
+                ]: ]
+              ==: ==
+              pointer_expression: &variable2
+                &: &
+                identifier: variable2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[3] == &variable3);
+        call_expression: assert(arraylist->data[3] == &variable3)
+          identifier: assert
+          argument_list: (arraylist->data[3] == &variable3)
+            (: (
+            binary_expression: arraylist->data[3] == &variable3
+              subscript_expression: arraylist->data[3]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 3
+                ]: ]
+              ==: ==
+              pointer_expression: &variable3
+                &: &
+                identifier: variable3
+            ): )
+        ;: ;
+      comment: /* Inserting at the end */
+      expression_statement: assert(arraylist->data[15] == &variable2);
+        call_expression: assert(arraylist->data[15] == &variable2)
+          identifier: assert
+          argument_list: (arraylist->data[15] == &variable2)
+            (: (
+            binary_expression: arraylist->data[15] == &variable2
+              subscript_expression: arraylist->data[15]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 15
+                ]: ]
+              ==: ==
+              pointer_expression: &variable2
+                &: &
+                identifier: variable2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[16] == &variable3);
+        call_expression: assert(arraylist->data[16] == &variable3)
+          identifier: assert
+          argument_list: (arraylist->data[16] == &variable3)
+            (: (
+            binary_expression: arraylist->data[16] == &variable3
+              subscript_expression: arraylist->data[16]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 16
+                ]: ]
+              ==: ==
+              pointer_expression: &variable3
+                &: &
+                identifier: variable3
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[17] == &variable4);
+        call_expression: assert(arraylist->data[17] == &variable4)
+          identifier: assert
+          argument_list: (arraylist->data[17] == &variable4)
+            (: (
+            binary_expression: arraylist->data[17] == &variable4
+              subscript_expression: arraylist->data[17]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 17
+                ]: ]
+              ==: ==
+              pointer_expression: &variable4
+                &: &
+                identifier: variable4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist_insert(arraylist, 18, &variable1) != 0);
+        call_expression: assert(arraylist_insert(arraylist, 18, &variable1) != 0)
+          identifier: assert
+          argument_list: (arraylist_insert(arraylist, 18, &variable1) != 0)
+            (: (
+            binary_expression: arraylist_insert(arraylist, 18, &variable1) != 0
+              call_expression: arraylist_insert(arraylist, 18, &variable1)
+                identifier: arraylist_insert
+                argument_list: (arraylist, 18, &variable1)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  number_literal: 18
+                  ,: ,
+                  pointer_expression: &variable1
+                    &: &
+                    identifier: variable1
+                  ): )
+              !=: !=
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 19);
+        call_expression: assert(arraylist->length == 19)
+          identifier: assert
+          argument_list: (arraylist->length == 19)
+            (: (
+            binary_expression: arraylist->length == 19
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 19
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[15] == &variable2);
+        call_expression: assert(arraylist->data[15] == &variable2)
+          identifier: assert
+          argument_list: (arraylist->data[15] == &variable2)
+            (: (
+            binary_expression: arraylist->data[15] == &variable2
+              subscript_expression: arraylist->data[15]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 15
+                ]: ]
+              ==: ==
+              pointer_expression: &variable2
+                &: &
+                identifier: variable2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[16] == &variable3);
+        call_expression: assert(arraylist->data[16] == &variable3)
+          identifier: assert
+          argument_list: (arraylist->data[16] == &variable3)
+            (: (
+            binary_expression: arraylist->data[16] == &variable3
+              subscript_expression: arraylist->data[16]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 16
+                ]: ]
+              ==: ==
+              pointer_expression: &variable3
+                &: &
+                identifier: variable3
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[17] == &variable4);
+        call_expression: assert(arraylist->data[17] == &variable4)
+          identifier: assert
+          argument_list: (arraylist->data[17] == &variable4)
+            (: (
+            binary_expression: arraylist->data[17] == &variable4
+              subscript_expression: arraylist->data[17]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 17
+                ]: ]
+              ==: ==
+              pointer_expression: &variable4
+                &: &
+                identifier: variable4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[18] == &variable1);
+        call_expression: assert(arraylist->data[18] == &variable1)
+          identifier: assert
+          argument_list: (arraylist->data[18] == &variable1)
+            (: (
+            binary_expression: arraylist->data[18] == &variable1
+              subscript_expression: arraylist->data[18]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 18
+                ]: ]
+              ==: ==
+              pointer_expression: &variable1
+                &: &
+                identifier: variable1
+            ): )
+        ;: ;
+      comment: /* Test inserting many entries */
+      for_statement: for (i=0; i<10000; ++i) {
+		arraylist_insert(arraylist, 10, &variable1);
+	}
+        for: for
+        (: (
+        assignment_expression: i=0
+          identifier: i
+          =: =
+          number_literal: 0
+        ;: ;
+        binary_expression: i<10000
+          identifier: i
+          <: <
+          number_literal: 10000
+        ;: ;
+        update_expression: ++i
+          ++: ++
+          identifier: i
+        ): )
+        compound_statement: {
+		arraylist_insert(arraylist, 10, &variable1);
+	}
+          {: {
+          expression_statement: arraylist_insert(arraylist, 10, &variable1);
+            call_expression: arraylist_insert(arraylist, 10, &variable1)
+              identifier: arraylist_insert
+              argument_list: (arraylist, 10, &variable1)
+                (: (
+                identifier: arraylist
+                ,: ,
+                number_literal: 10
+                ,: ,
+                pointer_expression: &variable1
+                  &: &
+                  identifier: variable1
+                ): )
+            ;: ;
+          }: }
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      }: }
+  function_definition: void test_arraylist_remove_range(void)
+{
+	ArrayList *arraylist;
+
+	arraylist = generate_arraylist();
+
+	assert(arraylist->length == 16);
+	assert(arraylist->data[3] == &variable4);
+	assert(arraylist->data[4] == &variable1);
+	assert(arraylist->data[5] == &variable2);
+	assert(arraylist->data[6] == &variable3);
+
+	arraylist_remove_range(arraylist, 4, 3);
+
+	assert(arraylist->length == 13);
+	assert(arraylist->data[3] == &variable4);
+	assert(arraylist->data[4] == &variable4);
+	assert(arraylist->data[5] == &variable1);
+	assert(arraylist->data[6] == &variable2);
+
+	/* Try some invalid ones and check they don't do anything */
+
+	arraylist_remove_range(arraylist, 10, 10);
+	arraylist_remove_range(arraylist, 0, 16);
+
+	assert(arraylist->length == 13);
+
+	arraylist_free(arraylist);
+}
+    primitive_type: void
+    function_declarator: test_arraylist_remove_range(void)
+      identifier: test_arraylist_remove_range
+      parameter_list: (void)
+        (: (
+        parameter_declaration: void
+          primitive_type: void
+        ): )
+    compound_statement: {
+	ArrayList *arraylist;
+
+	arraylist = generate_arraylist();
+
+	assert(arraylist->length == 16);
+	assert(arraylist->data[3] == &variable4);
+	assert(arraylist->data[4] == &variable1);
+	assert(arraylist->data[5] == &variable2);
+	assert(arraylist->data[6] == &variable3);
+
+	arraylist_remove_range(arraylist, 4, 3);
+
+	assert(arraylist->length == 13);
+	assert(arraylist->data[3] == &variable4);
+	assert(arraylist->data[4] == &variable4);
+	assert(arraylist->data[5] == &variable1);
+	assert(arraylist->data[6] == &variable2);
+
+	/* Try some invalid ones and check they don't do anything */
+
+	arraylist_remove_range(arraylist, 10, 10);
+	arraylist_remove_range(arraylist, 0, 16);
+
+	assert(arraylist->length == 13);
+
+	arraylist_free(arraylist);
+}
+      {: {
+      declaration: ArrayList *arraylist;
+        type_identifier: ArrayList
+        pointer_declarator: *arraylist
+          *: *
+          identifier: arraylist
+        ;: ;
+      expression_statement: arraylist = generate_arraylist();
+        assignment_expression: arraylist = generate_arraylist()
+          identifier: arraylist
+          =: =
+          call_expression: generate_arraylist()
+            identifier: generate_arraylist
+            argument_list: ()
+              (: (
+              ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 16);
+        call_expression: assert(arraylist->length == 16)
+          identifier: assert
+          argument_list: (arraylist->length == 16)
+            (: (
+            binary_expression: arraylist->length == 16
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 16
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[3] == &variable4);
+        call_expression: assert(arraylist->data[3] == &variable4)
+          identifier: assert
+          argument_list: (arraylist->data[3] == &variable4)
+            (: (
+            binary_expression: arraylist->data[3] == &variable4
+              subscript_expression: arraylist->data[3]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 3
+                ]: ]
+              ==: ==
+              pointer_expression: &variable4
+                &: &
+                identifier: variable4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[4] == &variable1);
+        call_expression: assert(arraylist->data[4] == &variable1)
+          identifier: assert
+          argument_list: (arraylist->data[4] == &variable1)
+            (: (
+            binary_expression: arraylist->data[4] == &variable1
+              subscript_expression: arraylist->data[4]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 4
+                ]: ]
+              ==: ==
+              pointer_expression: &variable1
+                &: &
+                identifier: variable1
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[5] == &variable2);
+        call_expression: assert(arraylist->data[5] == &variable2)
+          identifier: assert
+          argument_list: (arraylist->data[5] == &variable2)
+            (: (
+            binary_expression: arraylist->data[5] == &variable2
+              subscript_expression: arraylist->data[5]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 5
+                ]: ]
+              ==: ==
+              pointer_expression: &variable2
+                &: &
+                identifier: variable2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[6] == &variable3);
+        call_expression: assert(arraylist->data[6] == &variable3)
+          identifier: assert
+          argument_list: (arraylist->data[6] == &variable3)
+            (: (
+            binary_expression: arraylist->data[6] == &variable3
+              subscript_expression: arraylist->data[6]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 6
+                ]: ]
+              ==: ==
+              pointer_expression: &variable3
+                &: &
+                identifier: variable3
+            ): )
+        ;: ;
+      expression_statement: arraylist_remove_range(arraylist, 4, 3);
+        call_expression: arraylist_remove_range(arraylist, 4, 3)
+          identifier: arraylist_remove_range
+          argument_list: (arraylist, 4, 3)
+            (: (
+            identifier: arraylist
+            ,: ,
+            number_literal: 4
+            ,: ,
+            number_literal: 3
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 13);
+        call_expression: assert(arraylist->length == 13)
+          identifier: assert
+          argument_list: (arraylist->length == 13)
+            (: (
+            binary_expression: arraylist->length == 13
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 13
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[3] == &variable4);
+        call_expression: assert(arraylist->data[3] == &variable4)
+          identifier: assert
+          argument_list: (arraylist->data[3] == &variable4)
+            (: (
+            binary_expression: arraylist->data[3] == &variable4
+              subscript_expression: arraylist->data[3]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 3
+                ]: ]
+              ==: ==
+              pointer_expression: &variable4
+                &: &
+                identifier: variable4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[4] == &variable4);
+        call_expression: assert(arraylist->data[4] == &variable4)
+          identifier: assert
+          argument_list: (arraylist->data[4] == &variable4)
+            (: (
+            binary_expression: arraylist->data[4] == &variable4
+              subscript_expression: arraylist->data[4]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 4
+                ]: ]
+              ==: ==
+              pointer_expression: &variable4
+                &: &
+                identifier: variable4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[5] == &variable1);
+        call_expression: assert(arraylist->data[5] == &variable1)
+          identifier: assert
+          argument_list: (arraylist->data[5] == &variable1)
+            (: (
+            binary_expression: arraylist->data[5] == &variable1
+              subscript_expression: arraylist->data[5]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 5
+                ]: ]
+              ==: ==
+              pointer_expression: &variable1
+                &: &
+                identifier: variable1
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[6] == &variable2);
+        call_expression: assert(arraylist->data[6] == &variable2)
+          identifier: assert
+          argument_list: (arraylist->data[6] == &variable2)
+            (: (
+            binary_expression: arraylist->data[6] == &variable2
+              subscript_expression: arraylist->data[6]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 6
+                ]: ]
+              ==: ==
+              pointer_expression: &variable2
+                &: &
+                identifier: variable2
+            ): )
+        ;: ;
+      comment: /* Try some invalid ones and check they don't do anything */
+      expression_statement: arraylist_remove_range(arraylist, 10, 10);
+        call_expression: arraylist_remove_range(arraylist, 10, 10)
+          identifier: arraylist_remove_range
+          argument_list: (arraylist, 10, 10)
+            (: (
+            identifier: arraylist
+            ,: ,
+            number_literal: 10
+            ,: ,
+            number_literal: 10
+            ): )
+        ;: ;
+      expression_statement: arraylist_remove_range(arraylist, 0, 16);
+        call_expression: arraylist_remove_range(arraylist, 0, 16)
+          identifier: arraylist_remove_range
+          argument_list: (arraylist, 0, 16)
+            (: (
+            identifier: arraylist
+            ,: ,
+            number_literal: 0
+            ,: ,
+            number_literal: 16
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 13);
+        call_expression: assert(arraylist->length == 13)
+          identifier: assert
+          argument_list: (arraylist->length == 13)
+            (: (
+            binary_expression: arraylist->length == 13
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 13
+            ): )
+        ;: ;
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      }: }
+  function_definition: void test_arraylist_remove(void)
+{
+	ArrayList *arraylist;
+
+	arraylist = generate_arraylist();
+
+	assert(arraylist->length == 16);
+	assert(arraylist->data[3] == &variable4);
+	assert(arraylist->data[4] == &variable1);
+	assert(arraylist->data[5] == &variable2);
+	assert(arraylist->data[6] == &variable3);
+
+	arraylist_remove(arraylist, 4);
+
+	assert(arraylist->length == 15);
+	assert(arraylist->data[3] == &variable4);
+	assert(arraylist->data[4] == &variable2);
+	assert(arraylist->data[5] == &variable3);
+	assert(arraylist->data[6] == &variable4);
+
+	/* Try some invalid removes */
+
+	arraylist_remove(arraylist, 15);
+
+	assert(arraylist->length == 15);
+
+	arraylist_free(arraylist);
+}
+    primitive_type: void
+    function_declarator: test_arraylist_remove(void)
+      identifier: test_arraylist_remove
+      parameter_list: (void)
+        (: (
+        parameter_declaration: void
+          primitive_type: void
+        ): )
+    compound_statement: {
+	ArrayList *arraylist;
+
+	arraylist = generate_arraylist();
+
+	assert(arraylist->length == 16);
+	assert(arraylist->data[3] == &variable4);
+	assert(arraylist->data[4] == &variable1);
+	assert(arraylist->data[5] == &variable2);
+	assert(arraylist->data[6] == &variable3);
+
+	arraylist_remove(arraylist, 4);
+
+	assert(arraylist->length == 15);
+	assert(arraylist->data[3] == &variable4);
+	assert(arraylist->data[4] == &variable2);
+	assert(arraylist->data[5] == &variable3);
+	assert(arraylist->data[6] == &variable4);
+
+	/* Try some invalid removes */
+
+	arraylist_remove(arraylist, 15);
+
+	assert(arraylist->length == 15);
+
+	arraylist_free(arraylist);
+}
+      {: {
+      declaration: ArrayList *arraylist;
+        type_identifier: ArrayList
+        pointer_declarator: *arraylist
+          *: *
+          identifier: arraylist
+        ;: ;
+      expression_statement: arraylist = generate_arraylist();
+        assignment_expression: arraylist = generate_arraylist()
+          identifier: arraylist
+          =: =
+          call_expression: generate_arraylist()
+            identifier: generate_arraylist
+            argument_list: ()
+              (: (
+              ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 16);
+        call_expression: assert(arraylist->length == 16)
+          identifier: assert
+          argument_list: (arraylist->length == 16)
+            (: (
+            binary_expression: arraylist->length == 16
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 16
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[3] == &variable4);
+        call_expression: assert(arraylist->data[3] == &variable4)
+          identifier: assert
+          argument_list: (arraylist->data[3] == &variable4)
+            (: (
+            binary_expression: arraylist->data[3] == &variable4
+              subscript_expression: arraylist->data[3]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 3
+                ]: ]
+              ==: ==
+              pointer_expression: &variable4
+                &: &
+                identifier: variable4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[4] == &variable1);
+        call_expression: assert(arraylist->data[4] == &variable1)
+          identifier: assert
+          argument_list: (arraylist->data[4] == &variable1)
+            (: (
+            binary_expression: arraylist->data[4] == &variable1
+              subscript_expression: arraylist->data[4]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 4
+                ]: ]
+              ==: ==
+              pointer_expression: &variable1
+                &: &
+                identifier: variable1
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[5] == &variable2);
+        call_expression: assert(arraylist->data[5] == &variable2)
+          identifier: assert
+          argument_list: (arraylist->data[5] == &variable2)
+            (: (
+            binary_expression: arraylist->data[5] == &variable2
+              subscript_expression: arraylist->data[5]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 5
+                ]: ]
+              ==: ==
+              pointer_expression: &variable2
+                &: &
+                identifier: variable2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[6] == &variable3);
+        call_expression: assert(arraylist->data[6] == &variable3)
+          identifier: assert
+          argument_list: (arraylist->data[6] == &variable3)
+            (: (
+            binary_expression: arraylist->data[6] == &variable3
+              subscript_expression: arraylist->data[6]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 6
+                ]: ]
+              ==: ==
+              pointer_expression: &variable3
+                &: &
+                identifier: variable3
+            ): )
+        ;: ;
+      expression_statement: arraylist_remove(arraylist, 4);
+        call_expression: arraylist_remove(arraylist, 4)
+          identifier: arraylist_remove
+          argument_list: (arraylist, 4)
+            (: (
+            identifier: arraylist
+            ,: ,
+            number_literal: 4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 15);
+        call_expression: assert(arraylist->length == 15)
+          identifier: assert
+          argument_list: (arraylist->length == 15)
+            (: (
+            binary_expression: arraylist->length == 15
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 15
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[3] == &variable4);
+        call_expression: assert(arraylist->data[3] == &variable4)
+          identifier: assert
+          argument_list: (arraylist->data[3] == &variable4)
+            (: (
+            binary_expression: arraylist->data[3] == &variable4
+              subscript_expression: arraylist->data[3]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 3
+                ]: ]
+              ==: ==
+              pointer_expression: &variable4
+                &: &
+                identifier: variable4
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[4] == &variable2);
+        call_expression: assert(arraylist->data[4] == &variable2)
+          identifier: assert
+          argument_list: (arraylist->data[4] == &variable2)
+            (: (
+            binary_expression: arraylist->data[4] == &variable2
+              subscript_expression: arraylist->data[4]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 4
+                ]: ]
+              ==: ==
+              pointer_expression: &variable2
+                &: &
+                identifier: variable2
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[5] == &variable3);
+        call_expression: assert(arraylist->data[5] == &variable3)
+          identifier: assert
+          argument_list: (arraylist->data[5] == &variable3)
+            (: (
+            binary_expression: arraylist->data[5] == &variable3
+              subscript_expression: arraylist->data[5]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 5
+                ]: ]
+              ==: ==
+              pointer_expression: &variable3
+                &: &
+                identifier: variable3
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[6] == &variable4);
+        call_expression: assert(arraylist->data[6] == &variable4)
+          identifier: assert
+          argument_list: (arraylist->data[6] == &variable4)
+            (: (
+            binary_expression: arraylist->data[6] == &variable4
+              subscript_expression: arraylist->data[6]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 6
+                ]: ]
+              ==: ==
+              pointer_expression: &variable4
+                &: &
+                identifier: variable4
+            ): )
+        ;: ;
+      comment: /* Try some invalid removes */
+      expression_statement: arraylist_remove(arraylist, 15);
+        call_expression: arraylist_remove(arraylist, 15)
+          identifier: arraylist_remove
+          argument_list: (arraylist, 15)
+            (: (
+            identifier: arraylist
+            ,: ,
+            number_literal: 15
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 15);
+        call_expression: assert(arraylist->length == 15)
+          identifier: assert
+          argument_list: (arraylist->length == 15)
+            (: (
+            binary_expression: arraylist->length == 15
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 15
+            ): )
+        ;: ;
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      }: }
+  function_definition: void test_arraylist_index_of(void)
+{
+	int entries[] = { 89, 4, 23, 42, 16, 15, 8, 99, 50, 30 };
+	int num_entries;
+	ArrayList *arraylist;
+	int i;
+	int index;
+	int val;
+
+	/* Generate an arraylist containing the entries in the array */
+
+	num_entries = sizeof(entries) / sizeof(int);
+	arraylist = arraylist_new(0);
+
+	for (i=0; i<num_entries; ++i) {
+		arraylist_append(arraylist, &entries[i]);
+	}
+
+	/* Check all values get found correctly */
+
+	for (i=0; i<num_entries; ++i) {
+
+		val = entries[i];
+
+		index = arraylist_index_of(arraylist, int_equal, &val);
+
+		assert(index == i);
+	}
+
+	/* Check invalid values */
+
+	val = 0;
+	assert(arraylist_index_of(arraylist, int_equal, &val) < 0);
+	val = 57;
+	assert(arraylist_index_of(arraylist, int_equal, &val) < 0);
+
+	arraylist_free(arraylist);
+}
+    primitive_type: void
+    function_declarator: test_arraylist_index_of(void)
+      identifier: test_arraylist_index_of
+      parameter_list: (void)
+        (: (
+        parameter_declaration: void
+          primitive_type: void
+        ): )
+    compound_statement: {
+	int entries[] = { 89, 4, 23, 42, 16, 15, 8, 99, 50, 30 };
+	int num_entries;
+	ArrayList *arraylist;
+	int i;
+	int index;
+	int val;
+
+	/* Generate an arraylist containing the entries in the array */
+
+	num_entries = sizeof(entries) / sizeof(int);
+	arraylist = arraylist_new(0);
+
+	for (i=0; i<num_entries; ++i) {
+		arraylist_append(arraylist, &entries[i]);
+	}
+
+	/* Check all values get found correctly */
+
+	for (i=0; i<num_entries; ++i) {
+
+		val = entries[i];
+
+		index = arraylist_index_of(arraylist, int_equal, &val);
+
+		assert(index == i);
+	}
+
+	/* Check invalid values */
+
+	val = 0;
+	assert(arraylist_index_of(arraylist, int_equal, &val) < 0);
+	val = 57;
+	assert(arraylist_index_of(arraylist, int_equal, &val) < 0);
+
+	arraylist_free(arraylist);
+}
+      {: {
+      declaration: int entries[] = { 89, 4, 23, 42, 16, 15, 8, 99, 50, 30 };
+        primitive_type: int
+        init_declarator: entries[] = { 89, 4, 23, 42, 16, 15, 8, 99, 50, 30 }
+          array_declarator: entries[]
+            identifier: entries
+            [: [
+            ]: ]
+          =: =
+          initializer_list: { 89, 4, 23, 42, 16, 15, 8, 99, 50, 30 }
+            {: {
+            number_literal: 89
+            ,: ,
+            number_literal: 4
+            ,: ,
+            number_literal: 23
+            ,: ,
+            number_literal: 42
+            ,: ,
+            number_literal: 16
+            ,: ,
+            number_literal: 15
+            ,: ,
+            number_literal: 8
+            ,: ,
+            number_literal: 99
+            ,: ,
+            number_literal: 50
+            ,: ,
+            number_literal: 30
+            }: }
+        ;: ;
+      declaration: int num_entries;
+        primitive_type: int
+        identifier: num_entries
+        ;: ;
+      declaration: ArrayList *arraylist;
+        type_identifier: ArrayList
+        pointer_declarator: *arraylist
+          *: *
+          identifier: arraylist
+        ;: ;
+      declaration: int i;
+        primitive_type: int
+        identifier: i
+        ;: ;
+      declaration: int index;
+        primitive_type: int
+        identifier: index
+        ;: ;
+      declaration: int val;
+        primitive_type: int
+        identifier: val
+        ;: ;
+      comment: /* Generate an arraylist containing the entries in the array */
+      expression_statement: num_entries = sizeof(entries) / sizeof(int);
+        assignment_expression: num_entries = sizeof(entries) / sizeof(int)
+          identifier: num_entries
+          =: =
+          binary_expression: sizeof(entries) / sizeof(int)
+            sizeof_expression: sizeof(entries)
+              sizeof: sizeof
+              parenthesized_expression: (entries)
+                (: (
+                identifier: entries
+                ): )
+            /: /
+            sizeof_expression: sizeof(int)
+              sizeof: sizeof
+              (: (
+              type_descriptor: int
+                primitive_type: int
+              ): )
+        ;: ;
+      expression_statement: arraylist = arraylist_new(0);
+        assignment_expression: arraylist = arraylist_new(0)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(0)
+            identifier: arraylist_new
+            argument_list: (0)
+              (: (
+              number_literal: 0
+              ): )
+        ;: ;
+      for_statement: for (i=0; i<num_entries; ++i) {
+		arraylist_append(arraylist, &entries[i]);
+	}
+        for: for
+        (: (
+        assignment_expression: i=0
+          identifier: i
+          =: =
+          number_literal: 0
+        ;: ;
+        binary_expression: i<num_entries
+          identifier: i
+          <: <
+          identifier: num_entries
+        ;: ;
+        update_expression: ++i
+          ++: ++
+          identifier: i
+        ): )
+        compound_statement: {
+		arraylist_append(arraylist, &entries[i]);
+	}
+          {: {
+          expression_statement: arraylist_append(arraylist, &entries[i]);
+            call_expression: arraylist_append(arraylist, &entries[i])
+              identifier: arraylist_append
+              argument_list: (arraylist, &entries[i])
+                (: (
+                identifier: arraylist
+                ,: ,
+                pointer_expression: &entries[i]
+                  &: &
+                  subscript_expression: entries[i]
+                    identifier: entries
+                    [: [
+                    identifier: i
+                    ]: ]
+                ): )
+            ;: ;
+          }: }
+      comment: /* Check all values get found correctly */
+      for_statement: for (i=0; i<num_entries; ++i) {
+
+		val = entries[i];
+
+		index = arraylist_index_of(arraylist, int_equal, &val);
+
+		assert(index == i);
+	}
+        for: for
+        (: (
+        assignment_expression: i=0
+          identifier: i
+          =: =
+          number_literal: 0
+        ;: ;
+        binary_expression: i<num_entries
+          identifier: i
+          <: <
+          identifier: num_entries
+        ;: ;
+        update_expression: ++i
+          ++: ++
+          identifier: i
+        ): )
+        compound_statement: {
+
+		val = entries[i];
+
+		index = arraylist_index_of(arraylist, int_equal, &val);
+
+		assert(index == i);
+	}
+          {: {
+          expression_statement: val = entries[i];
+            assignment_expression: val = entries[i]
+              identifier: val
+              =: =
+              subscript_expression: entries[i]
+                identifier: entries
+                [: [
+                identifier: i
+                ]: ]
+            ;: ;
+          expression_statement: index = arraylist_index_of(arraylist, int_equal, &val);
+            assignment_expression: index = arraylist_index_of(arraylist, int_equal, &val)
+              identifier: index
+              =: =
+              call_expression: arraylist_index_of(arraylist, int_equal, &val)
+                identifier: arraylist_index_of
+                argument_list: (arraylist, int_equal, &val)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  identifier: int_equal
+                  ,: ,
+                  pointer_expression: &val
+                    &: &
+                    identifier: val
+                  ): )
+            ;: ;
+          expression_statement: assert(index == i);
+            call_expression: assert(index == i)
+              identifier: assert
+              argument_list: (index == i)
+                (: (
+                binary_expression: index == i
+                  identifier: index
+                  ==: ==
+                  identifier: i
+                ): )
+            ;: ;
+          }: }
+      comment: /* Check invalid values */
+      expression_statement: val = 0;
+        assignment_expression: val = 0
+          identifier: val
+          =: =
+          number_literal: 0
+        ;: ;
+      expression_statement: assert(arraylist_index_of(arraylist, int_equal, &val) < 0);
+        call_expression: assert(arraylist_index_of(arraylist, int_equal, &val) < 0)
+          identifier: assert
+          argument_list: (arraylist_index_of(arraylist, int_equal, &val) < 0)
+            (: (
+            binary_expression: arraylist_index_of(arraylist, int_equal, &val) < 0
+              call_expression: arraylist_index_of(arraylist, int_equal, &val)
+                identifier: arraylist_index_of
+                argument_list: (arraylist, int_equal, &val)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  identifier: int_equal
+                  ,: ,
+                  pointer_expression: &val
+                    &: &
+                    identifier: val
+                  ): )
+              <: <
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: val = 57;
+        assignment_expression: val = 57
+          identifier: val
+          =: =
+          number_literal: 57
+        ;: ;
+      expression_statement: assert(arraylist_index_of(arraylist, int_equal, &val) < 0);
+        call_expression: assert(arraylist_index_of(arraylist, int_equal, &val) < 0)
+          identifier: assert
+          argument_list: (arraylist_index_of(arraylist, int_equal, &val) < 0)
+            (: (
+            binary_expression: arraylist_index_of(arraylist, int_equal, &val) < 0
+              call_expression: arraylist_index_of(arraylist, int_equal, &val)
+                identifier: arraylist_index_of
+                argument_list: (arraylist, int_equal, &val)
+                  (: (
+                  identifier: arraylist
+                  ,: ,
+                  identifier: int_equal
+                  ,: ,
+                  pointer_expression: &val
+                    &: &
+                    identifier: val
+                  ): )
+              <: <
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      }: }
+  function_definition: void test_arraylist_clear(void)
+{
+	ArrayList *arraylist;
+
+	arraylist = arraylist_new(0);
+
+	/* Emptying an already-empty arraylist */
+
+	arraylist_clear(arraylist);
+	assert(arraylist->length == 0);
+
+	/* Add some items and then empty it */
+
+	arraylist_append(arraylist, &variable1);
+	arraylist_append(arraylist, &variable2);
+	arraylist_append(arraylist, &variable3);
+	arraylist_append(arraylist, &variable4);
+
+	arraylist_clear(arraylist);
+
+	assert(arraylist->length == 0);
+
+	arraylist_free(arraylist);
+}
+    primitive_type: void
+    function_declarator: test_arraylist_clear(void)
+      identifier: test_arraylist_clear
+      parameter_list: (void)
+        (: (
+        parameter_declaration: void
+          primitive_type: void
+        ): )
+    compound_statement: {
+	ArrayList *arraylist;
+
+	arraylist = arraylist_new(0);
+
+	/* Emptying an already-empty arraylist */
+
+	arraylist_clear(arraylist);
+	assert(arraylist->length == 0);
+
+	/* Add some items and then empty it */
+
+	arraylist_append(arraylist, &variable1);
+	arraylist_append(arraylist, &variable2);
+	arraylist_append(arraylist, &variable3);
+	arraylist_append(arraylist, &variable4);
+
+	arraylist_clear(arraylist);
+
+	assert(arraylist->length == 0);
+
+	arraylist_free(arraylist);
+}
+      {: {
+      declaration: ArrayList *arraylist;
+        type_identifier: ArrayList
+        pointer_declarator: *arraylist
+          *: *
+          identifier: arraylist
+        ;: ;
+      expression_statement: arraylist = arraylist_new(0);
+        assignment_expression: arraylist = arraylist_new(0)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(0)
+            identifier: arraylist_new
+            argument_list: (0)
+              (: (
+              number_literal: 0
+              ): )
+        ;: ;
+      comment: /* Emptying an already-empty arraylist */
+      expression_statement: arraylist_clear(arraylist);
+        call_expression: arraylist_clear(arraylist)
+          identifier: arraylist_clear
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 0);
+        call_expression: assert(arraylist->length == 0)
+          identifier: assert
+          argument_list: (arraylist->length == 0)
+            (: (
+            binary_expression: arraylist->length == 0
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 0
+            ): )
+        ;: ;
+      comment: /* Add some items and then empty it */
+      expression_statement: arraylist_append(arraylist, &variable1);
+        call_expression: arraylist_append(arraylist, &variable1)
+          identifier: arraylist_append
+          argument_list: (arraylist, &variable1)
+            (: (
+            identifier: arraylist
+            ,: ,
+            pointer_expression: &variable1
+              &: &
+              identifier: variable1
+            ): )
+        ;: ;
+      expression_statement: arraylist_append(arraylist, &variable2);
+        call_expression: arraylist_append(arraylist, &variable2)
+          identifier: arraylist_append
+          argument_list: (arraylist, &variable2)
+            (: (
+            identifier: arraylist
+            ,: ,
+            pointer_expression: &variable2
+              &: &
+              identifier: variable2
+            ): )
+        ;: ;
+      expression_statement: arraylist_append(arraylist, &variable3);
+        call_expression: arraylist_append(arraylist, &variable3)
+          identifier: arraylist_append
+          argument_list: (arraylist, &variable3)
+            (: (
+            identifier: arraylist
+            ,: ,
+            pointer_expression: &variable3
+              &: &
+              identifier: variable3
+            ): )
+        ;: ;
+      expression_statement: arraylist_append(arraylist, &variable4);
+        call_expression: arraylist_append(arraylist, &variable4)
+          identifier: arraylist_append
+          argument_list: (arraylist, &variable4)
+            (: (
+            identifier: arraylist
+            ,: ,
+            pointer_expression: &variable4
+              &: &
+              identifier: variable4
+            ): )
+        ;: ;
+      expression_statement: arraylist_clear(arraylist);
+        call_expression: arraylist_clear(arraylist)
+          identifier: arraylist_clear
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 0);
+        call_expression: assert(arraylist->length == 0)
+          identifier: assert
+          argument_list: (arraylist->length == 0)
+            (: (
+            binary_expression: arraylist->length == 0
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      }: }
+  function_definition: void test_arraylist_sort(void)
+{
+	ArrayList *arraylist;
+	int entries[] = { 89, 4, 23, 42, 4, 16, 15, 4, 8, 99, 50, 30, 4 };
+	int sorted[]  = { 4, 4, 4, 4, 8, 15, 16, 23, 30, 42, 50, 89, 99 };
+	unsigned int num_entries = sizeof(entries) / sizeof(int);
+	unsigned int i;
+
+	arraylist = arraylist_new(10);
+
+	for (i=0; i<num_entries; ++i) {
+		arraylist_prepend(arraylist, &entries[i]);
+	}
+
+	arraylist_sort(arraylist, int_compare);
+
+	/* List length is unchanged */
+
+	assert(arraylist->length == num_entries);
+
+	/* Check the list is sorted */
+
+	for (i=0; i<num_entries; ++i) {
+		int *value;
+
+		value = (int *) arraylist->data[i];
+		assert(*value == sorted[i]);
+	}
+
+	arraylist_free(arraylist);
+
+	/* Check sorting an empty list */
+
+	arraylist = arraylist_new(5);
+
+	arraylist_sort(arraylist, int_compare);
+
+	assert(arraylist->length == 0);
+
+	arraylist_free(arraylist);
+
+	/* Check sorting a list with 1 entry */
+
+	arraylist = arraylist_new(5);
+
+	arraylist_prepend(arraylist, &entries[0]);
+	arraylist_sort(arraylist, int_compare);
+
+	assert(arraylist->length == 1);
+	assert(arraylist->data[0] == &entries[0]);
+
+	arraylist_free(arraylist);
+}
+    primitive_type: void
+    function_declarator: test_arraylist_sort(void)
+      identifier: test_arraylist_sort
+      parameter_list: (void)
+        (: (
+        parameter_declaration: void
+          primitive_type: void
+        ): )
+    compound_statement: {
+	ArrayList *arraylist;
+	int entries[] = { 89, 4, 23, 42, 4, 16, 15, 4, 8, 99, 50, 30, 4 };
+	int sorted[]  = { 4, 4, 4, 4, 8, 15, 16, 23, 30, 42, 50, 89, 99 };
+	unsigned int num_entries = sizeof(entries) / sizeof(int);
+	unsigned int i;
+
+	arraylist = arraylist_new(10);
+
+	for (i=0; i<num_entries; ++i) {
+		arraylist_prepend(arraylist, &entries[i]);
+	}
+
+	arraylist_sort(arraylist, int_compare);
+
+	/* List length is unchanged */
+
+	assert(arraylist->length == num_entries);
+
+	/* Check the list is sorted */
+
+	for (i=0; i<num_entries; ++i) {
+		int *value;
+
+		value = (int *) arraylist->data[i];
+		assert(*value == sorted[i]);
+	}
+
+	arraylist_free(arraylist);
+
+	/* Check sorting an empty list */
+
+	arraylist = arraylist_new(5);
+
+	arraylist_sort(arraylist, int_compare);
+
+	assert(arraylist->length == 0);
+
+	arraylist_free(arraylist);
+
+	/* Check sorting a list with 1 entry */
+
+	arraylist = arraylist_new(5);
+
+	arraylist_prepend(arraylist, &entries[0]);
+	arraylist_sort(arraylist, int_compare);
+
+	assert(arraylist->length == 1);
+	assert(arraylist->data[0] == &entries[0]);
+
+	arraylist_free(arraylist);
+}
+      {: {
+      declaration: ArrayList *arraylist;
+        type_identifier: ArrayList
+        pointer_declarator: *arraylist
+          *: *
+          identifier: arraylist
+        ;: ;
+      declaration: int entries[] = { 89, 4, 23, 42, 4, 16, 15, 4, 8, 99, 50, 30, 4 };
+        primitive_type: int
+        init_declarator: entries[] = { 89, 4, 23, 42, 4, 16, 15, 4, 8, 99, 50, 30, 4 }
+          array_declarator: entries[]
+            identifier: entries
+            [: [
+            ]: ]
+          =: =
+          initializer_list: { 89, 4, 23, 42, 4, 16, 15, 4, 8, 99, 50, 30, 4 }
+            {: {
+            number_literal: 89
+            ,: ,
+            number_literal: 4
+            ,: ,
+            number_literal: 23
+            ,: ,
+            number_literal: 42
+            ,: ,
+            number_literal: 4
+            ,: ,
+            number_literal: 16
+            ,: ,
+            number_literal: 15
+            ,: ,
+            number_literal: 4
+            ,: ,
+            number_literal: 8
+            ,: ,
+            number_literal: 99
+            ,: ,
+            number_literal: 50
+            ,: ,
+            number_literal: 30
+            ,: ,
+            number_literal: 4
+            }: }
+        ;: ;
+      declaration: int sorted[]  = { 4, 4, 4, 4, 8, 15, 16, 23, 30, 42, 50, 89, 99 };
+        primitive_type: int
+        init_declarator: sorted[]  = { 4, 4, 4, 4, 8, 15, 16, 23, 30, 42, 50, 89, 99 }
+          array_declarator: sorted[]
+            identifier: sorted
+            [: [
+            ]: ]
+          =: =
+          initializer_list: { 4, 4, 4, 4, 8, 15, 16, 23, 30, 42, 50, 89, 99 }
+            {: {
+            number_literal: 4
+            ,: ,
+            number_literal: 4
+            ,: ,
+            number_literal: 4
+            ,: ,
+            number_literal: 4
+            ,: ,
+            number_literal: 8
+            ,: ,
+            number_literal: 15
+            ,: ,
+            number_literal: 16
+            ,: ,
+            number_literal: 23
+            ,: ,
+            number_literal: 30
+            ,: ,
+            number_literal: 42
+            ,: ,
+            number_literal: 50
+            ,: ,
+            number_literal: 89
+            ,: ,
+            number_literal: 99
+            }: }
+        ;: ;
+      declaration: unsigned int num_entries = sizeof(entries) / sizeof(int);
+        sized_type_specifier: unsigned int
+          unsigned: unsigned
+          primitive_type: int
+        init_declarator: num_entries = sizeof(entries) / sizeof(int)
+          identifier: num_entries
+          =: =
+          binary_expression: sizeof(entries) / sizeof(int)
+            sizeof_expression: sizeof(entries)
+              sizeof: sizeof
+              parenthesized_expression: (entries)
+                (: (
+                identifier: entries
+                ): )
+            /: /
+            sizeof_expression: sizeof(int)
+              sizeof: sizeof
+              (: (
+              type_descriptor: int
+                primitive_type: int
+              ): )
+        ;: ;
+      declaration: unsigned int i;
+        sized_type_specifier: unsigned int
+          unsigned: unsigned
+          primitive_type: int
+        identifier: i
+        ;: ;
+      expression_statement: arraylist = arraylist_new(10);
+        assignment_expression: arraylist = arraylist_new(10)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(10)
+            identifier: arraylist_new
+            argument_list: (10)
+              (: (
+              number_literal: 10
+              ): )
+        ;: ;
+      for_statement: for (i=0; i<num_entries; ++i) {
+		arraylist_prepend(arraylist, &entries[i]);
+	}
+        for: for
+        (: (
+        assignment_expression: i=0
+          identifier: i
+          =: =
+          number_literal: 0
+        ;: ;
+        binary_expression: i<num_entries
+          identifier: i
+          <: <
+          identifier: num_entries
+        ;: ;
+        update_expression: ++i
+          ++: ++
+          identifier: i
+        ): )
+        compound_statement: {
+		arraylist_prepend(arraylist, &entries[i]);
+	}
+          {: {
+          expression_statement: arraylist_prepend(arraylist, &entries[i]);
+            call_expression: arraylist_prepend(arraylist, &entries[i])
+              identifier: arraylist_prepend
+              argument_list: (arraylist, &entries[i])
+                (: (
+                identifier: arraylist
+                ,: ,
+                pointer_expression: &entries[i]
+                  &: &
+                  subscript_expression: entries[i]
+                    identifier: entries
+                    [: [
+                    identifier: i
+                    ]: ]
+                ): )
+            ;: ;
+          }: }
+      expression_statement: arraylist_sort(arraylist, int_compare);
+        call_expression: arraylist_sort(arraylist, int_compare)
+          identifier: arraylist_sort
+          argument_list: (arraylist, int_compare)
+            (: (
+            identifier: arraylist
+            ,: ,
+            identifier: int_compare
+            ): )
+        ;: ;
+      comment: /* List length is unchanged */
+      expression_statement: assert(arraylist->length == num_entries);
+        call_expression: assert(arraylist->length == num_entries)
+          identifier: assert
+          argument_list: (arraylist->length == num_entries)
+            (: (
+            binary_expression: arraylist->length == num_entries
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              identifier: num_entries
+            ): )
+        ;: ;
+      comment: /* Check the list is sorted */
+      for_statement: for (i=0; i<num_entries; ++i) {
+		int *value;
+
+		value = (int *) arraylist->data[i];
+		assert(*value == sorted[i]);
+	}
+        for: for
+        (: (
+        assignment_expression: i=0
+          identifier: i
+          =: =
+          number_literal: 0
+        ;: ;
+        binary_expression: i<num_entries
+          identifier: i
+          <: <
+          identifier: num_entries
+        ;: ;
+        update_expression: ++i
+          ++: ++
+          identifier: i
+        ): )
+        compound_statement: {
+		int *value;
+
+		value = (int *) arraylist->data[i];
+		assert(*value == sorted[i]);
+	}
+          {: {
+          declaration: int *value;
+            primitive_type: int
+            pointer_declarator: *value
+              *: *
+              identifier: value
+            ;: ;
+          expression_statement: value = (int *) arraylist->data[i];
+            assignment_expression: value = (int *) arraylist->data[i]
+              identifier: value
+              =: =
+              cast_expression: (int *) arraylist->data[i]
+                (: (
+                type_descriptor: int *
+                  primitive_type: int
+                  abstract_pointer_declarator: *
+                    *: *
+                ): )
+                subscript_expression: arraylist->data[i]
+                  field_expression: arraylist->data
+                    identifier: arraylist
+                    ->: ->
+                    field_identifier: data
+                  [: [
+                  identifier: i
+                  ]: ]
+            ;: ;
+          expression_statement: assert(*value == sorted[i]);
+            call_expression: assert(*value == sorted[i])
+              identifier: assert
+              argument_list: (*value == sorted[i])
+                (: (
+                binary_expression: *value == sorted[i]
+                  pointer_expression: *value
+                    *: *
+                    identifier: value
+                  ==: ==
+                  subscript_expression: sorted[i]
+                    identifier: sorted
+                    [: [
+                    identifier: i
+                    ]: ]
+                ): )
+            ;: ;
+          }: }
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      comment: /* Check sorting an empty list */
+      expression_statement: arraylist = arraylist_new(5);
+        assignment_expression: arraylist = arraylist_new(5)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(5)
+            identifier: arraylist_new
+            argument_list: (5)
+              (: (
+              number_literal: 5
+              ): )
+        ;: ;
+      expression_statement: arraylist_sort(arraylist, int_compare);
+        call_expression: arraylist_sort(arraylist, int_compare)
+          identifier: arraylist_sort
+          argument_list: (arraylist, int_compare)
+            (: (
+            identifier: arraylist
+            ,: ,
+            identifier: int_compare
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 0);
+        call_expression: assert(arraylist->length == 0)
+          identifier: assert
+          argument_list: (arraylist->length == 0)
+            (: (
+            binary_expression: arraylist->length == 0
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 0
+            ): )
+        ;: ;
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      comment: /* Check sorting a list with 1 entry */
+      expression_statement: arraylist = arraylist_new(5);
+        assignment_expression: arraylist = arraylist_new(5)
+          identifier: arraylist
+          =: =
+          call_expression: arraylist_new(5)
+            identifier: arraylist_new
+            argument_list: (5)
+              (: (
+              number_literal: 5
+              ): )
+        ;: ;
+      expression_statement: arraylist_prepend(arraylist, &entries[0]);
+        call_expression: arraylist_prepend(arraylist, &entries[0])
+          identifier: arraylist_prepend
+          argument_list: (arraylist, &entries[0])
+            (: (
+            identifier: arraylist
+            ,: ,
+            pointer_expression: &entries[0]
+              &: &
+              subscript_expression: entries[0]
+                identifier: entries
+                [: [
+                number_literal: 0
+                ]: ]
+            ): )
+        ;: ;
+      expression_statement: arraylist_sort(arraylist, int_compare);
+        call_expression: arraylist_sort(arraylist, int_compare)
+          identifier: arraylist_sort
+          argument_list: (arraylist, int_compare)
+            (: (
+            identifier: arraylist
+            ,: ,
+            identifier: int_compare
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->length == 1);
+        call_expression: assert(arraylist->length == 1)
+          identifier: assert
+          argument_list: (arraylist->length == 1)
+            (: (
+            binary_expression: arraylist->length == 1
+              field_expression: arraylist->length
+                identifier: arraylist
+                ->: ->
+                field_identifier: length
+              ==: ==
+              number_literal: 1
+            ): )
+        ;: ;
+      expression_statement: assert(arraylist->data[0] == &entries[0]);
+        call_expression: assert(arraylist->data[0] == &entries[0])
+          identifier: assert
+          argument_list: (arraylist->data[0] == &entries[0])
+            (: (
+            binary_expression: arraylist->data[0] == &entries[0]
+              subscript_expression: arraylist->data[0]
+                field_expression: arraylist->data
+                  identifier: arraylist
+                  ->: ->
+                  field_identifier: data
+                [: [
+                number_literal: 0
+                ]: ]
+              ==: ==
+              pointer_expression: &entries[0]
+                &: &
+                subscript_expression: entries[0]
+                  identifier: entries
+                  [: [
+                  number_literal: 0
+                  ]: ]
+            ): )
+        ;: ;
+      expression_statement: arraylist_free(arraylist);
+        call_expression: arraylist_free(arraylist)
+          identifier: arraylist_free
+          argument_list: (arraylist)
+            (: (
+            identifier: arraylist
+            ): )
+        ;: ;
+      }: }
+  declaration: static UnitTestFunction tests[] = {
+	test_arraylist_new_free,
+	test_arraylist_append,
+	test_arraylist_prepend,
+	test_arraylist_insert,
+	test_arraylist_remove,
+	test_arraylist_remove_range,
+	test_arraylist_index_of,
+	test_arraylist_clear,
+	test_arraylist_sort,
+	NULL
+};
+    storage_class_specifier: static
+      static: static
+    type_identifier: UnitTestFunction
+    init_declarator: tests[] = {
+	test_arraylist_new_free,
+	test_arraylist_append,
+	test_arraylist_prepend,
+	test_arraylist_insert,
+	test_arraylist_remove,
+	test_arraylist_remove_range,
+	test_arraylist_index_of,
+	test_arraylist_clear,
+	test_arraylist_sort,
+	NULL
+}
+      array_declarator: tests[]
+        identifier: tests
+        [: [
+        ]: ]
+      =: =
+      initializer_list: {
+	test_arraylist_new_free,
+	test_arraylist_append,
+	test_arraylist_prepend,
+	test_arraylist_insert,
+	test_arraylist_remove,
+	test_arraylist_remove_range,
+	test_arraylist_index_of,
+	test_arraylist_clear,
+	test_arraylist_sort,
+	NULL
+}
+        {: {
+        identifier: test_arraylist_new_free
+        ,: ,
+        identifier: test_arraylist_append
+        ,: ,
+        identifier: test_arraylist_prepend
+        ,: ,
+        identifier: test_arraylist_insert
+        ,: ,
+        identifier: test_arraylist_remove
+        ,: ,
+        identifier: test_arraylist_remove_range
+        ,: ,
+        identifier: test_arraylist_index_of
+        ,: ,
+        identifier: test_arraylist_clear
+        ,: ,
+        identifier: test_arraylist_sort
+        ,: ,
+        null: NULL
+          NULL: NULL
+        }: }
+    ;: ;
+  function_definition: int main(int argc, char *argv[])
+{
+	run_tests(tests);
+
+	return 0;
+}
+    primitive_type: int
+    function_declarator: main(int argc, char *argv[])
+      identifier: main
+      parameter_list: (int argc, char *argv[])
+        (: (
+        parameter_declaration: int argc
+          primitive_type: int
+          identifier: argc
+        ,: ,
+        parameter_declaration: char *argv[]
+          primitive_type: char
+          pointer_declarator: *argv[]
+            *: *
+            array_declarator: argv[]
+              identifier: argv
+              [: [
+              ]: ]
+        ): )
+    compound_statement: {
+	run_tests(tests);
+
+	return 0;
+}
+      {: {
+      expression_statement: run_tests(tests);
+        call_expression: run_tests(tests)
+          identifier: run_tests
+          argument_list: (tests)
+            (: (
+            identifier: tests
+            ): )
+        ;: ;
+      return_statement: return 0;
+        return: return
+        number_literal: 0
+        ;: ;
+      }: }
