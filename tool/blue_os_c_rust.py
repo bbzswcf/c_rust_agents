@@ -9,7 +9,7 @@ import unicodedata
 import argparse
 
 from Agents import *
-from tree_sitter_analyzer import analyze_directory, get_translation_order, extract_test_functions, extract_func_dependencies, head_info_extraction
+from tree_sitter_analyzer import analyze_directory, get_translation_order, extract_test_functions, extract_func_dependencies, head_info_extraction, extract_func_calls, extract_all_funcs
 from preprocess.c_code_preprocess import preprocess
 from c_code_decomposition import decompose, code_decomposition
 # 设置默认编码为UTF-8
@@ -67,7 +67,12 @@ def write_file_with_utf8(file_path, content):
     with open(file_path, 'w', encoding='utf-8', errors='ignore') as file:
         file.write(content)
 
+def insert_file_with_utf8(file_path, content):
+    with open(file_path, 'a', encoding='utf-8', errors='ignore') as file:
+        file.write(content)
+
 def static_analysis(rust_code: str) -> str:
+    # todo: 重新进行修改, 传入文件路径, 直接在文件上进行静态分析
     with tempfile.TemporaryDirectory() as tmpdir:
         cur_dir = os.getcwd()
         rust_pdb = os.path.join(cur_dir, "temp.pdb")
@@ -108,161 +113,135 @@ def static_analysis(rust_code: str) -> str:
 
         return "\n\n".join(issues) if issues else ""
 
-def compile_and_test_rust(rust_code: str, c_output_file: str, rust_code_file: str, rust_output_file: str) -> tuple[bool, str]:
+def compile_and_test_rust(rust_code: str, test_func: str, test_problem_name: str, rust_result_dir: str) -> tuple[bool, str]:
     current_dir = os.getcwd()
-    rust_file = os.path.join(current_dir, "temp_main.rs")
-    rust_exe = os.path.join(current_dir, "temp_main.exe" if sys.platform == "win32" else "temp_main")
-    rust_pdb = os.path.join(current_dir, "temp_main.pdb")
+    cargo_toml = os.path.join(current_dir, os.path.join(rust_result_dir, "Cargo.toml"))
 
     try:
-        write_file_with_utf8(rust_file, rust_code)
-        print(f"Rust 代码已写入: {rust_file}")
-        # 添加 -A dead_code 和 -A unused_variables 标志来忽略未使用变量的警告
-        compile_command = ["rustc", "-A", "dead_code", "-A", "unused_variables", rust_file, "-o", rust_exe]
+        compile_command = ["cargo", "test", test_func, "--manifest-path", cargo_toml, "--test", test_problem_name]
         compile_result = subprocess.run(compile_command, capture_output=True, text=True, encoding="utf-8")
 
         if compile_result.returncode != 0:
             return False, f"Rust 编译失败:\n{compile_result.stderr}"
+        
+        if "test result: ok" not in compile_result.stdout:
+            return False, f"Rust 测试失败:\n{compile_result.stdout}\n{compile_result.stderr}"
+        
+        return True, ""
+    except Exception as e:
+        return False, f"Rust 测试失败:\n{str(e)}"
 
-        if not os.path.exists(rust_exe):
-            return False, f"错误：找不到编译后的可执行文件: {rust_exe}"
-
-        try:
-            run_result = subprocess.run([rust_exe], capture_output=True, text=True, encoding="utf-8", timeout=5)
-        except subprocess.TimeoutExpired:
-            return False, "Rust 程序运行超时"
-
-        if run_result.returncode != 0:
-            return False, f"Rust 程序运行失败:\n{run_result.stderr}"
-
-        rust_output = run_result.stdout.strip()
-        write_file_with_utf8(rust_output_file, rust_output)
-        write_file_with_utf8(rust_code_file, rust_code)
-
-        c_output = read_file_with_auto_encoding(c_output_file).strip()
-
-        # if rust_output.strip() == c_output.strip():
-        if normalize_string(rust_output) == normalize_string(c_output):
-            return True, ""
-        else:
-            return True, f"输出不匹配。\nC 输出:\n{c_output}\nRust Outputs:\n{rust_output}"
-
-    finally:
-        if os.path.exists(rust_file):
-            os.remove(rust_file)
-        if os.path.exists(rust_exe):
-            os.remove(rust_exe)
-        if os.path.exists(rust_pdb):
-            os.remove(rust_pdb)
-
-def convert_c_to_rust(c_code: str, c_output_file: str, rust_code_file:str, rust_output_file: str) -> str:
-    if c_code is None or c_code.strip() == "":
+def convert_c_to_rust(c_codes: list[str], head_infos: dict, rust_code_file:str, depend_files: list[str], c_to_rust_mappings: dict) -> str:
+    if not c_codes:
         print("错误：没有提供有效的 C 代码进行转换")
         return ""
 
-    print("开始API转换")
-    api_conversion = api_agent.generate_response(
+    rust_codes = []
+    for c_code in c_codes:
+        
+        print("开始API转换")
+        api_conversion = api_agent.generate_response(
         f"""
         Extract and convert only the C-specific APIs to their Rust equivalents:
         {c_code}
         """
-    )
+        )
 
-    print("开始语法转换")
-    combined_syntax_input = f"""
-    Convert the following C code to Rust using the provided API mappings:
-    C code:
-    {c_code}
-    API mappings:
-    {api_conversion}
-    Remember to output only the converted Rust code without any explanations.
-    """
-
-    rust_code = syntax_agent.generate_response(combined_syntax_input)
-    rust_code = extract_rust_code(rust_code)
-
-    max_static_analysis_and_test_attempts = 7
-    static_analysis_and_test_count = 0
-
-    while static_analysis_and_test_count < max_static_analysis_and_test_attempts:
-        # 如果静态分析次数未达到阈值，进行静态分析
-        static_analysis_and_test_count += 1
-        print(f"静态分析尝试 #{static_analysis_and_test_count}")
-        analysis_result = static_analysis(rust_code)
-
-        if analysis_result:
-            print("发现静态分析问题，正在优化...")
-            feedback_input = f"""
-            Analyze the following static analysis results:
-            Issue description:
-            {sanitize_string(analysis_result)}
-            Current Rust code:
-            {sanitize_string(rust_code)}
-            Please provide specific fix suggestions, but do not generate improved code.
-            """
-            feedback = feedback_agent.generate_response(feedback_input)
-            optimize_input = f"""
-            Optimize the Rust code based on the following specific feedback:
-            Feedback:
-            {sanitize_string(feedback)}
-            Current Rust code:
-            {sanitize_string(rust_code)}
-            Please strictly follow the steps mentioned in the prompt to optimize the code. 
-            Ensure all issues mentioned in the feedback are resolved, and add comments for each modification explaining the reason.
-            Only return the complete optimized Rust code without additional explanations.
-            """
-            optimized = optimize_agent.generate_response(optimize_input)
-            new_rust_code = extract_rust_code(optimized)
-            if new_rust_code.strip():
-                rust_code = new_rust_code
-                print(f"代码已针对静态分析进行优化 #{static_analysis_and_test_count}\n")
-            else:
-                print("警告：代码优化专家没有返回有效的Rust代码。保持原代码不变。")
-
-            continue  # 优化后重新进行静态分析
-        
-        # 进行编译和测试
-        print("静态分析未发现错误，进入编译和测试阶段。")
-        print(f"编译和测试尝试")
-        compile_success, error_or_mismatch_info = compile_and_test_rust(rust_code, c_output_file, rust_code_file, rust_output_file)
-
-        if compile_success and not error_or_mismatch_info:
-            print("编译和测试成功")
-            print(f"优化迭代次数 #{static_analysis_and_test_count}")
-            return rust_code
-
-        # 编译失败或输出不匹配，进行优化
-        print("编译失败或者输出不匹配，继续优化")
-        feedback_input = f"""
-        Analyze the following compilation error:
-        Issue description:
-        {sanitize_string(error_or_mismatch_info)}
-        Current Rust code:
-        {sanitize_string(rust_code)}
-        Please provide specific fix suggestions, but do not generate improved code.
-        """
-        feedback = feedback_agent.generate_response(feedback_input)
-        optimize_input = f"""
-        Optimize the Rust code based on the following specific feedback:
-        Feedback:
-        {sanitize_string(feedback)}
-        Current Rust code:
-        {sanitize_string(rust_code)}
-        Please strictly follow the steps mentioned in the prompt to optimize the code. 
-        Ensure all issues mentioned in the feedback are resolved, and add comments for each modification explaining the reason.
-        Only return the complete optimized Rust code without additional explanations.
-        """
-        optimized = optimize_agent.generate_response(optimize_input)
-        new_rust_code = extract_rust_code(optimized)
-        if new_rust_code.strip():
-            rust_code = new_rust_code
-            print(f"代码已针对编译或输出不匹配进行优化 #{static_analysis_and_test_count}")
+        print("开始语法转换")
+        combined_syntax_input = f"""
+        Convert the following C code to Rust using the provided API mappings and function calls:
+        C code:
+        {c_code}"""
+       
+        if head_infos:
+            for head_file, head_codes in head_infos.items():
+                combined_syntax_input += f"""
+                Included headers:
+                <{head_file}>:
+                {head_codes}
+                """
+            # 只在第一次翻译（既翻译文件中函数之前的代码内容）时，将头文件中的信息一并翻译
+            head_infos = {}
         else:
-            print("警告：代码优化专家没有返回有效的Rust代码。保持原代码不变。")
-        # 优化后重新进行循环，如果未达到阈值，将重新进行静态分析
+            # 提取出函数调用，检索c_to_rust_mappings对应的rust函数, 放入语法专家prompt中
+            func_calls = extract_func_calls(c_code)
+            C_func_calls = []
+            Rust_func_calls = []
+            for depend_file in depend_files:
+                depend_file_name = os.path.splitext(os.path.basename(depend_file))[0]
+                
+                Rust_func_calls = [c_to_rust_mappings[depend_file_name].get(func) 
+                                    for func in func_calls 
+                                    if func in c_to_rust_mappings[depend_file_name]]
+                C_func_calls = [func for func in func_calls 
+                                if func in c_to_rust_mappings[depend_file_name]]
 
-    print("达到最大静态分析和测试次数，转换未完全成功，但这是最后的结果")
-    return rust_code
+            combined_syntax_input += f"""
+            function calls:"""
+            for c_func, rust_func in zip(C_func_calls, Rust_func_calls):
+                if rust_func:
+                    combined_syntax_input += f"""
+                    {c_func} -> {rust_func}
+                    """
+
+        combined_syntax_input += f"""
+        API mappings:
+        {api_conversion}
+        Remember to output only the converted Rust code without any explanations.
+        Declare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.
+        """
+
+        rust_code = syntax_agent.generate_response(combined_syntax_input)
+        rust_code = extract_rust_code(rust_code)
+
+        max_static_analysis_and_test_attempts = 7
+        static_analysis_and_test_count = 0
+
+        while static_analysis_and_test_count < max_static_analysis_and_test_attempts:
+            # 如果静态分析次数未达到阈值，进行静态分析
+            static_analysis_and_test_count += 1
+            print(f"静态分析尝试 #{static_analysis_and_test_count}")
+            analysis_result = static_analysis("\n".join(rust_codes) + "\n" + rust_code)
+
+            if analysis_result:
+                print("发现静态分析问题，正在优化...")
+                feedback_input = f"""
+                Analyze the following static analysis results:
+                Issue description:
+                {sanitize_string(analysis_result)}
+                Current Rust code:
+                {sanitize_string(rust_code)}
+                Please provide specific fix suggestions, but do not generate improved code.
+                """
+                feedback = feedback_agent.generate_response(feedback_input)
+                optimize_input = f"""
+                Optimize the Rust code based on the following specific feedback:
+                Feedback:
+                {sanitize_string(feedback)}
+                Current Rust code:
+                {sanitize_string(rust_code)}
+                Please strictly follow the steps mentioned in the prompt to optimize the code. 
+                Ensure all issues mentioned in the feedback are resolved, and add comments for each modification explaining the reason.
+                Only return the complete optimized Rust code without additional explanations.
+                """
+                optimized = optimize_agent.generate_response(optimize_input)
+                new_rust_code = extract_rust_code(optimized)
+                if new_rust_code.strip():
+                    rust_code = new_rust_code
+                    print(f"代码已针对静态分析进行优化 #{static_analysis_and_test_count}\n")
+                else:
+                    print("警告：代码优化专家没有返回有效的Rust代码。保持原代码不变。")
+
+                continue  # 优化后重新进行静态分析
+            else:
+                insert_file_with_utf8(rust_code_file, rust_code)
+                rust_codes.append(rust_code)
+                # Extract function signatures from the rust code including parameters
+                func_signatures = re.findall(r'pub\s+fn\s+([a-zA-Z0-9_]+\s*\([^)]*\))', rust_code)
+                # todo: 更新c_to_rust_mappings
+                break
+
+    return "\n".join(rust_codes)
 
 def process_files():
     parser = argparse.ArgumentParser(description='Process C files and convert them to Rust.')
@@ -270,22 +249,27 @@ def process_files():
     args = parser.parse_args()
 
     # 创建新的结果文件夹
-    rust_code_dir = "Output/01-Primary/Translate_Rust_codes"
-    succeed_rust_dir = os.path.join(rust_code_dir, "succeed")
-    not_compile_dir = os.path.join(rust_code_dir, "not_compile")    
-    mismatch_rust_dir = os.path.join(rust_code_dir, "mismatch")
-    os.makedirs(succeed_rust_dir, exist_ok=True)
-    os.makedirs(mismatch_rust_dir, exist_ok=True)
-    os.makedirs(not_compile_dir, exist_ok=True)
+    rust_result_dir = "Output/primary"
+    rust_code_dir = os.path.join(rust_result_dir, "src")
+    rust_test_dir = os.path.join(rust_result_dir, "test")
 
     successful_conversions = 0
     compile_failures = 0
     mismatch_failures = 0
     total_files = 0
+    # translated_bytes keeps track of which portions of each file have already been translated
+    translated_bytes = {}
 
     # Get dependencies and suggested translation order
     dependencies = analyze_directory(args.c_code_dir)
     translation_order = get_translation_order(dependencies)
+    # Initialize dictionary to track C to Rust function and virable name mappings for each file
+    c_to_rust_mappings = {os.path.splitext(os.path.basename(file))[0]: {} for file in translation_order}
+    # Initialize function mappings for each file
+    for file in translation_order:
+        c_funcs = extract_all_funcs(os.path.join(args.c_code_dir, file))
+        for func in c_funcs:
+            c_to_rust_mappings[os.path.splitext(os.path.basename(file))[0]][func] = ''
 
     for problem_folder in translation_order:
         if not problem_folder.startswith("test"):
@@ -293,44 +277,48 @@ def process_files():
         
         problem_path = os.path.join(args.c_code_dir, problem_folder)
         test_funcs = extract_test_functions(problem_path)
+
         for test_func in test_funcs:
             # todo: 递归函数，按顺序返回依赖文件中的函数
             # 目前只实现了test_func依赖的查找，并未实现test_func依赖的依赖文件的查找
             depend_files_and_funcs = extract_func_dependencies(args.c_code_dir, problem_folder, test_func)
+
             for depend_file, depend_funcs in depend_files_and_funcs.items():
+                temp_rust_file_path = os.path.join(rust_code_dir, f"{os.path.splitext(depend_file)[0]}.rs")
+
                 # 对depend_file进行分割，再进行函数级翻译
-                funcs_codes = code_decomposition(args.c_code_dir, depend_file, depend_funcs)
+                start_byte = 0
+                if os.path.splitext(depend_file)[0] in translated_bytes:
+                    start_byte = translated_bytes[os.path.splitext(depend_file)[0]]
+                funcs_codes, max_end_byte = code_decomposition(args.c_code_dir, depend_file, depend_funcs, start_byte)
+                translated_bytes[os.path.splitext(depend_file)[0]] = max_end_byte
 
-                # todo: 提供上下文
-                # 目前想法：head_infos作为funcs_codes翻译过程中的上下文
-                # 具体每个函数翻译时的内部调用关系，需要额外上下文
-                head_infos = head_info_extraction(args.c_code_dir, depend_file)
-                # todo:修改convert_c_to_rust函数，
-                rust_code = convert_c_to_rust(funcs_codes, head_infos)
+                # 对头文件中的信息也进行翻译
+                head_infos = {}
+                if start_byte == 0:
+                    head_infos = head_info_extraction(args.c_code_dir, depend_file)
+                depend_files = dependencies['src/'+os.path.splitext(depend_file)[0]+'.c']
+                depend_files.append(os.path.splitext(depend_file)[0])
+                rust_code = convert_c_to_rust(funcs_codes, head_infos, temp_rust_file_path, depend_files, c_to_rust_mappings)
 
-                # todo: 先静态分析
-                if rust_code:
-                    static_errors = static_analysis(rust_code)
-                    if static_errors:
-                        print(f"{depend_file} 静态分析错误:\n {static_errors}")
-                        # todo: 修复规划和修复
+            print(f"测试文件{problem_folder}的测试函数 {test_func} 的依赖项翻译完毕，开始翻译测试函数")
+            test_problem_name = os.path.splitext(os.path.basename(problem_folder.replace('-', '_')))[0]
+            temp_rust_test_file_path = os.path.join(rust_test_dir, f"{test_problem_name}.rs")
 
-                    # todo: 静态分析通过，更新上下文
-                    write_file_with_utf8(os.path.join(succeed_rust_dir, f"{depend_file}.rs"), rust_code)
+            start_byte = 0
+            if test_problem_name in translated_bytes:
+                start_byte = translated_bytes[test_problem_name]
+            funcs_codes, max_end_byte = code_decomposition(args.c_code_dir, test_problem_name, test_func, start_byte)
+            translated_bytes[test_problem_name] = max_end_byte
+            rust_test = convert_c_to_rust(funcs_codes, {}, temp_rust_test_file_path, c_to_rust_mappings)
 
-            # todo: 测试函数的所有依赖项翻译完毕，对测试函数进行翻译
-            # todo: 提供上下文
-            rust_test = convert_c_to_rust(test_func, context)
-
-            # todo: 构建测试环境
-            dynamic_errors = compile_and_test_rust(rust_test)
+            print(f"测试文件{problem_folder}的测试函数 {test_func} 的翻译完毕，开始动态测试")
+            dynamic_errors = compile_and_test_rust(rust_test, test_func, test_problem_name, rust_result_dir)
             if dynamic_errors:
                 print(f"{test_func} 动态测试错误:\n {dynamic_errors}")
                 # todo: 错误定位
                 # todo: 修复规划和修复
             
-            # todo: 动态测试通过，写入文件，更新上下文
-            write_file_with_utf8(os.path.join(succeed_rust_dir, f"{test_func}.rs"), rust_test)
 
 if __name__ == "__main__":
     process_files()

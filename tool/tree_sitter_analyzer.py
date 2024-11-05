@@ -310,6 +310,72 @@ def head_info_extraction(directory, file):
                 
     return header_info
 
+def extract_func_calls(c_code: str):
+    """
+    Extract function calls from C code(function-level) using tree-sitter.
+    """
+    tree = c_parser.parse(bytes(c_code, "utf8"))
+    root_node = tree.root_node
+
+    c_func_calls = []
+
+    def traverse_node(node):
+        if node.type == 'call_expression':
+            # Get the function name from the call expression
+            func_name = node.child_by_field_name('function')
+            if func_name:
+                c_func_calls.append(func_name.text.decode('utf-8'))
+        
+        # Recursively traverse child nodes
+        for child in node.children:
+            traverse_node(child)
+
+    # Start traversal from root
+    traverse_node(root_node)
+
+    # Remove duplicates while preserving order
+    c_func_calls = list(dict.fromkeys(c_func_calls))
+    return c_func_calls
+
+def extract_all_funcs(file: str):
+    """
+    Extract all function names from a C file.
+    """
+
+    # Read the file content
+    with open(file, 'r', encoding='utf-8') as f:
+        code = preprocess(f.read())
+
+    # Parse the code
+    tree = c_parser.parse(bytes(code, "utf8"))
+    root_node = tree.root_node
+    
+    func_names = []
+    
+    # Iterate through all top-level nodes
+    for node in root_node.children:
+        # Function definitions are either function_definition nodes directly
+        # or have function_definition as a child (in case of comments/attributes before function)
+        if node.type == 'function_definition':
+            declarator = node.child_by_field_name('declarator')
+            if declarator:
+                # Handle both direct function declarators and pointer function declarators
+                if declarator.type == 'function_declarator':
+                    func_name = declarator.child_by_field_name('declarator')
+                    if func_name:
+                        func_names.append(func_name.text.decode('utf-8'))
+                elif declarator.type == 'pointer_declarator':
+                    func_declarator = declarator.children[1] if len(declarator.children) > 1 else None
+                    if func_declarator and func_declarator.type == 'function_declarator':
+                        func_name = func_declarator.child_by_field_name('declarator')
+                        if func_name:
+                            func_names.append(func_name.text.decode('utf-8'))
+
+    return func_names
+
+
+
+
 if __name__ == "__main__":
     # Below are tests for various functionalities
     parser = argparse.ArgumentParser(description='Analyze C code dependencies and suggest translation order.')
@@ -327,13 +393,21 @@ if __name__ == "__main__":
     # # Get and print the suggested translation order
     # translation_order = get_translation_order(dependencies)
     # print("\nSuggested translation order:")
+    # count = 1
     # for i, file in enumerate(translation_order, 1):
-    #     print(f"{i}. {file}")
+    #     if file.startswith('test'):
+    #         print(f"{count}. {file}")
+    #         count += 1
 
     # test_funcs = extract_test_functions(os.path.join(args.directory, "test/test-arraylist.c"))
     # print(test_funcs)
 
     # includes = extract_func_dependencies(args.directory, "test\\test-arraylist.c", 'test_arraylist_append')
     # print(includes)
-    head_info = head_info_extraction(args.directory, "test-arraylist.c")
-    print(head_info)
+    # head_info = head_info_extraction(args.directory, "test-arraylist.c")
+    # print(head_info)
+    # Test extract_func_calls
+    # Test extract_all_funcs
+
+    funcs = extract_all_funcs("arraylist")
+    print("Found functions:", funcs)

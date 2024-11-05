@@ -40,7 +40,7 @@ def decompose(c_code: str):
 
     return blocks
 
-def code_decomposition(c_code_dir, depend_file, depend_funcs):
+def code_decomposition(c_code_dir, depend_file, depend_funcs, start_byte):
     """
     Decompose C code into blocks based on function boundaries.
     """
@@ -89,8 +89,10 @@ def code_decomposition(c_code_dir, depend_file, depend_funcs):
             max_end_byte = end
 
     # Extract the code from the start to the maximum end byte
-    extracted_code = code[:max_end_byte]
+    if start_byte >= max_end_byte:
+        return [], start_byte
+    extracted_code = code[start_byte:max_end_byte]
     blocks = decompose(extracted_code)
     
-    return blocks
+    return blocks, max_end_byte
     
