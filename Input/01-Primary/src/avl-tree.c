@@ -478,6 +478,43 @@ void avl_tree_remove_node(AVLTree *tree, AVLTreeNode *node)
 	avl_tree_balance_to_root(tree, balance_startpoint);
 }
 
+AVLTreeNode *avl_tree_lookup_node(AVLTree *tree, AVLTreeKey key)
+{
+	AVLTreeNode *node;
+	int diff;
+
+	/* Search down the tree and attempt to find the node which
+	 * has the specified key */
+
+	node = tree->root_node;
+
+	while (node != NULL)
+	{
+
+		diff = tree->compare_func(key, node->key);
+
+		if (diff == 0)
+		{
+
+			/* Keys are equal: return this node */
+
+			return node;
+		}
+		else if (diff < 0)
+		{
+			node = node->children[AVL_TREE_NODE_LEFT];
+		}
+		else
+		{
+			node = node->children[AVL_TREE_NODE_RIGHT];
+		}
+	}
+
+	/* Not found */
+
+	return NULL;
+}
+
 /* Remove a node by key */
 
 int avl_tree_remove(AVLTree *tree, AVLTreeKey key)
@@ -499,38 +536,6 @@ int avl_tree_remove(AVLTree *tree, AVLTreeKey key)
 	avl_tree_remove_node(tree, node);
 
 	return 1;
-}
-
-AVLTreeNode *avl_tree_lookup_node(AVLTree *tree, AVLTreeKey key)
-{
-	AVLTreeNode *node;
-	int diff;
-
-	/* Search down the tree and attempt to find the node which
-	 * has the specified key */
-
-	node = tree->root_node;
-
-	while (node != NULL) {
-
-		diff = tree->compare_func(key, node->key);
-
-		if (diff == 0) {
-
-			/* Keys are equal: return this node */
-
-			return node;
-
-		} else if (diff < 0) {
-			node = node->children[AVL_TREE_NODE_LEFT];
-		} else {
-			node = node->children[AVL_TREE_NODE_RIGHT];
-		}
-	}
-
-	/* Not found */
-
-	return NULL;
 }
 
 AVLTreeValue avl_tree_lookup(AVLTree *tree, AVLTreeKey key)

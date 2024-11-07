@@ -15,20 +15,6 @@ TODO:
     and completeness of the C code preprocessing.
 """
 import re
-# from tree_sitter import Language, Parser
-
-# TREE_SITTER_PATH = 'D:/code/python/tree-sitter/build/my-languages.so'
-# C_LANGUAGE = Language(TREE_SITTER_PATH, 'c')
-# c_parser = Parser()
-# c_parser.set_language(C_LANGUAGE)
-
-def remove_debug_blocks(code: str) -> str:
-    """
-    Remove #if 0 debug blocks from C code.
-    """
-    pattern = r'\n?\s*#if\s+0\s*\n(.*?)\n\s*#endif\n?'
-    preprocessed_code = re.sub(pattern, '\n', code, flags=re.DOTALL | re.MULTILINE)
-    return preprocessed_code
 
 def remove_copyright(code: str) -> str:
     """
@@ -37,6 +23,14 @@ def remove_copyright(code: str) -> str:
     copyright_pattern = r'^/\*(?:(?!\*/).)*Copyright(?:(?!\*/).)*\*/'
     code = re.sub(copyright_pattern, '', code, flags=re.DOTALL | re.MULTILINE)
     return code.lstrip()
+
+def remove_debug_blocks(code: str) -> str:
+    """
+    Remove #if 0 debug blocks from C code.
+    """
+    pattern = r'\n?\s*#if\s+0\s*\n(.*?)\n\s*#endif\n?'
+    preprocessed_code = re.sub(pattern, '\n', code, flags=re.DOTALL | re.MULTILINE)
+    return preprocessed_code
 
 def process_alloc_testing(code: str) -> str:
     """

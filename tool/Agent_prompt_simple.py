@@ -96,90 +96,99 @@ Rust: str.parse::<i32>()
 """
 #语法专家Prompt
 Syntax_prompt = """
-Convert C code to Rust using provided API mappings. 
+Convert C code to Rust using the function calls, provided API mappings. 
 Output only the converted Rust code without explanations.
+
 
 Example input:
 C code:
-#include <stdio.h>
-#include <stdlib.h>
-typedef struct {
-    int id;
-    char name[50];
-} Student;
-void print_students(Student* students, int count) {
-    for (int i = 0; i < count; i++) {
-        printf("ID: %d, Name: %s\n", students[i].id, students[i].name);
-    }
+void process_data(int a, int b, char* str) {
+    int sum = add(a, b);
+    int product = multiply(a, b);
+    char* reversed = reverse_string(str);
+    
+    printf("Sum: %d\n", sum);
+    printf("Product: %d\n", product);
+    printf("Reversed string: %s\n", reversed);
+
+    free(reversed);
 }
-int main() {
-    int n;
-    printf("Enter number of students: ");
-    scanf("%d", &n);
-    Student* students = (Student*)malloc(n * sizeof(Student));
-    if (students == NULL) {
-        printf("Memory allocation failed!\n");
-        return 1;
-    }
-    for (int i = 0; i < n; i++) {
-        printf("Enter ID and Name for student %d: ", i + 1);
-        scanf("%d %49s", &students[i].id, students[i].name);
-    }
-    print_students(students, n);
-    free(students);
-    return 0;
-}
+
+function calls:
+int add(int, int) -> add_in_rust(a: i32, b: i32) -> i32
+int multiply(int, int) -> multiply_in_rust(a: i32, b: i32) -> i32
+char* reverse_string(char*) -> reverse_string_in_rust(str: &str) -> String
+
 API mappings:
 C: printf
 Rust:print!
 
-C: scanf
-Rust: std::io::stdin().read_line(&mut String)
-
-C: malloc
-Rust: Vec::with_capacity(size)
-
 C: free
 Rust:(automatically managed, no explicit call needed)
 
-C: typedef
-Rust: struct
-
-C: void function()
-Rust: fn function()
 
 Example output:
-use std::io;
-struct Student {
-    id: i32,
-    name: String,
-}
-fn print_students(students: &[Student]) {
-    for student in students {
-        println!("ID: {}, Name: {}", student.id, student.name);
-    }
-}
-fn main() {
-    let mut n = String::new();
-    println!("Enter number of students: ");
-    io::stdin().read_line(&mut n).expect("Failed to read line");
-    let n: usize = n.trim().parse().expect("Please enter a number");
-
-    let mut students = Vec::with_capacity(n);
+pub fn process_data(a: i32, b: i32, str: &str) {
+    let sum = add_in_rust(a, b);
+    let product = multiply_in_rust(a, b);
+    let reversed = reverse_string_in_rust(str);
     
-    for i in 0..n {
-        let mut input = String::new();
-        println!("Enter ID and Name for student {}: ", i + 1);
-        io::stdin().read_line(&mut input).expect("Failed to read line");
-        let parts: Vec<&str> = input.trim().split_whitespace().collect();
-        let id: i32 = parts[0].parse().expect("Please enter a valid ID");
-        let name = parts[1].to_string();
-        students.push(Student { id, name });
-    }
+    print!("Sum: {}\n", sum);
+    print!("Product: {}\n", product);
+    print!("Reversed string: {}\n", reversed);
 
-    print_students(&students);
+    drop(reversed);
+}
+"""
+Syntax_prompt_2 = """
+Convert C code to Rust. 
+Output only the converted Rust code without explanations.
+
+
+Example input:
+C code:
+#define MAX_BUFFER 1024
+#define PI 3.14159
+typedef struct _Data Data;
+struct _Data {
+    int value;
+    char* description;
+};
+struct Config {
+    int flag;
+    float threshold;
+};
+enum Status {
+    SUCCESS,
+    ERROR,
+    PENDING
+};
+typedef unsigned char byte;
+extern int global_variable;
+
+Example output:
+pub const MAX_BUFFER: usize = 1024;
+pub const PI: f64 = 3.14159;
+
+pub struct Data {
+    pub value: i32,
+    pub description: String,
 }
 
+pub struct Config {
+    pub flag: i32,
+    pub threshold: f64,
+}
+
+pub enum Status {
+    SUCCESS,
+    ERROR,
+    PENDING,
+}
+
+pub type byte = u8;
+
+pub static mut GLOBAL_VARIABLE: i32 = 0;
 """
 #反馈专家Prompt
 Feedback_prompt = """
@@ -333,6 +342,89 @@ fn main() {
         println!("Index out of bounds");
     }
 }
+Please ensure the optimized code resolves all error issues mentioned in the feedback, and keep the code clear and concise.
+Completely ignore any warnings.
+"""
+Optimize_prompt_2 = """
+Optimize the given Rust code based on the provided feedback. 
+The feedback may involve static analysis errors, compilation errors, or output mismatches.
+
+Note: For static analysis results, only consider error-level issues and completely ignore warnings.
+
+Feedback:
+[Detailed feedback content]
+
+Rust code:
+###file i###
+[Rust code]
+
+Please provide the complete optimized Rust code directly, including all necessary comments. No additional explanations are needed.
+
+Example 1 (Static analysis error):
+
+Feedback:
+1.Issue: Type mismatch error Location: Line 4 let x: i32 = "world"; Suggestion: Use the correct type according to the actual requirement.  
+2.Issue: Division by zero Location: Line 8 let result = z / y; Suggestion: Ensure the divisor is not zero before performing the division.  
+3.Issue: Borrow checker error Location: Line 12 println!("{}", s); Suggestion: Ensure the variable is not moved or borrowed in a way that violates Rust's borrowing rules.  
+4.Issue: Index out of bounds Location: Line 15 println!("{}", arr[10]); Suggestion: Ensure the index is within the bounds of the array.
+
+Rust code:
+###file 1###
+fn foo(z: i32){
+    let x: i32 = "world";
+    let y = 0;
+    let result = z / y;
+    println!("Result is: {}", result);
+
+    let s = String::from("hello");
+    println!("{}", s);
+    println!("{}", s);
+
+    let arr = [1, 2, 3, 4, 5];
+    println!("{}", arr[10]);
+    return result;
+}
+
+###file 2###
+#[test]
+pub fn test_foo() {
+    assert_eq!(foo(10), 10);
+    assert_eq!(foo(0), 0);
+}
+
+Example output 1:
+###file 1###
+fn foo(z: i32){
+    // Modified: Changed string type to i32, assuming we need an integer
+    let x: i32 = 42;
+    println!("x = {}", x);
+
+    let y = 1; // Modified: Ensure the divisor is not zero
+    let result = z / y;
+    println!("Result is: {}", result);
+
+    let s = String::from("hello");
+    println!("{}", s);
+    // Modified: Avoid double borrowing by cloning the string
+    println!("{}", s.clone());
+
+    let arr = [1, 2, 3, 4, 5];
+    // Modified: Ensure the index is within the bounds of the array
+    if arr.len() > 10 {
+        println!("{}", arr[10]);
+    } else {
+        println!("Index out of bounds");
+    }
+    return result;
+}
+
+###file 2###
+#[test]
+pub fn test_foo() {
+    assert_eq!(foo(10), 10);
+    assert_eq!(foo(0), 0);
+}
+
 Please ensure the optimized code resolves all error issues mentioned in the feedback, and keep the code clear and concise.
 Completely ignore any warnings.
 """

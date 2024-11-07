@@ -5,6 +5,7 @@ The script implements a custom topological sort algorithm to order the dependenc
 Output includes a list of files found and the topologically sorted list of files.
 """
 import os
+import re
 import argparse
 
 from tree_sitter_c_config import c_parser
@@ -110,12 +111,9 @@ def analyze_directory(directory):
 
 def extract_test_functions(file):
     """
-    Extract test functions from a C test file and return them in the order they appear in the test array.
-    The function looks for both function definitions starting with 'test_' and a static test array 
-    that defines the execution order.
+    Extract test functions from a C test file and return them in the order they appear.
     """
     test_functions = []
-    test_array = []
     
     with open(file, 'rb') as f:
         tree = c_parser.parse(f.read())
@@ -130,38 +128,7 @@ def extract_test_functions(file):
             func_name = func_decl.children[0].text.decode('utf-8')
             if func_name.startswith('test_'):
                 test_functions.append(func_name)
-        
-        # Extract test array that defines execution order
-        elif node.type == 'declaration':
-            for child in node.children:
-                if child.type == 'init_declarator':
-                    for subchild in child.children:
-                        if subchild.type == 'array_declarator' and subchild.text.decode('utf-8') == 'tests[]':
-                            initializer = [c for c in child.children if c.type == 'initializer_list'][0]
-                            for init_child in initializer.children:
-                                if init_child.type == 'identifier':
-                                    test_array.append(init_child.text.decode('utf-8'))
 
-    # Check if extracted test functions match test array    
-    if test_array:        
-        if test_array[-1] == 'NULL':
-            test_array.pop()
-            
-        if set(test_array) == set(test_functions):
-            return test_functions
-
-        test_functions = [f for f in test_functions if f in test_array]
-        
-        for i, func in enumerate(test_array):
-            if func not in test_functions:
-                insert_pos = i
-                for j in range(i):
-                    if test_array[j] not in test_functions:
-                        insert_pos -= 1
-                test_functions.insert(insert_pos, func)
-                
-        return test_functions
-    
     return test_functions
 
 def extract_func_dependencies(directory, test_file, func):
@@ -203,11 +170,14 @@ def extract_func_dependencies(directory, test_file, func):
     for node in tree.root_node.children:
         if node.type == 'function_definition':
             func_decl = node.child_by_field_name('declarator')
-            if func_decl and func_decl.type == 'function_declarator':
+            if func_decl.type == 'function_declarator':
                 func_name = func_decl.child_by_field_name('declarator')
-                if func_name and func_name.text.decode('utf-8') == func:
-                    func_code = node.text.decode('utf-8')
-                    break
+            elif func_decl.type == 'pointer_declarator':
+                func_name = func_decl.children[1].child_by_field_name('declarator')
+
+            if func_name and func_name.text.decode('utf-8') == func:
+                func_code = node.text.decode('utf-8')
+                break
 
     # Build mapping of include file to function declarations
     include_functions = {}
@@ -244,8 +214,8 @@ def extract_func_dependencies(directory, test_file, func):
             for func_name in funcs:
                 if func_name in func_code:
                     used.append(func_name)
-            if used:
-                used_functions[include] = used
+
+            used_functions[os.path.splitext(include)[0]] = used
 
     return used_functions
     
@@ -256,7 +226,7 @@ def head_info_extraction(directory, file):
     """
     # Locate target C file path
     file_path = None 
-    file = os.path.splitext(file)[0] + '.c'
+    file = file + '.c'
     for root, dirs, files in os.walk(directory):
         if file in files:
             file_path = os.path.join(root, file)
@@ -304,8 +274,8 @@ def head_info_extraction(directory, file):
                                       declarator.children[1].type == 'function_declarator')):
                         start_byte = node.start_byte
                         code = header_code[:start_byte].strip()
-                        if code:
-                            header_info[include] = code
+
+                        header_info[include] = code
                         break
                 
     return header_info
@@ -357,20 +327,8 @@ def extract_all_funcs(file: str):
         # Function definitions are either function_definition nodes directly
         # or have function_definition as a child (in case of comments/attributes before function)
         if node.type == 'function_definition':
-            declarator = node.child_by_field_name('declarator')
-            if declarator:
-                # Handle both direct function declarators and pointer function declarators
-                if declarator.type == 'function_declarator':
-                    func_name = declarator.child_by_field_name('declarator')
-                    if func_name:
-                        func_names.append(func_name.text.decode('utf-8'))
-                elif declarator.type == 'pointer_declarator':
-                    func_declarator = declarator.children[1] if len(declarator.children) > 1 else None
-                    if func_declarator and func_declarator.type == 'function_declarator':
-                        func_name = func_declarator.child_by_field_name('declarator')
-                        if func_name:
-                            func_names.append(func_name.text.decode('utf-8'))
-
+            func_names.append(node.text.decode('utf-8').split('{')[0].strip())
+            
     return func_names
 
 
@@ -382,22 +340,21 @@ if __name__ == "__main__":
     parser.add_argument('--directory', default='./Input/01-Primary', type=str, help='Directory path to analyze')
     args = parser.parse_args()
 
-    # # Analyze the directory and get dependencies
-    # dependencies = analyze_directory(args.directory)
+    # Analyze the directory and get dependencies
+    dependencies = analyze_directory(args.directory)
 
-    # # Print files and their dependencies
-    # print("\nFiles and their dependencies:")
-    # for file, deps in dependencies.items():
-    #     print(f"  {file}: {deps}")
+    # Print files and their dependencies
+    print("\nFiles and their dependencies:")
+    for file, deps in dependencies.items():
+        print(f"  {file}: {deps}")
 
-    # # Get and print the suggested translation order
-    # translation_order = get_translation_order(dependencies)
-    # print("\nSuggested translation order:")
-    # count = 1
-    # for i, file in enumerate(translation_order, 1):
-    #     if file.startswith('test'):
-    #         print(f"{count}. {file}")
-    #         count += 1
+    # Get and print the suggested translation order
+    translation_order = get_translation_order(dependencies)
+    print("\nSuggested translation order:")
+    count = 1
+    for i, file in enumerate(translation_order, 1):
+        print(f"{count}. {file}")
+        count += 1
 
     # test_funcs = extract_test_functions(os.path.join(args.directory, "test/test-arraylist.c"))
     # print(test_funcs)
@@ -409,5 +366,53 @@ if __name__ == "__main__":
     # Test extract_func_calls
     # Test extract_all_funcs
 
-    funcs = extract_all_funcs("arraylist")
-    print("Found functions:", funcs)
+    # funcs = extract_all_funcs("arraylist")
+    # print("Found functions:", funcs)
+    
+    # # Test saving parse tree for rb-tree.c in a more readable format
+    # rb_tree_path = os.path.join(args.directory, "src/rb-tree.c")
+    # with open(rb_tree_path, 'r', encoding='utf-8') as f:
+    #     tree = c_parser.parse(bytes(f.read(), 'utf-8'))
+    
+    # def print_tree(node, level=0):
+    #     # Create indentation based on level
+    #     indent = "  " * level
+        
+    #     # Print current node type and text if it's a token
+    #     if len(node.children) == 0:  # It's a token
+    #         return f"{indent}{node.type}: {node.text.decode('utf-8')}\n"
+    #     else:
+    #         result = f"{indent}{node.type}"
+    #         if node.text:
+    #             result += f": {node.text.decode('utf-8')}"
+    #         result += "\n"
+    #         # Recursively print all children
+    #         for child in node.children:
+    #             result += print_tree(child, level + 1)
+    #         return result
+            
+    # # Save the tree in a more readable format
+    # with open('rb_tree_ast.txt', 'w', encoding='utf-8') as f:
+    #     f.write(print_tree(tree.root_node))
+    
+    # print(f"Saved readable rb-tree.c AST to rb_tree_ast.txt")
+    # Test extract_func_calls
+    # test_code = """
+    # void test_func() {
+    #     int x = add(1, 2);
+    #     printf("Result: %d\n", x);
+    #     char* str = malloc(10);
+    #     strcpy(str, "test");
+    #     free(str);
+    #     convert_to_rust();
+    #     convert_c_to_rust(str);
+    # }
+    # """
+    # func_calls = extract_func_calls(test_code)
+    # print("\nTesting extract_func_calls:")
+    # print("Input code:")
+    # print(test_code)
+    # print("\nExtracted function calls:", func_calls)
+    # 输入字符串
+    
+    

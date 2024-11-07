@@ -174,29 +174,29 @@ void sortedarray_free(SortedArray *sortedarray)
 	}
 }
 
-void sortedarray_remove(SortedArray *sortedarray, unsigned int index)
-{
-	/* same as remove range of length 1 */
-	sortedarray_remove_range(sortedarray, index, 1);
-}
-
 void sortedarray_remove_range(SortedArray *sortedarray, unsigned int index,
-                              unsigned int length)
+							  unsigned int length)
 {
 	/* removal does not violate sorted property */
 
 	/* check if valid range */
-	if (index > sortedarray->length || index + length > sortedarray->length) {
+	if (index > sortedarray->length || index + length > sortedarray->length)
+	{
 		return;
 	}
 
 	/* move entries back */
 	memmove(&sortedarray->data[index],
-	        &sortedarray->data[index + length],
-	        (sortedarray->length - (index + length)) 
-	              * sizeof(SortedArrayValue));
+			&sortedarray->data[index + length],
+			(sortedarray->length - (index + length)) * sizeof(SortedArrayValue));
 
 	sortedarray->length -= length;
+}
+
+void sortedarray_remove(SortedArray *sortedarray, unsigned int index)
+{
+	/* same as remove range of length 1 */
+	sortedarray_remove_range(sortedarray, index, 1);
 }
 
 int sortedarray_insert(SortedArray *sortedarray, SortedArrayValue data)

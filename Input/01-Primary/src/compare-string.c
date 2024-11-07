@@ -46,13 +46,6 @@ int string_compare(void *string1, void *string2)
 	}
 }
 
-/* Comparison functions for strings, which ignore the case of letters. */
-
-int string_nocase_equal(void *string1, void *string2)
-{
-	return string_nocase_compare((char *) string1, (char *) string2) == 0;
-}
-
 /* On many systems, strcasecmp or stricmp will give the same functionality
  * as this function.  However, it is non-standard and cannot be relied
  * on to be present. */
@@ -65,21 +58,26 @@ int string_nocase_compare(void *string1, void *string2)
 
 	/* Iterate over each character in the strings */
 
-	p1 = (char *) string1;
-	p2 = (char *) string2;
+	p1 = (char *)string1;
+	p2 = (char *)string2;
 
-	for (;;) {
+	for (;;)
+	{
 
 		c1 = tolower(*p1);
 		c2 = tolower(*p2);
 
-		if (c1 != c2) {
+		if (c1 != c2)
+		{
 
 			/* Strings are different */
 
-			if (c1 < c2) {
+			if (c1 < c2)
+			{
 				return -1;
-			} else {
+			}
+			else
+			{
 				return 1;
 			}
 		}
@@ -98,6 +96,13 @@ int string_nocase_compare(void *string1, void *string2)
 	/* Reached the end of string and no difference found */
 
 	return 0;
+}
+
+/* Comparison functions for strings, which ignore the case of letters. */
+
+int string_nocase_equal(void *string1, void *string2)
+{
+	return string_nocase_compare((char *) string1, (char *) string2) == 0;
 }
 
 

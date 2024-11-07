@@ -411,6 +411,102 @@ SetValue *set_to_array(Set *set)
 	return array;
 }
 
+void set_iterate(Set *set, SetIterator *iter)
+{
+	unsigned int chain;
+
+	iter->set = set;
+	iter->next_entry = NULL;
+
+	/* Find the first entry */
+
+	for (chain = 0; chain < set->table_size; ++chain)
+	{
+
+		/* There is a value at the start of this chain */
+
+		if (set->table[chain] != NULL)
+		{
+			iter->next_entry = set->table[chain];
+			break;
+		}
+	}
+
+	iter->next_chain = chain;
+}
+
+SetValue set_iter_next(SetIterator *iterator)
+{
+	Set *set;
+	SetValue result;
+	SetEntry *current_entry;
+	unsigned int chain;
+
+	set = iterator->set;
+
+	/* No more entries? */
+
+	if (iterator->next_entry == NULL)
+	{
+		return SET_NULL;
+	}
+
+	/* We have the result immediately */
+
+	current_entry = iterator->next_entry;
+	result = current_entry->data;
+
+	/* Advance next_entry to the next SetEntry in the Set. */
+
+	if (current_entry->next != NULL)
+	{
+
+		/* Use the next value in this chain */
+
+		iterator->next_entry = current_entry->next;
+	}
+	else
+	{
+
+		/* Default value if no valid chain is found */
+
+		iterator->next_entry = NULL;
+
+		/* No more entries in this chain.  Search the next chain */
+
+		chain = iterator->next_chain + 1;
+
+		while (chain < set->table_size)
+		{
+
+			/* Is there a chain at this table entry? */
+
+			if (set->table[chain] != NULL)
+			{
+
+				/* Valid chain found! */
+
+				iterator->next_entry = set->table[chain];
+
+				break;
+			}
+
+			/* Keep searching until we find an empty chain */
+
+			++chain;
+		}
+
+		iterator->next_chain = chain;
+	}
+
+	return result;
+}
+
+int set_iter_has_more(SetIterator *iterator)
+{
+	return iterator->next_entry != NULL;
+}
+
 Set *set_union(Set *set1, Set *set2)
 {
 	SetIterator iterator;
@@ -510,94 +606,5 @@ Set *set_intersection(Set *set1, Set *set2)
 	}
 
 	return new_set;
-}
-
-void set_iterate(Set *set, SetIterator *iter)
-{
-	unsigned int chain;
-
-	iter->set = set;
-	iter->next_entry = NULL;
-
-	/* Find the first entry */
-
-	for (chain = 0; chain < set->table_size; ++chain) {
-
-		/* There is a value at the start of this chain */
-
-		if (set->table[chain] != NULL) {
-			iter->next_entry = set->table[chain];
-			break;
-		}
-	}
-
-	iter->next_chain = chain;
-}
-
-SetValue set_iter_next(SetIterator *iterator)
-{
-	Set *set;
-	SetValue result;
-	SetEntry *current_entry;
-	unsigned int chain;
-
-	set = iterator->set;
-
-	/* No more entries? */
-
-	if (iterator->next_entry == NULL) {
-		return SET_NULL;
-	}
-
-	/* We have the result immediately */
-
-	current_entry = iterator->next_entry;
-	result = current_entry->data;
-
-	/* Advance next_entry to the next SetEntry in the Set. */
-
-	if (current_entry->next != NULL) {
-
-		/* Use the next value in this chain */
-
-		iterator->next_entry = current_entry->next;
-
-	} else {
-
-		/* Default value if no valid chain is found */
-
-		iterator->next_entry = NULL;
-
-		/* No more entries in this chain.  Search the next chain */
-
-		chain = iterator->next_chain + 1;
-
-		while (chain < set->table_size) {
-
-			/* Is there a chain at this table entry? */
-
-			if (set->table[chain] != NULL) {
-
-				/* Valid chain found! */
-
-				iterator->next_entry = set->table[chain];
-
-				break;
-			}
-
-			/* Keep searching until we find an empty chain */
-
-			++chain;
-		}
-
-		iterator->next_chain = chain;
-	}
-
-	return result;
-}
-
-int set_iter_has_more(SetIterator *iterator)
-{
-	return iterator->next_entry != NULL;
 }
 

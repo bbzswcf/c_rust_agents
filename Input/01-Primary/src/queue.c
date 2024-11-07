@@ -59,6 +59,52 @@ Queue *queue_new(void)
 	return queue;
 }
 
+int queue_is_empty(Queue *queue)
+{
+	return queue->head == NULL;
+}
+
+QueueValue queue_pop_head(Queue *queue)
+{
+	QueueEntry *entry;
+	QueueValue result;
+
+	/* Check the queue is not empty */
+
+	if (queue_is_empty(queue))
+	{
+		return QUEUE_NULL;
+	}
+
+	/* Unlink the first entry from the head of the queue */
+
+	entry = queue->head;
+	queue->head = entry->next;
+	result = entry->data;
+
+	if (queue->head == NULL)
+	{
+
+		/* If doing this has unlinked the last entry in the queue, set
+		 * tail to NULL as well. */
+
+		queue->tail = NULL;
+	}
+	else
+	{
+
+		/* The new first in the queue has no previous entry */
+
+		queue->head->prev = NULL;
+	}
+
+	/* Free back the queue entry structure */
+
+	free(entry);
+
+	return result;
+}
+
 void queue_free(Queue *queue)
 {
 	/* Empty the queue */
@@ -111,43 +157,6 @@ int queue_push_head(Queue *queue, QueueValue data)
 	}
 
 	return 1;
-}
-
-QueueValue queue_pop_head(Queue *queue)
-{
-	QueueEntry *entry;
-	QueueValue result;
-
-	/* Check the queue is not empty */
-
-	if (queue_is_empty(queue)) {
-		return QUEUE_NULL;
-	}
-
-	/* Unlink the first entry from the head of the queue */
-
-	entry = queue->head;
-	queue->head = entry->next;
-	result = entry->data;
-
-	if (queue->head == NULL) {
-
-		/* If doing this has unlinked the last entry in the queue, set
-		 * tail to NULL as well. */
-
-		queue->tail = NULL;
-	} else {
-
-		/* The new first in the queue has no previous entry */
-
-		queue->head->prev = NULL;
-	}
-
-	/* Free back the queue entry structure */
-
-	free(entry);
-
-	return result;
 }
 
 QueueValue queue_peek_head(Queue *queue)
@@ -245,10 +254,5 @@ QueueValue queue_peek_tail(Queue *queue)
 	} else {
 		return queue->tail->data;
 	}
-}
-
-int queue_is_empty(Queue *queue)
-{
-	return queue->head == NULL;
 }
 

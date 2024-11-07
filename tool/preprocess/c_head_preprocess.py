@@ -43,6 +43,7 @@ def head_preprocess(code: str) -> str:
     code = remove_cpp_guards(code)
     return code
 
+
 def node_to_dict(node):
     """Convert a tree-sitter node to a dictionary format."""
     result = {

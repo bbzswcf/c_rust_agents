@@ -1,11 +1,12 @@
 # 设置Agent
+import os
 from Agent_prompt_simple import *
 from openai import OpenAI
 
-siliconflow_key = "sk-rawkqgnttfoqtgivkdtisvzsaymhmhtrshrfdaolsiahfbjt"
+siliconflow_key = os.getenv("siliconflow_key")
 siliconflow_base_url = "https://api.siliconflow.cn/v1"
 
-deepseek_key = "sk-764372d3e899489480a9a0deda637953"
+deepseek_key = os.getenv("deepseek_key")
 deepseek_base_url = "https://api.deepseek.com/beta"
 client = OpenAI(api_key=siliconflow_key, base_url=siliconflow_base_url)
 
@@ -57,6 +58,14 @@ syntax_agent = Agent(
     temperature=0.2,
     top_p=0.9
 )
+
+syntax_agent_2 = Agent(
+    role="Syntax Conversion Expert",
+    prompt=Syntax_prompt_2,
+    temperature=0.2,
+    top_p=0.9
+)
+
 feedback_agent = Agent(
     role="Feedback Expert",
     prompt=Feedback_prompt,
@@ -65,5 +74,10 @@ feedback_agent = Agent(
 optimize_agent = Agent(
     role="optimize Expert",
     prompt=Optimize_prompt,
+    temperature=0.2,
+    top_p=0.9)
+optimize_agent_2 = Agent(
+    role="optimize Expert",
+    prompt=Optimize_prompt_2,
     temperature=0.2,
     top_p=0.9)
