@@ -3,10 +3,10 @@ import os
 from Agent_prompt_simple import *
 from openai import OpenAI
 
-siliconflow_key = os.getenv("siliconflow_key")
+siliconflow_key = os.getenv("SILICONFLOW_KEY")
 siliconflow_base_url = "https://api.siliconflow.cn/v1"
 
-deepseek_key = os.getenv("deepseek_key")
+deepseek_key = os.getenv("DEEPSEEK_KEY")
 deepseek_base_url = "https://api.deepseek.com/beta"
 client = OpenAI(api_key=siliconflow_key, base_url=siliconflow_base_url)
 

@@ -271,6 +271,7 @@ def convert_c_funcs_to_rust(c_file: str, c_codes: list[str], rust_code_file: str
         
     return "\n".join(rust_codes)
 
+
 def convert_c_initialization_to_rust(c_file: str, c_code: str, head_infos: dict, depend_files: list[str], 
                                      c_to_rust_mappings: dict, rust_code_file: str, rust_result_dir: str) -> str:  
     # Remove all #include statements from c_code and add use statements for depend_files
@@ -524,8 +525,7 @@ def process_files():
 
             while test_count < max_test_count:
                 test_count += 1
-                test_success, dynamic_errors = compile_and_test_rust(rust_test, test_func, test_file_name.replace('-', '_'), 
-                                                                     args.output_dir)
+                test_success, dynamic_errors = compile_and_test_rust(rust_test, test_func, test_file_name.replace('-', '_'),  args.output_dir)
                 if test_success and not dynamic_errors:
                     logging.info("编译和测试成功")
                     successful_test_count += 1

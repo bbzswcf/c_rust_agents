@@ -1,9 +1,1 @@
-pub mod hash_pointer;
-pub mod hash_int;
-pub mod hash_string;
-pub mod hash_pointer;
-pub mod hash_int;
-pub mod hash_string;
-pub mod hash_pointer;
-pub mod hash_int;
-pub mod hash_string;
+pub mod arraylist;
