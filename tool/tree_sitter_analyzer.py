@@ -9,8 +9,7 @@ import re
 import argparse
 
 from tree_sitter_c_config import c_parser
-from preprocess.c_head_preprocess import head_preprocess
-from preprocess.c_code_preprocess import preprocess
+from c_code_preprocess import preprocess, head_preprocess
 
 # Files to exclude from dependency analysis
 # These are common test framework files that don't need translation
@@ -340,21 +339,21 @@ if __name__ == "__main__":
     parser.add_argument('--directory', default='./Input/01-Primary', type=str, help='Directory path to analyze')
     args = parser.parse_args()
 
-    # Analyze the directory and get dependencies
-    dependencies = analyze_directory(args.directory)
+    # # Analyze the directory and get dependencies
+    # dependencies = analyze_directory(args.directory)
 
-    # Print files and their dependencies
-    print("\nFiles and their dependencies:")
-    for file, deps in dependencies.items():
-        print(f"  {file}: {deps}")
+    # # Print files and their dependencies
+    # print("\nFiles and their dependencies:")
+    # for file, deps in dependencies.items():
+    #     print(f"  {file}: {deps}")
 
-    # Get and print the suggested translation order
-    translation_order = get_translation_order(dependencies)
-    print("\nSuggested translation order:")
-    count = 1
-    for i, file in enumerate(translation_order, 1):
-        print(f"{count}. {file}")
-        count += 1
+    # # Get and print the suggested translation order
+    # translation_order = get_translation_order(dependencies)
+    # print("\nSuggested translation order:")
+    # count = 1
+    # for i, file in enumerate(translation_order, 1):
+    #     print(f"{count}. {file}")
+    #     count += 1
 
     # test_funcs = extract_test_functions(os.path.join(args.directory, "test/test-arraylist.c"))
     # print(test_funcs)
@@ -414,4 +413,3 @@ if __name__ == "__main__":
     # print(test_code)
     # print("\nExtracted function calls:", func_calls)
     # 输入字符串
-        

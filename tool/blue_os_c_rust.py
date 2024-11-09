@@ -123,9 +123,10 @@ def static_analysis(rust_result_dir: str, rust_file: str) -> str:
             encoding="utf-8"
         )
         # Remove the temporary main function
-        content = read_file_with_auto_encoding(rust_file)
-        content = content.replace("\nfn main() {}", "")
-        write_file_with_utf8(rust_file, content)
+        remove_size = len("\nfn main() {}")
+        original_size = os.path.getsize(rust_file)
+        with open(rust_file, 'w', encoding='utf-8') as f:
+            f.truncate(original_size - remove_size)
     else:
         clippy_result = subprocess.run(
             ["cargo", "clippy", "--manifest-path", cargo_toml_dir],
@@ -133,6 +134,12 @@ def static_analysis(rust_result_dir: str, rust_file: str) -> str:
             text=True,
             encoding="utf-8"
         )
+
+    if os.path.exists(os.path.splitext(os.path.basename(rust_file))[0]+".exe"):
+        os.remove(os.path.splitext(os.path.basename(rust_file))[0]+".exe")
+    if os.path.exists(os.path.splitext(os.path.basename(rust_file))[0]+".pdb"):
+        os.remove(os.path.splitext(os.path.basename(rust_file))[0]+".pdb")
+
     logging.info("静态分析结果：")
     logging.info(clippy_result.stdout+clippy_result.stderr)
     issues = []
@@ -178,7 +185,7 @@ def convert_c_funcs_to_rust(c_file: str, c_codes: list[str], rust_code_file: str
         return ""
 
     rust_codes = []
-    for c_code in c_codes:
+    for c_code, c_func_signature in zip(c_codes, func_signatures):
         logging.info("开始API转换")
         api_conversion = api_agent.generate_response(
             f"""\nExtract and convert only the C-specific APIs to their Rust equivalents:\n{c_code}\n"""
@@ -214,8 +221,10 @@ def convert_c_funcs_to_rust(c_file: str, c_codes: list[str], rust_code_file: str
         rust_code = syntax_agent.generate_response(combined_syntax_input)
         logging.info(rust_code)
         rust_code = extract_rust_code(rust_code)
+
+        original_size = os.path.getsize(rust_code_file)
         # Add #[test] attribute if this is a test file
-        if "test" in rust_code_file:
+        if "test" in rust_code_file and "test" in c_func_signature:
             rust_code = "#[test]\n" + rust_code
         insert_file_with_utf8(rust_code_file, rust_code)
 
@@ -244,8 +253,9 @@ def convert_c_funcs_to_rust(c_file: str, c_codes: list[str], rust_code_file: str
 
                 new_rust_code = extract_rust_code(optimized)
                 if new_rust_code.strip():
-                    current_content = read_file_with_auto_encoding(rust_code_file)
-                    write_file_with_utf8(rust_code_file, current_content.replace(rust_code, new_rust_code))
+                    with open(rust_code_file, 'r+') as f:
+                        f.truncate(original_size)
+                    insert_file_with_utf8(rust_code_file, new_rust_code)
                     rust_code = new_rust_code
                     logging.info(f"代码已针对静态分析进行优化 #{static_analysis_count}\n")
                 else:
@@ -259,14 +269,7 @@ def convert_c_funcs_to_rust(c_file: str, c_codes: list[str], rust_code_file: str
                 rust_codes.append(rust_code)
                 rust_signatures = re.findall(r'pub\s+fn\s+([a-zA-Z0-9_]+\s*\([^)]*\)(?:\s*->\s*[^{]+)?)', rust_code)
                 # 更新c_to_rust_mappings
-                if rust_signatures:
-                    c_func_name = ''
-                    for c_func in func_signatures:
-                        if c_func in c_code:
-                            c_func_name = c_func
-                            break
-                    if c_func_name:
-                        c_to_rust_mappings[c_file][c_func_name] = rust_signatures[0]
+                c_to_rust_mappings[c_file][c_func_signature] = rust_signatures[0]
                 break
         
     return "\n".join(rust_codes)
@@ -297,6 +300,7 @@ def convert_c_initialization_to_rust(c_file: str, c_code: str, head_infos: dict,
     rust_code = syntax_agent_2.generate_response(combined_syntax_input)
     logging.info(rust_code)
     rust_code = extract_rust_code(rust_code)
+    original_size = os.path.getsize(rust_code_file)
     insert_file_with_utf8(rust_code_file, rust_code)
 
     max_static_analysis_and_test_attempts = 7
@@ -324,8 +328,9 @@ def convert_c_initialization_to_rust(c_file: str, c_code: str, head_infos: dict,
 
             new_rust_code = extract_rust_code(optimized)
             if new_rust_code.strip():
-                current_content = read_file_with_auto_encoding(rust_code_file)
-                write_file_with_utf8(rust_code_file, current_content.replace(rust_code, new_rust_code))
+                with open(rust_code_file, 'r+') as f:
+                    f.truncate(original_size)
+                insert_file_with_utf8(rust_code_file, new_rust_code)
                 rust_code = new_rust_code
                 logging.info(f"代码已针对静态分析进行优化 #{static_analysis_count}\n")
             else:
@@ -433,11 +438,12 @@ def process_files():
                 rust_file_path = os.path.join(rust_code_dir, f"{depend_file.replace('-', '_')}.rs")
 
                 rust_mod_name = os.path.splitext(os.path.basename(rust_file_path))[0]
-                with open(lib_file_path, 'a', encoding='utf-8', errors='ignore') as file:
-                    file.write(f"pub mod {rust_mod_name};\n")
                 if not os.path.exists(rust_file_path):                    
                     with open(rust_file_path, 'w', encoding='utf-8') as f:
                         f.write("")
+                current_content = read_file_with_auto_encoding(lib_file_path)
+                if f"pub mod {rust_mod_name};" not in current_content:
+                    insert_file_with_utf8(lib_file_path, f"pub mod {rust_mod_name};\n")
 
                 if not depend_funcs:
                     continue
@@ -531,7 +537,7 @@ def process_files():
                     successful_test_count += 1
                     break
                 
-                logging.info(f"{test_func} 测试错误:\n {dynamic_errors}")
+                logging.info(f"{test_func} 测试错误\n")
 
                 # 编译失败或输出不匹配，进行优化
                 logging.info("编译失败或者输出不匹配，继续优化")
@@ -539,7 +545,7 @@ def process_files():
                 feedback_input += f"""{sanitize_string(dynamic_errors)}\nRust code:\n"""
 
                 for depend_file_name, rust_code_segment in rust_codes.items():
-                    feedback_input += f"""\n{sanitize_string(rust_code_segment)}\n########################################################"""
+                    feedback_input += f"""\n{sanitize_string(rust_code_segment)}\n"""
                     
                 feedback_input += """\nPlease provide specific fix suggestions, but do not generate improved code."""
                 logging.info(f"修复规划专家prompt: {feedback_input}")
@@ -559,7 +565,6 @@ def process_files():
                 logging.info(optimized)
                 new_rust_code = optimized
                 if new_rust_code.strip():
-
                     optimized_rust_codes = re.split(r'###file \d+###', new_rust_code)[1:]
                     for i, optimized_file_name in enumerate(rust_codes.keys()):
                         # Find the actual file path for optimized_file_name in output directory

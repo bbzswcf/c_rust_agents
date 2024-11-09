@@ -3,7 +3,7 @@ This script decomposes C code into blocks based on function boundaries.
 """
 import os
 
-from preprocess.c_code_preprocess import preprocess
+from c_code_preprocess import preprocess
 from tree_sitter_c_config import c_parser
 
 def decompose(c_code: str):
