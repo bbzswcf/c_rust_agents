@@ -1,3 +1,5 @@
 test1*/
 __pycache__/
 c_rust_agents.egg-info/
+logs/
+Output/primary/
