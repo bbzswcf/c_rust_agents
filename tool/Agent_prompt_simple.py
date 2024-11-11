@@ -355,7 +355,9 @@ Feedback:
 [Detailed feedback content]
 
 Rust code:
-###file i###
+Context(variables and structs):
+[Context]
+###function i###
 [Rust code]
 
 Please provide the complete optimized Rust code directly, including all necessary comments. No additional explanations are needed.
@@ -369,14 +371,26 @@ Feedback:
 4.Issue: Index out of bounds Location: Line 15 println!("{}", arr[10]); Suggestion: Ensure the index is within the bounds of the array.
 
 Rust code:
-###file 1###
+Context(variables and structs):
+pub struct Config {
+    pub threshold: i32,
+    pub greeting: String,
+}
+static MAX_DIVISOR: i32 = 10;
+static DEFAULT_MESSAGE: &str = "Default Greeting";
+###function 1###
 fn foo(z: i32){
+    let config = Config {
+        threshold: 5,
+        greeting: String::from("Hello from Config"),
+    };
+    let divisor = if z < config.threshold { MAX_DIVISOR } else { z };
+    let y = divisor;
     let x: i32 = "world";
-    let y = 0;
     let result = z / y;
     println!("Result is: {}", result);
 
-    let s = String::from("hello");
+    let s = config.greeting.clone();
     println!("{}", s);
     println!("{}", s);
 
@@ -385,7 +399,7 @@ fn foo(z: i32){
     return result;
 }
 
-###file 2###
+###function 2###
 #[test]
 pub fn test_foo() {
     assert_eq!(foo(10), 10);
@@ -393,17 +407,20 @@ pub fn test_foo() {
 }
 
 Example output 1:
-###file 1###
+###function 1###
 fn foo(z: i32){
-    // Modified: Changed string type to i32, assuming we need an integer
-    let x: i32 = 42;
-    println!("x = {}", x);
-
-    let y = 1; // Modified: Ensure the divisor is not zero
-    let result = z / y;
+    let config = Config {
+        threshold: 5,
+        greeting: String::from("Hello from Config"),
+    };
+    
+    let divisor = if z < config.threshold { MAX_DIVISOR } else { z };
+    let y = divisor;
+    let x: i32 = 42;    // Modified: Changed string type to i32, assuming we need an integer
+    let result = if y != 0 { z / y } else { 0 };    // Check for division by zero
     println!("Result is: {}", result);
 
-    let s = String::from("hello");
+    let s = config.greeting.clone();
     println!("{}", s);
     // Modified: Avoid double borrowing by cloning the string
     println!("{}", s.clone());
@@ -418,7 +435,7 @@ fn foo(z: i32){
     return result;
 }
 
-###file 2###
+###function 2###
 #[test]
 pub fn test_foo() {
     assert_eq!(foo(10), 10);

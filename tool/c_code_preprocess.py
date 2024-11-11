@@ -113,16 +113,34 @@ def remove_alloc_test_blocks(code: str) -> str:
     # Keep everything before alloc_test and after the last brace
     return code[:start_idx] + code[end_idx:]
 
-def init_metadata(metadata: dict, relative_path: str):
-    metadata[relative_path] = {}
-    metadata[relative_path]['func_signatures'] = []
-    metadata[relative_path]['private_func_signatures'] = []
-    metadata[relative_path]['public_func_signatures'] = []
-    metadata[relative_path]['includes'] = []
-    metadata[relative_path]['head_info'] = []
-    metadata[relative_path]['variables'] = []
-    metadata[relative_path]['functions'] = []
+def extract_func_calls(c_code: str):
+    """
+    Extract function calls from C code(function-level) using tree-sitter.
+    """
+    tree = c_parser.parse(bytes(c_code, "utf8"))
+    root_node = tree.root_node
 
+    c_func_calls = []
+
+    def traverse_node(node):
+        if node.type == 'call_expression':
+            # Get the function name from the call expression
+            func_name = node.child_by_field_name('function')
+            if func_name:
+                c_func_calls.append(func_name.text.decode('utf-8'))
+        
+        # Recursively traverse child nodes
+        for child in node.children:
+            traverse_node(child)
+
+    # Start traversal from root
+    traverse_node(root_node)
+
+    # Remove duplicates while preserving order
+    c_func_calls = list(dict.fromkeys(c_func_calls))
+    return c_func_calls
+
+# 外部调用
 def preprocess(code: str) -> str:
     code = remove_file_comments(code)
     code = remove_header_guards(code)
@@ -134,6 +152,17 @@ def head_preprocess(code: str) -> str:
     code = remove_header_guards(code) 
     code = remove_cpp_guards(code)
     return code
+
+def init_metadata(metadata: dict, relative_path: str):
+    metadata[relative_path] = {}
+    metadata[relative_path]['func_signatures'] = []
+    metadata[relative_path]['private_func_signatures'] = []
+    metadata[relative_path]['public_func_signatures'] = []
+    metadata[relative_path]['includes'] = []
+    metadata[relative_path]['head_info'] = []
+    metadata[relative_path]['variables'] = []
+    metadata[relative_path]['functions'] = []
+    metadata[relative_path]['rust_items'] = ''
 
 def code_preprocess(directory: str):
     head_file_list = []
@@ -201,7 +230,7 @@ def code_preprocess(directory: str):
                 func_signature = ' '.join(node.text.decode('utf-8').split('{')[0].split()).strip()
                 func_name = func_signature.split('(')[0].split()[-1].replace('*', '')
 
-                metadata[relative_path]['functions'].append({'name': func_name,'signature': func_signature, 'code': node.text.decode('utf-8')})
+                metadata[relative_path]['functions'].append({'name': func_name,'signature': func_signature, 'code': node.text.decode('utf-8'), 'rust_code': '', 'rust_signature': ''})
                 metadata[relative_path]['func_signatures'].append(func_signature)
                 if func_signature not in metadata[relative_path]['public_func_signatures']:
                     metadata[relative_path]['private_func_signatures'].append(func_signature)
@@ -248,16 +277,32 @@ def code_preprocess(directory: str):
             if node.type == 'comment':
                 continue
             if node.type == 'preproc_include':
-                metadata[relative_path]['includes'].append({'code': node.text.decode('utf-8')})
+                metadata[relative_path]['includes'].append({'code': node.text.decode('utf-8').strip()})
             elif node.type == 'function_definition':
                 func_signature = ' '.join(node.text.decode('utf-8').split('{')[0].split()).strip()
                 func_name = func_signature.split('(')[0].split()[-1].replace('*', '')
 
-                metadata[relative_path]['functions'].append({'name': func_name,'signature': func_signature, 'code': node.text.decode('utf-8')})
+                metadata[relative_path]['functions'].append({'name': func_name,'signature': func_signature, 'code': node.text.decode('utf-8'), 'rust_code': '', 'rust_signature': ''})
                 metadata[relative_path]['func_signatures'].append(func_signature)
             else:
                 metadata[relative_path]['variables'].append({'code': node.text.decode('utf-8')})
     
+    # 增加函数依赖
+    funcs_files = {}
+    for file, file_info in metadata.items():
+        for func_info in file_info['functions']:
+            funcs_files[func_info['name']] = file
+
+    for file, file_info in metadata.items():
+        for func_info in file_info['functions']:
+            if 'depend_funcs' not in func_info:
+                func_info['depend_funcs'] = []
+            func_code = func_info['code']
+            func_calls = extract_func_calls(func_code)
+            for func_call in func_calls:
+                if func_call in funcs_files and func_call != func_info['name']:
+                    func_info['depend_funcs'].append({'name': func_call, 'file': funcs_files[func_call]})
+
     with open('tool/c_metadata.json', 'w', encoding='utf-8') as f:
         json.dump(metadata, f, ensure_ascii=False, indent=2)
 

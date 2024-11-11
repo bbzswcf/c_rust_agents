@@ -6,6 +6,7 @@ Output includes a list of files found and the topologically sorted list of files
 """
 import os
 import re
+import json
 import argparse
 
 from tree_sitter_c_config import c_parser
@@ -53,83 +54,90 @@ def get_translation_order(dependencies):
             translation_order[translation_order.index(file)] = file + '.c'
     return translation_order
 
-def extract_dependencies(tree, base_directory, current_file_name):
+def analyze_directory(metadata):
     """
-    Extract dependencies from the given syntax tree.
-    """
-    dependencies = []
-    nodes_to_process = [tree.root_node]
-    
-    current_file_base = os.path.splitext(os.path.basename(current_file_name))[0]
-    
-    header_files = {}
-    for root, _, files in os.walk(base_directory):
-        for file in files:
-            if file.endswith('.h'):
-                file_base = os.path.splitext(file)[0]
-                rel_path = os.path.relpath(os.path.join(root, file), base_directory)
-                rel_path_without_ext = os.path.splitext(rel_path)[0]
-                header_files[file_base] = rel_path_without_ext
-
-    while nodes_to_process:
-        node = nodes_to_process.pop(0)
-        
-        if node.type == 'preproc_include':
-            for child in node.children:
-                if child.type in ['string_literal', 'system_lib_string']:
-                    dependency = child.text[1:-1].decode('utf-8')
-                    dependency_name = os.path.splitext(os.path.basename(dependency))[0]
-                    if dependency_name in header_files and dependency_name != current_file_base and dependency_name not in EXCEPT_FILES:
-                        dependencies.append(header_files[dependency_name])
-        
-        nodes_to_process.extend(node.children)
-
-    return dependencies
-
-def analyze_directory(directory):
-    """
-    Analyze C files in the given directory and extract their dependencies. 
+    Analyze C files and extract their dependencies based on #include directives.
     """
     dependencies = {}
 
-    for root, _, filenames in os.walk(directory):
-        for filename in filenames:
-            if filename.endswith('.c') or filename.endswith('.cpp'):
-                if os.path.splitext(filename)[0] in EXCEPT_FILES:
-                    continue
-                file_path = os.path.join(root, filename)
-                relative_path = os.path.relpath(file_path, directory)
+    c_file_names = []
+    for file in metadata.keys():
+        c_file_names.append(os.path.splitext(os.path.basename(file))[0])
+    c_file_names = list(dict.fromkeys(c_file_names))
 
-                with open(file_path, 'rb') as file:
-                    tree = c_parser.parse(file.read())
-                
-                file_dependencies = extract_dependencies(tree, directory, relative_path)
-                dependencies[relative_path] = file_dependencies
-
+    for c_file, file_info in metadata.items():
+        if not file_info['includes']:
+            dependencies[c_file] = []
+        else:
+            for include in file_info['includes']:
+                include_code = include['code']
+                match = re.search(r'#include\s*[<"]([^>"]+)[>"]', include_code)
+                header_name = match.group(1)
+                header_base = os.path.splitext(header_name)[0]
+                if c_file not in dependencies:
+                    dependencies[c_file] = []
+                if header_base in c_file_names and header_base != os.path.splitext(os.path.basename(c_file))[0]:
+                    if header_base.startswith('test'):
+                        dependencies[c_file].append(os.path.join('test', header_base))
+                    else:
+                        dependencies[c_file].append(os.path.join('src', header_base))
+    
     return dependencies
 
-def extract_test_functions(file):
+def extract_test_functions(file, metadata):
     """
     Extract test functions from a C test file and return them in the order they appear.
     """
     test_functions = []
     
-    with open(file, 'rb') as f:
-        tree = c_parser.parse(f.read())
-    
-    for node in tree.root_node.children:
-        # Extract test function definitions
-        if node.type == 'function_definition':
-            if node.children[1].type == 'function_declarator':
-                func_decl = node.children[1]
-            elif node.children[1].type == 'pointer_declarator':
-                func_decl = node.children[1].children[1]
-            func_name = func_decl.children[0].text.decode('utf-8')
-            if func_name.startswith('test_'):
-                test_functions.append(func_name)
+    for func_info in metadata[file]['functions']:
+        if func_info['name'].startswith('test_'):
+            test_functions.append(func_info['name'])
 
     return test_functions
 
+def extract_func_calls(file_relapath: str, func_name: str, metadata: dict):
+    """
+    Extract function calls from C code(function-level) using tree-sitter.
+    """
+    c_func_calls = []
+
+    for func_info in metadata[file_relapath]['functions']:
+        if func_info['name'] == func_name:
+            for depend_func in func_info['depend_funcs']:
+                c_func_calls.append(depend_func['name'])
+
+    return c_func_calls
+
+def dependencies_order(func_name, file_relapath, metadata):
+    total = 0
+    depend_funcs = []
+    for func_info in metadata[file_relapath]['functions']:
+        if func_info['name'] == func_name:
+            
+            # Recursively count dependencies of dependent functions
+            for func in func_info['depend_funcs']:
+                total, funcs = dependencies_order(func['name'], func['file'], metadata)
+                depend_funcs.extend(funcs)
+                depend_funcs.append((func['name'], func['file']))
+            total += len(func_info['depend_funcs'])
+            break
+    return total, depend_funcs
+
+def sort_by_depend_count(test_funcs, file_relapath, metadata):
+    """
+    Sort functions by the number of dependencies they have.
+    """
+    test_func_counts = []
+    for test_func in test_funcs:
+        count, funcs = dependencies_order(test_func, file_relapath, metadata)
+        test_func_counts.append((test_func, count))
+    
+    print(test_func_counts)
+    sorted_funcs = sorted(test_func_counts, key=lambda x: x[1], reverse=False)
+    return [func for func, _ in sorted_funcs]
+
+# todo
 def extract_func_dependencies(directory, test_file, func):
     """
     Extract dependencies of a specific function from a C file.
@@ -218,6 +226,7 @@ def extract_func_dependencies(directory, test_file, func):
 
     return used_functions
     
+# todo
 def head_info_extraction(directory, file):
     """
     Extract non-function declarations (like structs, type definitions, etc.) from header files.
@@ -279,59 +288,6 @@ def head_info_extraction(directory, file):
                 
     return header_info
 
-def extract_func_calls(c_code: str):
-    """
-    Extract function calls from C code(function-level) using tree-sitter.
-    """
-    tree = c_parser.parse(bytes(c_code, "utf8"))
-    root_node = tree.root_node
-
-    c_func_calls = []
-
-    def traverse_node(node):
-        if node.type == 'call_expression':
-            # Get the function name from the call expression
-            func_name = node.child_by_field_name('function')
-            if func_name:
-                c_func_calls.append(func_name.text.decode('utf-8'))
-        
-        # Recursively traverse child nodes
-        for child in node.children:
-            traverse_node(child)
-
-    # Start traversal from root
-    traverse_node(root_node)
-
-    # Remove duplicates while preserving order
-    c_func_calls = list(dict.fromkeys(c_func_calls))
-    return c_func_calls
-
-def extract_all_funcs(file: str):
-    """
-    Extract all function names from a C file.
-    """
-
-    # Read the file content
-    with open(file, 'r', encoding='utf-8') as f:
-        code = preprocess(f.read())
-
-    # Parse the code
-    tree = c_parser.parse(bytes(code, "utf8"))
-    root_node = tree.root_node
-    
-    func_names = []
-    
-    # Iterate through all top-level nodes
-    for node in root_node.children:
-        # Function definitions are either function_definition nodes directly
-        # or have function_definition as a child (in case of comments/attributes before function)
-        if node.type == 'function_definition':
-            func_names.append(node.text.decode('utf-8').split('{')[0].strip())
-            
-    return func_names
-
-
-
 
 if __name__ == "__main__":
     # Below are tests for various functionalities
@@ -339,8 +295,12 @@ if __name__ == "__main__":
     parser.add_argument('--directory', default='./Input/01-Primary', type=str, help='Directory path to analyze')
     args = parser.parse_args()
 
-    # # Analyze the directory and get dependencies
-    # dependencies = analyze_directory(args.directory)
+    with open('tool/c_metadata.json', 'r', encoding='utf-8') as f:
+        metadata = json.load(f)
+    dependencies = analyze_directory(metadata)
+
+    test_funcs = extract_test_functions("test\\test-hash-functions.c", metadata)
+    test_funcs = sort_by_depend_count(test_funcs, "test\\test-hash-functions.c", metadata)
 
     # # Print files and their dependencies
     # print("\nFiles and their dependencies:")
@@ -355,7 +315,7 @@ if __name__ == "__main__":
     #     print(f"{count}. {file}")
     #     count += 1
 
-    # test_funcs = extract_test_functions(os.path.join(args.directory, "test/test-arraylist.c"))
+    # test_funcs = extract_test_functions("test\\test-arraylist.c", metadata)
     # print(test_funcs)
 
     # includes = extract_func_dependencies(args.directory, "test\\test-arraylist.c", 'test_arraylist_append')
