@@ -6,7 +6,7 @@ Example:
 C: 
 typedef void *ArrayListValue;
 Rust: 
-pub type ArrayListValue = Option<T>;
+pub type ArrayListValue<T> = Option<T>;
 2. For array pointers in C, use Vec in Rust.
 Example:
 C: 
