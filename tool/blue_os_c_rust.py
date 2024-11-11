@@ -10,6 +10,7 @@ import subprocess
 import unicodedata
 
 from Agents import *
+from input_prompt import *
 from tree_sitter_analyzer import (
     analyze_directory,
     get_translation_order,
@@ -275,7 +276,8 @@ def convert_c_initialization_to_rust(c_file: str, rust_code_file: str, rust_resu
         return ''
 
     logging.info("开始语法转换")
-    combined_syntax_input = f"""\nConvert the following C code to Rust using the provided API mappings:\nC code:\n{pre_code}\nRemember to output only the converted Rust code without any explanations.\nDeclare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.\n"""
+    # combined_syntax_input = f"""\nConvert the following C code to Rust using the provided API mappings:\nC code:\n{pre_code}\nRemember to output only the converted Rust code without any explanations.\nDeclare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.\n"""
+    combined_syntax_input = type_convert_input_prompt.format(c_code=pre_code)
     logging.info(f"语法专家prompt: {combined_syntax_input}")
 
     rust_code = syntax_agent_2.generate_response(combined_syntax_input)
@@ -364,7 +366,7 @@ def process_files():
     logging.info(f"翻译顺序：{translation_order}")
     logging.info(f"翻译文件总数：{len(translation_order)}")
     
-    translation_order = ['test\\test-arraylist.c'] # 调试
+    translation_order = ['test/test-arraylist.c'] # 调试
     for problem_path in translation_order:
         logging.info(f"开始翻译文件{problem_path}")
         if not problem_path.startswith("test"):
