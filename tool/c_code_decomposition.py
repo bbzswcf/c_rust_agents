@@ -27,30 +27,42 @@ def decompose(c_code: str):
         
         if prev_sibling and prev_sibling.type == 'comment':
             if prev_sibling.start_byte > 0:
-                blocks.append(c_code[0:prev_sibling.start_byte].strip())
-                func_signatures.append('')
-            blocks.append(c_code[prev_sibling.start_byte:first_func.end_byte].strip())
-            # Get the first line which contains the function name
-            func_text = first_func.text.decode('utf-8').split('{')[0].strip()
-            func_signatures.append(func_text)
+                code_block = c_code[0:prev_sibling.start_byte].strip()
+                if code_block:
+                    blocks.append(code_block)
+                    func_signatures.append('')
+            code_block = c_code[prev_sibling.start_byte:first_func.end_byte].strip()
+            if code_block:
+                blocks.append(code_block)
+                # Get the first line which contains the function name
+                func_text = first_func.text.decode('utf-8').split('{')[0].strip()
+                func_signatures.append(func_text)
         else:
             if first_func.start_byte > 0:
-                blocks.append(c_code[0:first_func.start_byte].strip())
-                func_signatures.append('')
-            blocks.append(c_code[first_func.start_byte:first_func.end_byte].strip())
-            func_text = first_func.text.decode('utf-8').split('{')[0].strip()
-            func_signatures.append(func_text)
+                code_block = c_code[0:first_func.start_byte].strip()
+                if code_block:
+                    blocks.append(code_block)
+                    func_signatures.append('')
+            code_block = c_code[first_func.start_byte:first_func.end_byte].strip()
+            if code_block:
+                blocks.append(code_block)
+                func_text = first_func.text.decode('utf-8').split('{')[0].strip()
+                func_signatures.append(func_text)
 
         for i in range(len(function_nodes)-1):
             current_func = function_nodes[i]
             next_func = function_nodes[i + 1]
-            blocks.append(c_code[current_func.end_byte:next_func.end_byte].strip())
-            func_text = next_func.text.decode('utf-8').split('{')[0].strip()
-            func_signatures.append(func_text)
+            code_block = c_code[current_func.end_byte:next_func.end_byte].strip()
+            if code_block:
+                blocks.append(code_block)
+                func_text = next_func.text.decode('utf-8').split('{')[0].strip()
+                func_signatures.append(func_text)
     else:
-        blocks.append(c_code.strip())
+        if c_code.strip():
+            blocks.append(c_code.strip())
 
     return blocks, func_signatures
+
 
 def code_decomposition(c_code_dir, depend_file, depend_funcs, start_byte):
     """
@@ -95,7 +107,7 @@ def code_decomposition(c_code_dir, depend_file, depend_funcs, start_byte):
     # Extract the code from the start to the maximum end byte
     if start_byte >= max_end_byte:
         return [], [], start_byte
-    extracted_code = code[start_byte:max_end_byte]
+    extracted_code = code[start_byte:max_end_byte].strip()
     blocks, func_signatures = decompose(extracted_code)
     
     return blocks, func_signatures, max_end_byte

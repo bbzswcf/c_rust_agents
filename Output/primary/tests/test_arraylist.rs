@@ -1,35 +1,37 @@
 use primary::arraylist::*;
-use primary::compare_int::*;
-
-pub type ArrayListValue = *mut ();
 
 pub struct ArrayList {
-    pub data: Vec<ArrayListValue>,
-    pub length: usize,
-    pub _alloced: usize,
+    // Define the fields of ArrayList here
 }
 
-pub type ArrayListEqualFunc = fn(ArrayListValue, ArrayListValue) -> i32;
-pub type ArrayListCompareFunc = fn(ArrayListValue, ArrayListValue) -> i32;
+impl ArrayList {
+    pub fn new(capacity: usize) -> Self {
+        // Implement the constructor here
+    }
+
+    pub fn append(&mut self, item: &i32) {
+        // Implement the append method here
+    }
+}
+
+pub fn generate_arraylist() -> ArrayList {
+    let mut arraylist = ArrayList::new(0);
+
+    for _ in 0..4 {
+        arraylist.append(&variable1);
+        arraylist.append(&variable2);
+        arraylist.append(&variable3);
+        arraylist.append(&variable4);
+    }
+
+    arraylist
+}
 
 pub static mut VARIABLE1: i32 = 0;
 pub static mut VARIABLE2: i32 = 0;
 pub static mut VARIABLE3: i32 = 0;
 pub static mut VARIABLE4: i32 = 0;
-pub fn generate_arraylist() -> Option<Box<ArrayList>> {
-    let mut arraylist = arraylist_new(0)?;
-    let mut i = 0;
-
-    while i < 4 {
-        arraylist_append(&mut arraylist, &variable1);
-        arraylist_append(&mut arraylist, &variable2);
-        arraylist_append(&mut arraylist, &variable3);
-        arraylist_append(&mut arraylist, &variable4);
-        i += 1;
-    }
-
-    Some(arraylist)
-}
+#[test]
 pub fn test_arraylist_new_free() {
     // Use a default size when given zero
     let mut arraylist = arraylist_new(0);

@@ -275,6 +275,10 @@ def convert_c_initialization_to_rust(c_file: str, c_code: str, head_infos: dict,
                                      c_to_rust_mappings: dict, rust_code_file: str, rust_result_dir: str) -> str:  
     # Remove all #include statements from c_code and add use statements for depend_files
     c_code = re.sub(r'#include\s*[<"].*?[>"]', '', c_code).strip()
+    # if c_code == '':
+    #     return ''
+    # logging.info(f"文件名：{c_file}")
+    # logging.info(f"代码：{c_code}")
 
     # 清空rust_code_file
     with open(rust_code_file, 'w', encoding='utf-8', errors='ignore') as file:
@@ -291,8 +295,64 @@ def convert_c_initialization_to_rust(c_file: str, c_code: str, head_infos: dict,
     c_code = pre_code + c_code
 
     logging.info("开始语法转换")
-    combined_syntax_input = f"""\nConvert the following C code to Rust using the provided API mappings:\nC code:\n{c_code}\nRemember to output only the converted Rust code without any explanations.\nDeclare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.\n"""
-
+    logging.info("+++++++++++++++++++++++++++++++++")
+    # combined_syntax_input = f"""
+    # Convert the following C code to Rust using the provided API mappings:
+    # C code:
+    # {c_code}
+    # Remember to output only the converted Rust code without any explanations.
+    # Declare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.
+    # """
+    type_prompt="""
+    You are a proficient C and Rust advanced developer.
+    Here are some translation experiences for your reference.
+    1. For void* in C, use Option<T> in Rust.
+    Example:
+    C: 
+    typedef void *ArrayListValue;
+    Rust: 
+    pub type ArrayListValue = Option<T>;
+    2. For array pointers in C, use Vec in Rust.
+    Example:
+    C: 
+    typedef void *ArrayListValue;
+    typedef struct _ArrayList ArrayList;
+    struct _ArrayList {{
+        ArrayListValue *data;
+        unsigned int length;
+        unsigned int _alloced;
+    }};
+    Rust: 
+    struct ArrayList<T> {{
+        pub data: Vec<Option<T>>,
+        pub length: u32,
+        pub _alloced: u32,
+    }}
+    3. For recursive structures in C, that is, structures that contain pointers to the structure, use Option<Rc<RefCell<T>>> in Rust/
+    Example:
+    C: 
+    typedef void *QueueValue;
+    typedef struct _QueueEntry QueueEntry;
+    struct _QueueEntry {{
+        QueueValue data;
+        QueueEntry *prev;
+        QueueEntry *next;
+    }};
+    Rust:
+    pub sturct QueueEntry<T> {{
+        data: Option<T>,
+        prev: Option<Rc<RefCell<QueueEntry<T>>>>,
+        next: Option<Rc<RefCell<QueueEntry<T>>>>,
+    }}
+    Translate the following C definitions of types or structs to Rust.
+    C definitions:
+    {c_code}
+    Remember to output only the converted Rust code without any explanations.
+    Declare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.
+    """
+    combined_syntax_input = type_prompt.format(c_code=c_code)
+    logging.info("全局定义转换")
+    logging.info(combined_syntax_input)
     rust_code = syntax_agent_2.generate_response(combined_syntax_input)
     logging.info(rust_code)
     rust_code = extract_rust_code(rust_code)
@@ -446,6 +506,8 @@ def process_files():
                 if depend_file in translated_bytes:
                     start_byte = translated_bytes[depend_file]
                 funcs_codes, func_signatures, max_end_byte = code_decomposition(args.c_code_dir, depend_file, depend_funcs, start_byte)
+                # logging.info(f"func_codes: {funcs_codes}")
+                # logging.info(f"func_codes[0]: {funcs_codes[0]}")
                 translated_bytes[depend_file] = max_end_byte
 
                 # 当前翻译文件依赖的文件

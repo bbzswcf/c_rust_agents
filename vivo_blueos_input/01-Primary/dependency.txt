@@ -1,0 +1,76 @@
+alloc-testing:
+	
+arraylist:
+	alloc-testing
+avl-tree:
+	alloc-testing
+binary-heap:
+	alloc-testing
+binomial-heap:
+	alloc-testing
+bloom-filter:
+	alloc-testing
+compare-int:
+	
+compare-pointer:
+	
+compare-string:
+	
+framework:
+	alloc-testing
+hash-int:
+	
+hash-pointer:
+	
+hash-string:
+	
+hash-table:
+	alloc-testing
+list:
+	alloc-testing
+queue:
+	alloc-testing
+rb-tree:
+	alloc-testing
+set:
+	alloc-testing
+slist:
+	alloc-testing
+sortedarray:
+	alloc-testing
+test-alloc-testing:
+	alloc-testing framework
+test-arraylist:
+	alloc-testing framework arraylist compare-int
+test-avl-tree:
+	alloc-testing framework avl-tree compare-int
+test-binary-heap:
+	alloc-testing framework binary-heap compare-int
+test-binomial-heap:
+	alloc-testing framework binomial-heap compare-int
+test-bloom-filter:
+	alloc-testing framework bloom-filter hash-string
+test-compare-functions:
+	alloc-testing framework compare-int compare-pointer compare-string
+test-cpp.cpp:
+	framework
+test-hash-functions:
+	alloc-testing framework hash-pointer hash-int hash-string
+test-hash-table:
+	alloc-testing framework hash-table hash-int compare-int hash-string compare-string
+test-list:
+	alloc-testing framework list compare-int
+test-queue:
+	alloc-testing framework queue
+test-rb-tree:
+	alloc-testing framework rb-tree compare-int
+test-set:
+	alloc-testing framework set compare-int hash-int compare-pointer hash-pointer compare-string hash-string
+test-slist:
+	alloc-testing framework slist compare-int
+test-sortedarray:
+	alloc-testing framework compare-int sortedarray
+test-trie:
+	alloc-testing framework trie
+trie:
+	alloc-testing

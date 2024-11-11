@@ -1,6 +1,6 @@
 
 pub const MAX_BUFFER: usize = 1024;
-// Modified: Use the constant directly from the standard library to ensure accuracy
+// Modified: Replaced approximate value with exact constant from the standard library
 pub const PI: f64 = std::f64::consts::PI;
 
 pub struct Data {
@@ -27,9 +27,11 @@ pub fn string_hash(string: *const u8) -> u32 {
     let mut p = string;
 
     unsafe {
-        while *p != b'\0' { // Wrapped dereference in unsafe block
-            result = (result << 5).wrapping_add(result).wrapping_add(*p as u32); // Wrapped dereference in unsafe block
-            p = p.offset(1); // Wrapped call to offset in unsafe block
+        while *p != b'\0' {
+            // Dereference of raw pointer requires unsafe block
+            result = (result << 5).wrapping_add(result).wrapping_add(*p as u32);
+            // Call to unsafe function requires unsafe block
+            p = p.offset(1);
         }
     }
 

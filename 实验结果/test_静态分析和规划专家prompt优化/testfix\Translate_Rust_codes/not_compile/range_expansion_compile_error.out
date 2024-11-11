@@ -1,0 +1,18 @@
+Rust 编译失败:
+warning: unused import: `std::str::FromStr`
+ --> /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:1:5
+  |
+1 | use std::str::FromStr;
+  |     ^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+error[E0599]: no method named `is_none` found for type `bool` in the current scope
+ --> /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:6:33
+  |
+6 |         if get_rnge(&mut chars).is_none() && get_number(&mut chars).is_none() {
+  |                                 ^^^^^^^ method not found in `bool`
+
+error: aborting due to 1 previous error; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0599`.
