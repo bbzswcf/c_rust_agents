@@ -81,7 +81,8 @@ api_input_prompt="""
         {c_code}
 """
 convert_input_prompt = """
-    Convert the following C code to Rust using the provided API mappings:
+    Convert the following C code to Rust using the provided API mappings.
+    Ensure that each C function has a corresponding rust function. For each C function, it is necessary to translate a corresponding Rust function with the same function name
     C code:
     {c_code}
     API mappings:
@@ -342,6 +343,7 @@ def convert_c_to_rust(c_code: str, c_output_file: str, rust_code_file:str, rust_
 
     print("开始语法转换")
     combined_syntax_input = convert_input_prompt.format(c_code=c_code, api_conversion=api_conversion)
+    print(combined_syntax_input)
     rust_code = syntax_agent.generate_response(combined_syntax_input)
     rust_code = extract_rust_code(rust_code)
 
@@ -473,15 +475,15 @@ def process_files():
     # rust_code_dir = "test1\Translate_Rust_codes"
     # rust_out_dir = "test1\Translate_Rust_outputs"
 
-    # c_code_dir = "test2\c_codes"
-    # c_out_dir = "test2\c_outputs"
-    # rust_code_dir = "test2\Translate_Rust_codes"
-    # rust_out_dir = "test2\Translate_Rust_outputs"
+    c_code_dir = "test2\c_codes"
+    c_out_dir = "test2\c_outputs"
+    rust_code_dir = "test2\Translate_Rust_codes"
+    rust_out_dir = "test2\Translate_Rust_outputs"
 
-    c_code_dir = "testfix\c_codes"
-    c_out_dir = "testfix\c_outputs"
-    rust_code_dir = "testfix\Translate_Rust_codes"
-    rust_out_dir = "testfix\Translate_Rust_outputs"
+    # c_code_dir = "testfix\c_codes"
+    # c_out_dir = "testfix\c_outputs"
+    # rust_code_dir = "testfix\Translate_Rust_codes"
+    # rust_out_dir = "testfix\Translate_Rust_outputs"
 
     # 创建新的结果文件夹
     succeed_rust_dir = os.path.join(rust_code_dir, "succeed")
