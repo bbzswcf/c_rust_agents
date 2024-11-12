@@ -512,7 +512,7 @@ def process_files():
                 args.output_dir,
                 metadata
             )
-            rust_signatures = re.findall(r'pub\s+fn\s+([a-zA-Z0-9_]+\s*\([^)]*\)(?:\s*->\s*[^{]+)?)', rust_test)
+            rust_signatures = re.findall(r'fn\s+(.*?)\s*{', rust_test)
             test_func_info['rust_signature'] = rust_signatures[0]
             test_func_info['rust_code'] = rust_test
             insert_file_with_utf8(rust_test_file_path, rust_test)
