@@ -1,5 +1,9 @@
-test1*/
+test*/
 __pycache__/
 c_rust_agents.egg-info/
 logs/
-Output/primary/
+Output/
+Input/
+tool/c_metadata.json
+tool/LLM_config.py
+tool/tree_sitter_c_config.py
