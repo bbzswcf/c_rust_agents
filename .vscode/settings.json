@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "alloc-testing.h": "c",
-        "hash-pointer.h": "c"
-    }
-}
