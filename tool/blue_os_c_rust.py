@@ -15,13 +15,9 @@ from tree_sitter_analyzer import (
     analyze_directory,
     get_translation_order,
     extract_test_functions,
-    extract_func_dependencies,
-    head_info_extraction,
-    extract_func_calls,
     sort_by_depend_count,
     dependencies_order
 )
-from c_code_decomposition import code_decomposition
 
 # 设置默认编码为UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
@@ -117,8 +113,7 @@ def static_analysis(rust_result_dir: str, rust_file: str) -> str:
 
     if "test" not in rust_file:
         # 使用 clippy 进行静态分析
-        with open(rust_file, 'a', encoding='utf-8') as f:
-            f.write("\nfn main() {}")
+        write_file_with_utf8(rust_file, "\nfn main() {}")
         clippy_result = subprocess.run(
             ["clippy-driver", rust_file],
             capture_output=True,
@@ -342,15 +337,13 @@ def process_files():
 
     # 清空lib.rs文件
     lib_rs_path = os.path.join(rust_code_dir, "lib.rs")
-    with open(lib_rs_path, 'w', encoding='utf-8') as f:
-        f.write("")
+    write_file_with_utf8(lib_rs_path, "")
 
     successful_test_count = 0
     total_test_count = 0
 
     # Get dependencies and suggested translation order
-    with open('tool/c_metadata.json', 'r', encoding='utf-8') as f:
-        metadata = json.load(f)
+    metadata = json.load(open('tool/c_metadata.json', 'r', encoding='utf-8'))
 
     # translated_bytes keeps track of which portions of each file have already been translated
     translated_flags = {}
@@ -366,7 +359,7 @@ def process_files():
     logging.info(f"翻译顺序：{translation_order}")
     logging.info(f"翻译文件总数：{len(translation_order)}")
     
-    translation_order = ['test/test-arraylist.c'] # 调试
+    translation_order = ['test\\test-arraylist.c'] # 调试
     for problem_path in translation_order:
         logging.info(f"开始翻译文件{problem_path}")
         if not problem_path.startswith("test"):
@@ -392,12 +385,10 @@ def process_files():
                     depend_file_list.append(depend_func['file'])
         
         for depend_file in depend_file_list:
-            with open(os.path.join(rust_code_dir, f"{os.path.splitext(os.path.basename(depend_file.replace('-', '_')))[0]}.rs"), 'w', encoding='utf-8') as f:
-                f.write("")
+            write_file_with_utf8(os.path.join(rust_code_dir, f"{os.path.splitext(os.path.basename(depend_file.replace('-', '_')))[0]}.rs"), "")
             rust_mod_name = os.path.splitext(os.path.basename(depend_file.replace('-', '_')))[0]
             insert_file_with_utf8(lib_file_path, f"pub mod {rust_mod_name};\n")
-        with open(rust_test_file_path, 'w', encoding='utf-8') as f:
-            f.write("")
+        write_file_with_utf8(rust_test_file_path, "")
 
         for test_func in test_funcs:
             logging.info(f"开始翻译测试文件{test_file_name}的测试函数{test_func}")
@@ -418,13 +409,11 @@ def process_files():
                 continue
             
             # 清空依赖文件对应的rust文件
-            with open(rust_test_file_path, 'w', encoding='utf-8') as f:
-                f.write("")
+            write_file_with_utf8(rust_test_file_path, "")
             for depend_func, depend_file in depend_files_and_funcs:
                 depend_file_name = os.path.splitext(os.path.basename(depend_file.replace('-', '_')))[0]
                 rust_file_path = os.path.join(rust_code_dir, f"{depend_file_name}.rs") 
-                with open(rust_file_path, 'w', encoding='utf-8') as f:
-                    f.write("")
+                write_file_with_utf8(rust_file_path, "")
 
             for depend_func, depend_file in depend_files_and_funcs:
                 logging.info(f"开始翻译依赖文件{depend_file}的函数{depend_func}")
@@ -432,24 +421,23 @@ def process_files():
                 rust_file_path = os.path.join(rust_code_dir, f"{depend_file_name}.rs")
                 
                 # 构建测试环境
-                with open(rust_file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                    content = f.read()
-                    if not content.strip():
-                        for include in metadata[depend_file]['includes']:
-                            match = re.search(r'#include\s*[<"]([^>"]+)[>"]', include['code'])
-                            header_name = match.group(1)
-                            header_base = os.path.splitext(header_name)[0]
-                            if header_base in c_file_names and header_base != os.path.splitext(os.path.basename(depend_file))[0]:
-                                insert_file_with_utf8(rust_file_path, f"use primary::{header_base.replace('-', '_')}::*;\n")
-                        # 翻译文件的前置代码（变量、结构体、宏等）
-                        if not metadata[depend_file]['rust_items'].strip():
-                            metadata[depend_file]['rust_items'] = convert_c_initialization_to_rust(
-                                depend_file,
-                                rust_file_path,
-                                args.output_dir,
-                                metadata
-                            )
-                        insert_file_with_utf8(rust_file_path, metadata[depend_file]['rust_items'])
+                content = read_file_with_auto_encoding(rust_file_path)
+                if not content.strip():
+                    for include in metadata[depend_file]['includes']:
+                        match = re.search(r'#include\s*[<"]([^>"]+)[>"]', include['code'])
+                        header_name = match.group(1)
+                        header_base = os.path.splitext(header_name)[0]
+                        if header_base in c_file_names and header_base != os.path.splitext(os.path.basename(depend_file))[0]:
+                            insert_file_with_utf8(rust_file_path, f"use primary::{header_base.replace('-', '_')}::*;\n")
+                    # 翻译文件的前置代码（变量、结构体、宏等）
+                    if not metadata[depend_file]['rust_items'].strip():
+                        metadata[depend_file]['rust_items'] = convert_c_initialization_to_rust(
+                            depend_file,
+                            rust_file_path,
+                            args.output_dir,
+                            metadata
+                        )
+                    insert_file_with_utf8(rust_file_path, metadata[depend_file]['rust_items'])
 
                 # 如果之前翻译过该函数，则直接插入翻译结果
                 if translated_flags[depend_file][depend_func] == True:
@@ -532,17 +520,18 @@ def process_files():
             for _, depend_file in depend_files_and_funcs:
                 if depend_file not in depend_files:
                     depend_files.append(depend_file)
-            with open(temp_test_file_path, 'w', encoding='utf-8') as f:
-                total_rust_code = ''
-                for depend_file in depend_files:
-                    total_rust_code += metadata[depend_file]['rust_items'] + '\n\n'
-                total_rust_code += metadata[problem_path]['rust_items'] + '\n\n'
-                for depend_func, depend_file in depend_files_and_funcs:
-                    for func_info in metadata[depend_file]['functions']:
-                        if func_info['name'] == depend_func:
-                            total_rust_code += func_info['rust_code'] + '\n\n'
-                total_rust_code += test_func_info['rust_code'] + '\n\n'
-                f.write(total_rust_code)
+            
+            total_rust_code = ''
+            for depend_file in depend_files:
+                total_rust_code += metadata[depend_file]['rust_items'] + '\n\n'
+            total_rust_code += metadata[problem_path]['rust_items'] + '\n\n'
+            for depend_func, depend_file in depend_files_and_funcs:
+                for func_info in metadata[depend_file]['functions']:
+                    if func_info['name'] == depend_func:
+                        total_rust_code += func_info['rust_code'] + '\n\n'
+            total_rust_code += test_func_info['rust_code'] + '\n\n'
+
+            write_file_with_utf8(temp_test_file_path, total_rust_code)
 
             success_flag = False
             while test_count < max_test_count:
@@ -600,13 +589,15 @@ def process_files():
                     
                     for i, (depend_func, depend_file) in enumerate(depend_files_and_funcs):
                         for func_info in metadata[depend_file]['functions']:
-                            if func_info['name'] == depend_func:
+                            if func_info['name'] == depend_func and translated_flags[depend_file][depend_func] == None:
                                 func_info['rust_code'] = optimized_rust_codes[i]
+                                optimized_rust_signatures = re.findall(r'fn\s+(.*?)\s*{', optimized_rust_codes[i])
+                                func_info['rust_signature'] = optimized_rust_signatures[0]
                                 break
                     
                     optimized_rust_code = ''
                     for depend_file in depend_files:
-                        optimized_rust_code = optimized_rust_code + metadata[depend_file]['rust_items'] + "\n"
+                        optimized_rust_code += metadata[depend_file]['rust_items'] + "\n"
                     optimized_rust_code += metadata[problem_path]['rust_items'] + "\n"
                     optimized_rust_code += "\n\n".join(optimized_rust_codes)
                     write_file_with_utf8(temp_test_file_path, optimized_rust_code)
@@ -619,10 +610,15 @@ def process_files():
                 # Update translated_flags to mark test function as failed
                 translated_flags[problem_path][test_func_info['name']] = False
                 for depend_func, depend_file in depend_files_and_funcs:
-                    translated_flags[depend_file][depend_func] = False
+                    if translated_flags[depend_file][depend_func] == None:
+                        translated_flags[depend_file][depend_func] = False
                 logging.info(f"测试函数 {test_func_info['name']} 翻译失败")
 
-    logging.info(f"测试文件总数：{total_test_count}")
+    # Write back metadata to file
+    with open('tool/c_metadata.json', 'w', encoding='utf-8') as f:
+        json.dump(metadata, f, indent=2, ensure_ascii=False)
+
+    logging.info(f"测试函数总数：{total_test_count}")
     logging.info(f"测试成功数：{successful_test_count}")
     logging.info(f"测试成功率：{(successful_test_count/total_test_count * 100):.2f}%")
 
