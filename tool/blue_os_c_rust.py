@@ -111,8 +111,8 @@ def static_analysis(rust_result_dir: str, rust_file: str) -> str:
     cargo_toml_dir = os.path.join(os.path.join(cur_dir, rust_result_dir), "Cargo.toml")
     rust_file = os.path.join(cur_dir, rust_file)
 
+    # 使用 clippy 进行静态分析
     if "test" not in rust_file:
-        # 使用 clippy 进行静态分析
         write_file_with_utf8(rust_file, "\nfn main() {}")
         clippy_result = subprocess.run(
             ["clippy-driver", rust_file],
@@ -189,7 +189,7 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
     logging.info("开始语法转换")
     combined_syntax_input = f"""\nConvert the following C code to Rust using the function calls, provided API mappings:\nC code:\n{c_code}\n"""
 
-    # 从metadata中找到对应depend_file中的Rust_signatures
+    # 从c_func_info中找到对应depend_file中的Rust_func_name
     c_signatures = []
     rust_signatures = []
     for depend_func_file in c_func_info['depend_funcs']:
@@ -214,7 +214,7 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
     rust_code = extract_rust_code(rust_code)
 
     original_size = os.path.getsize(rust_code_file)
-    # Add #[test] attribute if this is a test file
+    # Add #[test] attribute if this is a test function
     if "test_" in func_name:
         rust_code = "#[test]\n" + rust_code
     insert_file_with_utf8(rust_code_file, rust_code)
@@ -223,7 +223,6 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
     static_analysis_count = 0
 
     while static_analysis_count < max_static_analysis_and_test_attempts:
-        # 如果静态分析次数未达到阈值，进行静态分析
         static_analysis_count += 1
         logging.info(f"静态分析尝试 #{static_analysis_count}")
         analysis_result = static_analysis(rust_result_dir, rust_code_file)
@@ -285,7 +284,6 @@ def convert_c_initialization_to_rust(c_file: str, rust_code_file: str, rust_resu
     static_analysis_count = 0
 
     while static_analysis_count < max_static_analysis_and_test_attempts:
-        # 如果静态分析次数未达到阈值，进行静态分析
         static_analysis_count += 1
         logging.info(f"静态分析尝试 #{static_analysis_count}")
         analysis_result = static_analysis(rust_result_dir, rust_code_file)
@@ -342,10 +340,10 @@ def process_files():
     successful_test_count = 0
     total_test_count = 0
 
-    # Get dependencies and suggested translation order
+    # 读取元数据
     metadata = json.load(open('tool/c_metadata.json', 'r', encoding='utf-8'))
 
-    # translated_bytes keeps track of which portions of each file have already been translated
+    # translated_flags keeps track of which functions of each file have already been translated
     translated_flags = {}
     for file_relapath, file_info in metadata.items():
         translated_flags[file_relapath] = {}
@@ -549,8 +547,8 @@ def process_files():
                 
                 logging.info(f"{test_func} 测试错误\n")
 
-                # 编译失败或输出不匹配，进行优化
-                logging.info("编译失败或者输出不匹配，继续优化")
+                # 运行失败，进行优化
+                logging.info("运行失败，继续优化")
                 feedback_input = """\nAnalyze the following compilation error:\nIssue description:\n"""
                 feedback_input += f"""{sanitize_string(dynamic_errors)}\nRust code:\n"""
 
@@ -602,7 +600,7 @@ def process_files():
                     optimized_rust_code += "\n\n".join(optimized_rust_codes)
                     write_file_with_utf8(temp_test_file_path, optimized_rust_code)
                     
-                    logging.info(f"代码已针对输出不匹配进行优化 #{test_count}")
+                    logging.info(f"代码已针对运行失败进行优化 #{test_count}")
                 else:
                     logging.info("警告：代码优化专家没有返回有效的Rust代码。保持原代码不变。")
     

@@ -137,7 +137,7 @@ def sort_by_depend_count(test_funcs, file_relapath, metadata):
     sorted_funcs = sorted(test_func_counts, key=lambda x: x[1], reverse=False)
     return [func for func, _ in sorted_funcs]
 
-# todo
+
 def extract_func_dependencies(directory, test_file, func):
     """
     Extract dependencies of a specific function from a C file.
@@ -226,7 +226,7 @@ def extract_func_dependencies(directory, test_file, func):
 
     return used_functions
     
-# todo
+
 def head_info_extraction(directory, file):
     """
     Extract non-function declarations (like structs, type definitions, etc.) from header files.
