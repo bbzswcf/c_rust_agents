@@ -1,0 +1,38 @@
+[0;1;32mTranslationUnitDecl[0m[0;33m 0x6286a38944f8[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x6286a3894d20[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m implicit[0;1;36m __int128_t[0m [0;32m'__int128'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x6286a3894ac0[0m [0;32m'__int128'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x6286a3894d90[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m implicit[0;1;36m __uint128_t[0m [0;32m'unsigned __int128'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x6286a3894ae0[0m [0;32m'unsigned __int128'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x6286a3895098[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m implicit[0;1;36m __NSConstantString[0m [0;32m'struct __NSConstantString_tag'[0m
+[0;34m| `-[0m[0;32mRecordType[0m[0;33m 0x6286a3894e70[0m [0;32m'struct __NSConstantString_tag'[0m
+[0;34m|   `-[0m[0;1;32mRecord[0m[0;33m 0x6286a3894de8[0m[0;1;36m '__NSConstantString_tag'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x6286a3895130[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m implicit[0;1;36m __builtin_ms_va_list[0m [0;32m'char *'[0m
+[0;34m| `-[0m[0;32mPointerType[0m[0;33m 0x6286a38950f0[0m [0;32m'char *'[0m
+[0;34m|   `-[0m[0;32mBuiltinType[0m[0;33m 0x6286a38945a0[0m [0;32m'char'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x6286a3895428[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m implicit[0;1;36m __builtin_va_list[0m [0;32m'struct __va_list_tag[1]'[0m
+[0;34m| `-[0m[0;32mConstantArrayType[0m[0;33m 0x6286a38953d0[0m [0;32m'struct __va_list_tag[1]'[0m 1 
+[0;34m|   `-[0m[0;32mRecordType[0m[0;33m 0x6286a3895210[0m [0;32m'struct __va_list_tag'[0m
+[0;34m|     `-[0m[0;1;32mRecord[0m[0;33m 0x6286a3895188[0m[0;1;36m '__va_list_tag'[0m
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x6286a3911f80[0m <[0;33m./hash-pointer.h:42:1[0m, [0;33mcol:41[0m> [0;33mcol:14[0m[0;1;36m pointer_hash[0m [0;32m'unsigned int (void *)'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x6286a3911eb0[0m <[0;33mcol:27[0m, [0;33mcol:33[0m> [0;33mcol:33[0m[0;1;36m location[0m [0;32m'void *'[0m
+[0;34m| `-[0m[0;34mFullComment[0m[0;33m 0x6286a3912530[0m <[0;33mline:35:3[0m, [0;33mline:39:53[0m>
+[0;34m|   |-[0m[0;34mParagraphComment[0m[0;33m 0x6286a3912350[0m <[0;33mline:35:3[0m, [0;33mline:36:40[0m>
+[0;34m|   | |-[0m[0;34mTextComment[0m[0;33m 0x6286a3912300[0m <[0;33mline:35:3[0m, [0;33mcol:74[0m> Text=" Generate a hash key for a pointer.  The value pointed at by the pointer"
+[0;34m|   | `-[0m[0;34mTextComment[0m[0;33m 0x6286a3912320[0m <[0;33mline:36:3[0m, [0;33mcol:40[0m> Text=" is not used, only the pointer itself."
+[0;34m|   |-[0m[0;34mParagraphComment[0m[0;33m 0x6286a39123a0[0m <[0;33mline:38:3[0m>
+[0;34m|   | `-[0m[0;34mTextComment[0m[0;33m 0x6286a3912370[0m <[0;33mcol:3[0m> Text=" "
+[0;34m|   |-[0m[0;34mParamCommandComment[0m[0;33m 0x6286a39123c0[0m <[0;33mcol:4[0m, [0;33mline:39:3[0m> [in] implicitly Param="location" ParamIndex=0
+[0;34m|   | `-[0m[0;34mParagraphComment[0m[0;33m 0x6286a3912470[0m <[0;33mline:38:19[0m, [0;33mline:39:3[0m>
+[0;34m|   |   |-[0m[0;34mTextComment[0m[0;33m 0x6286a3912420[0m <[0;33mline:38:19[0m, [0;33mcol:37[0m> Text="        The pointer"
+[0;34m|   |   `-[0m[0;34mTextComment[0m[0;33m 0x6286a3912440[0m <[0;33mline:39:3[0m> Text=" "
+[0;34m|   `-[0m[0;34mBlockCommandComment[0m[0;33m 0x6286a3912490[0m <[0;33mcol:4[0m, [0;33mcol:53[0m> Name="return"
+[0;34m|     `-[0m[0;34mParagraphComment[0m[0;33m 0x6286a39124f0[0m <[0;33mcol:11[0m, [0;33mcol:53[0m>
+[0;34m|       `-[0m[0;34mTextComment[0m[0;33m 0x6286a39124c0[0m <[0;33mcol:11[0m, [0;33mcol:53[0m> Text="                A hash key for the pointer."
+[0;34m`-[0m[0;1;32mFunctionDecl[0m[0;33m 0x6286a3912128[0m prev 0x6286a3911f80 <[0;33mhash-pointer.c:27:1[0m, [0;33mline:30:1[0m> [0;33mline:27:14[0m[0;1;36m pointer_hash[0m [0;32m'unsigned int (void *)'[0m
+[0;34m  |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x6286a3912090[0m <[0;33mcol:27[0m, [0;33mcol:33[0m> [0;33mcol:33[0m used[0;1;36m location[0m [0;32m'void *'[0m
+[0;34m  `-[0m[0;1;35mCompoundStmt[0m[0;33m 0x6286a39122a0[0m <[0;33mline:28:1[0m, [0;33mline:30:1[0m>
+[0;34m    `-[0m[0;1;35mReturnStmt[0m[0;33m 0x6286a3912290[0m <[0;33mline:29:2[0m, [0;33mcol:40[0m>
+[0;34m      `-[0m[0;1;35mCStyleCastExpr[0m[0;33m 0x6286a3912268[0m <[0;33mcol:9[0m, [0;33mcol:40[0m> [0;32m'unsigned int'[0m[0;36m[0m[0;36m[0m <[0;31mIntegralCast[0m>
+[0;34m        `-[0m[0;1;35mCStyleCastExpr[0m[0;33m 0x6286a3912228[0m <[0;33mcol:24[0m, [0;33mcol:40[0m> [0;32m'unsigned long'[0m[0;36m[0m[0;36m[0m <[0;31mPointerToIntegral[0m>
+[0;34m          `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x6286a3912210[0m <[0;33mcol:40[0m> [0;32m'void *'[0m[0;36m[0m[0;36m[0m <[0;31mLValueToRValue[0m> part_of_explicit_cast
+[0;34m            `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x6286a39121d8[0m <[0;33mcol:40[0m> [0;32m'void *'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mParmVar[0m[0;33m 0x6286a3912090[0m[0;1;36m 'location'[0m [0;32m'void *'[0m

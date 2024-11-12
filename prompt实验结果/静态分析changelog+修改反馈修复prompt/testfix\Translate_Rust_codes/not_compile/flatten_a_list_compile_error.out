@@ -1,0 +1,47 @@
+Rust 编译失败:
+error[E0308]: mismatched types
+  --> /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:23:51
+   |
+23 |         let mut parent = parent.unwrap_or_else(|| Box::new(*List::new_list()));
+   |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `&mut Box<List>`, found `Box<List>`
+   |
+   = note: expected mutable reference `&mut Box<_>`
+                         found struct `Box<_>`
+help: consider mutably borrowing here
+   |
+23 |         let mut parent = parent.unwrap_or_else(|| &mut Box::new(*List::new_list()));
+   |                                                   ++++
+
+error[E0599]: no function or associated item named `from_str` found for type `i32` in the current scope
+  --> /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:48:37
+   |
+48 |                     ret.ival = i32::from_str(&s[..num_end]).unwrap();
+   |                                     ^^^^^^^^ function or associated item not found in `i32`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `FromStr` which provides `from_str` is implemented but not in scope; perhaps you want to import it
+   |
+1  + use std::str::FromStr;
+   |
+help: there is an associated function `from` with a similar name
+   |
+48 |                     ret.ival = i32::from(&s[..num_end]).unwrap();
+   |                                     ~~~~
+
+error[E0308]: mismatched types
+  --> /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:73:43
+   |
+73 |         let mut to = to.unwrap_or_else(|| Box::new(*List::new_list()));
+   |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `&mut Box<List>`, found `Box<List>`
+   |
+   = note: expected mutable reference `&mut Box<_>`
+                         found struct `Box<_>`
+help: consider mutably borrowing here
+   |
+73 |         let mut to = to.unwrap_or_else(|| &mut Box::new(*List::new_list()));
+   |                                           ++++
+
+error: aborting due to 3 previous errors
+
+Some errors have detailed explanations: E0308, E0599.
+For more information about an error, try `rustc --explain E0308`.
