@@ -1,16 +1,14 @@
-test*/
 __pycache__/
-c_rust_agents.egg-info/
+.idea/
+.vscode/
+Input/
 logs/
 Output/
-Input/
+test*/
 tool/c_metadata.json
 tool/LLM_config.py
 tool/tree_sitter_c_config.py
 .gitignore
-test.c
-test.py
-test.rs
-status.txt
-new_prompts.py
+local/
 
+c_rust_agents.egg-info/

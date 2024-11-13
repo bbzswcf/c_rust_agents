@@ -48,7 +48,8 @@ class Agent:
                 print("\n")
                 
                 # 检查响应是否有效
-                if full_response.strip():
+                full_response = full_response.strip().encode('utf-8', errors='ignore').decode('utf-8')
+                if full_response:
                     return full_response
                 else:
                     print(f"获得空响应，重试中...")

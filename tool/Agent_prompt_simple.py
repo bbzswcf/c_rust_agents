@@ -102,6 +102,7 @@ Output only the converted Rust code without explanations.
 
 Example input:
 C code:
+```c
 void process_data(int a, int b, char* str) {
     int sum = add(a, b);
     int product = multiply(a, b);
@@ -113,11 +114,12 @@ void process_data(int a, int b, char* str) {
 
     free(reversed);
 }
+```
 
 function calls:
-int add(int, int) -> add_in_rust(a: i32, b: i32) -> i32
-int multiply(int, int) -> multiply_in_rust(a: i32, b: i32) -> i32
-char* reverse_string(char*) -> reverse_string_in_rust(str: &str) -> String
+int add(int, int) -> add(a: i32, b: i32) -> i32
+int multiply(int, int) -> multiply(a: i32, b: i32) -> i32
+char* reverse_string(char*) -> reverse_string(str: &str) -> String
 
 API mappings:
 C: printf
@@ -128,6 +130,7 @@ Rust:(automatically managed, no explicit call needed)
 
 
 Example output:
+```rust
 pub fn process_data(a: i32, b: i32, str: &str) {
     let sum = add_in_rust(a, b);
     let product = multiply_in_rust(a, b);
@@ -136,9 +139,8 @@ pub fn process_data(a: i32, b: i32, str: &str) {
     print!("Sum: {}\n", sum);
     print!("Product: {}\n", product);
     print!("Reversed string: {}\n", reversed);
-
-    drop(reversed);
 }
+```
 """
 Syntax_prompt_2 = """
 Convert C code to Rust. 
