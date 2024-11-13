@@ -1,0 +1,72 @@
+Rust 编译失败:
+error[E0615]: attempted to take value of method `get` on type `&dyn Stream`
+  --> /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:73:25
+   |
+73 |     let get = in_stream.get;
+   |                         ^^^ method, not a field
+   |
+help: use parentheses to call the method
+   |
+73 |     let get = in_stream.get();
+   |                            ++
+
+error[E0615]: attempted to take value of method `put` on type `&mut dyn Stream`
+  --> /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:74:26
+   |
+74 |     let put = out_stream.put;
+   |                          ^^^ method, not a field
+   |
+help: use parentheses to call the method
+   |
+74 |     let put = out_stream.put(_);
+   |                             +++
+
+error[E0308]: mismatched types
+   --> /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:100:30
+    |
+100 |                     buf[0] = buf[1] = buf[len - 1];
+    |                     ------   ^^^^^^^^^^^^^^^^^^^^^ expected `u8`, found `()`
+    |                     |
+    |                     expected due to the type of this binding
+
+error[E0594]: cannot assign to `self.pos`, which is behind a `&` reference
+  --> /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:19:9
+   |
+19 |         self.pos += 1;
+   |         ^^^^^^^^^^^^^ `self` is a `&` reference, so the data it refers to cannot be written
+   |
+help: consider changing this to be a mutable reference in the `impl` method and the `trait` definition
+   |
+3  ~     fn get(&mut self) -> i32;
+4  |     fn put(&mut self, c: i32) -> i32;
+ ...
+13 | impl Stream for StringStream {
+14 ~     fn get(&mut self) -> i32 {
+   |
+
+error[E0596]: cannot borrow `str_out` as mutable, as it is not declared as mutable
+   --> /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:147:36
+    |
+147 |     encode(&str_in as &dyn Stream, &mut str_out as &mut dyn Stream);
+    |                                    ^^^^^^^^^^^^ cannot borrow as mutable
+    |
+help: consider changing this to be mutable
+    |
+140 |     let mut str_out = StringStream {
+    |         +++
+
+error[E0596]: cannot borrow `file` as mutable, as it is not declared as mutable
+   --> /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:148:37
+    |
+148 |     decode(&str_out as &dyn Stream, &mut file as &mut dyn Stream);
+    |                                     ^^^^^^^^^ cannot borrow as mutable
+    |
+help: consider changing this to be mutable
+    |
+144 |     let mut file = FileStream {
+    |         +++
+
+error: aborting due to 6 previous errors
+
+Some errors have detailed explanations: E0308, E0594, E0596, E0615.
+For more information about an error, try `rustc --explain E0308`.

@@ -1,0 +1,23 @@
+Rust 编译失败:
+error: macro expansion ignores token `{` and any following
+  --> /home/user/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/macros.rs:83:23
+   |
+83 |     ($($arg:tt)*) => {{
+   |                       ^
+   |
+  ::: /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:1:1
+   |
+1  | print!("{:0width$}", num, width = len - if j < c { 1 } else { 0 });
+   | ------------------------------------------------------------------ caused by the macro expansion here
+   |
+   = note: the usage of `print!` is likely invalid in item context
+
+error[E0601]: `main` function not found in crate `temp_main`
+ --> /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:1:68
+  |
+1 | print!("{:0width$}", num, width = len - if j < c { 1 } else { 0 });
+  |                                                                    ^ consider adding a `main` function to `/mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs`
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0601`.
