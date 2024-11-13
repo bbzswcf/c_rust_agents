@@ -178,7 +178,7 @@ def compile_and_test_rust(test_func: str, temp_test_project_dir: str) -> tuple[b
 
 
 def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust_code_file: str,
-                             rust_result_dir: str, metadata: dict) -> str:
+                             rust_result_dir: str, metadata: dict) -> tuple[bool, str]:
     c_code = c_func_info['code']
     
     logging.info("开始API转换")
@@ -187,7 +187,7 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
     )
     logging.info(api_conversion)
     logging.info("开始语法转换")
-    combined_syntax_input = f"""\nConvert the following C code to Rust using the function calls, provided API mappings:\nC code:\n{c_code}\n"""
+    combined_syntax_input = f"""\nConvert the following C code to Rust using the function calls, provided API mappings:\nC code:\n```c\n{c_code}```\n"""
 
     # 从c_func_info中找到对应depend_file中的Rust_func_name
     c_signatures = []
@@ -221,6 +221,7 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
 
     max_static_analysis_and_test_attempts = 4
     static_analysis_count = 0
+    correct = False
 
     while static_analysis_count < max_static_analysis_and_test_attempts:
         static_analysis_count += 1
@@ -252,11 +253,18 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
                 logging.info("警告：代码优化专家没有返回有效的Rust代码。保持原代码不变。")
         else:
             logging.info("静态分析通过")
+            correct = True
             break
+
+    if not correct:
+        analysis_result = static_analysis(rust_result_dir, rust_code_file)
+        if not analysis_result:
+            logging.info("静态分析通过")
+            correct = True
 
     with open(rust_code_file, 'r+') as f:
         f.truncate(original_size)
-    return rust_code
+    return correct, rust_code
 
 
 def convert_c_initialization_to_rust(c_file: str, rust_code_file: str, rust_result_dir: str, metadata: dict) -> str:
@@ -413,6 +421,8 @@ def process_files():
                 rust_file_path = os.path.join(rust_code_dir, f"{depend_file_name}.rs") 
                 write_file_with_utf8(rust_file_path, "")
 
+            # 标记是否有依赖函数翻译错误
+            has_translation_error = False
             for depend_func, depend_file in depend_files_and_funcs:
                 logging.info(f"开始翻译依赖文件{depend_file}的函数{depend_func}")
                 depend_file_name = os.path.splitext(os.path.basename(depend_file.replace('-', '_')))[0]
@@ -452,7 +462,7 @@ def process_files():
                         c_func_info = func_info_metadata
                         break
 
-                rust_code = convert_c_funcs_to_rust(
+                success,rust_code = convert_c_funcs_to_rust(
                     depend_file,
                     depend_func,
                     c_func_info,
@@ -460,11 +470,20 @@ def process_files():
                     args.output_dir,
                     metadata
                 )
+                if not success:
+                    translated_flags[depend_file][depend_func] = False
+                    has_translation_error = True
+                    logging.info(f"依赖文件{depend_file}的函数{depend_func}翻译失败")
+                    break
                 rust_signatures = re.findall(r'fn\s+(.*?)\s*{', rust_code)
                 c_func_info['rust_signature'] = rust_signatures[0]
                 c_func_info['rust_code'] = rust_code
                 insert_file_with_utf8(rust_file_path, rust_code)
 
+            if has_translation_error:
+                logging.info(f"测试文件{problem_path}的测试函数 {test_func} 的依赖项翻译失败，跳过当前测试函数")
+                continue
+            
             logging.info(f"测试文件{problem_path}的测试函数 {test_func} 的依赖项翻译完毕，开始翻译测试函数")
             
             # 构建测试文件的测试环境
@@ -492,7 +511,7 @@ def process_files():
             if rust_code not in current_content:
                 insert_file_with_utf8(rust_test_file_path, rust_code)
                 
-            rust_test = convert_c_funcs_to_rust(
+            success,rust_test = convert_c_funcs_to_rust(
                 test_file_name,
                 test_func,
                 test_func_info,
