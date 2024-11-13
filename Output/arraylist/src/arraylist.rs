@@ -1,48 +1,23 @@
-// pub struct ArrayList {
-//     data: Vec<Option<Box<dyn std::any::Any>>>,
-//     length: usize,
-//     _alloced: usize,
-// }
 
+pub type ArrayListValue<T> = Option<T>;
 
-// pub fn arraylist_new(length: usize) -> Option<Box<ArrayList>> {
-//     let length = if length == 0 { 16 } else { length };
-//     let data = Vec::with_capacity(length);
-//     let arraylist = Box::new(ArrayList {
-//         data,
-//         length: 0,
-//         _alloced: length,
-//     });
-//     Some(arraylist)
-// }
-
-// pub fn arraylist_free(_arraylist: Option<Box<ArrayList>>) {}
-
-
-
-use std::ptr;
-
-type ArrayListValue = *mut ();
-
-pub struct ArrayList {
-    data: Vec<ArrayListValue>,
-    length: usize,
-    _alloced: usize,
+pub struct ArrayList<T> {
+    pub data: Vec<ArrayListValue<T>>,
+    pub length: u32,
+    pub _alloced: u32,
 }
 
-pub fn arraylist_new(length: usize) -> Option<Box<ArrayList>> {
-    let length = if length == 0 { 16 } else { length };
+pub type ArrayListEqualFunc<T> = fn(ArrayListValue<T>, ArrayListValue<T>) -> i32;
 
-    let data = Vec::with_capacity(length);
+pub type ArrayListCompareFunc<T> = fn(ArrayListValue<T>, ArrayListValue<T>) -> i32;
+pub fn arraylist_new(length: usize) -> Option<Box<ArrayList>> {
+    let length = if length <= 0 { 16 } else { length };
+
     let new_arraylist = Box::new(ArrayList {
-        data,
-        length: 0,
         _alloced: length,
+        length: 0,
+        data: Vec::with_capacity(length),
     });
 
     Some(new_arraylist)
-}
-
-pub fn arraylist_free(_arraylist: Option<Box<ArrayList>>) {
-    // Automatically managed by Rust
 }
