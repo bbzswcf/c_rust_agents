@@ -18,6 +18,7 @@ from tree_sitter_analyzer import (
     sort_by_depend_count,
     dependencies_order
 )
+from c_code_preprocess import code_preprocess
 
 # 设置默认编码为UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
@@ -110,10 +111,14 @@ def static_analysis(rust_result_dir: str, rust_file: str) -> str:
     cur_dir = os.getcwd()
     cargo_toml_dir = os.path.join(os.path.join(cur_dir, rust_result_dir), "Cargo.toml")
     rust_file = os.path.join(cur_dir, rust_file)
-
+    
+    with open(rust_file) as file:
+        rust_file_content = file.readlines()
+    logging.info(f"静态分析内容：\n{''.join(rust_file_content)}")
+ 
     # 使用 clippy 进行静态分析
     if "test" not in rust_file:
-        write_file_with_utf8(rust_file, "\nfn main() {}")
+        insert_file_with_utf8(rust_file, "\nfn main() {}")
         clippy_result = subprocess.run(
             ["clippy-driver", rust_file],
             capture_output=True,
@@ -176,6 +181,37 @@ def compile_and_test_rust(test_func: str, temp_test_project_dir: str) -> tuple[b
     except Exception as e:
         return False, f"Rust 测试失败:\n{str(e)}"
 
+def check_changelog(rust_code_lines, changelog):
+    # 正则表达式模式来匹配OriginalCode和FixedCode块
+    pattern = re.compile(r'(OriginalCode@.*?)(?=OriginalCode@|$)', re.DOTALL)
+    # 查找所有匹配的块
+    matches = pattern.findall(changelog)
+    # 提取为行号到代码的映射
+    rust_lines_map = {int(line.split(']', 1)[0][1:]): line.split(']', 1)[1].strip() for line in rust_code_lines}
+    applied_logpairs=[]
+    # 遍历每个匹配的块
+    for match in matches:
+        # 提取OriginalCode和FixedCode
+        original_code_match = re.search(r'OriginalCode@.*?:\n(.*?)(?=FixedCode@|$)', match, re.DOTALL)
+        fixed_code_match = re.search(r'FixedCode@.*?:\n(.*?)(?=OriginalCode@|$)', match, re.DOTALL)
+        
+        if original_code_match and fixed_code_match:
+            fixed_code = fixed_code_match.group(1).strip()
+            original_code = original_code_match.group(1).strip()
+            # 提取为行号到代码的映射
+            original_lines = re.split(r'(?=\[\d+\])', original_code)
+            original_lines = [line.strip() for line in original_lines if line]
+            original_lines_map = {int(line.split(']', 1)[0][1:]): line.split(']', 1)[1].strip() for line in original_lines}
+
+            # 检查是否接受这条changelog（original code必须与原代码相同）
+            accept = True
+            for line_number, original_line in original_lines_map.items():
+                if line_number not in rust_lines_map or original_line.strip() != rust_lines_map[line_number].strip():
+                    accept = False
+                    break
+            if accept:
+                applied_logpairs.append((original_code, fixed_code))
+    return applied_logpairs
 
 def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust_code_file: str,
                              rust_result_dir: str, metadata: dict) -> tuple[bool, str]:
@@ -214,12 +250,16 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
     rust_code = extract_rust_code(rust_code)
 
     original_size = os.path.getsize(rust_code_file)
+    original_line_num = 0
+    with open(rust_code_file) as f:
+        original_line_num = len(f.readlines())
     # Add #[test] attribute if this is a test function
     if "test_" in func_name:
         rust_code = "#[test]\n" + rust_code
     insert_file_with_utf8(rust_code_file, rust_code)
 
-    max_static_analysis_and_test_attempts = 4
+    # max_static_analysis_and_test_attempts = 4
+    max_static_analysis_and_test_attempts = 5
     static_analysis_count = 0
     correct = False
 
@@ -244,6 +284,7 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
 
             new_rust_code = extract_rust_code(optimized)
             if new_rust_code.strip():
+
                 with open(rust_code_file, 'r+') as f:
                     f.truncate(original_size)
                 insert_file_with_utf8(rust_code_file, new_rust_code)
@@ -251,6 +292,62 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
                 logging.info(f"代码已针对静态分析进行优化 #{static_analysis_count}\n")
             else:
                 logging.info("警告：代码优化专家没有返回有效的Rust代码。保持原代码不变。")
+
+
+
+
+            # print("发现静态分析问题，生成fix log...")
+
+            # # 正则表达式，匹配双引号内的内容，并替换换行符为特殊标记
+            # modified_str = re.sub(r'(".*?)(\n)(.*?")', lambda m: m.group(0).replace('\n', '___NEWLINE___'), sanitize_string(rust_code))
+            # # 按行分割字符串
+            # lines = [line for line in modified_str.splitlines() if line]
+            # # 恢复双引号内的特殊标记
+            # lines = [line.replace('___NEWLINE___', '\n') for line in lines]
+            # # 给每一行前加上行号
+            # numbered_lines = [f"[{original_line_num + index + 1}] {line}" for index, line in enumerate(lines)]
+            # # 将带有行号的行合并回一个字符串
+            # numbered_rust_code = '\n'.join(numbered_lines)
+
+            # fix_input = fix_prompt.format(error_block=analysis_result, code_snippets=numbered_rust_code)
+            # logging.info("修复输入：")
+            # logging.info(fix_input)
+            # fix_log = fix_agent.generate_response(fix_input)
+
+            # logging.info("修复日志：")
+            # logging.info(fix_log)
+            # logging.info("------------修复前------------")
+            # logging.info(numbered_rust_code)
+            # # print(modified_str)
+
+            # applied_logpairs = check_changelog(numbered_lines, fix_log)
+            # logging.info(f"经检查{len(applied_logpairs)}条changelog被采用，开始修复")
+            # for (original_code, fixed_code) in applied_logpairs:
+            #     numbered_rust_code = numbered_rust_code.replace(original_code, fixed_code)
+            # logging.info("------------修复后------------")
+            # logging.info(numbered_rust_code)
+
+            # # 正则表达式，匹配双引号内的内容，并替换换行符为特殊标记
+            # modified_str = re.sub(r'(".*?)(\n)(.*?")', lambda m: m.group(0).replace('\n', '___NEWLINE___'), numbered_rust_code)
+            # # 按行分割字符串
+            # lines = [line for line in modified_str.splitlines() if line]
+            # # 恢复双引号内的特殊标记
+            # lines = [line.replace('___NEWLINE___', '\n') for line in lines]
+            # # 去除行号
+            # lines = [re.sub(r'^\[\w+\] ', '', line) for line in lines]
+            # # 合并回代码
+            # new_rust_code = '\n'.join(lines)
+            # if new_rust_code.strip():
+            #     with open(rust_code_file, 'r+') as f:
+            #         f.truncate(original_size)
+            #     insert_file_with_utf8(rust_code_file, new_rust_code)
+            #     rust_code = new_rust_code
+            #     logging.info(f"代码已针对静态分析进行优化 #{static_analysis_count}\n")
+            # else:
+            #     logging.info("警告：代码优化专家没有返回有效的Rust代码。保持原代码不变。")
+
+
+
         else:
             logging.info("静态分析通过")
             correct = True
@@ -277,7 +374,7 @@ def convert_c_initialization_to_rust(c_file: str, rust_code_file: str, rust_resu
     if pre_code == '':
         return ''
 
-    logging.info("开始语法转换")
+    logging.info("开始全局定义语法转换")
     # combined_syntax_input = f"""\nConvert the following C code to Rust using the provided API mappings:\nC code:\n{pre_code}\nRemember to output only the converted Rust code without any explanations.\nDeclare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.\n"""
     combined_syntax_input = type_convert_input_prompt.format(c_code=pre_code)
     logging.info(f"语法专家prompt: {combined_syntax_input}")
@@ -335,6 +432,8 @@ def process_files():
     parser.add_argument('--c_code_dir', default='./Input/01-Primary', type=str, help='Directory path to analyze')
     parser.add_argument('--output_dir', default='./Output/primary', type=str, help='Directory path to save results')
     args = parser.parse_args()
+    # 清空metadata
+    code_preprocess("./Input/01-Primary")
 
     # 创建新的结果文件夹
     rust_code_dir = os.path.join(args.output_dir, "src")
@@ -365,7 +464,9 @@ def process_files():
     logging.info(f"翻译顺序：{translation_order}")
     logging.info(f"翻译文件总数：{len(translation_order)}")
     
-    translation_order = ['test\\test-arraylist.c'] # 调试
+    # translation_order = ['test/test-arraylist.c'] # 调试
+    translation_order = ['test/test-hash-functions.c']
+    # translation_order = ['test/test-hash-functions.c', 'test/test-bloom-filter.c']
     for problem_path in translation_order:
         logging.info(f"开始翻译文件{problem_path}")
         if not problem_path.startswith("test"):
@@ -508,8 +609,8 @@ def process_files():
                 )
                 metadata[problem_path]['rust_items'] = rust_code
             current_content = read_file_with_auto_encoding(rust_test_file_path)
-            if rust_code not in current_content:
-                insert_file_with_utf8(rust_test_file_path, rust_code)
+            if metadata[problem_path]['rust_items'] not in current_content:
+                insert_file_with_utf8(rust_test_file_path, metadata[problem_path]['rust_items'])
                 
             success,rust_test = convert_c_funcs_to_rust(
                 test_file_name,
@@ -594,6 +695,9 @@ def process_files():
                                 
                 optimize_input += """\nPlease strictly follow the steps mentioned in the prompt to optimize the code.\nEnsure all issues mentioned in the feedback are resolved, and add comments for each modification explaining the reason.\nUse the provided context (variables and structs) to ensure consistent usage of types and variables across functions.\nOnly return the complete optimized Rust code without additional explanations.\n"""
                 
+
+
+
                 logging.info(f"修复专家prompt: {optimize_input}")
                 optimized = optimize_agent_2.generate_response(optimize_input)
                 logging.info(optimized)

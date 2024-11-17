@@ -281,6 +281,7 @@ Example output 3:
 
 Please ensure the analysis covers all error-level issues and provide clear, specific suggestions for fixes. Completely ignore any warnings.
 """
+
 Feedback_prompt_new="""Following is a Rust code translated from a C code, accompanied by its original C code.
 Original C Code:
 <c_code>
@@ -417,9 +418,7 @@ let sum: i32 = numbers.iter().sum();
 Fix Code:
 let sum: i32 = numbers.iter().filter(|&&x| x % 2 == 0).sum();
 """
-feedback_input_prompt="""
 
-"""
 # 优化专家Prompt
 Optimize_prompt = """
 Optimize the given Rust code based on the provided feedback. 
@@ -585,4 +584,83 @@ pub fn test_foo() {
 
 Please ensure the optimized code resolves all error issues mentioned in the feedback, and keep the code clear and concise.
 Completely ignore any warnings.
+"""
+
+Optimize_prompt_new = """
+Given a flawed Rust code and its fix issues.
+Analyze each fix issue, and when you think an issue can be adopted, fix the current Rust code based on the error code and fix code it provides.
+After completing the analysis of all issues, provide the repaired Rust code.
+
+---
+Example 1:
+Current Rust Code:
+fn reverse_array(arr: &mut [i32]) {
+    let len = arr.len();
+    for i in 0..len / 2 {
+        let temp = arr[i];
+        arr[i] = arr[len - i];
+        arr[len - i] = temp;
+    }
+}
+fn main() {
+    let mut arr = [1, 2, 3, 4, 5];
+    reverse_array(&mut arr);
+    for &item in &arr {
+        print!("{} ", item);
+    }
+    println!();
+}
+
+Fix issues:
+#Issue 1
+Errors: Array out of bounds access.
+Reason: When i is 0, arr [len-i] is actually arr [len], which exceeds the valid index range of the array (the valid index range of the array is 0 to len-1).
+Error Code:
+arr[i] = arr[len - i];
+arr[len - i] = temp;
+Fix Code:
+arr[i] = arr[len - 1 - i];
+arr[len - 1 - i] = temp;
+
+Fixed Rust Code:
+fn reverse_array(arr: &mut [i32]) {
+    let len = arr.len();
+    for i in 0..len / 2 {
+        let temp = arr[i];
+        arr[i] = arr[len - 1 - i];
+        arr[len - 1 - i] = temp;
+    }
+}
+fn main() {
+    let mut arr = [1, 2, 3, 4, 5];
+    reverse_array(&mut arr);
+    for &item in &arr {
+        print!("{} ", item);
+    }
+    println!();
+}
+---
+Example 2:
+Current Rust Code:
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    let sum: i32 = numbers.iter().sum();
+    println!("The sum of even numbers is: {}", sum);
+}
+
+Fix issues:
+#Issue 1
+Errors: Output mismatch
+Reason: C code calculates the sum of all even numbers in an array, while Rust code calculates the sum of all elements in the array.
+Error Code:
+let sum: i32 = numbers.iter().sum();
+Fix Code:
+let sum: i32 = numbers.iter().filter(|&&x| x % 2 == 0).sum();
+
+Fixed Rust Code:
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    let sum: i32 = numbers.iter().filter(|&&x| x % 2 == 0).sum();
+    println!("The sum of even numbers is: {}", sum);
+}
 """

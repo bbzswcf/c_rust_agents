@@ -104,3 +104,9 @@ optimize_agent_2 = Agent(
     prompt=Optimize_prompt_2,
     temperature=0.2,
     top_p=0.9)
+
+fix_agent = Agent(
+    role="fix Expert",
+    prompt="You are a proficient C and Rust advanced developer.",
+    temperature=0.2,
+    top_p=0.9)
