@@ -58,3 +58,19 @@ pub sturct QueueEntry<T> {{
 Remember to output only the converted Rust code without any explanations.
 Declare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.
 """
+
+feedback_input_prompt="""
+Original C Code:
+{c_code}
+
+Translated Rust Code:
+{rust_code}
+
+Error message:
+{error_msg}
+
+Issues:
+"""
+
+
+

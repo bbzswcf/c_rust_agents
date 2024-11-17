@@ -281,6 +281,145 @@ Example output 3:
 
 Please ensure the analysis covers all error-level issues and provide clear, specific suggestions for fixes. Completely ignore any warnings.
 """
+Feedback_prompt_new="""Following is a Rust code translated from a C code, accompanied by its original C code.
+Original C Code:
+<c_code>
+Translated Rust Code:
+<rust_code>
+This Rust code encountered the following errors during runtime, which may be due to runtime errors or mismatches with the original C code output.
+Error message:
+<error_message>
+Then analyze the above error and refer to the original C code to infer the cause of the error.
+You need to locate the Rust code snippets that caused the error and provide the corresponding fixed Rust code snippets in a series of issues
+Note that there may be multiple errors caused by the same error Rust code snippet.
+Do not add comments or code that is not necessary to fix the error. 
+Format Instruction:
+Fix of each error Rust code snippet should be placed separately in an issue, noted that this error Rust code snippet may involve one or multiple errors.
+Each issue should start with the summary of errors it is involved.
+Then provide your speculated reasons for these errors, and give the Rust code snippet that caused the errors, followed by a fix code snippet.
+---
+#Issue 1
+Errors: <summary>
+Reason: <reason>
+Error Code:
+<error code snippet>
+Fixed Code:
+<fixed code snippet>s
+#Issue 2
+Errors: <summary>
+Reason: <reason>
+Error Code:
+<error code snippet>
+Fixed Code:
+<fixed code snippet>
+...
+#Issue k (k is no more than 5)
+Errors: <summary>
+Reason: <reason>
+Error Code:
+<error code snippet>
+Fixed Code:
+<fixed code snippet>
+
+---
+Example 1:
+Original C Code:
+#include <stdio.h>
+void reverse_array(int arr[], int size) {
+    int start = 0;
+    int end = size - 1;
+    while (start < end) {
+        int temp = arr[start];
+        arr[start] = arr[end];
+        arr[end] = temp;
+        start++;
+        end--;
+    }
+}
+int main() {
+    int arr[] = {1, 2, 3, 4, 5};
+    int size = sizeof(arr) / sizeof(arr[0]);
+    reverse_array(arr, size);
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+    return 0;
+}
+
+Translated Rust Code:
+fn reverse_array(arr: &mut [i32]) {
+    let len = arr.len();
+    for i in 0..len / 2 {
+        let temp = arr[i];
+        arr[i] = arr[len - i];
+        arr[len - i] = temp;
+    }
+}
+fn main() {
+    let mut arr = [1, 2, 3, 4, 5];
+    reverse_array(&mut arr);
+    for &item in &arr {
+        print!("{} ", item);
+    }
+    println!();
+}
+
+Error message:
+thread 'main' panicked at test.rs:6:18:
+index out of bounds: the len is 5 but the index is 5
+
+Issues:
+#Issue 1
+Errors: Array out of bounds access.
+Reason: When i is 0, arr [len-i] is actually arr [len], which exceeds the valid index range of the array (the valid index range of the array is 0 to len-1).
+Error Code:
+arr[i] = arr[len - i];
+arr[len - i] = temp;
+Fix Code:
+arr[i] = arr[len - 1 - i];
+arr[len - 1 - i] = temp;
+
+---
+Example2:
+Original C code:
+void main() {
+    int numbers[] = {1, 2, 3, 4, 5};
+    int sum = 0;
+    for (int i = 0; i < sizeof(numbers) / sizeof(numbers[0]); i++) {
+        if (numbers[i] % 2 == 0) {
+            sum += numbers[i];
+        }
+    }
+    printf("The sum of even numbers is: %d\n", sum);
+}
+
+Translated Rust code:
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    let sum: i32 = numbers.iter().sum();
+    println!("The sum of even numbers is: {}", sum);
+}
+
+Error message:
+Output mismatch:
+C output:
+The sum of even numbers is: 6
+Rust output:
+The sum of even numbers is: 15
+
+Issues:
+#Issue 1
+Errors: Output mismatch
+Reason: C code calculates the sum of all even numbers in an array, while Rust code calculates the sum of all elements in the array.
+Error Code:
+let sum: i32 = numbers.iter().sum();
+Fix Code:
+let sum: i32 = numbers.iter().filter(|&&x| x % 2 == 0).sum();
+"""
+feedback_input_prompt="""
+
+"""
 # 优化专家Prompt
 Optimize_prompt = """
 Optimize the given Rust code based on the provided feedback. 
