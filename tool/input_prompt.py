@@ -1,15 +1,24 @@
 type_convert_input_prompt="""
-You are a proficient C and Rust advanced developer.
+Translate the following C definitions of types, structs, variable and macros to Rust.
+C definitions:
+```c
+{c_code}
+```
 Here are some translation experiences for your reference.
 1. For void* in C, use Option<T> in Rust.
 Example:
 C: 
+```c
 typedef void *ArrayListValue;
+```
 Rust: 
+```rust
 pub type ArrayListValue<T> = Option<T>;
+```
 2. For array pointers in C, use Vec in Rust.
 Example:
 C: 
+```c
 typedef void *ArrayListValue;
 typedef struct _ArrayList ArrayList;
 struct _ArrayList {{
@@ -17,15 +26,19 @@ struct _ArrayList {{
 	unsigned int length;
 	unsigned int _alloced;
 }};
+```
 Rust: 
+```rust
 struct ArrayList<T> {{
     pub data: Vec<Option<T>>,
     pub length: u32,
     pub _alloced: u32,
 }}
+```
 3. For recursive structures in C, that is, structures that contain pointers to the structure, use Option<Rc<RefCell<T>>> in Rust/
 Example:
 C: 
+```c
 typedef void *QueueValue;
 typedef struct _QueueEntry QueueEntry;
 struct _QueueEntry {{
@@ -33,15 +46,15 @@ struct _QueueEntry {{
 	QueueEntry *prev;
 	QueueEntry *next;
 }};
+```
 Rust:
+```rust
 pub sturct QueueEntry<T> {{
     data: Option<T>,
     prev: Option<Rc<RefCell<QueueEntry<T>>>>,
     next: Option<Rc<RefCell<QueueEntry<T>>>>,
 }}
-Translate the following C definitions of types or structs to Rust.
-C definitions:
-{c_code}
+```c
 Remember to output only the converted Rust code without any explanations.
 Declare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.
 """

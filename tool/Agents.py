@@ -1,6 +1,6 @@
 # 设置Agent
 import os
-from Agent_prompt_simple import *
+from Agent_prompt import *
 from openai import OpenAI
 from LLM_config import *
 
@@ -68,23 +68,16 @@ class Agent:
 
 # 创建不同的Agent
 
-api_agent = Agent(
-    role="API Conversion Expert",
-    prompt=API_prompt,
-    temperature=0.2,
-    top_p=0.9
-)
+# api_agent = Agent(
+#     role="API Conversion Expert",
+#     prompt=API_prompt,
+#     temperature=0.2,
+#     top_p=0.9
+# )
 
 syntax_agent = Agent(
     role="Syntax Conversion Expert",
-    prompt=Syntax_prompt,
-    temperature=0.2,
-    top_p=0.9
-)
-
-syntax_agent_2 = Agent(
-    role="Syntax Conversion Expert",
-    prompt=Syntax_prompt_2,
+    prompt=Syntax_system_prompt,
     temperature=0.2,
     top_p=0.9
 )
