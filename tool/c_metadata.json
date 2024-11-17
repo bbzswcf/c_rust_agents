@@ -1671,16 +1671,16 @@
         "name": "string_hash",
         "signature": "unsigned int string_hash(void *string)",
         "code": "unsigned int string_hash(void *string)\n{\n\t/* This is the djb2 string hash function */\n\n\tunsigned int result = 5381;\n\tunsigned char *p;\n\n\tp = (unsigned char *) string;\n\n\twhile (*p != '\\0') {\n\t\tresult = (result << 5) + result + *p;\n\t\t++p;\n\t}\n\n\treturn result;\n}",
-        "rust_code": "pub fn string_hash(string: *const u8) -> u32 {\n    let mut result: u32 = 5381;\n    let mut p = string;\n\n    unsafe {\n        while *p != b'\\0' {\n            result = (result << 5).wrapping_add(result).wrapping_add(*p as u32);\n            p = p.offset(1);\n        }\n    }\n\n    result\n}",
-        "rust_signature": "string_hash(string: *const u8) -> u32",
+        "rust_code": "pub fn string_hash(string: &str) -> u32 {\n    let mut result: u32 = 5381;\n    let mut p = string.as_bytes();\n\n    while let Some(&c) = p.first() {\n        result = (result << 5).wrapping_add(result).wrapping_add(c as u32);\n        p = &p[1..];\n    }\n\n    result\n}",
+        "rust_signature": "string_hash(string: &str) -> u32 ",
         "depend_funcs": []
       },
       {
         "name": "string_nocase_hash",
         "signature": "unsigned int string_nocase_hash(void *string)",
         "code": "unsigned int string_nocase_hash(void *string)\n{\n\tunsigned int result = 5381;\n\tunsigned char *p;\n\n\tp = (unsigned char *) string;\n\n\twhile (*p != '\\0') {\n\t\tresult = (result << 5) + result + (unsigned int) tolower(*p);\n\t\t++p;\n\t}\n\n\treturn result;\n}",
-        "rust_code": "pub fn string_nocase_hash(string: &str) -> u32 {\n    let mut result: u32 = 5381;\n    let mut p = string.chars();\n\n    while let Some(c) = p.next() {\n        result = (result << 5).wrapping_add(result).wrapping_add(c.to_ascii_lowercase() as u32);\n    }\n\n    result\n}",
-        "rust_signature": "string_nocase_hash(string: &str) -> u32",
+        "rust_code": "",
+        "rust_signature": "",
         "depend_funcs": []
       }
     ],
@@ -2214,8 +2214,8 @@
         "name": "pointer_hash",
         "signature": "unsigned int pointer_hash(void *location)",
         "code": "unsigned int pointer_hash(void *location)\n{\n\treturn (unsigned int) (unsigned long) location;\n}",
-        "rust_code": "\n\npub fn pointer_hash(location: *const ()) -> u32 {\n    location as usize as u32\n}\n\n",
-        "rust_signature": "pointer_hash(location: *const ()) -> u32",
+        "rust_code": "",
+        "rust_signature": "",
         "depend_funcs": []
       }
     ],
@@ -2391,8 +2391,8 @@
         "name": "int_hash",
         "signature": "unsigned int int_hash(void *vlocation)",
         "code": "unsigned int int_hash(void *vlocation)\n{\n\tint *location;\n\n\tlocation = (int *) vlocation;\n\n\treturn (unsigned int) *location;\n}",
-        "rust_code": "\npub fn int_hash(vlocation: *const ()) -> u32 {\n    let location = vlocation as *const i32;\n    unsafe { *location.as_ref().unwrap() as u32 }\n}\n\n",
-        "rust_signature": "int_hash(vlocation: *const ()) -> u32",
+        "rust_code": "",
+        "rust_signature": "",
         "depend_funcs": []
       }
     ],
@@ -2763,16 +2763,16 @@
         "name": "bloom_filter_new",
         "signature": "BloomFilter *bloom_filter_new(unsigned int table_size, BloomFilterHashFunc hash_func, unsigned int num_functions)",
         "code": "BloomFilter *bloom_filter_new(unsigned int table_size,\n                              BloomFilterHashFunc hash_func,\n                              unsigned int num_functions)\n{\n\tBloomFilter *filter;\n\n\t/* There is a limit on the number of functions which can be\n\t * applied, due to the table size */\n\n\tif (num_functions > sizeof(salts) / sizeof(*salts)) {\n\t\treturn NULL;\n\t}\n\n\t/* Allocate bloom filter structure */\n\n\tfilter = malloc(sizeof(BloomFilter));\n\n\tif (filter == NULL) {\n\t\treturn NULL;\n\t}\n\n\t/* Allocate table, each entry is one bit; these are packed into\n\t * bytes.  When allocating we must round the length up to the nearest\n\t * byte. */\n\n\tfilter->table = calloc((table_size + 7) / 8, 1);\n\n\tif (filter->table == NULL) {\n\t\tfree(filter);\n\t\treturn NULL;\n\t}\n\n\tfilter->hash_func = hash_func;\n\tfilter->num_functions = num_functions;\n\tfilter->table_size = table_size;\n\n\treturn filter;\n}",
-        "rust_code": "",
-        "rust_signature": "",
+        "rust_code": "pub fn bloom_filter_new(table_size: u32, hash_func: BloomFilterHashFunc, num_functions: u32) -> Option<BloomFilter> {\n    // There is a limit on the number of functions which can be applied, due to the table size\n    if num_functions > (salts.len() as u32) {\n        return None;\n    }\n\n    // Allocate table, each entry is one bit; these are packed into bytes. When allocating we must round the length up to the nearest byte.\n    let table_size_bytes = (table_size + 7) / 8;\n    let table = vec![0; table_size_bytes as usize];\n\n    Some(BloomFilter {\n        hash_func,\n        table,\n        table_size,\n        num_functions,\n    })\n}",
+        "rust_signature": "bloom_filter_new(table_size: u32, hash_func: BloomFilterHashFunc, num_functions: u32) -> Option<BloomFilter> ",
         "depend_funcs": []
       },
       {
         "name": "bloom_filter_free",
         "signature": "void bloom_filter_free(BloomFilter *bloomfilter)",
         "code": "void bloom_filter_free(BloomFilter *bloomfilter)\n{\n\tfree(bloomfilter->table);\n\tfree(bloomfilter);\n}",
-        "rust_code": "",
-        "rust_signature": "",
+        "rust_code": "pub fn bloom_filter_free(bloomfilter: &mut BloomFilter) {\n    bloomfilter.table.clear();\n}",
+        "rust_signature": "bloom_filter_free(bloomfilter: &mut BloomFilter) ",
         "depend_funcs": []
       },
       {
@@ -2834,7 +2834,7 @@
         ]
       }
     ],
-    "rust_items": ""
+    "rust_items": "use std::any::Any;\n\npub struct BloomFilter {\n    pub hash_func: BloomFilterHashFunc,\n    pub table: Vec<u8>,\n    pub table_size: u32,\n    pub num_functions: u32,\n}\n\npub type BloomFilterValue = Option<Box<dyn Any>>;\n\npub type BloomFilterHashFunc = fn(BloomFilterValue) -> u32;\n\npub const salts: [u32; 64] = [\n    0x1953c322, 0x588ccf17, 0x64bf600c, 0xa6be3f3d,\n    0x341a02ea, 0x15b03217, 0x3b062858, 0x5956fd06,\n    0x18b5624f, 0xe3be0b46, 0x20ffcd5c, 0xa35dfd2b,\n    0x1fc4a9bf, 0x57c45d5c, 0xa8661c4a, 0x4f1b74d2,\n    0x5a6dde13, 0x3b18dac6, 0x05a8afbf, 0xbbda2fe2,\n    0xa2520d78, 0xe7934849, 0xd541bc75, 0x09a55b57,\n    0x9b345ae2, 0xfc2d26af, 0x38679cef, 0x81bd1e0d,\n    0x654681ae, 0x4b3d87ad, 0xd5ff10fb, 0x23b32f67,\n    0xafc7e366, 0xdd955ead, 0xe7c34b1c, 0xfeace0a6,\n    0xeb16f09d, 0x3c57a72d, 0x2c8294c5, 0xba92662a,\n    0xcd5b2d14, 0x743936c8, 0x2489beff, 0xc6c56e00,\n    0x74a4f606, 0xb244a94a, 0x5edfc423, 0xf1901934,\n    0x24af7691, 0xf6c98b25, 0xea25af46, 0x76d5f2e6,\n    0x5e33cdf2, 0x445eb357, 0x88556bd2, 0x70d1da7a,\n    0x54449368, 0x381020bc, 0x1c0520bf, 0xf7e44942,\n    0xa27e2a58, 0x66866fc5, 0x12519ce7, 0x437a8456,\n];"
   },
   "src/trie.c": {
     "func_signatures": [
@@ -3394,7 +3394,7 @@
           },
           {
             "name": "find_subtree_height",
-            "file": "test/test-rb-tree.c"
+            "file": "test/test-avl-tree.c"
           },
           {
             "name": "avl_tree_subtree_height",
@@ -3469,7 +3469,7 @@
           },
           {
             "name": "validate_tree",
-            "file": "test/test-rb-tree.c"
+            "file": "test/test-avl-tree.c"
           },
           {
             "name": "avl_tree_root_node",
@@ -3543,7 +3543,7 @@
           },
           {
             "name": "create_tree",
-            "file": "test/test-rb-tree.c"
+            "file": "test/test-avl-tree.c"
           }
         ]
       },
@@ -3556,7 +3556,7 @@
         "depend_funcs": [
           {
             "name": "create_tree",
-            "file": "test/test-rb-tree.c"
+            "file": "test/test-avl-tree.c"
           },
           {
             "name": "avl_tree_lookup",
@@ -3577,7 +3577,7 @@
         "depend_funcs": [
           {
             "name": "create_tree",
-            "file": "test/test-rb-tree.c"
+            "file": "test/test-avl-tree.c"
           },
           {
             "name": "avl_tree_remove",
@@ -3585,7 +3585,7 @@
           },
           {
             "name": "validate_tree",
-            "file": "test/test-rb-tree.c"
+            "file": "test/test-avl-tree.c"
           },
           {
             "name": "avl_tree_num_entries",
@@ -3664,8 +3664,8 @@
         "name": "test_bloom_filter_new_free",
         "signature": "void test_bloom_filter_new_free(void)",
         "code": "void test_bloom_filter_new_free(void)\n{\n\tBloomFilter *filter;\n\n\t/* One salt */\n\n\tfilter = bloom_filter_new(128, string_hash, 1);\n\n\tassert(filter != NULL);\n\n\tbloom_filter_free(filter);\n\n\t/* Maximum number of salts */\n\n\tfilter = bloom_filter_new(128, string_hash, 64);\n\n\tassert(filter != NULL);\n\n\tbloom_filter_free(filter);\n\n\t/* Test creation with too many salts */\n\n\tfilter = bloom_filter_new(128, string_hash, 50000);\n\n\tassert(filter == NULL);\n\n\t/* Test out of memory scenario */\n\n\t}",
-        "rust_code": "",
-        "rust_signature": "",
+        "rust_code": "#[test]\npub fn test_bloom_filter_new_free() {\n    let mut filter: Option<BloomFilter>;\n\n    // One salt\n    filter = bloom_filter_new(128, bloom_filter_value_hash, 1);\n    assert!(filter.is_some());\n    bloom_filter_free(&mut filter.unwrap());\n\n    // Maximum number of salts\n    filter = bloom_filter_new(128, bloom_filter_value_hash, 64);\n    assert!(filter.is_some());\n    bloom_filter_free(&mut filter.unwrap());\n\n    // Test creation with too many salts\n    filter = bloom_filter_new(128, bloom_filter_value_hash, 50000);\n    assert!(filter.is_none());\n}",
+        "rust_signature": "test_bloom_filter_new_free() ",
         "depend_funcs": [
           {
             "name": "bloom_filter_new",
@@ -3674,6 +3674,10 @@
           {
             "name": "bloom_filter_free",
             "file": "src/bloom-filter.c"
+          },
+          {
+            "name": "string_hash",
+            "file": "src/hash-string.c"
           }
         ]
       },
@@ -3699,6 +3703,10 @@
           {
             "name": "bloom_filter_free",
             "file": "src/bloom-filter.c"
+          },
+          {
+            "name": "string_hash",
+            "file": "src/hash-string.c"
           }
         ]
       },
@@ -3732,6 +3740,10 @@
           {
             "name": "bloom_filter_query",
             "file": "src/bloom-filter.c"
+          },
+          {
+            "name": "string_hash",
+            "file": "src/hash-string.c"
           }
         ]
       },
@@ -3761,6 +3773,10 @@
           {
             "name": "bloom_filter_free",
             "file": "src/bloom-filter.c"
+          },
+          {
+            "name": "string_hash",
+            "file": "src/hash-string.c"
           }
         ]
       },
@@ -3790,6 +3806,10 @@
           {
             "name": "bloom_filter_free",
             "file": "src/bloom-filter.c"
+          },
+          {
+            "name": "string_hash",
+            "file": "src/hash-string.c"
           }
         ]
       },
@@ -3815,6 +3835,14 @@
           {
             "name": "bloom_filter_free",
             "file": "src/bloom-filter.c"
+          },
+          {
+            "name": "string_hash",
+            "file": "src/hash-string.c"
+          },
+          {
+            "name": "string_nocase_hash",
+            "file": "src/hash-string.c"
           }
         ]
       }
@@ -3873,6 +3901,10 @@
           {
             "name": "binomial_heap_free",
             "file": "src/binomial-heap.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -3894,6 +3926,10 @@
           {
             "name": "binomial_heap_num_entries",
             "file": "src/binomial-heap.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -3923,6 +3959,10 @@
           {
             "name": "binomial_heap_free",
             "file": "src/binomial-heap.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -3952,6 +3992,10 @@
           {
             "name": "binomial_heap_free",
             "file": "src/binomial-heap.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -3969,6 +4013,10 @@
           {
             "name": "binomial_heap_insert",
             "file": "src/binomial-heap.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -4185,6 +4233,10 @@
           {
             "name": "avl_tree_free",
             "file": "src/avl-tree.c"
+          },
+          {
+            "name": "string_compare",
+            "file": "src/compare-string.c"
           }
         ]
       },
@@ -4202,6 +4254,10 @@
           {
             "name": "binary_heap_free",
             "file": "src/binary-heap.c"
+          },
+          {
+            "name": "string_compare",
+            "file": "src/compare-string.c"
           }
         ]
       },
@@ -4219,6 +4275,10 @@
           {
             "name": "binomial_heap_free",
             "file": "src/binomial-heap.c"
+          },
+          {
+            "name": "string_compare",
+            "file": "src/compare-string.c"
           }
         ]
       },
@@ -4236,6 +4296,10 @@
           {
             "name": "bloom_filter_free",
             "file": "src/bloom-filter.c"
+          },
+          {
+            "name": "string_hash",
+            "file": "src/hash-string.c"
           }
         ]
       },
@@ -4253,6 +4317,14 @@
           {
             "name": "hash_table_free",
             "file": "src/hash-table.c"
+          },
+          {
+            "name": "string_hash",
+            "file": "src/hash-string.c"
+          },
+          {
+            "name": "string_equal",
+            "file": "src/compare-string.c"
           }
         ]
       },
@@ -4304,6 +4376,14 @@
           {
             "name": "set_free",
             "file": "src/set.c"
+          },
+          {
+            "name": "string_hash",
+            "file": "src/hash-string.c"
+          },
+          {
+            "name": "string_equal",
+            "file": "src/compare-string.c"
           }
         ]
       },
@@ -5069,6 +5149,14 @@
           {
             "name": "set_register_free_function",
             "file": "src/set.c"
+          },
+          {
+            "name": "string_hash",
+            "file": "src/hash-string.c"
+          },
+          {
+            "name": "string_equal",
+            "file": "src/compare-string.c"
           }
         ]
       },
@@ -5094,6 +5182,14 @@
           {
             "name": "set_free",
             "file": "src/set.c"
+          },
+          {
+            "name": "int_hash",
+            "file": "src/hash-int.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -5119,6 +5215,14 @@
           {
             "name": "set_free",
             "file": "src/set.c"
+          },
+          {
+            "name": "int_hash",
+            "file": "src/hash-int.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -5202,6 +5306,14 @@
           {
             "name": "set_free",
             "file": "src/set.c"
+          },
+          {
+            "name": "int_hash",
+            "file": "src/hash-int.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -5231,6 +5343,14 @@
           {
             "name": "set_query",
             "file": "src/set.c"
+          },
+          {
+            "name": "int_hash",
+            "file": "src/hash-int.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -5252,6 +5372,14 @@
           {
             "name": "set_to_array",
             "file": "src/set.c"
+          },
+          {
+            "name": "pointer_hash",
+            "file": "src/hash-pointer.c"
+          },
+          {
+            "name": "pointer_equal",
+            "file": "src/compare-pointer.c"
           }
         ]
       },
@@ -5285,6 +5413,14 @@
           {
             "name": "set_new",
             "file": "src/set.c"
+          },
+          {
+            "name": "int_hash",
+            "file": "src/hash-int.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -5358,7 +5494,7 @@
           },
           {
             "name": "new_value",
-            "file": "test/test-hash-table.c"
+            "file": "test/test-set.c"
           },
           {
             "name": "set_insert",
@@ -5371,6 +5507,18 @@
           {
             "name": "set_free",
             "file": "src/set.c"
+          },
+          {
+            "name": "int_hash",
+            "file": "src/hash-int.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
+          },
+          {
+            "name": "free_value",
+            "file": "test/test-set.c"
           }
         ]
       }
@@ -5863,8 +6011,8 @@
         "name": "test_pointer_hash",
         "signature": "void test_pointer_hash(void)",
         "code": "void test_pointer_hash(void)\n{\n\tint array[NUM_TEST_VALUES];\n\tint i, j;\n\n\t/* Initialise the array to all zeros */\n\n\tfor (i=0; i<NUM_TEST_VALUES; ++i) {\n\t\tarray[i] = 0;\n\t}\n\n\t/* Check hashes are never the same */\n\n\tfor (i=0; i<NUM_TEST_VALUES; ++i) {\n\t\tfor (j=i+1; j<NUM_TEST_VALUES; ++j) {\n\t\t\tassert(pointer_hash(&array[i])\n\t\t\t       != pointer_hash(&array[j]));\n\t\t}\n\t}\n}",
-        "rust_code": "#[test]\npub fn test_pointer_hash() {\n    let mut array = [0; NUM_TEST_VALUES];\n    let mut i: usize;\n    let mut j: usize;\n\n    /* Initialise the array to all zeros */\n\n    for i in 0..NUM_TEST_VALUES {\n        array[i] = 0;\n    }\n\n    /* Check hashes are never the same */\n\n    for i in 0..NUM_TEST_VALUES {\n        for j in (i + 1)..NUM_TEST_VALUES {\n            assert!(pointer_hash(&array[i] as *const ()) != pointer_hash(&array[j] as *const ()));\n        }\n    }\n}",
-        "rust_signature": "test_pointer_hash()",
+        "rust_code": "",
+        "rust_signature": "",
         "depend_funcs": [
           {
             "name": "pointer_hash",
@@ -5876,8 +6024,8 @@
         "name": "test_int_hash",
         "signature": "void test_int_hash(void)",
         "code": "void test_int_hash(void)\n{\n\tint array[NUM_TEST_VALUES];\n\tint i, j;\n\n\t/* Initialise all entries in the array */\n\n\tfor (i=0; i<NUM_TEST_VALUES; ++i) {\n\t\tarray[i] = i;\n\t}\n\n\t/* Check hashes are never the same */\n\n\tfor (i=0; i<NUM_TEST_VALUES; ++i) {\n\t\tfor (j=i+1; j<NUM_TEST_VALUES; ++j) {\n\t\t\tassert(int_hash(&array[i]) != int_hash(&array[j]));\n\t\t}\n\t}\n\n\t/* Hashes of two variables containing the same value are the same */\n\n\ti = 5000;\n\tj = 5000;\n\n\tassert(int_hash(&i) == int_hash(&j));\n}",
-        "rust_code": "#[test]\npub fn test_int_hash() {\n    let mut array: [i32; NUM_TEST_VALUES] = [0; NUM_TEST_VALUES];\n    let mut i: usize;\n    let mut j: usize;\n\n    /* Initialise all entries in the array */\n\n    for i in 0..NUM_TEST_VALUES {\n        array[i] = i as i32;\n    }\n\n    /* Check hashes are never the same */\n\n    for i in 0..NUM_TEST_VALUES {\n        for j in (i + 1)..NUM_TEST_VALUES {\n            assert!(int_hash(&array[i] as *const i32 as *const ()) != int_hash(&array[j] as *const i32 as *const ()));\n        }\n    }\n\n    /* Hashes of two variables containing the same value are the same */\n\n    i = 5000;\n    j = 5000;\n\n    assert!(int_hash(&i as *const i32 as *const ()) == int_hash(&j as *const i32 as *const ()));\n}",
-        "rust_signature": "test_int_hash()",
+        "rust_code": "",
+        "rust_signature": "",
         "depend_funcs": [
           {
             "name": "int_hash",
@@ -5889,8 +6037,8 @@
         "name": "test_string_hash",
         "signature": "void test_string_hash(void)",
         "code": "void test_string_hash(void)\n{\n\tchar test1[] = \"this is a test\";\n\tchar test2[] = \"this is a tesu\";\n\tchar test3[] = \"this is a test \";\n\tchar test4[] = \"this is a test\";\n\tchar test5[] = \"This is a test\";\n\n\t/* Contents affect the hash */\n\n\tassert(string_hash(test1) != string_hash(test2));\n\n\t/* Length affects the hash */\n\n\tassert(string_hash(test1) != string_hash(test3));\n\n\t/* Case sensitive */\n\n\tassert(string_hash(test1) != string_hash(test5));\n\n\t/* The same strings give the same hash */\n\n\tassert(string_hash(test1) == string_hash(test4));\n}",
-        "rust_code": "#[test]\npub fn test_string_hash() {\n    let test1 = \"this is a test\";\n    let test2 = \"this is a tesu\";\n    let test3 = \"this is a test \";\n    let test4 = \"this is a test\";\n    let test5 = \"This is a test\";\n\n    /* Contents affect the hash */\n\n    assert!(string_hash(test1.as_ptr()) != string_hash(test2.as_ptr()));\n\n    /* Length affects the hash */\n\n    assert!(string_hash(test1.as_ptr()) != string_hash(test3.as_ptr()));\n\n    /* Case sensitive */\n\n    assert!(string_hash(test1.as_ptr()) != string_hash(test5.as_ptr()));\n\n    /* The same strings give the same hash */\n\n    assert!(string_hash(test1.as_ptr()) == string_hash(test4.as_ptr()));\n}",
-        "rust_signature": "test_string_hash()",
+        "rust_code": "",
+        "rust_signature": "",
         "depend_funcs": [
           {
             "name": "string_hash",
@@ -5902,8 +6050,8 @@
         "name": "test_string_nocase_hash",
         "signature": "void test_string_nocase_hash(void)",
         "code": "void test_string_nocase_hash(void)\n{\n\tchar test1[] = \"this is a test\";\n\tchar test2[] = \"this is a tesu\";\n\tchar test3[] = \"this is a test \";\n\tchar test4[] = \"this is a test\";\n\tchar test5[] = \"This is a test\";\n\n\t/* Contents affect the hash */\n\n\tassert(string_nocase_hash(test1) != string_nocase_hash(test2));\n\n\t/* Length affects the hash */\n\n\tassert(string_nocase_hash(test1) != string_nocase_hash(test3));\n\n\t/* Case insensitive */\n\n\tassert(string_nocase_hash(test1) == string_nocase_hash(test5));\n\n\t/* The same strings give the same hash */\n\n\tassert(string_nocase_hash(test1) == string_nocase_hash(test4));\n}",
-        "rust_code": "#[test]\npub fn test_string_nocase_hash() {\n    let test1 = \"this is a test\";\n    let test2 = \"this is a tesu\";\n    let test3 = \"this is a test \";\n    let test4 = \"this is a test\";\n    let test5 = \"This is a test\";\n\n    // Contents affect the hash\n    assert!(string_nocase_hash(test1) != string_nocase_hash(test2));\n\n    // Length affects the hash\n    assert!(string_nocase_hash(test1) != string_nocase_hash(test3));\n\n    // Case insensitive\n    assert!(string_nocase_hash(test1) == string_nocase_hash(test5));\n\n    // The same strings give the same hash\n    assert!(string_nocase_hash(test1) == string_nocase_hash(test4));\n}",
-        "rust_signature": "test_string_nocase_hash()",
+        "rust_code": "",
+        "rust_signature": "",
         "depend_funcs": [
           {
             "name": "string_nocase_hash",
@@ -5912,7 +6060,7 @@
         ]
       }
     ],
-    "rust_items": "pub const NUM_TEST_VALUES: usize = 200;"
+    "rust_items": ""
   },
   "test/test-slist.c": {
     "func_signatures": [
@@ -6018,7 +6166,7 @@
         "depend_funcs": [
           {
             "name": "generate_list",
-            "file": "test/test-list.c"
+            "file": "test/test-slist.c"
           },
           {
             "name": "slist_free",
@@ -6035,7 +6183,7 @@
         "depend_funcs": [
           {
             "name": "generate_list",
-            "file": "test/test-list.c"
+            "file": "test/test-slist.c"
           },
           {
             "name": "slist_data",
@@ -6060,7 +6208,7 @@
         "depend_funcs": [
           {
             "name": "generate_list",
-            "file": "test/test-list.c"
+            "file": "test/test-slist.c"
           },
           {
             "name": "slist_nth_entry",
@@ -6085,7 +6233,7 @@
         "depend_funcs": [
           {
             "name": "generate_list",
-            "file": "test/test-list.c"
+            "file": "test/test-slist.c"
           },
           {
             "name": "slist_nth_data",
@@ -6106,7 +6254,7 @@
         "depend_funcs": [
           {
             "name": "generate_list",
-            "file": "test/test-list.c"
+            "file": "test/test-slist.c"
           },
           {
             "name": "slist_length",
@@ -6131,7 +6279,7 @@
         "depend_funcs": [
           {
             "name": "generate_list",
-            "file": "test/test-list.c"
+            "file": "test/test-slist.c"
           },
           {
             "name": "slist_nth_entry",
@@ -6173,6 +6321,10 @@
           {
             "name": "slist_free",
             "file": "src/slist.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -6202,6 +6354,10 @@
           {
             "name": "slist_free",
             "file": "src/slist.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -6227,6 +6383,10 @@
           {
             "name": "slist_free",
             "file": "src/slist.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -6239,7 +6399,7 @@
         "depend_funcs": [
           {
             "name": "generate_list",
-            "file": "test/test-list.c"
+            "file": "test/test-slist.c"
           },
           {
             "name": "slist_to_array",
@@ -6318,6 +6478,10 @@
           {
             "name": "slist_free",
             "file": "src/slist.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       }
@@ -6371,6 +6535,10 @@
           {
             "name": "binary_heap_free",
             "file": "src/binary-heap.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -6396,6 +6564,10 @@
           {
             "name": "binary_heap_free",
             "file": "src/binary-heap.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -6425,6 +6597,10 @@
           {
             "name": "binary_heap_free",
             "file": "src/binary-heap.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -6454,6 +6630,10 @@
           {
             "name": "binary_heap_free",
             "file": "src/binary-heap.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       }
@@ -6572,6 +6752,10 @@
           {
             "name": "sortedarray_insert",
             "file": "src/sortedarray.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -6585,6 +6769,10 @@
           {
             "name": "generate_sortedarray_equ",
             "file": "test/test-sortedarray.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -6602,6 +6790,14 @@
           {
             "name": "sortedarray_free",
             "file": "src/sortedarray.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -6743,6 +6939,10 @@
           {
             "name": "free_sorted_ints",
             "file": "test/test-sortedarray.c"
+          },
+          {
+            "name": "ptr_equal",
+            "file": "test/test-sortedarray.c"
           }
         ]
       },
@@ -6854,6 +7054,14 @@
           {
             "name": "hash_table_register_free_functions",
             "file": "src/hash-table.c"
+          },
+          {
+            "name": "string_hash",
+            "file": "src/hash-string.c"
+          },
+          {
+            "name": "string_equal",
+            "file": "src/compare-string.c"
           }
         ]
       },
@@ -6875,6 +7083,14 @@
           {
             "name": "hash_table_free",
             "file": "src/hash-table.c"
+          },
+          {
+            "name": "int_hash",
+            "file": "src/hash-int.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -6966,6 +7182,14 @@
           {
             "name": "hash_table_new",
             "file": "src/hash-table.c"
+          },
+          {
+            "name": "int_hash",
+            "file": "src/hash-int.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -7076,6 +7300,22 @@
           {
             "name": "hash_table_free",
             "file": "src/hash-table.c"
+          },
+          {
+            "name": "int_hash",
+            "file": "src/hash-int.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
+          },
+          {
+            "name": "free_key",
+            "file": "test/test-hash-table.c"
+          },
+          {
+            "name": "free_value",
+            "file": "test/test-hash-table.c"
           }
         ]
       },
@@ -7109,6 +7349,14 @@
           {
             "name": "hash_table_free",
             "file": "src/hash-table.c"
+          },
+          {
+            "name": "int_hash",
+            "file": "src/hash-int.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       }
@@ -7412,6 +7660,10 @@
           {
             "name": "list_free",
             "file": "src/list.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -7441,6 +7693,10 @@
           {
             "name": "list_free",
             "file": "src/list.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -7466,6 +7722,10 @@
           {
             "name": "list_free",
             "file": "src/list.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -7557,6 +7817,10 @@
           {
             "name": "list_free",
             "file": "src/list.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       }
@@ -7763,6 +8027,10 @@
           {
             "name": "arraylist_free",
             "file": "src/arraylist.c"
+          },
+          {
+            "name": "int_equal",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -7813,6 +8081,10 @@
           {
             "name": "arraylist_free",
             "file": "src/arraylist.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       }

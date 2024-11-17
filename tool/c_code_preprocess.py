@@ -115,19 +115,28 @@ def remove_alloc_test_blocks(code: str) -> str:
 
 def extract_func_calls(c_code: str):
     """
-    Extract function calls from C code(function-level) using tree-sitter.
+    Extract function calls from C code, including functions used as parameters.
+    Returns two lists: regular function calls and functions used as parameters.
     """
     tree = c_parser.parse(bytes(c_code, "utf8"))
     root_node = tree.root_node
 
     c_func_calls = []
+    func_as_params = []
 
     def traverse_node(node):
         if node.type == 'call_expression':
-            # Get the function name from the call expression
+            # Get the function name
             func_name = node.child_by_field_name('function')
             if func_name:
                 c_func_calls.append(func_name.text.decode('utf-8'))
+                
+            # Check arguments for function pointers
+            args = node.child_by_field_name('arguments')
+            if args:
+                for child in args.children:
+                    if child.type == 'identifier' and child.text.decode('utf-8') not in c_func_calls:
+                        func_as_params.append(child.text.decode('utf-8'))
         
         # Recursively traverse child nodes
         for child in node.children:
@@ -136,9 +145,29 @@ def extract_func_calls(c_code: str):
     # Start traversal from root
     traverse_node(root_node)
 
-    # Remove duplicates while preserving order
-    c_func_calls = list(dict.fromkeys(c_func_calls))
-    return c_func_calls
+    return list(dict.fromkeys(c_func_calls + func_as_params))
+
+# def test_extract_func_calls():
+#     """
+#     Test function to verify extract_func_calls behavior
+#     """
+#     # Test function pointers as parameters
+#     code = """
+#     void test_func_ptr() {
+#         register_callback(handler);
+#         sort_array(arr, compare_func);
+#     }
+#     """
+#     calls = extract_func_calls(code)
+#     print(calls)
+#     assert 'register_callback' in calls
+#     assert 'sort_array' in calls
+#     assert 'handler' in calls
+#     assert 'compare_func' in calls
+#     assert 'arr' in calls
+
+#     print("All extract_func_calls tests passed!")
+
 
 # 外部调用
 def preprocess(code: str) -> str:
@@ -291,7 +320,7 @@ def code_preprocess(directory: str):
     funcs_files = {}
     for file, file_info in metadata.items():
         for func_info in file_info['functions']:
-            funcs_files[func_info['name']] = file
+            funcs_files[file] = func_info['name']
 
     for file, file_info in metadata.items():
         for func_info in file_info['functions']:
@@ -300,6 +329,20 @@ def code_preprocess(directory: str):
             func_code = func_info['code']
             func_calls = extract_func_calls(func_code)
             for func_call in func_calls:
+                include_file_names = []
+                for include in metadata[file]['includes']:
+                    include_code = include['code']
+                    include_code = include_code.replace('#include', '').strip()
+                    include_code = include_code.strip('"<>').replace('.h', '')
+                    include_file_names.append(include_code)
+
+                funcs_files = {}
+                for file1, file_info1 in metadata.items():
+                    file_name = os.path.splitext(os.path.basename(file1))[0]
+                    if file_name in include_file_names or file1 == file:
+                        for func_info1 in file_info1['functions']:
+                            funcs_files[func_info1['name']] = file1
+
                 if func_call in funcs_files and func_call != func_info['name']:
                     func_info['depend_funcs'].append({'name': func_call, 'file': funcs_files[func_call]})
 
@@ -313,4 +356,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     code_preprocess(args.directory)
+    # test_extract_func_calls()
 

@@ -110,19 +110,18 @@ def extract_func_calls(file_relapath: str, func_name: str, metadata: dict):
     return c_func_calls
 
 def dependencies_order(func_name, file_relapath, metadata):
-    total = 0
     depend_funcs = []
     for func_info in metadata[file_relapath]['functions']:
         if func_info['name'] == func_name:
             
             # Recursively count dependencies of dependent functions
             for func in func_info['depend_funcs']:
-                total, funcs = dependencies_order(func['name'], func['file'], metadata)
+                funcs = dependencies_order(func['name'], func['file'], metadata)
                 depend_funcs.extend(funcs)
                 depend_funcs.append((func['name'], func['file']))
-            total += len(func_info['depend_funcs'])
             break
-    return total, depend_funcs
+    depend_funcs = list(dict.fromkeys(depend_funcs))
+    return depend_funcs
 
 def sort_by_depend_count(test_funcs, file_relapath, metadata):
     """
@@ -130,11 +129,11 @@ def sort_by_depend_count(test_funcs, file_relapath, metadata):
     """
     test_func_counts = []
     for test_func in test_funcs:
-        count, funcs = dependencies_order(test_func, file_relapath, metadata)
-        test_func_counts.append((test_func, count))
-    
-    print(test_func_counts)
+        funcs = dependencies_order(test_func, file_relapath, metadata)
+        test_func_counts.append((test_func, len(funcs)))
+
     sorted_funcs = sorted(test_func_counts, key=lambda x: x[1], reverse=False)
+    print(sorted_funcs)
     return [func for func, _ in sorted_funcs]
 
 
@@ -299,12 +298,11 @@ if __name__ == "__main__":
         metadata = json.load(f)
     dependencies = analyze_directory(metadata)
 
-    # test_funcs = extract_test_functions("test\\test-hash-functions.c", metadata)
-    # test_funcs = sort_by_depend_count(test_funcs, "test\\test-hash-functions.c", metadata)
-    test_funcs = extract_test_functions("test/test-hash-functions.c", metadata)
-    test_funcs = sort_by_depend_count(test_funcs, "test/test-hash-functions.c", metadata)
+    test_funcs = extract_test_functions("test\\test-arraylist.c", metadata)
+    test_funcs = sort_by_depend_count(test_funcs, "test\\test-arraylist.c", metadata)
+    print(test_funcs)
 
-    # # Print files and their dependencies
+    # Print files and their dependencies
     # print("\nFiles and their dependencies:")
     # for file, deps in dependencies.items():
     #     print(f"  {file}: {deps}")
