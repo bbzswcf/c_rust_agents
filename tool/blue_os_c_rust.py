@@ -453,10 +453,6 @@ def process_files():
     lib_file_path = os.path.join(rust_code_dir, "lib.rs")
     # rust_test_dir = os.path.join(args.output_dir, "tests")
 
-    # 清空lib.rs文件
-    lib_rs_path = os.path.join(rust_code_dir, "lib.rs")
-    write_file_with_utf8(lib_rs_path, "pub(crate) mod utils;\n")
-
     successful_test_count = 0
     total_test_count = 0
 
@@ -469,6 +465,19 @@ def process_files():
         translated_flags[file_relapath] = {}
         for func_info in file_info['functions']:
             translated_flags[file_relapath][func_info['name']] = None
+    # 调试
+    # translated_flags['src\\arraylist.c']['arraylist_new'] = True
+    # translated_flags['src\\arraylist.c']['arraylist_free'] = True
+    # translated_flags['src\\arraylist.c']['arraylist_enlarge'] = True
+    # translated_flags['src\\arraylist.c']['arraylist_insert'] = True
+    # translated_flags['src\\arraylist.c']['arraylist_append'] = True
+    # translated_flags['src\\arraylist.c']['arraylist_prepend'] = True
+    # translated_flags['src\\arraylist.c']['arraylist_clear'] = True
+    # translated_flags['src\\arraylist.c']['arraylist_index_of'] = True
+    # translated_flags['src\\arraylist.c']['arraylist_sort_internal'] = True
+    # translated_flags['src\\arraylist.c']['arraylist_sort'] = True
+    # translated_flags['src\\compare-int.c']['int_compare'] = True
+
 
     
     dependencies = analyze_directory(metadata)
@@ -504,11 +513,11 @@ def process_files():
                 if depend_func['file'] not in depend_file_list and depend_func['file'].startswith("src"):
                     depend_file_list.append(depend_func['file'])
         
+        write_file_with_utf8(lib_file_path, f"pub(crate) mod utils;\npub(crate) mod {test_file_name.replace('-', '_')};\n")
         for depend_file in depend_file_list:
             rust_mod_name = os.path.splitext(os.path.basename(depend_file.replace('-', '_')))[0]
             write_file_with_utf8(os.path.join(rust_code_dir, f"{rust_mod_name}.rs"), "")            
             insert_file_with_utf8(lib_file_path, f"pub(crate) mod {rust_mod_name};\n")
-        insert_file_with_utf8(lib_file_path, f"pub(crate) mod {test_file_name.replace('-', '_')};\n")
         write_file_with_utf8(rust_test_file_path, "")
 
         for test_func in test_funcs:
@@ -577,11 +586,16 @@ def process_files():
                         c_func_info = func_info_metadata
                         break
 
+                rust_items = ''
+                for file_ in depend_file_list:
+                    rust_items += metadata[file_]['rust_items'] + '\n'
+                rust_items += metadata[problem_path]['rust_items'] + '\n'
+                rust_items = rust_items.strip()
                 success,rust_code = convert_c_funcs_to_rust(
                     depend_file,
                     depend_func,
                     c_func_info,
-                    metadata[depend_file]['rust_items'],
+                    rust_items,
                     rust_file_path,
                     args.output_dir,
                     metadata
@@ -631,6 +645,7 @@ def process_files():
             for depend_file in depend_file_list:
                 rust_items += metadata[depend_file]['rust_items'] + '\n'
             rust_items += metadata[problem_path]['rust_items'] + '\n'
+            rust_items = rust_items.strip()
             success,rust_test = convert_c_funcs_to_rust(
                 test_file_name,
                 test_func,
@@ -663,9 +678,13 @@ def process_files():
                     depend_files.append(depend_file)
             
             total_rust_code = ''
+            append_flag = True
             for depend_file in depend_files:
+                if depend_file == problem_path:
+                    append_flag = False
                 total_rust_code += metadata[depend_file]['rust_items'] + '\n\n'
-            total_rust_code += metadata[problem_path]['rust_items'] + '\n\n'
+            if append_flag:
+                total_rust_code += metadata[problem_path]['rust_items'] + '\n\n'
             for depend_func, depend_file in depend_files_and_funcs:
                 for func_info in metadata[depend_file]['functions']:
                     if func_info['name'] == depend_func:
@@ -743,9 +762,13 @@ def process_files():
                     test_func_info['rust_code'] = optimized_rust_codes[-1]
                     test_func_info['rust_signature'] = re.findall(r'fn\s*([\s\S]*?){', optimized_rust_codes[-1])[0]
                     optimized_rust_code = ''
+                    append_flag = True
                     for depend_file in depend_files:
+                        if depend_file == problem_path:
+                            append_flag = False
                         optimized_rust_code += metadata[depend_file]['rust_items'] + "\n"
-                    optimized_rust_code += metadata[problem_path]['rust_items'] + "\n"
+                    if append_flag:
+                        optimized_rust_code += metadata[problem_path]['rust_items'] + "\n"
                     optimized_rust_code += "\n\n".join(optimized_rust_codes)
                     optimized_rust_code = "use crate::utils::*;\n" + optimized_rust_code
                     write_file_with_utf8(temp_test_file_path, optimized_rust_code)
