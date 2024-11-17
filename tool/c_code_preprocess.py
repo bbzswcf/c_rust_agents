@@ -134,15 +134,22 @@ def extract_func_calls(c_code: str):
             # Check arguments for function pointers
             args = node.child_by_field_name('arguments')
             if args:
-                for child in args.children:
-                    if child.type == 'identifier' and child.text.decode('utf-8') not in c_func_calls:
-                        func_as_params.append(child.text.decode('utf-8'))
+                for arg in args.children:
+                    # 处理参数节点
+                    arg_stack = [arg]
+                    while arg_stack:
+                        current = arg_stack.pop()
+                        if current.type == 'identifier':
+                            identifier = current.text.decode('utf-8')
+                            if identifier not in c_func_calls:
+                                func_as_params.append(identifier)
+                        # 将子节点加入栈中继续处理
+                        arg_stack.extend(current.children)
         
         # Recursively traverse child nodes
         for child in node.children:
             traverse_node(child)
 
-    # Start traversal from root
     traverse_node(root_node)
 
     return list(dict.fromkeys(c_func_calls + func_as_params))
@@ -153,19 +160,31 @@ def extract_func_calls(c_code: str):
 #     """
 #     # Test function pointers as parameters
 #     code = """
-#     void test_func_ptr() {
-#         register_callback(handler);
-#         sort_array(arr, compare_func);
-#     }
+#     void test_avl_tree_new(void)
+# {
+# 	AVLTree *tree;
+
+# 	tree = avl_tree_new((AVLTreeCompareFunc) int_compare);
+
+# 	assert(tree != NULL);
+# 	assert(avl_tree_root_node(tree) == NULL);
+# 	assert(avl_tree_num_entries(tree) == 0);
+
+# 	avl_tree_free(tree);
+
+# 	/* Test out of memory scenario */
+
+# 	alloc_test_set_limit(0);
+
+# 	tree = avl_tree_new((AVLTreeCompareFunc) int_compare);
+
+# 	assert(tree == NULL);
+
+# }
 #     """
 #     calls = extract_func_calls(code)
 #     print(calls)
-#     assert 'register_callback' in calls
-#     assert 'sort_array' in calls
-#     assert 'handler' in calls
-#     assert 'compare_func' in calls
-#     assert 'arr' in calls
-
+    
 #     print("All extract_func_calls tests passed!")
 
 
