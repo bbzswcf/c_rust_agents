@@ -78,28 +78,28 @@ class Agent:
 syntax_agent = Agent(
     role="Syntax Conversion Expert",
     prompt=Syntax_system_prompt,
-    temperature=0.2,
-    top_p=0.9
+    temperature=0,
+    top_p=1
 )
 
 feedback_agent = Agent(
     role="Feedback Expert",
     prompt=Feedback_prompt,
-    temperature=0.3,
-    top_p=0.85)
+    temperature=0,
+    top_p=1)
 optimize_agent = Agent(
     role="optimize Expert",
     prompt=Optimize_prompt,
-    temperature=0.2,
-    top_p=0.9)
+    temperature=0,
+    top_p=1)
 optimize_agent_2 = Agent(
     role="optimize Expert",
     prompt=Optimize_prompt_2,
-    temperature=0.2,
-    top_p=0.9)
+    temperature=0,
+    top_p=1)
 
-fix_agent = Agent(
-    role="fix Expert",
-    prompt="You are a proficient C and Rust advanced developer.",
-    temperature=0.2,
-    top_p=0.9)
+# fix_agent = Agent(
+#     role="fix Expert",
+#     prompt="You are a proficient C and Rust advanced developer.",
+#     temperature=0.2,
+#     top_p=0.9)

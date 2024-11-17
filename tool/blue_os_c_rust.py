@@ -444,6 +444,7 @@ def process_files():
     parser = argparse.ArgumentParser(description='Process C files and convert them to Rust.')
     parser.add_argument('--c_code_dir', default='./Input/01-Primary', type=str, help='Directory path to analyze')
     parser.add_argument('--output_dir', default='./Output/primary', type=str, help='Directory path to save results')
+    # parser.add_argument('--file_name', default='arraylist', type=str, help='single file for test' )
     args = parser.parse_args()
     # 清空metadata
     code_preprocess("./Input/01-Primary")
@@ -486,8 +487,9 @@ def process_files():
     logging.info(f"翻译顺序：{translation_order}")
     logging.info(f"翻译文件总数：{len(translation_order)}")
     
-    # translation_order = ['test/test-arraylist.c'] # 调试
-    translation_order = ['test/test-hash-functions.c']
+    # translation_order = ['test/test-arraylist.c', 'test/test-bloom-filter.c'] # 调试
+    # translation_order = [args.file_name]
+    # translation_order = ['test/test-hash-functions.c']
     # translation_order = ['test/test-hash-functions.c', 'test/test-bloom-filter.c']
     for problem_path in translation_order:
         logging.info(f"开始翻译文件{problem_path}")

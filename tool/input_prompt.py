@@ -35,26 +35,36 @@ struct ArrayList<T> {{
     pub _alloced: u32,
 }}
 ```
-3. For recursive structures in C, that is, structures that contain pointers to the structure, use Option<Rc<RefCell<T>>> in Rust/
+3. For recursive structures in C, that is, structures that contain pointers to the structure, use custom Link<T> in Rust.The definition of Link<T> has been provided in Rust as follows.
+```rust
+pub type Link<T> = Option<NonNull<T>>;
+```
 Example:
 C: 
 ```c
-typedef void *QueueValue;
-typedef struct _QueueEntry QueueEntry;
-struct _QueueEntry {{
-	QueueValue data;
-	QueueEntry *prev;
-	QueueEntry *next;
+typedef void *AVLTreeKey;
+typedef void *AVLTreeValue;
+typedef struct _AVLTreeNode AVLTreeNode;
+struct _AVLTreeNode {{
+    AVLTreeNode *children[2];
+    AVLTreeNode *parent;
+    AVLTreeKey key;
+    AVLTreeValue value;
+    int height;
 }};
 ```
 Rust:
 ```rust
-pub sturct QueueEntry<T> {{
-    data: Option<T>,
-    prev: Option<Rc<RefCell<QueueEntry<T>>>>,
-    next: Option<Rc<RefCell<QueueEntry<T>>>>,
+pub type AVLTreeKey<T> = Option<T>;
+pub type AVLTreeValue<T> = Option<T>;
+pub struct _AVLTreeNode<K, V> {{
+    pub children: [Link<AVLTreeNode<K, V>>; 2],
+    pub parent: Link<AVLTreeNode<K, V>>,
+    pub key: AVLTreeKey<K>,
+    pub value: AVLTreeValue<V>,
+    pub height: i32,
 }}
-```c
+```
 Remember to output only the converted Rust code without any explanations.
 Declare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.
 Keep all variable names unchanged, and do not change the case of variable names.
