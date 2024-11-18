@@ -12,7 +12,8 @@ import unicodedata
 from string import Template
 from Agents import *
 from input_prompt import *
-from Agent_prompt import *
+# from Agent_prompt import *
+from Agent_prompt_simple import *
 from tree_sitter_analyzer import (
     analyze_directory,
     get_translation_order,
@@ -251,7 +252,7 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
         if rust_func:
             function_call_mappings += f"""{c_func} <----> {rust_func}\n"""
 
-    template = Template(Syntax_prompt_2)
+    template = Template(Syntax_prompt)
     combined_syntax_input = template.substitute(c_code=c_code, rust_items=rust_items, function_call_mappings=function_call_mappings)
     # combined_syntax_input += """\nOnly return the function implementation without redefining any structs, variables, or types that are already defined in the codebase."""
     logging.info(f"语法专家prompt: {combined_syntax_input}")
@@ -487,7 +488,13 @@ def process_files():
     logging.info(f"翻译顺序：{translation_order}")
     logging.info(f"翻译文件总数：{len(translation_order)}")
     
-    # translation_order = ['test/test-arraylist.c', 'test/test-bloom-filter.c'] # 调试
+    # # translation_order = ['test/test-arraylist.c', 'test/test-bloom-filter.c'] # 调试
+    # translation_order = translation_order[14:24] # 调试 compare 10/41
+    # translation_order = translation_order[:14] # 调试 arraylist 3/30
+    # translation_order = translation_order[24:30] # 调试 queue 11/34
+    # translation_order = translation_order[30:32] # 调试 test-cpp
+    # translation_order = translation_order[32:34] # 调试 test-rb-tree
+    translation_order = translation_order[34:] # 调试 test-sortedarray
     # translation_order = [args.file_name]
     # translation_order = ['test/test-hash-functions.c']
     # translation_order = ['test/test-slist.c']
@@ -560,7 +567,7 @@ def process_files():
                 # 构建测试环境
                 content = read_file_with_auto_encoding(rust_file_path)
                 if not content.strip():
-                    write_file_with_utf8(rust_file_path, "pub use crate::utils::*;\n")
+                    insert_file_with_utf8(rust_file_path, f"use crate::utils::*;\n")
                     for include in metadata[depend_file]['includes']:
                         match = re.search(r'#include\s*[<"]([^>"]+)[>"]', include['code'])
                         header_name = match.group(1)
@@ -593,9 +600,17 @@ def process_files():
                         break
 
                 rust_items = ''
-                for file_ in depend_file_list:
-                    rust_items += metadata[file_]['rust_items'] + '\n'
-                rust_items += metadata[problem_path]['rust_items'] + '\n'
+                include_files = []
+                for include in metadata[depend_file]['includes']:
+                    match = re.search(r'#include\s*[<"]([^>"]+)[>"]', include['code'])
+                    if match:
+                        header_name = match.group(1)
+                        include_files.append(os.path.splitext(header_name)[0])
+                for include_file in include_files:
+                    if include_file in c_file_names and 'test' not in include_file:
+                        include_file = 'src\\' + include_file + '.c'
+                        rust_items += metadata[include_file]['rust_items'] + '\n'
+                rust_items += metadata[depend_file]['rust_items'] + '\n'
                 rust_items = rust_items.strip()
                 success,rust_code = convert_c_funcs_to_rust(
                     depend_file,
@@ -612,7 +627,8 @@ def process_files():
                     logging.info(f"依赖文件{depend_file}的函数{depend_func}翻译失败")
                     break
                 rust_signatures = re.findall(r'fn\s*([\s\S]*?){', rust_code)
-                c_func_info['rust_signature'] = rust_signatures[0]
+                if rust_signatures:
+                    c_func_info['rust_signature'] = rust_signatures[0]
                 c_func_info['rust_code'] = rust_code
                 insert_file_with_utf8(rust_file_path, rust_code)
 
@@ -634,6 +650,8 @@ def process_files():
                     current_content = read_file_with_auto_encoding(rust_test_file_path)
                     if f"use crate::{head_file_info}::*;" not in current_content:
                         insert_file_with_utf8(rust_test_file_path, f"use crate::{head_file_info}::*;\n")
+            if "use crate::utils::*;" not in current_content:
+                insert_file_with_utf8(rust_test_file_path, f"use crate::utils::*;\n")
 
             if not metadata[problem_path]['rust_items'].strip():
                 rust_code = convert_c_initialization_to_rust(
@@ -662,7 +680,8 @@ def process_files():
                 metadata
             )
             rust_signatures = re.findall(r'fn\s*([\s\S]*?){', rust_test)
-            test_func_info['rust_signature'] = rust_signatures[0]
+            if rust_signatures:
+                test_func_info['rust_signature'] = rust_signatures[0]
             test_func_info['rust_code'] = rust_test
             insert_file_with_utf8(rust_test_file_path, rust_test)
 
@@ -765,10 +784,13 @@ def process_files():
                             if func_info['name'] == depend_func and translated_flags[depend_file][depend_func] == None:
                                 func_info['rust_code'] = optimized_rust_codes[i]
                                 optimized_rust_signatures = re.findall(r'fn\s*([\s\S]*?){', optimized_rust_codes[i])
-                                func_info['rust_signature'] = optimized_rust_signatures[0]
+                                if optimized_rust_signatures:
+                                    func_info['rust_signature'] = optimized_rust_signatures[0]
                                 break
                     test_func_info['rust_code'] = optimized_rust_codes[-1]
-                    test_func_info['rust_signature'] = re.findall(r'fn\s*([\s\S]*?){', optimized_rust_codes[-1])[0]
+                    test_func_rust_signatures = re.findall(r'fn\s*([\s\S]*?){', optimized_rust_codes[-1])
+                    if test_func_rust_signatures:
+                        test_func_info['rust_signature'] = test_func_rust_signatures[0]
                     optimized_rust_code = ''
                     append_flag = True
                     for depend_file in depend_files:
