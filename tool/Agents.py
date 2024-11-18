@@ -19,9 +19,16 @@ class Agent:
         self.temperature = temperature
         self.top_p = top_p
 
-    def generate_response(self, user_input: str) -> str:
+    def generate_response(self, user_input: str, example_input: list = [], example_output: list = []) -> str:
         max_attempts = 5
         attempt = 0
+        message_list = [
+            {"role": "system", "content": self.prompt}
+        ]
+        for i in range(len(example_input)):
+            message_list.append({"role": "user", "content": example_input[i]})
+            message_list.append({"role": "assistant", "content": example_output[i]})
+        message_list.append({"role": "user", "content": user_input})
         
         while attempt < max_attempts:
             attempt += 1
@@ -30,10 +37,7 @@ class Agent:
             try:
                 response = client.chat.completions.create(
                     model="deepseek-ai/DeepSeek-V2.5",
-                    messages=[
-                        {"role": "system", "content": self.prompt},
-                        {"role": "user", "content": user_input}
-                    ],
+                    messages=message_list,
                     temperature=self.temperature,
                     top_p=self.top_p,
                     stream=True
@@ -78,22 +82,25 @@ class Agent:
 syntax_agent = Agent(
     role="Syntax Conversion Expert",
     prompt=Syntax_system_prompt,
-    temperature=0.2,
-    top_p=0.9
+    temperature=0,
+    top_p=1
 )
 
 feedback_agent = Agent(
     role="Feedback Expert",
-    prompt=Feedback_prompt,
-    temperature=0.3,
-    top_p=0.85)
+    prompt=Feedback_prompt_new,
+    temperature=0,
+    top_p=1
+)
 optimize_agent = Agent(
     role="optimize Expert",
     prompt=Optimize_prompt,
-    temperature=0.2,
-    top_p=0.9)
+    temperature=0,
+    top_p=1
+)
 optimize_agent_2 = Agent(
     role="optimize Expert",
     prompt=Optimize_prompt_2,
-    temperature=0.2,
-    top_p=0.9)
+    temperature=0,
+    top_p=1
+)

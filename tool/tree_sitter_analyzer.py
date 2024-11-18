@@ -300,7 +300,6 @@ if __name__ == "__main__":
 
     test_funcs = extract_test_functions("test\\test-arraylist.c", metadata)
     test_funcs = sort_by_depend_count(test_funcs, "test\\test-arraylist.c", metadata)
-    print(test_funcs)
 
     # Print files and their dependencies
     # print("\nFiles and their dependencies:")

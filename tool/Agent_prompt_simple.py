@@ -95,12 +95,24 @@ C: atoi
 Rust: str.parse::<i32>()
 """
 #语法专家Prompt
-Syntax_prompt = """
-Convert C code to Rust using the function calls, provided API mappings. 
-Output only the converted Rust code without explanations.
+Syntax_system_prompt = """You are a proficient C and Rust advanced developer."""
+Syntax_prompt = """Convert the following C code into Rust by strictly following the rules below.
+## C code:
+```c
+$c_code
+```
+## Contextual Metadata:
+The difinitions of the elements used in the C code have been provided in Rust as follows.
+```rust
+$rust_items
+```
+Below are the Rust function signatures for functions from other modules that are called within the C code.
+$function_call_mappings
 
+Output only the converted Rust code without any explanations.
+Declare functions using pub(public) to allow importing.
 
-Example input:
+Example:
 C code:
 ```c
 void process_data(int a, int b, char* str) {
@@ -116,20 +128,7 @@ void process_data(int a, int b, char* str) {
 }
 ```
 
-function calls:
-int add(int, int) -> add(a: i32, b: i32) -> i32
-int multiply(int, int) -> multiply(a: i32, b: i32) -> i32
-char* reverse_string(char*) -> reverse_string(str: &str) -> String
-
-API mappings:
-C: printf
-Rust:print!
-
-C: free
-Rust:(automatically managed, no explicit call needed)
-
-
-Example output:
+rust code:
 ```rust
 pub fn process_data(a: i32, b: i32, str: &str) {
     let sum = add_in_rust(a, b);

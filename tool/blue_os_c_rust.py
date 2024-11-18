@@ -12,8 +12,8 @@ import unicodedata
 from string import Template
 from Agents import *
 from input_prompt import *
-# from Agent_prompt import *
-from Agent_prompt_simple import *
+from Agent_prompt import *
+# from Agent_prompt_simple import *
 from tree_sitter_analyzer import (
     analyze_directory,
     get_translation_order,
@@ -216,12 +216,12 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
         if rust_func:
             function_call_mappings += f"""{c_func} <----> {rust_func}\n"""
 
-    template = Template(Syntax_prompt)
+    template = Template(Syntax_prompt_2)
     combined_syntax_input = template.substitute(c_code=c_code, rust_items=rust_items, function_call_mappings=function_call_mappings)
     # combined_syntax_input += """\nOnly return the function implementation without redefining any structs, variables, or types that are already defined in the codebase."""
     logging.info(f"语法专家prompt: {combined_syntax_input}")
 
-    rust_code = syntax_agent.generate_response(combined_syntax_input)
+    rust_code = syntax_agent.generate_response(combined_syntax_input, Syntax_example_input, Syntax_example_output)
     logging.info(rust_code)
     rust_code = extract_rust_code(rust_code)
 
@@ -242,7 +242,7 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
 
         if analysis_result:
             logging.info("发现静态分析问题，正在优化...")
-            feedback_input = f"""\nAnalyze the following static analysis results:\nIssue description:\n{sanitize_string(analysis_result)}\nCurrent Rust code:\n{sanitize_string(rust_code)}\nPlease provide specific fix suggestions, but do not generate improved code.\n"""
+            feedback_input = feedback_input_prompt.format(c_code=c_code, rust_code=rust_code, error_msg=sanitize_string(analysis_result))
 
             logging.info(f"修复规划专家prompt: {feedback_input}")
             feedback = feedback_agent.generate_response(feedback_input)
@@ -312,7 +312,7 @@ def convert_c_initialization_to_rust(c_file: str, rust_code_file: str, rust_resu
 
         if analysis_result:
             logging.info("发现静态分析问题，正在优化...")
-            feedback_input = f"""\nAnalyze the following static analysis results:\nIssue description:\n{sanitize_string(analysis_result)}\nCurrent Rust code:\n{sanitize_string(rust_code)}\nPlease provide specific fix suggestions, but do not generate improved code.\n"""
+            feedback_input = feedback_input_prompt.format(c_code=pre_code, rust_code=rust_code, error_msg=sanitize_string(analysis_result))
 
             logging.info(f"修复规划专家prompt: {feedback_input}")
             feedback = feedback_agent.generate_response(feedback_input)
@@ -388,13 +388,12 @@ def process_files():
     logging.info(f"翻译顺序：{translation_order}")
     logging.info(f"翻译文件总数：{len(translation_order)}")
     
-    # translation_order = ['test\\test-arraylist.c'] # 调试
     # translation_order = translation_order[14:24] # 调试 compare 10/41
     # translation_order = translation_order[:14] # 调试 arraylist 3/30
     # translation_order = translation_order[24:30] # 调试 queue 11/34
     # translation_order = translation_order[30:32] # 调试 test-cpp
-    # translation_order = translation_order[32:34] # 调试 test-rb-tree
-    translation_order = translation_order[34:] # 调试 test-sortedarray
+    translation_order = translation_order[32:34] # 调试 test-rb-tree
+    # translation_order = translation_order[34:] # 调试 test-sortedarray
     for problem_path in translation_order:
         logging.info(f"开始翻译文件{problem_path}")
         if not problem_path.startswith("test"):
@@ -595,20 +594,28 @@ def process_files():
             for _, depend_file in depend_files_and_funcs:
                 if depend_file not in depend_files:
                     depend_files.append(depend_file)
-            
+
+            # 将rust代码整合在一起，同时整合c代码
             total_rust_code = ''
+            total_c_code = ''
             append_flag = True
             for depend_file in depend_files:
                 if depend_file == problem_path:
                     append_flag = False
                 total_rust_code += metadata[depend_file]['rust_items'] + '\n\n'
+                total_c_code += '\n'.join(metadata[depend_file]['head_info']) + '\n'
+                total_c_code += '\n'.join(metadata[depend_file]['variables']) + '\n'
             if append_flag:
+                total_c_code += '\n'.join(metadata[problem_path]['head_info']) + '\n'
+                total_c_code += '\n'.join(metadata[problem_path]['variables']) + '\n'
                 total_rust_code += metadata[problem_path]['rust_items'] + '\n\n'
             for depend_func, depend_file in depend_files_and_funcs:
                 for func_info in metadata[depend_file]['functions']:
                     if func_info['name'] == depend_func:
                         total_rust_code += func_info['rust_code'] + '\n\n'
+                        total_c_code += func_info['code'] + '\n'
             total_rust_code += test_func_info['rust_code']
+            total_c_code += test_func_info['code'] + '\n'
 
             total_rust_code = "use crate::utils::*;\n" + total_rust_code
             write_file_with_utf8(temp_test_file_path, total_rust_code)
@@ -631,32 +638,24 @@ def process_files():
 
                 # 运行失败，进行优化
                 logging.info("运行失败，继续优化")
-                feedback_input = """\nAnalyze the following compilation error:\nIssue description:\n"""
-                feedback_input += f"""{sanitize_string(dynamic_errors)}\nRust code:\n"""
-
                 failed_rust_code = read_file_with_auto_encoding(temp_test_file_path)
-                feedback_input += f"""{sanitize_string(failed_rust_code)}\n"""
-                    
-                feedback_input += """\nPlease provide specific fix suggestions, but do not generate improved code."""
+                feedback_input = feedback_input_prompt.format(c_code=total_c_code, rust_code=failed_rust_code, error_msg=sanitize_string(dynamic_errors))
                 logging.info(f"修复规划专家prompt: {feedback_input}")
                 feedback = feedback_agent.generate_response(feedback_input)
                 logging.info(feedback)
 
-                optimize_input = """\nOptimize the Rust code based on the following specific feedback:\nFeedback:\n"""
-                optimize_input += f"""{sanitize_string(feedback)}\nRust code:\n"""
-
-                optimize_input += f"""Context(variables and structs):\n"""
+                rust_context = ''
                 for depend_file in depend_files:
-                    optimize_input = optimize_input + metadata[depend_file]['rust_items'] + "\n"
-                optimize_input += metadata[problem_path]['rust_items'] + "\n"
+                    rust_context += metadata[depend_file]['rust_items'] + "\n"
+                rust_context += metadata[problem_path]['rust_items'] + "\n"
+                rust_functions = ''
                 for i, (depend_func, depend_file) in enumerate(depend_files_and_funcs):
                     for func_info in metadata[depend_file]['functions']:
                         if func_info['name'] == depend_func:
-                            optimize_input += f"""\n###function {i+1}###\n{sanitize_string(func_info['rust_code'])}\n"""
-                optimize_input += f"""\n###function {i+2}###\n{sanitize_string(test_func_info['rust_code'])}\n"""
-                                
-                optimize_input += """\nPlease strictly follow the steps mentioned in the prompt to optimize the code.\nEnsure all issues mentioned in the feedback are resolved, and add comments for each modification explaining the reason.\nUse the provided context (variables and structs) to ensure consistent usage of types and variables across functions.\nOnly return the complete optimized Rust code without additional explanations.\n"""
-                
+                            rust_functions += f"""\n###function {i+1}###\n{sanitize_string(func_info['rust_code'])}\n"""
+                rust_functions += f"""\n###function {i+2}###\n{sanitize_string(test_func_info['rust_code'])}\n"""
+
+                optimize_input = optimize_input_prompt.format(feedback=sanitize_string(feedback), rust_items=rust_context, functions=rust_functions)
                 logging.info(f"修复专家prompt: {optimize_input}")
                 optimized = optimize_agent_2.generate_response(optimize_input)
                 logging.info(optimized)
