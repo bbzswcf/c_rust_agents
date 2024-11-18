@@ -298,8 +298,10 @@ if __name__ == "__main__":
         metadata = json.load(f)
     dependencies = analyze_directory(metadata)
 
-    test_funcs = extract_test_functions("test\\test-arraylist.c", metadata)
-    test_funcs = sort_by_depend_count(test_funcs, "test\\test-arraylist.c", metadata)
+    filepath = "test/test-hash-table.c"
+    test_funcs = extract_test_functions(filepath, metadata)
+    test_funcs = sort_by_depend_count(test_funcs, filepath, metadata)
+    
     print(test_funcs)
 
     # Print files and their dependencies

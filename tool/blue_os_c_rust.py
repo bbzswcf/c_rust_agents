@@ -119,26 +119,26 @@ def static_analysis(rust_result_dir: str, rust_file: str) -> str:
     logging.info(f"静态分析内容：\n{''.join(rust_file_content)}")
  
     # 使用 clippy 进行静态分析
-    if "test" not in rust_file:
-        insert_file_with_utf8(rust_file, "\nfn main() {}")
-        clippy_result = subprocess.run(
-            ["clippy-driver", rust_file],
-            capture_output=True,
-            text=True,
-            encoding="utf-8"
-        )
-        # Remove the temporary main function
-        remove_size = len("\nfn main() {}")
-        original_size = os.path.getsize(rust_file)
-        with open(rust_file, 'r+', encoding='utf-8') as f:
-            f.truncate(original_size - remove_size)
-    else:
-        clippy_result = subprocess.run(
-            ["cargo", "clippy", "--manifest-path", cargo_toml_dir],
-            capture_output=True,
-            text=True,
-            encoding="utf-8"
-        )
+    # if "test" not in rust_file:
+    #     insert_file_with_utf8(rust_file, "\nfn main() {}")
+    #     clippy_result = subprocess.run(
+    #         ["clippy-driver", rust_file],
+    #         capture_output=True,
+    #         text=True,
+    #         encoding="utf-8"
+    #     )
+    #     # Remove the temporary main function
+    #     remove_size = len("\nfn main() {}")
+    #     original_size = os.path.getsize(rust_file)
+    #     with open(rust_file, 'r+', encoding='utf-8') as f:
+    #         f.truncate(original_size - remove_size)
+    # else:
+    clippy_result = subprocess.run(
+        ["cargo", "clippy", "--manifest-path", cargo_toml_dir],
+        capture_output=True,
+        text=True,
+        encoding="utf-8"
+    )
 
     if os.path.exists(os.path.splitext(os.path.basename(rust_file))[0]+".exe"):
         os.remove(os.path.splitext(os.path.basename(rust_file))[0]+".exe")
@@ -490,7 +490,9 @@ def process_files():
     # translation_order = ['test/test-arraylist.c', 'test/test-bloom-filter.c'] # 调试
     # translation_order = [args.file_name]
     # translation_order = ['test/test-hash-functions.c']
-    # translation_order = ['test/test-hash-functions.c', 'test/test-bloom-filter.c']
+    # translation_order = ['test/test-slist.c']
+    translation_order = ['test/test-set.c']
+    # translation_order = ['test/test-compare-functions.c', 'test/test-avl-tree.c']
     for problem_path in translation_order:
         logging.info(f"开始翻译文件{problem_path}")
         if not problem_path.startswith("test"):
@@ -546,6 +548,7 @@ def process_files():
                 depend_file_name = os.path.splitext(os.path.basename(depend_file.replace('-', '_')))[0]
                 rust_file_path = os.path.join(rust_code_dir, f"{depend_file_name}.rs") 
                 write_file_with_utf8(rust_file_path, "")
+                
 
             # 标记是否有依赖函数翻译错误
             has_translation_error = False
@@ -557,6 +560,7 @@ def process_files():
                 # 构建测试环境
                 content = read_file_with_auto_encoding(rust_file_path)
                 if not content.strip():
+                    write_file_with_utf8(rust_file_path, "pub use crate::utils::*;\n")
                     for include in metadata[depend_file]['includes']:
                         match = re.search(r'#include\s*[<"]([^>"]+)[>"]', include['code'])
                         header_name = match.group(1)
@@ -714,13 +718,15 @@ def process_files():
 
                 # 运行失败，进行优化
                 logging.info("运行失败，继续优化")
-                feedback_input = """\nAnalyze the following compilation error:\nIssue description:\n"""
-                feedback_input += f"""{sanitize_string(dynamic_errors)}\nRust code:\n"""
+                # feedback_input = """\nAnalyze the following compilation error:\nIssue description:\n"""
+                # feedback_input += f"""{sanitize_string(dynamic_errors)}\nRust code:\n"""
 
                 failed_rust_code = read_file_with_auto_encoding(temp_test_file_path)
-                feedback_input += f"""{sanitize_string(failed_rust_code)}\n"""
+                # feedback_input += f"""{sanitize_string(failed_rust_code)}\n"""
                     
-                feedback_input += """\nPlease provide specific fix suggestions, but do not generate improved code."""
+                # feedback_input += """\nPlease provide specific fix suggestions, but do not generate improved code."""
+                feedback_input = feedback_input_prompt.format(dynamic_errors=sanitize_string(dynamic_errors), failed_rust_code=sanitize_string(failed_rust_code))
+                
                 logging.info(f"修复规划专家prompt: {feedback_input}")
                 feedback = feedback_agent.generate_response(feedback_input)
                 logging.info(feedback)

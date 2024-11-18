@@ -2214,8 +2214,8 @@
         "name": "pointer_hash",
         "signature": "unsigned int pointer_hash(void *location)",
         "code": "unsigned int pointer_hash(void *location)\n{\n\treturn (unsigned int) (unsigned long) location;\n}",
-        "rust_code": "",
-        "rust_signature": "",
+        "rust_code": "pub fn pointer_hash(location: SetValue) -> u32 {\n    location.map_or(0, |ptr| ptr as u32)\n}",
+        "rust_signature": "pointer_hash(location: SetValue) -> u32 ",
         "depend_funcs": []
       }
     ],
@@ -2354,8 +2354,8 @@
         "name": "pointer_equal",
         "signature": "int pointer_equal(void *location1, void *location2)",
         "code": "int pointer_equal(void *location1, void *location2)\n{\n\treturn location1 == location2;\n}",
-        "rust_code": "",
-        "rust_signature": "",
+        "rust_code": "pub fn pointer_equal(location1: SetValue, location2: SetValue) -> i32 {\n    if location1 == location2 {\n        1\n    } else {\n        0\n    }\n}",
+        "rust_signature": "pointer_equal(location1: SetValue, location2: SetValue) -> i32 ",
         "depend_funcs": []
       },
       {
@@ -2496,8 +2496,8 @@
         "name": "set_allocate_table",
         "signature": "static int set_allocate_table(Set *set)",
         "code": "static int set_allocate_table(Set *set)\n{\n\t/* Determine the table size based on the current prime index.\n\t * An attempt is made here to ensure sensible behavior if the\n\t * maximum prime is exceeded, but in practice other things are\n\t * likely to break long before that happens. */\n\n\tif (set->prime_index < set_num_primes) {\n\t\tset->table_size = set_primes[set->prime_index];\n\t} else {\n\t\tset->table_size = set->entries * 10;\n\t}\n\n\t/* Allocate the table and initialise to NULL */\n\n\tset->table = calloc(set->table_size, sizeof(SetEntry *));\n\n\treturn set->table != NULL;\n}",
-        "rust_code": "",
-        "rust_signature": "",
+        "rust_code": "pub fn set_allocate_table(set: &mut SetInternal) -> bool {\n    if set.prime_index < set_num_primes {\n        set.table_size = set_primes[set.prime_index as usize];\n    } else {\n        set.table_size = set.entries * 10;\n    }\n\n    set.table = vec![None; set.table_size as usize];\n\n    !set.table.is_empty()\n}",
+        "rust_signature": "set_allocate_table(set: &mut SetInternal) -> bool ",
         "depend_funcs": []
       },
       {
@@ -2512,8 +2512,8 @@
         "name": "set_new",
         "signature": "Set *set_new(SetHashFunc hash_func, SetEqualFunc equal_func)",
         "code": "Set *set_new(SetHashFunc hash_func, SetEqualFunc equal_func)\n{\n\tSet *new_set;\n\n\t/* Allocate a new set and fill in the fields */\n\n\tnew_set = (Set *) malloc(sizeof(Set));\n\n\tif (new_set == NULL) {\n\t\treturn NULL;\n\t}\n\n\tnew_set->hash_func = hash_func;\n\tnew_set->equal_func = equal_func;\n\tnew_set->entries = 0;\n\tnew_set->prime_index = 0;\n\tnew_set->free_func = NULL;\n\n\t/* Allocate the table */\n\n\tif (!set_allocate_table(new_set)) {\n\t\tfree(new_set);\n\t\treturn NULL;\n\t}\n\n\treturn new_set;\n}",
-        "rust_code": "",
-        "rust_signature": "",
+        "rust_code": "fn default_free_func(_: Option<*mut ()>) {}\n\npub fn set_new(hash_func: SetHashFunc, equal_func: SetEqualFunc) -> Option<Link<SetInternal>> {\n    let mut new_set = Link::new(SetInternal {\n        table: Vec::new(),\n        entries: 0,\n        table_size: 0,\n        prime_index: 0,\n        hash_func,\n        equal_func,\n        free_func: default_free_func, // Assigning a default function pointer to free_func\n    });\n\n    if new_set.is_none() {\n        return None;\n    }\n\n    if !set_allocate_table(new_set.borrow_mut()) {\n        new_set.drop();\n        return None;\n    }\n\n    Some(new_set)\n}",
+        "rust_signature": "default_free_func(_: Option<*mut ()>) ",
         "depend_funcs": [
           {
             "name": "set_allocate_table",
@@ -2538,16 +2538,16 @@
         "name": "set_register_free_function",
         "signature": "void set_register_free_function(Set *set, SetFreeFunc free_func)",
         "code": "void set_register_free_function(Set *set, SetFreeFunc free_func)\n{\n\tset->free_func = free_func;\n}",
-        "rust_code": "",
-        "rust_signature": "",
+        "rust_code": "pub fn set_register_free_function(set: &mut SetInternal, free_func: SetFreeFunc) {\n    set.free_func = free_func;\n}",
+        "rust_signature": "set_register_free_function(set: &mut SetInternal, free_func: SetFreeFunc) ",
         "depend_funcs": []
       },
       {
         "name": "set_enlarge",
         "signature": "static int set_enlarge(Set *set)",
         "code": "static int set_enlarge(Set *set)\n{\n\tSetEntry *rover;\n\tSetEntry *next;\n\tSetEntry **old_table;\n\tunsigned int old_table_size;\n\tunsigned int old_prime_index;\n\tunsigned int index;\n\tunsigned int i;\n\n\t/* Store the old table */\n\n\told_table = set->table;\n\told_table_size = set->table_size;\n\told_prime_index = set->prime_index;\n\n\t/* Use the next table size from the prime number array */\n\n\t++set->prime_index;\n\n\t/* Allocate the new table */\n\n\tif (!set_allocate_table(set)) {\n\t\tset->table = old_table;\n\t\tset->table_size = old_table_size;\n\t\tset->prime_index = old_prime_index;\n\n\t\treturn 0;\n\t}\n\n\t/* Iterate through all entries in the old table and add them\n\t * to the new one */\n\n\tfor (i=0; i<old_table_size; ++i) {\n\n\t\t/* Walk along this chain */\n\n\t\trover = old_table[i];\n\n\t\twhile (rover != NULL) {\n\n\t\t\tnext = rover->next;\n\n\t\t\t/* Hook this entry into the new table */\n\n\t\t\tindex = set->hash_func(rover->data) % set->table_size;\n\t\t\trover->next = set->table[index];\n\t\t\tset->table[index] = rover;\n\n\t\t\t/* Advance to the next entry in the chain */\n\n\t\t\trover = next;\n\t\t}\n\t}\n\n\t/* Free back the old table */\n\n\tfree(old_table);\n\n\t/* Resized successfully */\n\n\treturn 1;\n}",
-        "rust_code": "",
-        "rust_signature": "",
+        "rust_code": "pub fn set_enlarge(set: &mut SetInternal) -> bool {\n    let mut rover: Link<SetEntry>;\n    let mut next: Link<SetEntry>;\n    let old_table: Vec<Link<SetEntry>>;\n    let old_table_size: u32;\n    let old_prime_index: u32;\n    let mut index: u32;\n    let mut i: u32;\n\n    // Store the old table\n    old_table = std::mem::take(&mut set.table);\n    old_table_size = set.table_size;\n    old_prime_index = set.prime_index;\n\n    // Use the next table size from the prime number array\n    set.prime_index += 1;\n\n    // Allocate the new table\n    if !set_allocate_table(set) {\n        set.table = old_table;\n        set.table_size = old_table_size;\n        set.prime_index = old_prime_index;\n        return false;\n    }\n\n    // Iterate through all entries in the old table and add them to the new one\n    for i in 0..old_table_size {\n        // Walk along this chain\n        rover = old_table[i as usize];\n\n        while rover.is_some() {\n            next = rover.borrow_mut().next.take();\n\n            // Hook this entry into the new table\n            index = (set.hash_func)(rover.borrow().data) % set.table_size;\n            rover.borrow_mut().next = set.table[index as usize].take();\n            set.table[index as usize] = rover;\n\n            // Advance to the next entry in the chain\n            rover = next;\n        }\n    }\n\n    // Free back the old table\n    drop(old_table);\n\n    // Resized successfully\n    true\n}",
+        "rust_signature": "set_enlarge(set: &mut SetInternal) -> bool ",
         "depend_funcs": [
           {
             "name": "set_allocate_table",
@@ -2559,8 +2559,8 @@
         "name": "set_insert",
         "signature": "int set_insert(Set *set, SetValue data)",
         "code": "int set_insert(Set *set, SetValue data)\n{\n\tSetEntry *newentry;\n\tSetEntry *rover;\n\tunsigned int index;\n\n\t/* The hash table becomes less efficient as the number of entries\n\t * increases. Check if the percentage used becomes large. */\n\n\tif ((set->entries * 3) / set->table_size > 0) {\n\n\t\t/* The table is more than 1/3 full and must be increased\n\t\t * in size */\n\n\t\tif (!set_enlarge(set)) {\n\t\t\treturn 0;\n\t\t}\n\t}\n\n\t/* Use the hash of the data to determine an index to insert into the\n\t * table at. */\n\n\tindex = set->hash_func(data) % set->table_size;\n\n\t/* Walk along this chain and attempt to determine if this data has\n\t * already been added to the table */\n\n\trover = set->table[index];\n\n\twhile (rover != NULL) {\n\n\t\tif (set->equal_func(data, rover->data) != 0) {\n\n\t\t\t/* This data is already in the set */\n\n\t\t\treturn 0;\n\t\t}\n\n\t\trover = rover->next;\n\t}\n\n\t/* Not in the set.  We must add a new entry. */\n\n\t/* Make a new entry for this data */\n\n\tnewentry = (SetEntry *) malloc(sizeof(SetEntry));\n\n\tif (newentry == NULL) {\n\t\treturn 0;\n\t}\n\n\tnewentry->data = data;\n\n\t/* Link into chain */\n\n\tnewentry->next = set->table[index];\n\tset->table[index] = newentry;\n\n\t/* Keep track of the number of entries in the set */\n\n\t++set->entries;\n\n\t/* Added successfully */\n\n\treturn 1;\n}",
-        "rust_code": "",
-        "rust_signature": "",
+        "rust_code": "pub fn set_insert(set: &mut SetInternal, data: SetValue) -> bool {\n    let mut newentry: Link<SetEntry>;\n    let mut rover: LinkRover<SetEntry>;\n    let index: usize;\n\n    if (set.entries * 3) / set.table_size > 0 {\n        if !set_enlarge(set) {\n            return false;\n        }\n    }\n\n    index = (set.hash_func)(data) as usize % set.table_size as usize;\n\n    rover = set.table[index].rover();\n\n    while rover.is_some() {\n        if (set.equal_func)(data, rover.borrow().data) != 0 {\n            return false;\n        }\n        rover = rover.borrow_mut().next.rover();\n    }\n\n    newentry = Link::new(SetEntry {\n        data,\n        next: set.table[index].take(),\n    });\n\n    set.table[index] = newentry;\n\n    set.entries += 1;\n\n    return true;\n}",
+        "rust_signature": "set_insert(set: &mut SetInternal, data: SetValue) -> bool ",
         "depend_funcs": [
           {
             "name": "set_enlarge",
@@ -2601,8 +2601,8 @@
         "name": "set_to_array",
         "signature": "SetValue *set_to_array(Set *set)",
         "code": "SetValue *set_to_array(Set *set)\n{\n\tSetValue *array;\n\tint array_counter;\n\tunsigned int i;\n\tSetEntry *rover;\n\n\t/* Create an array to hold the set entries */\n\n\tarray = malloc(sizeof(SetValue) * set->entries);\n\n\tif (array == NULL) {\n\t\treturn NULL;\n\t}\n\n\tarray_counter = 0;\n\n\t/* Iterate over all entries in all chains */\n\n\tfor (i=0; i<set->table_size; ++i) {\n\n\t\trover = set->table[i];\n\n\t\twhile (rover != NULL) {\n\n\t\t\t/* Add this value to the array */\n\n\t\t\tarray[array_counter] = rover->data;\n\t\t\t++array_counter;\n\n\t\t\t/* Advance to the next entry */\n\n\t\t\trover = rover->next;\n\t\t}\n\t}\n\n\treturn array;\n}",
-        "rust_code": "",
-        "rust_signature": "",
+        "rust_code": "pub fn set_to_array(set: &mut SetInternal) -> Vec<SetValue> {\n    let mut array: Vec<SetValue>;\n    let mut array_counter: usize = 0;\n\n    // Create an array to hold the set entries\n    array = Vec::with_capacity(set.entries as usize);\n\n    // Iterate over all entries in all chains\n    for i in 0..set.table_size {\n        let mut rover = set.table[i as usize].rover();\n\n        while rover.is_some() {\n            // Add this value to the array\n            array.push(rover.borrow().data);\n            array_counter += 1;\n\n            // Advance to the next entry\n            rover = rover.borrow_mut().next.rover();\n        }\n    }\n\n    array\n}",
+        "rust_signature": "set_to_array(set: &mut SetInternal) -> Vec<SetValue> ",
         "depend_funcs": []
       },
       {
@@ -2704,7 +2704,7 @@
         ]
       }
     ],
-    "rust_items": ""
+    "rust_items": "pub struct SetIterator {\n    pub set: Link<SetInternal>,\n    pub next_entry: Link<SetEntry>,\n    pub next_chain: u32,\n}\n\npub struct SetEntry {\n    pub data: SetValue,\n    pub next: Link<SetEntry>,\n}\n\npub type SetValue = Option<*mut ()>;\n\npub const SET_NULL: *mut () = std::ptr::null_mut();\n\npub type SetHashFunc = fn(SetValue) -> u32;\n\npub type SetEqualFunc = fn(SetValue, SetValue) -> i32;\n\npub type SetFreeFunc = fn(SetValue);\n\npub struct SetInternal {\n    pub table: Vec<Link<SetEntry>>,\n    pub entries: u32,\n    pub table_size: u32,\n    pub prime_index: u32,\n    pub hash_func: SetHashFunc,\n    pub equal_func: SetEqualFunc,\n    pub free_func: SetFreeFunc,\n}\n\npub const set_primes: [u32; 24] = [\n    193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317,\n    196613, 393241, 786433, 1572869, 3145739, 6291469,\n    12582917, 25165843, 50331653, 100663319, 201326611,\n    402653189, 805306457, 1610612741,\n];\n\npub const set_num_primes: u32 = set_primes.len() as u32;"
   },
   "src/bloom-filter.c": {
     "func_signatures": [
@@ -3420,6 +3420,10 @@
           {
             "name": "avl_tree_insert",
             "file": "src/avl-tree.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -3445,6 +3449,10 @@
           {
             "name": "avl_tree_free",
             "file": "src/avl-tree.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -3490,6 +3498,10 @@
           {
             "name": "avl_tree_free",
             "file": "src/avl-tree.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -3523,6 +3535,10 @@
           {
             "name": "avl_tree_free",
             "file": "src/avl-tree.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -3544,6 +3560,10 @@
           {
             "name": "create_tree",
             "file": "test/test-avl-tree.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -3623,6 +3643,10 @@
           {
             "name": "avl_tree_to_array",
             "file": "src/avl-tree.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       }
@@ -4858,6 +4882,10 @@
           {
             "name": "rb_tree_insert",
             "file": "src/rb-tree.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -4883,6 +4911,10 @@
           {
             "name": "rb_tree_free",
             "file": "src/rb-tree.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -4928,6 +4960,10 @@
           {
             "name": "rb_tree_free",
             "file": "src/rb-tree.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -4961,6 +4997,10 @@
           {
             "name": "rb_tree_free",
             "file": "src/rb-tree.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -4982,6 +5022,10 @@
           {
             "name": "create_tree",
             "file": "test/test-rb-tree.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       },
@@ -5061,6 +5105,10 @@
           {
             "name": "rb_tree_to_array",
             "file": "src/rb-tree.c"
+          },
+          {
+            "name": "int_compare",
+            "file": "src/compare-int.c"
           }
         ]
       }
@@ -5358,8 +5406,8 @@
         "name": "test_set_to_array",
         "signature": "void test_set_to_array(void)",
         "code": "void test_set_to_array(void)\n{\n\tSet *set;\n\tint values[100];\n\tint **array;\n\tint i;\n\n\t/* Create a set containing pointers to all entries in the \"values\"\n\t * array. */\n\n\tset = set_new(pointer_hash, pointer_equal);\n\n\tfor (i=0; i<100; ++i) {\n\t\tvalues[i] = 1;\n\t\tset_insert(set, &values[i]);\n\t}\n\n\tarray = (int **) set_to_array(set);\n\n\t/* Check the array */\n\n\tfor (i=0; i<100; ++i) {\n\t\tassert(*array[i] == 1);\n\t\t*array[i] = 0;\n\t}\n\n\t/* Test out of memory scenario */\n\n\t}",
-        "rust_code": "",
-        "rust_signature": "",
+        "rust_code": "#[test]\npub fn test_set_to_array() {\n    let mut set: Link<SetInternal>;\n    let mut values: [i32; 100] = [0; 100]; // Initialize the values array\n    let mut array: Vec<SetValue>;\n    let mut i: usize;\n\n    // Create a set containing pointers to all entries in the \"values\" array.\n\n    set = set_new(pointer_hash, pointer_equal).expect(\"Failed to create set\");\n\n    for i in 0..100 {\n        values[i] = 1;\n        set_insert(set.borrow_mut(), Some(&values[i] as *const i32 as *mut ()));\n    }\n\n    array = set_to_array(set.borrow_mut());\n\n    // Check the array\n\n    for i in 0..100 {\n        assert!(unsafe { *(array[i].unwrap() as *const i32) == 1 }); // Correctly cast the pointer\n        unsafe { *(array[i].unwrap() as *mut i32) = 0 }; // Correctly cast the pointer\n    }\n\n    // Test out of memory scenario\n}",
+        "rust_signature": "test_set_to_array() ",
         "depend_funcs": [
           {
             "name": "set_new",
@@ -5523,7 +5571,7 @@
         ]
       }
     ],
-    "rust_items": ""
+    "rust_items": "static mut allocated_values: i32 = 0;"
   },
   "test/test-queue.c": {
     "func_signatures": [

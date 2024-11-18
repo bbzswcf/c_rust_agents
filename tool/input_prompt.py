@@ -35,10 +35,7 @@ struct ArrayList<T> {{
     pub _alloced: u32,
 }}
 ```
-3. For recursive structures in C, that is, structures that contain pointers to the structure, use custom Link<T> in Rust.The definition of Link<T> has been provided in Rust as follows.
-```rust
-pub type Link<T> = Option<NonNull<T>>;
-```
+3. For recursive structures in C, that is, structures that contain pointers to the structure itself, translate pointers to structures into Link<T>, where T is determined by the type of structure.
 Example:
 C: 
 ```c
@@ -57,6 +54,7 @@ Rust:
 ```rust
 pub type AVLTreeKey<T> = Option<T>;
 pub type AVLTreeValue<T> = Option<T>;
+pub type AVLTreeNode<K, V> = _AVLTreeNode<K, V>;
 pub struct _AVLTreeNode<K, V> {{
     pub children: [Link<AVLTreeNode<K, V>>; 2],
     pub parent: Link<AVLTreeNode<K, V>>,
@@ -65,33 +63,142 @@ pub struct _AVLTreeNode<K, V> {{
     pub height: i32,
 }}
 ```
+4. For two-dimensional pointer in C, use LinkRover<T> in Rust. 
+LinkRover<T> has been defined in other rust file, do not define it again.
+Example:
+```c
+typedef struct _SListEntry SListEntry;
+typedef struct _SListIterator SListIterator;
+typedef void *SListValue;
+struct _SListEntry {{
+	SListValue data;
+	SListEntry *next;
+}};
+struct _SListIterator {{
+	SListEntry **prev_next;
+	SListEntry *current;
+}};
+```
+```rust
+pub type SListEntry<T> = _SListEntry<T>;
+pub type SListIterator<T> = _SListIterator<T>;
+type SListValue<T> = Option<T>;
+pub struct _SListEntry<T> {{
+    pub data: SListValue<T>,
+    pub next: Link<SListEntry<T>>,
+}}
+pub struct _SListIterator<T> {{
+    pub prev_next: LinkRover<SListEntry<T>>,
+    pub current: Link<SListEntry<T>>,
+}}
+```
 Remember to output only the converted Rust code without any explanations.
 Declare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.
 Keep all variable names unchanged, and do not change the case of variable names.
+LinkRover<T> and Link<T> has been defined in other rust file, use them directly, do not define again.
 """
-
 feedback_input_prompt="""
-Original C Code:
-{c_code}
-
-Translated Rust Code:
-{rust_code}
-
-Error message:
-{error_msg}
-
-Issues:
+Analyze the following compilation error:
+Issue description:
+{dynamic_errors}
+Rust code:
+{failed_rust_code}
+Please provide specific fix suggestions, but do not generate improved code.
+"""
+feedback_input_prompt_new="""
+Analyze the following compilation error:
+Issue description:
+{dynamic_errors}
+Rust code:
+{failed_rust_code}
+Please provide specific fix suggestions, but do not generate improved code.
+When providing repair issues, please follow the following instructions:
+1.When converting C's `memmove` operations to Rust, prefer using ownership transfer with `take()` in a reverse iteration, e.g.:
+```c
+    memmove(&arraylist->data[index + 1], &arraylist->data[index], (arraylist->length - index) * sizeof(ArrayListValue));
+```
+```rust
+for i in (index..arraylist.length).rev() {{
+    arraylist.data[(i + 1) as usize] = arraylist.data[i as usize].take();
+}}
+```
+2.For type Link<T>, we implement LinkTrait<T> for it, which includes the following methods:
+```rust
+pub struct LinkRover<T>(*mut Link<T>);
+pub trait LinkTrait<T>{{
+    fn borrow(&self) -> &T;
+    fn borrow_mut(&mut self) -> &mut T;
+    fn new(value: T) -> Self;
+    fn drop(&mut self);
+    fn rover(&mut self) -> LinkRover<T>;
+}}
+```
+Use new() and drop() to create and free Link<T> objects.
+Example:
+C:
+```c
+AVLTreeNode *new_node = (AVLTreeNode *) malloc(sizeof(AVLTreeNode));
+free(new_node)
+```
+Rust:
+```rust
+let mut new_node: Link<AVLTreeNode<K, V>>;
+new_node = Link::new(AVLTreeNode::new());
+new_node.drop()
+```
+Use borrow() and borrow_mut() are to obtain references to T objects owned in Link<T>.
+Example:
+```c
+if (node->children[1-direction] != NULL) {{
+    node->children[1-direction]->parent = node;
+}}
+```
+```rust
+if node.borrow().children[1 - direction as usize].is_some() {{
+    node.borrow_mut().children[1 - direction as usize].borrow_mut().parent = node;
+}}
+```
+Use rover() to obtain address of Link<T> objects.
+Example:
+C:
+```c
+rover = &tree->root_node;
+```
+Rust:
+```rust
+rover = tree.root_node.rover();
+```
+LinkRover<T> corresponds to the two-dimensional pointer in C, we implement Deref and DerefMut traits for it, so use it as a regular reference. 
+The value(*) operation in C also corresponds to a value on LinkRover, while the address(&) operation corresponds to the rover() method.
+Example:
+```c
+AVLTreeNode **rover;
+rover = &tree->root_node;
+while (*rover != NULL) {
+    previous_node = *rover;
+    if (tree->compare_func(key, (*rover)->key) < 0) {
+        rover = &((*rover)->children[AVL_TREE_NODE_LEFT]);
+    } else {
+        rover = &((*rover)->children[AVL_TREE_NODE_RIGHT]);
+    }
+}
+```
+```rust
+let mut rover: LinkRover<AVLTreeNode<K, V>>;
+rover = tree.root_node.rover();
+while rover.is_some() {
+    previous_node = *rover;
+    if (tree.compare_func)(&key, &rover.borrow().key) < 0 {
+        rover = rover.borrow_mut().children[avl_tree_node_left!()].rover();
+    } 
+    else {
+        rover = rover.borrow_mut().children[avl_tree_node_right!()].rover();
+    }
+}
+```
 """
 
-optimize_input_prompt="""
-Current Rust Code:
-{rust_code}
 
-Fix issues:
-{issues}
-
-Fixed Rust Code:
-"""
 
 fix_prompt="""
 You are given the below errors from clippy and Rust code snippets from one or more '. rs ' files related to the errors.
