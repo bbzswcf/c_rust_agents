@@ -261,6 +261,86 @@ let sum: i32 = numbers.iter().filter(|&&x| x % 2 == 0).sum();
 Feedback_prompt_2 = """
 Carefully analyze the following Rust code issues and provide simple, specific, clear suggestions for fixes. 
 Issues may come from static analysis errors, compilation errors, or output mismatches.
+When providing repair issues, please follow the following instructions:
+1.When converting C's `memmove` operations to Rust, prefer using ownership transfer with `take()` in a reverse iteration, e.g.:
+```c
+memmove(&arraylist->data[index + 1], &arraylist->data[index], (arraylist->length - index) * sizeof(ArrayListValue));
+```
+```rust
+for i in (index..arraylist.length).rev() {
+arraylist.data[(i + 1) as usize] = arraylist.data[i as usize].take();
+}
+```
+2.For type Link<T>, we implement LinkTrait<T> for it, which includes the following methods:
+```rust
+pub struct LinkRover<T>(*mut Link<T>);
+pub trait LinkTrait<T>{
+    fn borrow(&self) -> &T;
+    fn borrow_mut(&mut self) -> &mut T;
+    fn new(value: T) -> Self;
+    fn drop(&mut self);
+    fn rover(&mut self) -> LinkRover<T>;
+}
+```
+Use new() and drop() to create and free Link<T> objects.
+Example:
+C:
+```c
+AVLTreeNode *new_node = (AVLTreeNode *) malloc(sizeof(AVLTreeNode));
+free(new_node)
+```
+Rust:
+```rust
+let mut new_node: Link<AVLTreeNode<K, V>>;
+new_node = Link::new(AVLTreeNode::new());
+new_node.drop()
+```
+Use borrow() and borrow_mut() are to obtain references to T objects owned in Link<T>.
+Example:
+```c
+if (node->children[1-direction] != NULL) {
+    node->children[1-direction]->parent = node;
+}
+```
+```rust
+if node.borrow().children[1 - direction as usize].is_some() {
+    node.borrow_mut().children[1 - direction as usize].borrow_mut().parent = node;
+}
+```
+Use rover() to obtain address of Link<T> objects.
+Example:
+C:
+```c
+rover = &tree->root_node;
+```
+Rust:
+```rust
+rover = tree.root_node.rover();
+```
+And for LinkRover<T>, we implement Deref and DerefMut traits for it, so use it as a regular reference. 
+The value(*) operation in C also corresponds to a value on LinkRover, while the address(&) operation corresponds to the rover() method.
+Example:
+```c
+while (*rover != NULL) {
+    previous_node = *rover;
+    if (tree->compare_func(key, (*rover)->key) < 0) {
+        rover = &((*rover)->children[AVL_TREE_NODE_LEFT]);
+    } else {
+        rover = &((*rover)->children[AVL_TREE_NODE_RIGHT]);
+    }
+}
+```
+```rust
+while rover.is_some() {
+    previous_node = *rover;
+    if (tree.compare_func)(&key, &rover.borrow().key) < 0 {
+        rover = rover.borrow_mut().children[avl_tree_node_left!()].rover();
+    } 
+    else {
+        rover = rover.borrow_mut().children[avl_tree_node_right!()].rover();
+    }
+}
+```
 
 Issue description:
 $issues
@@ -320,6 +400,152 @@ Example output 2:
                2. If you really need to use `y`, define it before use: `let y = 10;`
 
 Please ensure the analysis covers all error-level issues and provide clear, specific suggestions for fixes. Completely ignore any warnings.
+"""
+Feedback_prompt_new="""
+Following is a Rust code translated from a C code, accompanied by its original C code.
+Original C Code:
+<c_code>
+Translated Rust Code:
+<rust_code>
+This Rust code encountered the following errors during runtime, which may be due to runtime errors or mismatches with the original C code output.
+Error message:
+<error_message>
+Then analyze the above error and refer to the original C code to infer the cause of the error.
+You need to locate the Rust code snippets that caused the error and provide the corresponding fixed Rust code snippets in a series of issues
+Note that there may be multiple errors caused by the same error Rust code snippet.
+Do not add comments or code that is not necessary to fix the error. 
+Format Instruction:
+Fix of each error Rust code snippet should be placed separately in an issue, noted that this error Rust code snippet may involve one or multiple errors.
+Each issue should start with the summary of errors it is involved.
+Then provide your speculated reasons for these errors, and give the Rust code snippet that caused the errors, followed by a fix code snippet.
+Only consider error-level issues and completely ignore warnings.
+---
+#Issue 1
+Errors: <summary>
+Reason: <reason>
+Error Code:
+<error code snippet>
+Fixed Code:
+<fixed code snippet>s
+#Issue 2
+Errors: <summary>
+Reason: <reason>
+Error Code:
+<error code snippet>
+Fixed Code:
+<fixed code snippet>
+...
+#Issue k (k is no more than 5)
+Errors: <summary>
+Reason: <reason>
+Error Code:
+<error code snippet>
+Fixed Code:
+<fixed code snippet>
+
+---
+Example 1:
+Original C Code:
+#include <stdio.h>
+void reverse_array(int arr[], int size) {
+    int start = 0;
+    int end = size - 1;
+    while (start < end) {
+        int temp = arr[start];
+        arr[start] = arr[end];
+        arr[end] = temp;
+        start++;
+        end--;
+    }
+}
+int main() {
+    int arr[] = {1, 2, 3, 4, 5};
+    int size = sizeof(arr) / sizeof(arr[0]);
+    reverse_array(arr, size);
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+    return 0;
+}
+
+Translated Rust Code:
+fn reverse_array(arr: &mut [i32]) {
+    let len = arr.len();
+    for i in 0..len / 2 {
+        let temp = arr[i];
+        arr[i] = arr[len - i];
+        arr[len - i] = temp;
+    }
+}
+fn main() {
+    let mut arr = [1, 2, 3, 4, 5];
+    reverse_array(&mut arr);
+    for &item in &arr {
+        print!("{} ", item);
+    }
+    println!();
+}
+
+Error message:
+thread 'main' panicked at test.rs:6:18:
+index out of bounds: the len is 5 but the index is 5
+
+Issues:
+#Issue 1
+Errors: Array out of bounds access.
+Reason: When i is 0, arr [len-i] is actually arr [len], which exceeds the valid index range of the array (the valid index range of the array is 0 to len-1).
+Error Code:
+arr[i] = arr[len - i];
+arr[len - i] = temp;
+Fix Code:
+arr[i] = arr[len - 1 - i];
+arr[len - 1 - i] = temp;
+
+---
+Example2:
+Original C code:
+void main() {
+    int numbers[] = {1, 2, 3, 4, 5};
+    int sum = 0;
+    for (int i = 0; i < sizeof(numbers) / sizeof(numbers[0]); i++) {
+        if (numbers[i] % 2 == 0) {
+            sum += numbers[i];
+        }
+    }
+    printf("The sum of even numbers is: %d\n", sum);
+}
+
+Translated Rust code:
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    let sum: i32 = numbers.iter().sum();
+    println!("The sum of even numbers is: {}", sum);
+}
+
+Error message:
+Output mismatch:
+C output:
+The sum of even numbers is: 6
+Rust output:
+The sum of even numbers is: 15
+
+Issues:
+#Issue 1
+Errors: Output mismatch
+Reason: C code calculates the sum of all even numbers in an array, while Rust code calculates the sum of all elements in the array.
+Error Code:
+let sum: i32 = numbers.iter().sum();
+Fix Code:
+let sum: i32 = numbers.iter().filter(|&&x| x % 2 == 0).sum();
+"""
+
+
+"""
+3. For custom parameters structures in function signatures except Link<T>, follow the following rules:
+If the function is to create a structure object, it should return a Box type, as () -> Box<Struct>.
+If the function is to use a structure object, itshould use its mut borrow in parameter list, as (&mut Box<Struct>).
+If the function is to free a structure object, it should acquire its ownership in parameter list, as (Box<Struct>).
 """
 
 # 优化专家Prompt
@@ -482,8 +708,179 @@ pub fn test_foo() {
 Please ensure the optimized code resolves all error issues mentioned in the feedback, and keep the code clear and concise.
 """
 
+Optimize_prompt_2_new = """
+Given a flawed Rust code and its fix issues.
+Analyze each fix issue, and when you think an issue can be adopted, fix the current Rust code based on the error code and fix code it provides.
+After completing the analysis of all issues, provide the repaired Rust code.
+Only output the repaired Rust code, without analysis results.
+---
+Example 1:
+Current Rust Code:
+###function 1###
+fn reverse_array(arr: &mut [i32]) {
+    let len = arr.len();
+    for i in 0..len / 2 {
+        let temp = arr[i];
+        arr[i] = arr[len - i];
+        arr[len - i] = temp;
+    }
+}
 
-#API专家Prompt
+###function 2###
+fn main() {
+    let mut arr = [1, 2, 3, 4, 5];
+    reverse_array(&mut arr);
+    for &item in &arr {
+        print!("{} ", item);
+    }
+    println!();
+}
+
+Fix issues:
+#Issue 1
+Errors: Array out of bounds access.
+Reason: When i is 0, arr [len-i] is actually arr [len], which exceeds the valid index range of the array (the valid index range of the array is 0 to len-1).
+Error Code:
+arr[i] = arr[len - i];
+arr[len - i] = temp;
+Fix Code:
+arr[i] = arr[len - 1 - i];
+arr[len - 1 - i] = temp;
+
+Fixed Rust Code:
+###function 1###
+fn reverse_array(arr: &mut [i32]) {
+    let len = arr.len();
+    for i in 0..len / 2 {
+        let temp = arr[i];
+        arr[i] = arr[len - 1 - i];
+        arr[len - 1 - i] = temp;
+    }
+}
+
+###function 2###
+fn main() {
+    let mut arr = [1, 2, 3, 4, 5];
+    reverse_array(&mut arr);
+    for &item in &arr {
+        print!("{} ", item);
+    }
+    println!();
+}
+---
+Example 2:
+Current Rust Code:
+###function 1###
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    let sum: i32 = numbers.iter().sum();
+    println!("The sum of even numbers is: {}", sum);
+}
+
+Fix issues:
+#Issue 1
+Errors: Output mismatch
+Reason: C code calculates the sum of all even numbers in an array, while Rust code calculates the sum of all elements in the array.
+Error Code:
+let sum: i32 = numbers.iter().sum();
+Fix Code:
+let sum: i32 = numbers.iter().filter(|&&x| x % 2 == 0).sum();
+
+Fixed Rust Code:
+###function 1###
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    let sum: i32 = numbers.iter().filter(|&&x| x % 2 == 0).sum();
+    println!("The sum of even numbers is: {}", sum);
+}
+---
+Example 3:
+Current Rust Code:
+pub struct Config {
+    pub threshold: i32,
+    pub greeting: String,
+}
+static MAX_DIVISOR: i32 = 10;
+static DEFAULT_MESSAGE: &str = "Default Greeting";
+###function 1###
+fn foo(z: i32){
+    let config = Config {
+        threshold: 5,
+        greeting: String::from("Hello from Config"),
+    };
+    let divisor = if z < config.threshold { MAX_DIVISOR } else { z };
+    let y = divisor;
+    let x: i32 = "world";
+    let result = z / y;
+    println!("Result is: {}", result);
+
+    let s = config.greeting.clone();
+    println!("{}", s);
+    println!("{}", s);
+
+    return result;
+}
+
+###function 2###
+#[test]
+pub fn test_foo() {
+    assert_eq!(foo(10), 10);
+    assert_eq!(foo(0), 0);
+}
+
+Fix issues:
+#Issue 1
+Errors: Type mismatch.
+Reason: The type of x is i32, but it is assigned a string 'world'.
+Error Code:
+let x: i32 = "world";
+Fix Code:
+let x: i32 = 42;
+#Issue 2
+Errors: Division by zero.
+Reason: Did not check if the dividend y could be 0.
+Error Code:
+let result = z / y;
+Fix Code:
+let result = if y != 0 { z / y } else { 0 };
+
+
+Fixed Rust Code:
+pub struct Config {
+    pub threshold: i32,
+    pub greeting: String,
+}
+static MAX_DIVISOR: i32 = 10;
+static DEFAULT_MESSAGE: &str = "Default Greeting";
+###function 1###
+fn foo(z: i32){
+    let config = Config {
+        threshold: 5,
+        greeting: String::from("Hello from Config"),
+    };
+    
+    let divisor = if z < config.threshold { MAX_DIVISOR } else { z };
+    let y = divisor;
+    let x: i32 = 42;    // Modified: Changed string type to i32, assuming we need an integer
+    let result = if y != 0 { z / y } else { 0 };    // Check for division by zero
+    println!("Result is: {}", result);
+
+    let s = config.greeting.clone();
+    println!("{}", s);
+    println!("{}", s);
+
+    return result;
+}
+
+###function 2###
+#[test]
+pub fn test_foo() {
+    assert_eq!(foo(10), 10);
+    assert_eq!(foo(0), 0);
+}
+"""
+
+# # API专家Prompt
 # API_System_prompt = """
 # You are an expert in converting C code to Rust, with a specialization in API mapping and code safety. 
 # When converting C code to Rust, please ensure the following requirements:

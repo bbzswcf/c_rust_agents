@@ -3,6 +3,7 @@ import os
 from Agent_prompt import *
 from openai import OpenAI
 from LLM_config import *
+import time
 
 # siliconflow_key = "sk-ewfzqneuiyrzxbkautzrjsfulfxtyxwlunettvibwfxjbust"
 # siliconflow_key = siliconflow_key
@@ -57,12 +58,14 @@ class Agent:
                     return full_response
                 else:
                     print(f"获得空响应，重试中...")
+                    time.sleep(1)
                     continue
                     
             except Exception as e:
                 print(f"生成响应时发生错误：{str(e)}")
                 if attempt < max_attempts:
                     print("重试中...")
+                    time.sleep(1)
                     continue
                 else:
                     return ""
@@ -85,6 +88,9 @@ syntax_agent = Agent(
     temperature=0,
     top_p=1
 )
+    # temperature=0.2,
+    # top_p=0.9
+# )
 
 feedback_agent = Agent(
     role="Feedback Expert",
@@ -102,5 +108,12 @@ optimize_agent_2 = Agent(
     role="optimize Expert",
     prompt=Optimize_prompt_2,
     temperature=0,
-    top_p=1
-)
+    top_p=1)
+    # temperature=0.2,
+    # top_p=0.95)
+
+# fix_agent = Agent(
+#     role="fix Expert",
+#     prompt="You are a proficient C and Rust advanced developer.",
+#     temperature=0.2,
+#     top_p=0.9)

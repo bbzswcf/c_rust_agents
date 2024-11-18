@@ -280,7 +280,9 @@ Example output 3:
 
 Please ensure the analysis covers all error-level issues and provide clear, specific suggestions for fixes. Completely ignore any warnings.
 """
-Feedback_prompt_new="""Following is a Rust code translated from a C code, accompanied by its original C code.
+
+Feedback_prompt_new="""
+Following is a Rust code translated from a C code, accompanied by its original C code.
 Original C Code:
 <c_code>
 Translated Rust Code:
@@ -296,6 +298,7 @@ Format Instruction:
 Fix of each error Rust code snippet should be placed separately in an issue, noted that this error Rust code snippet may involve one or multiple errors.
 Each issue should start with the summary of errors it is involved.
 Then provide your speculated reasons for these errors, and give the Rust code snippet that caused the errors, followed by a fix code snippet.
+Only consider error-level issues and completely ignore warnings.
 ---
 #Issue 1
 Errors: <summary>
@@ -416,9 +419,7 @@ let sum: i32 = numbers.iter().sum();
 Fix Code:
 let sum: i32 = numbers.iter().filter(|&&x| x % 2 == 0).sum();
 """
-feedback_input_prompt="""
 
-"""
 # 优化专家Prompt
 Optimize_prompt = """
 Optimize the given Rust code based on the provided feedback. 
@@ -585,3 +586,177 @@ pub fn test_foo() {
 Please ensure the optimized code resolves all error issues mentioned in the feedback, and keep the code clear and concise.
 Completely ignore any warnings.
 """
+
+Optimize_prompt_2_new = """
+Given a flawed Rust code and its fix issues.
+Analyze each fix issue, and when you think an issue can be adopted, fix the current Rust code based on the error code and fix code it provides.
+After completing the analysis of all issues, provide the repaired Rust code.
+Only output the repaired Rust code, without analysis results.
+---
+Example 1:
+Current Rust Code:
+###function 1###
+fn reverse_array(arr: &mut [i32]) {
+    let len = arr.len();
+    for i in 0..len / 2 {
+        let temp = arr[i];
+        arr[i] = arr[len - i];
+        arr[len - i] = temp;
+    }
+}
+
+###function 2###
+fn main() {
+    let mut arr = [1, 2, 3, 4, 5];
+    reverse_array(&mut arr);
+    for &item in &arr {
+        print!("{} ", item);
+    }
+    println!();
+}
+
+Fix issues:
+#Issue 1
+Errors: Array out of bounds access.
+Reason: When i is 0, arr [len-i] is actually arr [len], which exceeds the valid index range of the array (the valid index range of the array is 0 to len-1).
+Error Code:
+arr[i] = arr[len - i];
+arr[len - i] = temp;
+Fix Code:
+arr[i] = arr[len - 1 - i];
+arr[len - 1 - i] = temp;
+
+Fixed Rust Code:
+###function 1###
+fn reverse_array(arr: &mut [i32]) {
+    let len = arr.len();
+    for i in 0..len / 2 {
+        let temp = arr[i];
+        arr[i] = arr[len - 1 - i];
+        arr[len - 1 - i] = temp;
+    }
+}
+
+###function 2###
+fn main() {
+    let mut arr = [1, 2, 3, 4, 5];
+    reverse_array(&mut arr);
+    for &item in &arr {
+        print!("{} ", item);
+    }
+    println!();
+}
+---
+Example 2:
+Current Rust Code:
+###function 1###
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    let sum: i32 = numbers.iter().sum();
+    println!("The sum of even numbers is: {}", sum);
+}
+
+Fix issues:
+#Issue 1
+Errors: Output mismatch
+Reason: C code calculates the sum of all even numbers in an array, while Rust code calculates the sum of all elements in the array.
+Error Code:
+let sum: i32 = numbers.iter().sum();
+Fix Code:
+let sum: i32 = numbers.iter().filter(|&&x| x % 2 == 0).sum();
+
+Fixed Rust Code:
+###function 1###
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    let sum: i32 = numbers.iter().filter(|&&x| x % 2 == 0).sum();
+    println!("The sum of even numbers is: {}", sum);
+}
+---
+Example 3:
+Current Rust Code:
+pub struct Config {
+    pub threshold: i32,
+    pub greeting: String,
+}
+static MAX_DIVISOR: i32 = 10;
+static DEFAULT_MESSAGE: &str = "Default Greeting";
+###function 1###
+fn foo(z: i32){
+    let config = Config {
+        threshold: 5,
+        greeting: String::from("Hello from Config"),
+    };
+    let divisor = if z < config.threshold { MAX_DIVISOR } else { z };
+    let y = divisor;
+    let x: i32 = "world";
+    let result = z / y;
+    println!("Result is: {}", result);
+
+    let s = config.greeting.clone();
+    println!("{}", s);
+    println!("{}", s);
+
+    return result;
+}
+
+###function 2###
+#[test]
+pub fn test_foo() {
+    assert_eq!(foo(10), 10);
+    assert_eq!(foo(0), 0);
+}
+
+Fix issues:
+#Issue 1
+Errors: Type mismatch.
+Reason: The type of x is i32, but it is assigned a string 'world'.
+Error Code:
+let x: i32 = "world";
+Fix Code:
+let x: i32 = 42;
+#Issue 2
+Errors: Division by zero.
+Reason: Did not check if the dividend y could be 0.
+Error Code:
+let result = z / y;
+Fix Code:
+let result = if y != 0 { z / y } else { 0 };
+
+
+Fixed Rust Code:
+pub struct Config {
+    pub threshold: i32,
+    pub greeting: String,
+}
+static MAX_DIVISOR: i32 = 10;
+static DEFAULT_MESSAGE: &str = "Default Greeting";
+###function 1###
+fn foo(z: i32){
+    let config = Config {
+        threshold: 5,
+        greeting: String::from("Hello from Config"),
+    };
+    
+    let divisor = if z < config.threshold { MAX_DIVISOR } else { z };
+    let y = divisor;
+    let x: i32 = 42;    // Modified: Changed string type to i32, assuming we need an integer
+    let result = if y != 0 { z / y } else { 0 };    // Check for division by zero
+    println!("Result is: {}", result);
+
+    let s = config.greeting.clone();
+    println!("{}", s);
+    println!("{}", s);
+
+    return result;
+}
+
+###function 2###
+#[test]
+pub fn test_foo() {
+    assert_eq!(foo(10), 10);
+    assert_eq!(foo(0), 0);
+}
+"""
+
+
