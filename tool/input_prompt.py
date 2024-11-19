@@ -286,7 +286,7 @@ while (*rover != NULL) {{
     }} else {{
         rover = &((*rover)->children[AVL_TREE_NODE_RIGHT]);
     }}
-}
+}}
 ```
 ```rust
 let mut rover: LinkRover<AVLTreeNode<K, V>>;
