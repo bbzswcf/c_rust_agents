@@ -1018,8 +1018,8 @@ fn foo(z: i32){
     
     let divisor = if z < config.threshold { MAX_DIVISOR } else { z };
     let y = divisor;
-    let x: i32 = 42;    // Modified: Changed string type to i32, assuming we need an integer
-    let result = if y != 0 { z / y } else { 0 };    // Check for division by zero
+    let x: i32 = 42;
+    let result = if y != 0 { z / y } else { 0 };
     println!("Result is: {}", result);
 
     let s = config.greeting.clone();

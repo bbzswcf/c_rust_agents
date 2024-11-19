@@ -199,10 +199,18 @@ Declare functions using pub(public) to allow importing.
 """
 
 test_prompt="""
-Convert the following C code into Rust.
+Convert the following C code into Rust by strictly following the rules below.
+## C code:
 ```c
 $c_code
 ```
+## Contextual Metadata:
+The difinitions of the elements used in the C code have been provided in Rust as follows.
+```rust
+$rust_items
+```
+Below are the Rust function signatures for functions from other modules that are called within the C code.
+$function_call_mappings
 """
 
 feedback_input_prompt="""
@@ -314,7 +322,7 @@ Context(variables and structs):
 {functions}
 
 Please strictly follow the steps mentioned in the prompt to optimize the code.
-Ensure all issues mentioned in the feedback are resolved, and add comments for each modification explaining the reason.
+Ensure all issues mentioned in the feedback are resolved, and do not add comments.
 Use the provided context (variables and structs) to ensure consistent usage of types and variables across functions.
 Only return the complete optimized Rust code without additional explanations.
 """

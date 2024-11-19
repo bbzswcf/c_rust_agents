@@ -265,7 +265,7 @@ def code_preprocess(directory: str):
         with open(total_path, 'r', encoding='utf-8') as f:
             code = f.read()
         
-        code = remove_copyright(code)
+        code = remove_file_comments(code)
         code = process_alloc_testing(code)
 
         tree = c_parser.parse(bytes(code, 'utf-8'))
@@ -298,6 +298,7 @@ def code_preprocess(directory: str):
         code = remove_copyright(code)
         code = remove_debug_blocks(code)
         code = remove_test_includes(code)
+        code = remove_file_comments(code)
 
         # 去掉和alloc_test相关的代码
         tree = c_parser.parse(bytes(code, 'utf-8'))
