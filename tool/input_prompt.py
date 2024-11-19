@@ -279,26 +279,26 @@ Example:
 ```c
 AVLTreeNode **rover;
 rover = &tree->root_node;
-while (*rover != NULL) {
+while (*rover != NULL) {{
     previous_node = *rover;
-    if (tree->compare_func(key, (*rover)->key) < 0) {
+    if (tree->compare_func(key, (*rover)->key) < 0) {{
         rover = &((*rover)->children[AVL_TREE_NODE_LEFT]);
-    } else {
+    }} else {{
         rover = &((*rover)->children[AVL_TREE_NODE_RIGHT]);
-    }
+    }}
 }
 ```
 ```rust
 let mut rover: LinkRover<AVLTreeNode<K, V>>;
 rover = tree.root_node.rover();
-while rover.is_some() {
+while rover.is_some() {{
     previous_node = *rover;
-    if (tree.compare_func)(&key, &rover.borrow().key) < 0 {
+    if (tree.compare_func)(&key, &rover.borrow().key) < 0 {{
         rover = rover.borrow_mut().children[avl_tree_node_left!()].rover();
-    } 
-    else {
+    }} 
+    else {{
         rover = rover.borrow_mut().children[avl_tree_node_right!()].rover();
-    }
+    }}
 }
 ```
 """
