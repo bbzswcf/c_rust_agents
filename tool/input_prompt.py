@@ -299,7 +299,7 @@ while rover.is_some() {{
     else {{
         rover = rover.borrow_mut().children[avl_tree_node_right!()].rover();
     }}
-}
+}}
 ```
 """
 
