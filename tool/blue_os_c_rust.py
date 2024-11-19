@@ -146,8 +146,8 @@ def static_analysis(rust_result_dir: str, rust_file: str) -> str:
     if os.path.exists(os.path.splitext(os.path.basename(rust_file))[0]+".pdb"):
         os.remove(os.path.splitext(os.path.basename(rust_file))[0]+".pdb")
 
-    logging.info("静态分析结果：")
-    logging.info(clippy_result.stdout+clippy_result.stderr)
+    # logging.info("静态分析结果：")
+    # logging.info(clippy_result.stdout+clippy_result.stderr)
     issues = []
 
     # 解析 clippy 输出，只关注错误
@@ -228,7 +228,7 @@ def check_changelog(rust_code_lines, changelog):
     return applied_logpairs
 
 def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust_items: str, rust_code_file: str,
-                             rust_result_dir: str, metadata: dict) -> tuple[bool, str]:
+                             rust_result_dir: str, metadata: dict, user_input: str, example_input: list[str], example_output: list[str]) -> tuple[bool, str]:
     c_code = c_func_info['code']
     
     # logging.info("开始API转换")
@@ -252,12 +252,13 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
         if rust_func:
             function_call_mappings += f"""{c_func} <----> {rust_func}\n"""
 
-    template = Template(Syntax_prompt_2)
+    template = Template(user_input)
     combined_syntax_input = template.substitute(c_code=c_code, rust_items=rust_items, function_call_mappings=function_call_mappings)
     # combined_syntax_input += """\nOnly return the function implementation without redefining any structs, variables, or types that are already defined in the codebase."""
     logging.info(f"语法专家prompt: {combined_syntax_input}")
 
-    rust_code = syntax_agent.generate_response(combined_syntax_input, Syntax_example_input, Syntax_example_output)
+    rust_code = syntax_agent.generate_response(combined_syntax_input, example_input, example_output)
+    logging.info("语法专家输出：")
     logging.info(rust_code)
     rust_code = extract_rust_code(rust_code)
 
@@ -286,12 +287,14 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
 
             logging.info(f"修复规划专家prompt: {feedback_input}")
             feedback = feedback_agent.generate_response(feedback_input)
+            logging.info("修复规划专家输出：")
             logging.info(feedback)
 
             optimize_input = f"""\nOptimize the Rust code based on the following specific feedback:\nFeedback:\n{sanitize_string(feedback)}\nCurrent Rust code:\n{sanitize_string(rust_code)}\nPlease strictly follow the steps mentioned in the prompt to optimize the code.\nEnsure all issues mentioned in the feedback are resolved, and add comments for each modification explaining the reason.\nOnly return the complete optimized Rust code without additional explanations.\n"""
 
             logging.info(f"修复专家prompt: {optimize_input}")
             optimized = optimize_agent.generate_response(optimize_input)
+            logging.info("修复专家输出：")
             logging.info(optimized)
 
             new_rust_code = extract_rust_code(optimized)
@@ -394,6 +397,7 @@ def convert_c_initialization_to_rust(c_file: str, rust_code_file: str, rust_resu
     logging.info(f"语法专家prompt: {combined_syntax_input}")
 
     rust_code = syntax_agent.generate_response(combined_syntax_input)
+    logging.info("语法专家输出：")
     logging.info(rust_code)
     rust_code = extract_rust_code(rust_code)
     original_size = os.path.getsize(rust_code_file)
@@ -413,12 +417,14 @@ def convert_c_initialization_to_rust(c_file: str, rust_code_file: str, rust_resu
 
             logging.info(f"修复规划专家prompt: {feedback_input}")
             feedback = feedback_agent.generate_response(feedback_input)
+            logging.info("修复规划专家输出：")
             logging.info(feedback)
 
             optimize_input = f"""\nOptimize the Rust code based on the following specific feedback:\nFeedback:\n{sanitize_string(feedback)}\nCurrent Rust code:\n{sanitize_string(rust_code)}\nPlease strictly follow the steps mentioned in the prompt to optimize the code.\nEnsure all issues mentioned in the feedback are resolved, and add comments for each modification explaining the reason.\nOnly return the complete optimized Rust code without additional explanations.\n"""
 
             logging.info(f"修复专家prompt: {optimize_input}")
             optimized = optimize_agent.generate_response(optimize_input)
+            logging.info("修复专家输出：")
             logging.info(optimized)
 
             new_rust_code = extract_rust_code(optimized)
@@ -453,7 +459,6 @@ def process_files():
     # 创建新的结果文件夹
     rust_code_dir = os.path.join(args.output_dir, "src")
     lib_file_path = os.path.join(rust_code_dir, "lib.rs")
-    # rust_test_dir = os.path.join(args.output_dir, "tests")
 
     successful_test_count = 0
     total_test_count = 0
@@ -467,35 +472,21 @@ def process_files():
         translated_flags[file_relapath] = {}
         for func_info in file_info['functions']:
             translated_flags[file_relapath][func_info['name']] = None
-    # 调试
-    # translated_flags['src\\arraylist.c']['arraylist_new'] = True
-    # translated_flags['src\\arraylist.c']['arraylist_free'] = True
-    # translated_flags['src\\arraylist.c']['arraylist_enlarge'] = True
-    # translated_flags['src\\arraylist.c']['arraylist_insert'] = True
-    # translated_flags['src\\arraylist.c']['arraylist_append'] = True
-    # translated_flags['src\\arraylist.c']['arraylist_prepend'] = True
-    # translated_flags['src\\arraylist.c']['arraylist_clear'] = True
-    # translated_flags['src\\arraylist.c']['arraylist_index_of'] = True
-    # translated_flags['src\\arraylist.c']['arraylist_sort_internal'] = True
-    # translated_flags['src\\arraylist.c']['arraylist_sort'] = True
-    # translated_flags['src\\compare-int.c']['int_compare'] = True
-
-
-    
+        
     dependencies = analyze_directory(metadata)
     translation_order = get_translation_order(dependencies)
 
     logging.info(f"翻译顺序：{translation_order}")
     logging.info(f"翻译文件总数：{len(translation_order)}")
     
+    translation_order = ['test\\test-arraylist.c'] # 调试
     # translation_order = translation_order[14:24] # 调试 compare 10/41
     # translation_order = translation_order[:14] # 调试 arraylist 3/30
     # translation_order = translation_order[24:30] # 调试 queue 11/34
     # translation_order = translation_order[30:32] # 调试 test-cpp
-    translation_order = translation_order[32:34] # 调试 test-rb-tree
+    # translation_order = translation_order[32:34] # 调试 test-rb-tree
     # translation_order = translation_order[34:] # 调试 test-sortedarray
     for problem_path in translation_order:
-        logging.info(f"开始翻译文件{problem_path}")
         if not problem_path.startswith("test"):
             continue
 
@@ -602,7 +593,7 @@ def process_files():
                         include_files.append(os.path.splitext(header_name)[0])
                 for include_file in include_files:
                     if include_file in c_file_names and 'test' not in include_file:
-                        include_file = 'src\\' + include_file + '.c'
+                        include_file = os.path.join('src', include_file + '.c')
                         rust_items += metadata[include_file]['rust_items'] + '\n'
                 rust_items += metadata[depend_file]['rust_items'] + '\n'
                 rust_items = rust_items.strip()
@@ -613,7 +604,10 @@ def process_files():
                     rust_items,
                     rust_file_path,
                     args.output_dir,
-                    metadata
+                    metadata,
+                    Syntax_prompt_2,
+                    Syntax_example_input,
+                    Syntax_example_output
                 )
                 if not success:
                     translated_flags[depend_file][depend_func] = False
@@ -671,7 +665,10 @@ def process_files():
                 rust_items,
                 rust_test_file_path,
                 args.output_dir,
-                metadata
+                metadata,
+                test_prompt,
+                test_example_input,
+                test_example_output
             )
             rust_signatures = re.findall(r'fn\s*([\s\S]*?){', rust_test)
             if rust_signatures:
@@ -697,28 +694,36 @@ def process_files():
                     depend_files.append(depend_file)
 
             # 将rust代码整合在一起，同时整合c代码
-            total_rust_code = ''
-            total_c_code = ''
+            rust_items_code = ''
+            feedback_input_c_code = []
+            success_rust_func_code = []
+            feedback_input_rust_func_code = []
+            under_test_count = 1
             append_flag = True
             for depend_file in depend_files:
                 if depend_file == problem_path:
                     append_flag = False
-                total_rust_code += metadata[depend_file]['rust_items'] + '\n\n'
-                total_c_code += '\n'.join(metadata[depend_file]['head_info']) + '\n'
-                total_c_code += '\n'.join(metadata[depend_file]['variables']) + '\n'
+                rust_items_code += metadata[depend_file]['rust_items'] + '\n\n'
+                feedback_input_c_code.append(metadata[depend_file]['head_info'])
+                feedback_input_c_code.append(metadata[depend_file]['variables'])
             if append_flag:
-                total_c_code += '\n'.join(metadata[problem_path]['head_info']) + '\n'
-                total_c_code += '\n'.join(metadata[problem_path]['variables']) + '\n'
-                total_rust_code += metadata[problem_path]['rust_items'] + '\n\n'
+                feedback_input_c_code.append(metadata[problem_path]['head_info'])
+                feedback_input_c_code.append(metadata[problem_path]['variables'])
+                rust_items_code += metadata[problem_path]['rust_items'] + '\n\n'
+
             for depend_func, depend_file in depend_files_and_funcs:
                 for func_info in metadata[depend_file]['functions']:
                     if func_info['name'] == depend_func:
-                        total_rust_code += func_info['rust_code'] + '\n\n'
-                        total_c_code += func_info['code'] + '\n'
-            total_rust_code += test_func_info['rust_code']
-            total_c_code += test_func_info['code'] + '\n'
+                        if translated_flags[depend_file][depend_func] != True:
+                            under_test_count += 1
+                            feedback_input_rust_func_code.append(func_info['rust_code'])
+                            feedback_input_c_code.append(func_info['code'])
+                        else:
+                            success_rust_func_code.append(func_info['rust_code'])
+            feedback_input_c_code.append(test_func_info['code'])
+            feedback_input_rust_func_code.append(test_func_info['rust_code'])
 
-            total_rust_code = "use crate::utils::*;\n" + total_rust_code
+            total_rust_code = "use crate::utils::*;\n" + rust_items_code +'\n' + "\n".join(success_rust_func_code) + '\n' + '\n'.join(feedback_input_rust_func_code)
             write_file_with_utf8(temp_test_file_path, total_rust_code)
 
             success_flag = False
@@ -739,65 +744,61 @@ def process_files():
 
                 # 运行失败，进行优化
                 logging.info("运行失败，继续优化")
-                failed_rust_code = read_file_with_auto_encoding(temp_test_file_path)
-                feedback_input = feedback_input_prompt.format(c_code=total_c_code, rust_code=failed_rust_code, error_msg=sanitize_string(dynamic_errors))
+                feedback_input = feedback_input_prompt.format(c_code='\n'.join(feedback_input_c_code),
+                                                               rust_code=rust_items_code+'\n'+'\n'.join(feedback_input_rust_func_code),
+                                                               error_msg=sanitize_string(dynamic_errors))
                 logging.info(f"修复规划专家prompt: {feedback_input}")
                 feedback = feedback_agent.generate_response(feedback_input)
+                logging.info("修复规划专家输出：")
                 logging.info(feedback)
 
-                rust_context = ''
-                for depend_file in depend_files:
-                    rust_context += metadata[depend_file]['rust_items'] + "\n"
-                rust_context += metadata[problem_path]['rust_items'] + "\n"
                 rust_functions = ''
-                for i, (depend_func, depend_file) in enumerate(depend_files_and_funcs):
-                    for func_info in metadata[depend_file]['functions']:
-                        if func_info['name'] == depend_func:
-                            rust_functions += f"""\n###function {i+1}###\n{sanitize_string(func_info['rust_code'])}\n"""
-                rust_functions += f"""\n###function {i+2}###\n{sanitize_string(test_func_info['rust_code'])}\n"""
+                for i, feedback_input_rust_func in enumerate(feedback_input_rust_func_code):
+                    rust_functions += f"""\n###function {i+1}###\n{sanitize_string(feedback_input_rust_func)}\n"""
 
-                optimize_input = optimize_input_prompt.format(feedback=sanitize_string(feedback), rust_items=rust_context, functions=rust_functions)
+                optimize_input = optimize_input_prompt.format(feedback=sanitize_string(feedback),
+                                                               rust_items=rust_items_code,
+                                                               functions=rust_functions)
                 logging.info(f"修复专家prompt: {optimize_input}")
                 optimized = optimize_agent_2.generate_response(optimize_input)
+                logging.info("修复专家输出：")
                 logging.info(optimized)
                 new_rust_code = extract_rust_code(optimized)
                 if new_rust_code.strip():
                     optimized_rust_codes = re.split(r'###function \d+###', new_rust_code)[1:]
                     optimized_rust_codes = [code.strip() for code in optimized_rust_codes]
-                    if len(optimized_rust_codes) != len(depend_files_and_funcs) + 1:
+                    if len(optimized_rust_codes) != under_test_count:
                         logging.info("警告：代码优化专家没有返回正确的函数数量。保持原代码不变。")
                         continue
                     
-                    for i, (depend_func, depend_file) in enumerate(depend_files_and_funcs):
-                        for func_info in metadata[depend_file]['functions']:
-                            if func_info['name'] == depend_func and translated_flags[depend_file][depend_func] == None:
-                                func_info['rust_code'] = optimized_rust_codes[i]
-                                optimized_rust_signatures = re.findall(r'fn\s*([\s\S]*?){', optimized_rust_codes[i])
-                                if optimized_rust_signatures:
-                                    func_info['rust_signature'] = optimized_rust_signatures[0]
-                                break
-                    test_func_info['rust_code'] = optimized_rust_codes[-1]
-                    test_func_rust_signatures = re.findall(r'fn\s*([\s\S]*?){', optimized_rust_codes[-1])
-                    if test_func_rust_signatures:
-                        test_func_info['rust_signature'] = test_func_rust_signatures[0]
-                    optimized_rust_code = ''
-                    append_flag = True
-                    for depend_file in depend_files:
-                        if depend_file == problem_path:
-                            append_flag = False
-                        optimized_rust_code += metadata[depend_file]['rust_items'] + "\n"
-                    if append_flag:
-                        optimized_rust_code += metadata[problem_path]['rust_items'] + "\n"
-                    optimized_rust_code += "\n\n".join(optimized_rust_codes)
-                    optimized_rust_code = "use crate::utils::*;\n" + optimized_rust_code
-                    write_file_with_utf8(temp_test_file_path, optimized_rust_code)
-                    
+                    # 更新feedback_input_rust_func_code并写入文件
+                    feedback_input_rust_func_code = optimized_rust_codes
+                    total_rust_code = "use crate::utils::*;\n" + rust_items_code +'\n' + "\n".join(success_rust_func_code) + '\n' + '\n'.join(feedback_input_rust_func_code)
+                    write_file_with_utf8(temp_test_file_path, total_rust_code)
+
                     logging.info(f"代码已针对运行失败进行优化 #{test_count}")
                 else:
                     logging.info("警告：代码优化专家没有返回有效的Rust代码。保持原代码不变。")
-    
+
+            # 更新metadata
+            function_count = 0
+            for depend_func, depend_file in depend_files_and_funcs:
+                if translated_flags[depend_file][depend_func] != True:
+                    for func_info in metadata[depend_file]['functions']:
+                        if func_info['name'] == depend_func:
+                            func_info['rust_code'] = feedback_input_rust_func_code[function_count]
+                            rust_signatures = re.findall(r'fn\s*([\s\S]*?){', feedback_input_rust_func_code[function_count])
+                            function_count += 1
+                            if rust_signatures:
+                                func_info['rust_signature'] = rust_signatures[0]
+                            break
+            test_func_info['rust_code'] = feedback_input_rust_func_code[-1]
+            rust_signatures = re.findall(r'fn\s*([\s\S]*?){', feedback_input_rust_func_code[-1])
+            if rust_signatures:
+                test_func_info['rust_signature'] = rust_signatures[0]
+            
+            # 更新translated_flags
             if not success_flag:
-                # Update translated_flags to mark test function as failed
                 translated_flags[problem_path][test_func_info['name']] = False
                 for depend_func, depend_file in depend_files_and_funcs:
                     if translated_flags[depend_file][depend_func] == None:

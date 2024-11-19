@@ -117,6 +117,163 @@ pub fn avl_tree_insert<K, V>(tree: &mut AVLTree<K, V>, mut key: AVLTreeKey<K>, v
 """
 ]
 
+test_example_input = [
+"""Convert the following C code into Rust.
+```c
+void test_arraylist_index_of(void)
+{
+	int entries[] = { 89, 4, 23, 42, 16, 15, 8, 99, 50, 30 };
+	int num_entries;
+	ArrayList *arraylist;
+	int i;
+	int index;
+	int val;
+
+	/* Generate an arraylist containing the entries in the array */
+
+	num_entries = sizeof(entries) / sizeof(int);
+	arraylist = arraylist_new(0);
+
+	for (i=0; i<num_entries; ++i) {
+		arraylist_append(arraylist, &entries[i]);
+	}
+
+	/* Check all values get found correctly */
+
+	for (i=0; i<num_entries; ++i) {
+
+		val = entries[i];
+
+		index = arraylist_index_of(arraylist, int_equal, &val);
+
+		assert(index == i);
+	}
+
+	/* Check invalid values */
+
+	val = 0;
+	assert(arraylist_index_of(arraylist, int_equal, &val) < 0);
+	val = 57;
+	assert(arraylist_index_of(arraylist, int_equal, &val) < 0);
+
+	arraylist_free(arraylist);
+}
+```
+""",
+"""Convert the following C code into Rust.
+```c
+void test_avl_tree_child(void)
+{
+	AVLTree *tree;
+	AVLTreeNode *root;
+	AVLTreeNode *left;
+	AVLTreeNode *right;
+	int values[] = { 1, 2, 3 };
+	int *p;
+	int i;
+
+	/* Create a tree containing some values. Validate the
+	 * tree is consistent at all stages. */
+
+	tree = avl_tree_new((AVLTreeCompareFunc) int_compare);
+
+	for (i=0; i<3; ++i) {
+		avl_tree_insert(tree, &values[i], &values[i]);
+	}
+
+	/* Check the tree */
+
+	root = avl_tree_root_node(tree);
+	p = avl_tree_node_value(root);
+	assert(*p == 2);
+
+	left = avl_tree_node_child(root, AVL_TREE_NODE_LEFT);
+	p = avl_tree_node_value(left);
+	assert(*p == 1);
+
+	right = avl_tree_node_child(root, AVL_TREE_NODE_RIGHT);
+	p = avl_tree_node_value(right);
+	assert(*p == 3);
+
+	/* Check invalid values */
+
+	assert(avl_tree_node_child(root, 10000) == NULL);
+	assert(avl_tree_node_child(root, 2) == NULL);
+
+	avl_tree_free(tree);
+}
+```
+"""
+]
+
+test_example_output = [
+"""
+```rust
+fn test_arraylist_index_of() {
+    let entries = vec![89, 4, 23, 42, 16, 15, 8, 99, 50, 30];
+    let num_entries = entries.len();
+    let mut arraylist = arraylist_new(0).unwrap();
+
+    for i in 0..num_entries {
+        arraylist_append(&mut arraylist, Some(entries[i as usize]));
+    }
+
+    for i in 0..num_entries {
+        let val = entries[i as usize];
+        let index = arraylist_index_of(&mut arraylist, int_equal, &mut Some(val));
+
+        assert_eq!(index, i.try_into().unwrap());
+    }
+
+    let val = 0;
+    assert!(arraylist_index_of(&mut arraylist, int_equal, &mut Some(val)) < 0);
+    let val = 57;
+    assert!(arraylist_index_of(&mut arraylist, int_equal, &mut Some(val)) < 0);
+
+    arraylist_free(&mut arraylist);
+}
+```
+""",
+"""
+```rust
+fn test_avl_tree_child() {
+    let mut tree: AVLTree<i32, i32>;
+    let mut root: Link<AVLTreeNode<i32, i32>>;
+    let mut left: Link<AVLTreeNode<i32, i32>>;
+    let mut right: Link<AVLTreeNode<i32, i32>>;
+    let values: [i32; 3] = [1, 2, 3];
+    let mut p: Option<i32>;
+    let mut i: i32;
+
+    tree = avl_tree_new(int_compare).unwrap();
+
+    for i in 0..3 {
+        avl_tree_insert(&mut tree, Some(values[i]), Some(values[i]));
+    }
+
+    root = avl_tree_root_node(&mut tree);
+    p = avl_tree_node_value(root);
+    assert_eq!(p.unwrap(), 2);
+
+    left = avl_tree_node_child(root, avl_tree_node_left!());
+    p = avl_tree_node_value(left);
+    assert_eq!(p.unwrap(), 1);
+
+    right = avl_tree_node_child(root, avl_tree_node_right!());
+    p = avl_tree_node_value(right);
+    assert_eq!(p.unwrap(), 3);
+
+    assert!(avl_tree_node_child(root, 10000).is_none());
+    assert!(avl_tree_node_child(root, 2).is_none());
+    validate_tree(&mut tree);
+    avl_tree_free(&mut tree);
+
+    unsafe { assert_eq!(*CREATE_COUNT.lock().unwrap(), 0) };
+}
+```
+"""
+]
+
 #反馈专家Prompt
 Feedback_system_prompt = """You are an AI assistant specialized in analyzing translated Rust code from C code and providing modification suggestions based on error reports."""
 

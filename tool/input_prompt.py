@@ -198,6 +198,13 @@ Output only the converted Rust code without any explanations.
 Declare functions using pub(public) to allow importing.
 """
 
+test_prompt="""
+Convert the following C code into Rust.
+```c
+$c_code
+```
+"""
+
 feedback_input_prompt="""
 Analyze the following error message based on the original C code and the translated Rust code:
 Original C Code:
