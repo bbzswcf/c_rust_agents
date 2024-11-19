@@ -19,7 +19,8 @@ from tree_sitter_analyzer import (
     get_translation_order,
     extract_test_functions,
     sort_by_depend_count,
-    dependencies_order
+    dependencies_order,
+    extract_rust_funcs
 )
 from c_code_preprocess import code_preprocess
 
@@ -734,10 +735,6 @@ def process_files():
                     logging.info(f"测试文件{problem_path}的测试函数 {test_func} 编译和测试成功")
                     success_flag = True
                     # todo: 更新translated_flags
-                    for depend_func, depend_file in depend_files_and_funcs:
-                        translated_flags[depend_file][depend_func] = True
-                    translated_flags[problem_path][test_func] = True
-                    successful_test_count += 1
                     break
                 
                 logging.info(f"{test_func} 测试错误\n")
@@ -753,10 +750,7 @@ def process_files():
                 logging.info("修复规划专家输出：")
                 logging.info(feedback)
 
-                rust_functions = ''
-                for i, feedback_input_rust_func in enumerate(feedback_input_rust_func_code):
-                    rust_functions += f"""\n###function {i+1}###\n{sanitize_string(feedback_input_rust_func)}\n"""
-
+                rust_functions = '\n'.join(feedback_input_rust_func_code)
                 optimize_input = optimize_input_prompt.format(feedback=sanitize_string(feedback),
                                                                rust_items=rust_items_code,
                                                                functions=rust_functions)
@@ -766,14 +760,14 @@ def process_files():
                 logging.info(optimized)
                 new_rust_code = extract_rust_code(optimized)
                 if new_rust_code.strip():
-                    optimized_rust_codes = re.split(r'###function \d+###', new_rust_code)[1:]
-                    optimized_rust_codes = [code.strip() for code in optimized_rust_codes]
+                    optimized_rust_codes = extract_rust_funcs(new_rust_code)
+                    optimized_rust_codes[-1] = '#[test]\n' + optimized_rust_codes[-1]
                     if len(optimized_rust_codes) != under_test_count:
                         logging.info("警告：代码优化专家没有返回正确的函数数量。保持原代码不变。")
                         continue
                     
                     # 更新feedback_input_rust_func_code并写入文件
-                    feedback_input_rust_func_code = optimized_rust_codes
+                    feedback_input_rust_func_code = optimized_rust_codes.copy()
                     total_rust_code = "use crate::utils::*;\n" + rust_items_code +'\n' + "\n".join(success_rust_func_code) + '\n' + '\n'.join(feedback_input_rust_func_code)
                     write_file_with_utf8(temp_test_file_path, total_rust_code)
 
@@ -799,7 +793,12 @@ def process_files():
                 test_func_info['rust_signature'] = rust_signatures[0]
             
             # 更新translated_flags
-            if not success_flag:
+            if success_flag:
+                for depend_func, depend_file in depend_files_and_funcs:
+                    translated_flags[depend_file][depend_func] = True
+                translated_flags[problem_path][test_func] = True
+                successful_test_count += 1
+            else:
                 translated_flags[problem_path][test_func_info['name']] = False
                 for depend_func, depend_file in depend_files_and_funcs:
                     if translated_flags[depend_file][depend_func] == None:

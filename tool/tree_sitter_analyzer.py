@@ -9,7 +9,7 @@ import re
 import json
 import argparse
 
-from tree_sitter_c_config import c_parser
+from tree_sitter_c_config import c_parser, rust_parser
 from c_code_preprocess import preprocess, head_preprocess
 
 # Files to exclude from dependency analysis
@@ -287,6 +287,24 @@ def head_info_extraction(directory, file):
                 
     return header_info
 
+def extract_rust_funcs(code: str) -> list:
+    """
+    Extract all function definitions from Rust code using tree-sitter.
+    Returns a list of function names.
+    """
+    funcs = []
+    tree = rust_parser.parse(bytes(code, 'utf8'))
+    
+    # Traverse all nodes to find function definitions
+    for node in tree.root_node.children:
+        if node.type == 'function_item':
+            # Extract the full function code
+            start_byte = node.start_byte
+            end_byte = node.end_byte
+            func_code = code[start_byte:end_byte]
+            funcs.append(func_code)
+                
+    return funcs
 
 if __name__ == "__main__":
     # Below are tests for various functionalities
