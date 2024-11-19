@@ -272,7 +272,7 @@ def code_preprocess(directory: str):
         for node in tree.root_node.children:
             if node.type == 'comment':
                 continue
-            if node.type == 'preproc_include':
+            if node.type == 'preproc_include' and os.path.splitext(os.path.basename(relative_path))[0] not in node.text.decode('utf-8').strip():
                 metadata[relative_path]['includes'].append({'code': node.text.decode('utf-8').strip()})
             elif node.type == 'function_definition':
                 func_signature = ' '.join(node.text.decode('utf-8').split('{')[0].split()).strip()
@@ -325,7 +325,7 @@ def code_preprocess(directory: str):
         for node in tree.root_node.children:
             if node.type == 'comment':
                 continue
-            if node.type == 'preproc_include':
+            if node.type == 'preproc_include' and os.path.splitext(os.path.basename(relative_path))[0] not in node.text.decode('utf-8').strip():
                 metadata[relative_path]['includes'].append({'code': node.text.decode('utf-8').strip()})
             elif node.type == 'function_definition':
                 func_signature = ' '.join(node.text.decode('utf-8').split('{')[0].split()).strip()
