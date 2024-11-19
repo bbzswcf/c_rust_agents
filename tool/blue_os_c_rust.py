@@ -704,11 +704,11 @@ def process_files():
                 if depend_file == problem_path:
                     append_flag = False
                 rust_items_code += metadata[depend_file]['rust_items'] + '\n\n'
-                feedback_input_c_code.append(metadata[depend_file]['head_info'])
-                feedback_input_c_code.append(metadata[depend_file]['variables'])
+                feedback_input_c_code.append('\n'.join([head['code'] for head in metadata[depend_file]['head_info']]))
+                feedback_input_c_code.append('\n'.join([variable['code'] for variable in metadata[depend_file]['variables']]))
             if append_flag:
-                feedback_input_c_code.append(metadata[problem_path]['head_info'])
-                feedback_input_c_code.append(metadata[problem_path]['variables'])
+                feedback_input_c_code.append('\n'.join([head['code'] for head in metadata[problem_path]['head_info']]))
+                feedback_input_c_code.append('\n'.join([variable['code'] for variable in metadata[problem_path]['variables']]))
                 rust_items_code += metadata[problem_path]['rust_items'] + '\n\n'
 
             for depend_func, depend_file in depend_files_and_funcs:
@@ -744,8 +744,9 @@ def process_files():
 
                 # 运行失败，进行优化
                 logging.info("运行失败，继续优化")
+                total_feedback_rust_code = rust_items_code+'\n'+'\n'.join(feedback_input_rust_func_code)
                 feedback_input = feedback_input_prompt.format(c_code='\n'.join(feedback_input_c_code),
-                                                               rust_code=rust_items_code+'\n'+'\n'.join(feedback_input_rust_func_code),
+                                                               rust_code=total_feedback_rust_code,
                                                                error_msg=sanitize_string(dynamic_errors))
                 logging.info(f"修复规划专家prompt: {feedback_input}")
                 feedback = feedback_agent.generate_response(feedback_input)
