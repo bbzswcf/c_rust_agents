@@ -776,10 +776,10 @@ Note: For static analysis results, only consider error-level issues and complete
 Feedback:
 [Detailed feedback content]
 
-Rust code:
+
 Context(variables and structs):
 [Context]
-###function i###
+Rust code:
 [Rust code]
 
 Please provide the complete optimized Rust code directly with no comments. No additional explanations are needed.
@@ -792,7 +792,6 @@ Feedback:
 3.Issue: Borrow checker error Location: Line 12 println!("{}", s); Suggestion: Ensure the variable is not moved or borrowed in a way that violates Rust's borrowing rules.  
 4.Issue: Index out of bounds Location: Line 15 println!("{}", arr[10]); Suggestion: Ensure the index is within the bounds of the array.
 
-Rust code:
 Context(variables and structs):
 pub struct Config {
     pub threshold: i32,
@@ -800,7 +799,8 @@ pub struct Config {
 }
 static MAX_DIVISOR: i32 = 10;
 static DEFAULT_MESSAGE: &str = "Default Greeting";
-###function 1###
+
+Rust code:
 fn foo(z: i32){
     let config = Config {
         threshold: 5,
@@ -821,7 +821,7 @@ fn foo(z: i32){
     return result;
 }
 
-###function 2###
+
 #[test]
 pub fn test_foo() {
     assert_eq!(foo(10), 10);
@@ -829,7 +829,7 @@ pub fn test_foo() {
 }
 
 Example output 1:
-###function 1###
+
 fn foo(z: i32){
     let config = Config {
         threshold: 5,
@@ -855,7 +855,7 @@ fn foo(z: i32){
     return result;
 }
 
-###function 2###
+
 #[test]
 pub fn test_foo() {
     assert_eq!(foo(10), 10);

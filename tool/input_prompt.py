@@ -92,7 +92,7 @@ pub struct _SListIterator<T> {{
     pub current: Link<SListEntry<T>>,
 }}
 ```
-Remember to output only the converted Rust code without any explanations.
+Remember to output only the converted Rust code without any explanations or comments.
 Declare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.
 Keep all variable names unchanged, and do not change the case of variable names.
 LinkRover<T> and Link<T> has been defined in other rust file, use them directly, do not define again.
@@ -315,10 +315,11 @@ optimize_input_prompt="""
 Optimize the Rust code based on the following specific feedback:
 Feedback:
 {feedback}
-Rust code:
+
 Context(variables and structs):
 {rust_items}
 
+Rust code:
 {functions}
 
 Please strictly follow the steps mentioned in the prompt to optimize the code.
