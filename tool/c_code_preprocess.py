@@ -366,6 +366,14 @@ def code_preprocess(directory: str):
                 if func_call in funcs_files and func_call != func_info['name']:
                     func_info['depend_funcs'].append({'name': func_call, 'file': funcs_files[func_call]})
 
+    for func_info in metadata[os.path.join('src','rb-tree.c')]['functions']:
+        if func_info['name'] == 'rb_tree_insert_case3':
+            for depend_func in func_info['depend_funcs']:
+                if depend_func['name'] == 'rb_tree_insert_case1':
+                    func_info['depend_funcs'].remove(depend_func)
+                    break
+            break
+
     with open('tool/c_metadata.json', 'w', encoding='utf-8') as f:
         json.dump(metadata, f, ensure_ascii=False, indent=2)
 
