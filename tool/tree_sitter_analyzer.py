@@ -287,28 +287,34 @@ def head_info_extraction(directory, file):
                 
     return header_info
 
-def extract_rust_funcs(code: str) -> list:
+def extract_rust_funcs(code: str) -> tuple[list, list]:
     """
-    Extract all function definitions from Rust code using tree-sitter.
-    Returns a list of function names.
+    Extract all function definitions and use statements from Rust code using tree-sitter.
+    Returns a tuple of (function definitions list, use statements list).
     """
     funcs = []
+    uses = []
     tree = rust_parser.parse(bytes(code, 'utf8'))
     
-    def traverse_node(node, code, funcs):
+    def traverse_node(node, code, funcs, uses):
         if node.type == 'function_item':
             start_byte = node.start_byte
             end_byte = node.end_byte
             func_code = code[start_byte:end_byte]
             funcs.append(func_code)
+        elif node.type == 'use_declaration':
+            start_byte = node.start_byte
+            end_byte = node.end_byte
+            use_code = code[start_byte:end_byte]
+            uses.append(use_code)
         else:
             for child in node.children:
-                traverse_node(child, code, funcs)
+                traverse_node(child, code, funcs, uses)
 
     for node in tree.root_node.children:
-        traverse_node(node, code, funcs)
+        traverse_node(node, code, funcs, uses)
                 
-    return funcs
+    return funcs, uses
 
 if __name__ == "__main__":
     # Below are tests for various functionalities
