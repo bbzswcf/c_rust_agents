@@ -76,14 +76,14 @@ def normalize_string(s):
 
 
 def extract_rust_code(review_text: str) -> str:
-    if review_text is None:
+    if review_text is None or review_text == "":
         logging.info("警告：从该专家收到空响应")
         return ""
     code_blocks = re.findall(r'```rust\n(.*?)```', review_text, re.DOTALL)
     if code_blocks:
-        return code_blocks[0].strip()
-    logging.info("警告：无法从该专家的回复中提取 Rust 代码")
-    return review_text
+        review_text = code_blocks[0].strip()
+    review_text = re.sub(r'//.*$', '', review_text, flags=re.MULTILINE)
+    return review_text.strip()
 
 
 def sanitize_string(s):
@@ -480,7 +480,7 @@ def process_files():
     logging.info(f"翻译顺序：{translation_order}")
     logging.info(f"翻译文件总数：{len(translation_order)}")
     
-    translation_order = ['test\\test-arraylist.c'] # 调试
+    translation_order = ['test\\test-compare-functions.c', 'test\\test-hash-functions.c', 'test\\test-arraylist.c','test\\test-avl-tree.c', 'test\\test-binary-heap.c', 'test\\test-binomial-heap.c', 'test\\test-bloom-filter.c', 'test\\test-hash-table.c', 'test\\test-list.c', 'test\\test-queue.c', 'test\\test-set.c', 'test\\test-slist.c', 'test\\test-trie.c', 'test\\test-sortedarray.c', 'test\\test-rb-tree.c', 'test\\test-cpp.cpp'] # 调试
     # translation_order = translation_order[14:24] # 调试 compare 10/41
     # translation_order = translation_order[:14] # 调试 arraylist 3/30
     # translation_order = translation_order[24:30] # 调试 queue 11/34
@@ -696,6 +696,7 @@ def process_files():
 
             # 将rust代码整合在一起，同时整合c代码
             rust_items_code = ''
+            extra_use_codes = ''
             feedback_input_c_code = []
             success_rust_func_code = []
             feedback_input_rust_func_code = []
@@ -741,7 +742,7 @@ def process_files():
 
                 # 运行失败，进行优化
                 logging.info("运行失败，继续优化")
-                total_feedback_rust_code = rust_items_code+'\n'+'\n'.join(feedback_input_rust_func_code)
+                total_feedback_rust_code = extra_use_codes + rust_items_code+'\n'+'\n'.join(feedback_input_rust_func_code)
                 feedback_input = feedback_input_prompt.format(c_code='\n'.join(feedback_input_c_code),
                                                                rust_code=total_feedback_rust_code,
                                                                error_msg=sanitize_string(dynamic_errors))
@@ -760,15 +761,20 @@ def process_files():
                 logging.info(optimized)
                 new_rust_code = extract_rust_code(optimized)
                 if new_rust_code.strip():
-                    optimized_rust_codes = extract_rust_funcs(new_rust_code)
+                    optimized_rust_codes, use_codes = extract_rust_funcs(new_rust_code)
                     optimized_rust_codes[-1] = '#[test]\n' + optimized_rust_codes[-1]
                     if len(optimized_rust_codes) != under_test_count:
                         logging.info("警告：代码优化专家没有返回正确的函数数量。保持原代码不变。")
                         continue
                     
                     # 更新feedback_input_rust_func_code并写入文件
+                    extra_use_codes = ''
                     feedback_input_rust_func_code = optimized_rust_codes.copy()
                     total_rust_code = "use crate::utils::*;\n" + rust_items_code +'\n' + "\n".join(success_rust_func_code) + '\n' + '\n'.join(feedback_input_rust_func_code)
+                    for use_code in use_codes:
+                        if use_code not in total_rust_code:
+                            extra_use_codes += use_code + '\n'
+                    total_rust_code = extra_use_codes + total_rust_code
                     write_file_with_utf8(temp_test_file_path, total_rust_code)
 
                     logging.info(f"代码已针对运行失败进行优化 #{test_count}")
@@ -777,6 +783,8 @@ def process_files():
 
             # 更新metadata
             function_count = 0
+            if extra_use_codes:
+                metadata[problem_path]['rust_items'] += '\n' + extra_use_codes
             for depend_func, depend_file in depend_files_and_funcs:
                 if translated_flags[depend_file][depend_func] != True:
                     for func_info in metadata[depend_file]['functions']:
