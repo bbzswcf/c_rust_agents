@@ -283,7 +283,7 @@ def code_preprocess(directory: str):
                 if func_signature not in metadata[relative_path]['public_func_signatures']:
                     metadata[relative_path]['private_func_signatures'].append(func_signature)
             else:
-                if node.text.decode('utf-8') != ';':
+                if node.text.decode('utf-8') != ';' and node.type != 'preproc_include':
                     metadata[relative_path]['variables'].append({'code': node.text.decode('utf-8')})
     
     for total_path in test_file_list:
@@ -334,7 +334,8 @@ def code_preprocess(directory: str):
                 metadata[relative_path]['functions'].append({'name': func_name,'signature': func_signature, 'code': node.text.decode('utf-8'), 'rust_code': '', 'rust_signature': ''})
                 metadata[relative_path]['func_signatures'].append(func_signature)
             else:
-                metadata[relative_path]['variables'].append({'code': node.text.decode('utf-8')})
+                if node.text.decode('utf-8') != ';' and node.type != 'preproc_include':
+                    metadata[relative_path]['variables'].append({'code': node.text.decode('utf-8')})
     
     # 增加函数依赖
     funcs_files = {}
