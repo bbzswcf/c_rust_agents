@@ -102,7 +102,15 @@ def remove_alloc_test_blocks(code: str) -> str:
     """
     Remove alloc_test blocks from test files, keeping only the closing brace.
     """
-    start_idx = code.find('alloc_test')
+    # Find the line containing alloc_test
+    lines = code.split('\n')
+    start_idx = -1
+    for i, line in enumerate(lines):
+        if 'alloc_test' in line:
+            # Get character index of start of this line
+            start_idx = sum(len(l) + 1 for l in lines[:i])
+            break
+            
     if start_idx == -1:
         return code
         
