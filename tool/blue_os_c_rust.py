@@ -762,12 +762,13 @@ def process_files():
                 new_rust_code = extract_rust_code(optimized)
                 if new_rust_code.strip():
                     optimized_rust_codes, use_codes = extract_rust_funcs(new_rust_code)
-                    optimized_rust_codes[-1] = '#[test]\n' + optimized_rust_codes[-1]
+                    
                     if len(optimized_rust_codes) != under_test_count:
                         logging.info("警告：代码优化专家没有返回正确的函数数量。保持原代码不变。")
                         continue
                     
                     # 更新feedback_input_rust_func_code并写入文件
+                    optimized_rust_codes[-1] = '#[test]\n' + optimized_rust_codes[-1]
                     extra_use_codes = ''
                     feedback_input_rust_func_code = optimized_rust_codes.copy()
                     total_rust_code = "use crate::utils::*;\n" + rust_items_code +'\n' + "\n".join(success_rust_func_code) + '\n' + '\n'.join(feedback_input_rust_func_code)
