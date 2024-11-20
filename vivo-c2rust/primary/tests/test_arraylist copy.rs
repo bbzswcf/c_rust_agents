@@ -1665,18 +1665,73 @@ pub fn main() {
         )
     }
 }
+#[test]
+fn s_test_arraylist_new_free() {
+    unsafe {
+        test_arraylist_new_free();
+    }
+}
 
 
+#[test]
+fn s_test_arraylist_append() {
+    unsafe {
+        test_arraylist_append();
+    }
+}
 
 
+#[test]
+fn s_test_arraylist_prepend() {
+    unsafe {
+        test_arraylist_prepend();
+    }
+}
 
 
+#[test]
+fn s_test_arraylist_insert() {
+    unsafe {
+        test_arraylist_insert();
+    }
+}
 
 
+#[test]
+fn s_test_arraylist_remove_range() {
+    unsafe {
+        test_arraylist_remove_range();
+    }
+}
 
 
+#[test]
+fn s_test_arraylist_remove() {
+    unsafe {
+        test_arraylist_remove();
+    }
+}
 
 
+#[test]
+fn s_test_arraylist_index_of() {
+    unsafe {
+        test_arraylist_index_of();
+    }
+}
 
 
+#[test]
+fn s_test_arraylist_clear() {
+    unsafe {
+        test_arraylist_clear();
+    }
+}
 
+
+#[test]
+fn s_test_arraylist_sort() {
+    unsafe {
+        test_arraylist_sort();
+    }
+}

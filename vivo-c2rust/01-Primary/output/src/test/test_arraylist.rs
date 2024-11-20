@@ -1,12 +1,4 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-extern crate libc;
-use primary::arraylist::*;
-use primary::compare_pointer::*;
-use primary::compare_string::*;
-use primary::compare_int::*;
-use primary::hash_pointer::*;
-use primary::hash_string::*;
-use primary::hash_int::*;
 extern "C" {
     fn __assert_fail(
         __assertion: *const libc::c_char,
@@ -1665,18 +1657,3 @@ pub fn main() {
         )
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1512,113 +1512,29 @@ pub fn main() {
 }
 
 
-#[test]
-fn s_test_slist_append() {
-    unsafe {
-        test_slist_append();
-    }
-}
 
 
-#[test]
-fn s_test_slist_prepend() {
-    unsafe {
-        test_slist_prepend();
-    }
-}
 
 
-#[test]
-fn s_test_slist_free() {
-    unsafe {
-        test_slist_free();
-    }
-}
 
 
-#[test]
-fn s_test_slist_next() {
-    unsafe {
-        test_slist_next();
-    }
-}
 
 
-#[test]
-fn s_test_slist_nth_entry() {
-    unsafe {
-        test_slist_nth_entry();
-    }
-}
 
 
-#[test]
-fn s_test_slist_nth_data() {
-    unsafe {
-        test_slist_nth_data();
-    }
-}
 
 
-#[test]
-fn s_test_slist_length() {
-    unsafe {
-        test_slist_length();
-    }
-}
 
 
-#[test]
-fn s_test_slist_remove_entry() {
-    unsafe {
-        test_slist_remove_entry();
-    }
-}
 
 
-#[test]
-fn s_test_slist_remove_data() {
-    unsafe {
-        test_slist_remove_data();
-    }
-}
 
 
-#[test]
-fn s_test_slist_sort() {
-    unsafe {
-        test_slist_sort();
-    }
-}
 
 
-#[test]
-fn s_test_slist_find_data() {
-    unsafe {
-        test_slist_find_data();
-    }
-}
 
 
-#[test]
-fn s_test_slist_to_array() {
-    unsafe {
-        test_slist_to_array();
-    }
-}
 
 
-#[test]
-fn s_test_slist_iterate() {
-    unsafe {
-        test_slist_iterate();
-    }
-}
 
 
-#[test]
-fn s_test_slist_iterate_bad_remove() {
-    unsafe {
-        test_slist_iterate_bad_remove();
-    }
-}

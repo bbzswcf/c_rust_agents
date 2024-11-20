@@ -1,5 +1,6 @@
 CC = gcc
 CFLAGS = -std=c99 -w -Wextra -g -I src -I test
+CPPFLAGS = -std=c++98 -w -Wextra -g -I src -I test
 SRC_DIR = src
 TEST_DIR = test
 
@@ -10,6 +11,7 @@ SRC_FILES = \
 	$(SRC_DIR)/binary-heap.c \
 	$(SRC_DIR)/binomial-heap.c \
 	$(SRC_DIR)/bloom-filter.c \
+	$(SRC_DIR)/hash-table.c \
 	$(SRC_DIR)/list.c \
 	$(SRC_DIR)/queue.c \
 	$(SRC_DIR)/rb-tree.c \
@@ -50,6 +52,7 @@ OTHER_TEST_FILES = \
 	$(TEST_DIR)/test-sortedarray.c \
 	$(TEST_DIR)/test-trie.c
 
+
 # 生成可执行文件列表
 OTHER_EXEC_FILES = $(OTHER_TEST_FILES:$(TEST_DIR)/%.c=%)
 
@@ -67,6 +70,9 @@ compare-functions: $(COMPARE_FILES) $(FRAMEWORK) $(COMPARE_TEST_FILE)
 
 hash-functions: $(HASH_FILES) $(FRAMEWORK) $(HASH_TEST_FILE)
 	$(CC) $(CFLAGS) -DALLOC_TESTING -o hash-functions $^
+
+test-cpp: $(FRAMEWORK) $(TEST_DIR)/test-cpp.cpp $(SRC_FILES) $(COMPARE_FILES) $(HASH_FILES)
+	$(CC) $(CPPFLAGS) -DALLOC_TESTING_C -o test-cpp $^
  
 # 运行所有测试文件
 run: $(EXEC_FILES)

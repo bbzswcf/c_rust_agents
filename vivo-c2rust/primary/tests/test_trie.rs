@@ -1045,81 +1045,21 @@ pub fn main() {
 }
 
 
-#[test]
-fn s_test_trie_new_free() {
-    unsafe {
-        test_trie_new_free();
-    }
-}
 
 
-#[test]
-fn s_test_trie_insert() {
-    unsafe {
-        test_trie_insert();
-    }
-}
 
 
-#[test]
-fn s_test_trie_lookup() {
-    unsafe {
-        test_trie_lookup();
-    }
-}
 
 
-#[test]
-fn s_test_trie_remove() {
-    unsafe {
-        test_trie_remove();
-    }
-}
 
 
-#[test]
-fn s_test_trie_replace() {
-    unsafe {
-        test_trie_replace();
-    }
-}
 
 
-#[test]
-fn s_test_trie_insert_empty() {
-    unsafe {
-        test_trie_insert_empty();
-    }
-}
 
 
-#[test]
-fn s_test_trie_free_long() {
-    unsafe {
-        test_trie_free_long();
-    }
-}
 
 
-#[test]
-fn s_test_trie_negative_keys() {
-    unsafe {
-        test_trie_negative_keys();
-    }
-}
 
 
-#[test]
-fn s_test_trie_insert_binary() {
-    unsafe {
-        test_trie_insert_binary();
-    }
-}
 
 
-#[test]
-fn s_test_trie_remove_binary() {
-    unsafe {
-        test_trie_remove_binary();
-    }
-}

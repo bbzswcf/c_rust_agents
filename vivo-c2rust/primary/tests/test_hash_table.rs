@@ -854,57 +854,15 @@ pub fn main() {
 }
 
 
-#[test]
-fn s_test_hash_table_new_free() {
-    unsafe {
-        test_hash_table_new_free();
-    }
-}
 
 
-#[test]
-fn s_test_hash_table_insert_lookup() {
-    unsafe {
-        test_hash_table_insert_lookup();
-    }
-}
 
 
-#[test]
-fn s_test_hash_table_remove() {
-    unsafe {
-        test_hash_table_remove();
-    }
-}
 
 
-#[test]
-fn s_test_hash_table_iterating() {
-    unsafe {
-        test_hash_table_iterating();
-    }
-}
 
 
-#[test]
-fn s_test_hash_table_iterating_remove() {
-    unsafe {
-        test_hash_table_iterating_remove();
-    }
-}
 
 
-#[test]
-fn s_test_hash_table_free_functions() {
-    unsafe {
-        test_hash_table_free_functions();
-    }
-}
 
 
-#[test]
-fn s_test_hash_iterator_key_pair() {
-    unsafe {
-        test_hash_iterator_key_pair();
-    }
-}

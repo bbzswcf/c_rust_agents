@@ -541,49 +541,13 @@ pub fn main() {
 }
 
 
-#[test]
-fn s_test_bloom_filter_new_free() {
-    unsafe {
-        test_bloom_filter_new_free();
-    }
-}
 
 
-#[test]
-fn s_test_bloom_filter_insert_query() {
-    unsafe {
-        test_bloom_filter_insert_query();
-    }
-}
 
 
-#[test]
-fn s_test_bloom_filter_read_load() {
-    unsafe {
-        test_bloom_filter_read_load();
-    }
-}
 
 
-#[test]
-fn s_test_bloom_filter_intersection() {
-    unsafe {
-        test_bloom_filter_intersection();
-    }
-}
 
 
-#[test]
-fn s_test_bloom_filter_union() {
-    unsafe {
-        test_bloom_filter_union();
-    }
-}
 
 
-#[test]
-fn s_test_bloom_filter_mismatch() {
-    unsafe {
-        test_bloom_filter_mismatch();
-    }
-}

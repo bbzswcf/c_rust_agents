@@ -1682,113 +1682,29 @@ pub fn main() {
 }
 
 
-#[test]
-fn s_test_list_append() {
-    unsafe {
-        test_list_append();
-    }
-}
 
 
-#[test]
-fn s_test_list_prepend() {
-    unsafe {
-        test_list_prepend();
-    }
-}
 
 
-#[test]
-fn s_test_list_free() {
-    unsafe {
-        test_list_free();
-    }
-}
 
 
-#[test]
-fn s_test_list_next() {
-    unsafe {
-        test_list_next();
-    }
-}
 
 
-#[test]
-fn s_test_list_nth_entry() {
-    unsafe {
-        test_list_nth_entry();
-    }
-}
 
 
-#[test]
-fn s_test_list_nth_data() {
-    unsafe {
-        test_list_nth_data();
-    }
-}
 
 
-#[test]
-fn s_test_list_length() {
-    unsafe {
-        test_list_length();
-    }
-}
 
 
-#[test]
-fn s_test_list_remove_entry() {
-    unsafe {
-        test_list_remove_entry();
-    }
-}
 
 
-#[test]
-fn s_test_list_remove_data() {
-    unsafe {
-        test_list_remove_data();
-    }
-}
 
 
-#[test]
-fn s_test_list_sort() {
-    unsafe {
-        test_list_sort();
-    }
-}
 
 
-#[test]
-fn s_test_list_find_data() {
-    unsafe {
-        test_list_find_data();
-    }
-}
 
 
-#[test]
-fn s_test_list_to_array() {
-    unsafe {
-        test_list_to_array();
-    }
-}
 
 
-#[test]
-fn s_test_list_iterate() {
-    unsafe {
-        test_list_iterate();
-    }
-}
 
 
-#[test]
-fn s_test_list_iterate_bad_remove() {
-    unsafe {
-        test_list_iterate_bad_remove();
-    }
-}

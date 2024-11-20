@@ -31,15 +31,6 @@ print("lib.rs 文件已更新。")
 with open(metadata_file_path, 'r') as file:
     metadata = json.load(file)
 
-test_func="""
-#[test]
-fn {func_name}() {{
-    unsafe {{
-        {content}
-    }}
-}}
-"""
-
 for key, value in metadata.items():
     if "test" not in key:
         continue
@@ -76,11 +67,7 @@ for key, value in metadata.items():
             break
         with open(path, 'w') as file:
             file.writelines(lines)
-        with open(path, 'a') as file:
-            for f in func_names:
-                content = f"{f}();"
-                file.write("\n")
-                file.write(test_func.format(func_name=f"s_{f}", content = content))
+
                 
     # break
 

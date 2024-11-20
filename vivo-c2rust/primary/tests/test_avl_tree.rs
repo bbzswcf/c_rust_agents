@@ -876,57 +876,15 @@ pub fn main() {
 }
 
 
-#[test]
-fn s_test_avl_tree_new() {
-    unsafe {
-        test_avl_tree_new();
-    }
-}
 
 
-#[test]
-fn s_test_avl_tree_insert_lookup() {
-    unsafe {
-        test_avl_tree_insert_lookup();
-    }
-}
 
 
-#[test]
-fn s_test_avl_tree_child() {
-    unsafe {
-        test_avl_tree_child();
-    }
-}
 
 
-#[test]
-fn s_test_avl_tree_free() {
-    unsafe {
-        test_avl_tree_free();
-    }
-}
 
 
-#[test]
-fn s_test_avl_tree_lookup() {
-    unsafe {
-        test_avl_tree_lookup();
-    }
-}
 
 
-#[test]
-fn s_test_avl_tree_remove() {
-    unsafe {
-        test_avl_tree_remove();
-    }
-}
 
 
-#[test]
-fn s_test_avl_tree_to_array() {
-    unsafe {
-        test_avl_tree_to_array();
-    }
-}
