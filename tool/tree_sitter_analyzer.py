@@ -295,14 +295,18 @@ def extract_rust_funcs(code: str) -> list:
     funcs = []
     tree = rust_parser.parse(bytes(code, 'utf8'))
     
-    # Traverse all nodes to find function definitions
-    for node in tree.root_node.children:
+    def traverse_node(node, code, funcs):
         if node.type == 'function_item':
-            # Extract the full function code
             start_byte = node.start_byte
             end_byte = node.end_byte
             func_code = code[start_byte:end_byte]
             funcs.append(func_code)
+        else:
+            for child in node.children:
+                traverse_node(child, code, funcs)
+
+    for node in tree.root_node.children:
+        traverse_node(node, code, funcs)
                 
     return funcs
 
