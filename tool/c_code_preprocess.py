@@ -30,10 +30,12 @@ def remove_file_comments(code: str) -> str:
     """
     pattern = r'/\*.*?\*/\s*'
     preprocessed_code = re.sub(pattern, '', code, flags=re.DOTALL)
+    pattern = r'//.*?\n'
+    preprocessed_code = re.sub(pattern, '\n', preprocessed_code)
     pattern = r'\n\s*\n'
     preprocessed_code = re.sub(pattern, '\n', preprocessed_code)
 
-    return preprocessed_code.lstrip()
+    return preprocessed_code.strip()
 
 def remove_header_guards(code: str) -> str:
     """
@@ -76,6 +78,24 @@ def process_alloc_testing(code: str) -> str:
     code = re.sub(pattern, '', code)
 
     return code
+
+def is_function_declaration(node) -> bool:
+    """
+    使用 tree-sitter 语法树检查节点是否为函数声明
+    """
+    # 检查节点类型
+    if node.type == 'declaration':
+        # 获取声明的子节点
+        for child in node.children:
+            # 检查是否包含函数声明符
+            if child.type == 'function_declarator':
+                return True
+            # 检查是否包含函数指针
+            if child.type == 'pointer_declarator':
+                if any(subchild.type == 'function_declarator' 
+                      for subchild in child.children):
+                    return True
+    return False
 
 # 测试文件处理
 def remove_test_includes(code: str) -> str:
@@ -292,7 +312,8 @@ def code_preprocess(directory: str):
                     metadata[relative_path]['private_func_signatures'].append(func_signature)
             else:
                 if node.text.decode('utf-8') != ';' and node.type != 'preproc_include':
-                    metadata[relative_path]['variables'].append({'code': node.text.decode('utf-8')})
+                    if not is_function_declaration(node):
+                        metadata[relative_path]['variables'].append({'code': node.text.decode('utf-8')})
     
     for total_path in test_file_list:
         relative_path = os.path.relpath(total_path, directory)
@@ -322,7 +343,8 @@ def code_preprocess(directory: str):
                 if 'out_of_memory' in func_signature:
                     continue
                 else:
-                    code = code + remove_alloc_test_blocks(func_code) + '\n\n'
+                    # code = code + remove_alloc_test_blocks(func_code) + '\n\n'
+                    code += func_code + '\n\n'
             else:
                 if not func_code.startswith('static UnitTestFunction tests'):
                     code =code + func_code + '\n\n'
