@@ -13,6 +13,7 @@ from string import Template
 from Agents import *
 from input_prompt import *
 from Agent_prompt import *
+from insight_input import *
 # from Agent_prompt_simple import *
 from tree_sitter_analyzer import (
     analyze_directory,
@@ -252,12 +253,19 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
     for c_func, rust_func in zip(c_signatures, rust_signatures):
         if rust_func:
             function_call_mappings += f"""{c_func} <----> {rust_func}\n"""
+    if not function_call_mappings:
+        function_call_mappings = "None"
 
+    insight = ''
+    if 'new' in func_name and 'test' not in c_file:
+        insight = insight_new
+    else:
+        insight = insight_original
     template = Template(user_input)
-    # combined_syntax_input = template.substitute(c_code=c_code, rust_items=rust_items, function_call_mappings=function_call_mappings)
-    if function_call_mappings:
-        function_call_mappings = """## Contextual Metadata:\nBelow are the Rust function signatures for functions from other modules that are called within the C code.\n""" + function_call_mappings
-    combined_syntax_input = template.substitute(c_code=c_code, function_call_mappings=function_call_mappings)
+    combined_syntax_input = template.substitute(c_code=c_code, rust_items=rust_items, function_call_mappings=function_call_mappings, insight=insight)
+    # if function_call_mappings:
+    #     function_call_mappings = """## Contextual Metadata:\nBelow are the Rust function signatures for functions from other modules that are called within the C code.\n""" + function_call_mappings
+    # combined_syntax_input = template.substitute(c_code=c_code, function_call_mappings=function_call_mappings)
     logging.info(f"语法专家prompt: {combined_syntax_input}")
 
     rust_code = syntax_agent.generate_response(combined_syntax_input, example_input, example_output)
@@ -506,7 +514,7 @@ def process_files():
                 if depend_func['file'] not in depend_file_list and depend_func['file'].startswith("src"):
                     depend_file_list.append(depend_func['file'])
         
-        write_file_with_utf8(lib_file_path, f"pub(crate) mod translation_utils;\npub(crate) mod {test_file_name.replace('-', '_')};\n")
+        write_file_with_utf8(lib_file_path, f"pub(crate) mod utils;\npub(crate) mod {test_file_name.replace('-', '_')};\n")
         for depend_file in depend_file_list:
             rust_mod_name = os.path.splitext(os.path.basename(depend_file.replace('-', '_')))[0]
             write_file_with_utf8(os.path.join(rust_code_dir, f"{rust_mod_name}.rs"), "")            
@@ -543,7 +551,7 @@ def process_files():
                 # 构建测试环境
                 content = read_file_with_auto_encoding(rust_file_path)
                 if not content.strip():
-                    insert_file_with_utf8(rust_file_path, f"use crate::translation_utils::*;\n")
+                    insert_file_with_utf8(rust_file_path, f"use crate::utils::*;\n")
                     for include in metadata[depend_file]['includes']:
                         match = re.search(r'#include\s*[<"]([^>"]+)[>"]', include['code'])
                         header_name = match.group(1)
@@ -596,7 +604,7 @@ def process_files():
                     rust_file_path,
                     args.output_dir,
                     metadata,
-                    Syntax_prompt_2_simple,
+                    Syntax_prompt_2,
                     Syntax_example_input,
                     Syntax_example_output
                 )
@@ -624,8 +632,8 @@ def process_files():
                     current_content = read_file_with_auto_encoding(rust_test_file_path)
                     if f"use crate::{head_file_info}::*;" not in current_content:
                         insert_file_with_utf8(rust_test_file_path, f"use crate::{head_file_info}::*;\n")
-            if "use crate::translation_utils::*;" not in current_content:
-                insert_file_with_utf8(rust_test_file_path, f"use crate::translation_utils::*;\n")
+            if "use crate::utils::*;" not in current_content:
+                insert_file_with_utf8(rust_test_file_path, f"use crate::utils::*;\n")
 
             if not metadata[problem_path]['rust_items'].strip():
                 rust_code = convert_c_initialization_to_rust(
@@ -672,7 +680,7 @@ def process_files():
             temp_test_lib_path = os.path.join(temp_test_src_dir, 'lib.rs')
             temp_test_file_path = os.path.join(temp_test_src_dir, 'temp.rs')
 
-            write_file_with_utf8(temp_test_lib_path, "pub(crate) mod translation_utils;\npub(crate) mod temp;\n")
+            write_file_with_utf8(temp_test_lib_path, "pub(crate) mod utils;\npub(crate) mod temp;\n")
 
             depend_files = []
             for _, depend_file in depend_files_and_funcs:
@@ -710,7 +718,7 @@ def process_files():
             feedback_input_c_code.append(test_func_info['code'])
             feedback_input_rust_func_code.append(test_func_info['rust_code'])
 
-            total_rust_code = "use crate::translation_utils::*;\n" + rust_items_code +'\n' + "\n".join(success_rust_func_code) + '\n' + '\n'.join(feedback_input_rust_func_code)
+            total_rust_code = "use crate::utils::*;\n" + rust_items_code +'\n' + "\n".join(success_rust_func_code) + '\n' + '\n'.join(feedback_input_rust_func_code)
             write_file_with_utf8(temp_test_file_path, total_rust_code)
 
             success_flag = False
@@ -755,7 +763,7 @@ def process_files():
                     optimized_rust_codes[-1] = '#[test]\n' + optimized_rust_codes[-1]
                     extra_use_codes = ''
                     feedback_input_rust_func_code = optimized_rust_codes.copy()
-                    total_rust_code = "use crate::translation_utils::*;\n" + rust_items_code +'\n' + "\n".join(success_rust_func_code) + '\n' + '\n'.join(feedback_input_rust_func_code)
+                    total_rust_code = "use crate::utils::*;\n" + rust_items_code +'\n' + "\n".join(success_rust_func_code) + '\n' + '\n'.join(feedback_input_rust_func_code)
                     for use_code in use_codes:
                         if use_code not in total_rust_code:
                             extra_use_codes += use_code + '\n'
@@ -797,6 +805,30 @@ def process_files():
                     if translated_flags[depend_file][depend_func] == None:
                         translated_flags[depend_file][depend_func] = False
                 logging.info(f"测试函数 {test_func_info['name']} 翻译失败")
+
+    # 检查哪些函数没有翻译
+    for file_name, file_info in metadata.items():
+        for func_info in file_info['functions']:
+            if translated_flags[file_name][func_info['name']] == None:
+                logging.info(f"文件{file_name}的函数{func_info['name']}没有翻译")
+                rust_items = metadata[file_name]['rust_items'] + '\n\n'
+                rust_file_path = os.path.join(rust_code_dir, f"{os.path.splitext(os.path.basename(file_name.replace('-', '_')))[0]}.rs")
+                success,rust_code = convert_c_funcs_to_rust(
+                    file_name,
+                    func_info['name'],
+                    func_info,
+                    rust_items,
+                    rust_file_path,
+                    args.output_dir,
+                    metadata,
+                    Syntax_prompt_2,
+                    Syntax_example_input,
+                    Syntax_example_output
+                )
+                rust_signatures = re.findall(r'fn\s*([\s\S]*?){', rust_code)
+                if rust_signatures:
+                    func_info['rust_signature'] = rust_signatures[0]
+                func_info['rust_code'] = rust_code
 
     # Write back metadata to file
     with open('tool/c_metadata.json', 'w', encoding='utf-8') as f:
