@@ -1,5 +1,5 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+#![feature(extern_types, label_break_value)]
 extern "C" {
     pub type _Queue;
     fn __assert_fail(
@@ -86,6 +86,20 @@ pub unsafe extern "C" fn test_queue_push_head() {
             >(b"void test_queue_push_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2149: {
+        if queue_is_empty(queue) == 0 {} else {
+            __assert_fail(
+                b"!queue_is_empty(queue)\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                97 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_tail(queue) == &mut variable1 as *mut libc::c_int as QueueValue
     {} else {
@@ -99,6 +113,22 @@ pub unsafe extern "C" fn test_queue_push_head() {
             >(b"void test_queue_push_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2103: {
+        if queue_pop_tail(queue) == &mut variable1 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_tail(queue) == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                101 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_tail(queue) == &mut variable2 as *mut libc::c_int as QueueValue
     {} else {
@@ -112,6 +142,22 @@ pub unsafe extern "C" fn test_queue_push_head() {
             >(b"void test_queue_push_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2057: {
+        if queue_pop_tail(queue) == &mut variable2 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_tail(queue) == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                102 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_tail(queue) == &mut variable3 as *mut libc::c_int as QueueValue
     {} else {
@@ -125,6 +171,22 @@ pub unsafe extern "C" fn test_queue_push_head() {
             >(b"void test_queue_push_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2011: {
+        if queue_pop_tail(queue) == &mut variable3 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_tail(queue) == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                103 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_tail(queue) == &mut variable4 as *mut libc::c_int as QueueValue
     {} else {
@@ -138,6 +200,22 @@ pub unsafe extern "C" fn test_queue_push_head() {
             >(b"void test_queue_push_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1965: {
+        if queue_pop_tail(queue) == &mut variable4 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_tail(queue) == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                104 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_head(queue) == &mut variable4 as *mut libc::c_int as QueueValue
     {} else {
@@ -151,6 +229,22 @@ pub unsafe extern "C" fn test_queue_push_head() {
             >(b"void test_queue_push_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1919: {
+        if queue_pop_head(queue) == &mut variable4 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_head(queue) == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                108 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_head(queue) == &mut variable3 as *mut libc::c_int as QueueValue
     {} else {
@@ -164,6 +258,22 @@ pub unsafe extern "C" fn test_queue_push_head() {
             >(b"void test_queue_push_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1873: {
+        if queue_pop_head(queue) == &mut variable3 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_head(queue) == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                109 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_head(queue) == &mut variable2 as *mut libc::c_int as QueueValue
     {} else {
@@ -177,6 +287,22 @@ pub unsafe extern "C" fn test_queue_push_head() {
             >(b"void test_queue_push_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1827: {
+        if queue_pop_head(queue) == &mut variable2 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_head(queue) == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                110 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_head(queue) == &mut variable1 as *mut libc::c_int as QueueValue
     {} else {
@@ -190,6 +316,22 @@ pub unsafe extern "C" fn test_queue_push_head() {
             >(b"void test_queue_push_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1775: {
+        if queue_pop_head(queue) == &mut variable1 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_head(queue) == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                111 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_free(queue);
 }
@@ -208,6 +350,20 @@ pub unsafe extern "C" fn test_queue_pop_head() {
             >(b"void test_queue_pop_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2513: {
+        if (queue_pop_head(queue)).is_null() {} else {
+            __assert_fail(
+                b"queue_pop_head(queue) == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                133 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_queue_pop_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_free(queue);
     queue = generate_queue();
@@ -225,6 +381,22 @@ pub unsafe extern "C" fn test_queue_pop_head() {
                 >(b"void test_queue_pop_head(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2452: {
+            if queue_pop_head(queue) == &mut variable4 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_head(queue) == &variable4\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    142 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 31],
+                        &[libc::c_char; 31],
+                    >(b"void test_queue_pop_head(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_head(queue) == &mut variable3 as *mut libc::c_int as QueueValue
         {} else {
@@ -239,6 +411,22 @@ pub unsafe extern "C" fn test_queue_pop_head() {
                 >(b"void test_queue_pop_head(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2406: {
+            if queue_pop_head(queue) == &mut variable3 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_head(queue) == &variable3\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    143 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 31],
+                        &[libc::c_char; 31],
+                    >(b"void test_queue_pop_head(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_head(queue) == &mut variable2 as *mut libc::c_int as QueueValue
         {} else {
@@ -253,6 +441,22 @@ pub unsafe extern "C" fn test_queue_pop_head() {
                 >(b"void test_queue_pop_head(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2360: {
+            if queue_pop_head(queue) == &mut variable2 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_head(queue) == &variable2\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    144 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 31],
+                        &[libc::c_char; 31],
+                    >(b"void test_queue_pop_head(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_head(queue) == &mut variable1 as *mut libc::c_int as QueueValue
         {} else {
@@ -267,6 +471,22 @@ pub unsafe extern "C" fn test_queue_pop_head() {
                 >(b"void test_queue_pop_head(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2314: {
+            if queue_pop_head(queue) == &mut variable1 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_head(queue) == &variable1\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    145 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 31],
+                        &[libc::c_char; 31],
+                    >(b"void test_queue_pop_head(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
     }
     if (queue_pop_head(queue)).is_null() {} else {
@@ -280,6 +500,20 @@ pub unsafe extern "C" fn test_queue_pop_head() {
             >(b"void test_queue_pop_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2260: {
+        if (queue_pop_head(queue)).is_null() {} else {
+            __assert_fail(
+                b"queue_pop_head(queue) == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                148 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_queue_pop_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_free(queue);
 }
@@ -298,6 +532,20 @@ pub unsafe extern "C" fn test_queue_peek_head() {
             >(b"void test_queue_peek_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3020: {
+        if (queue_peek_head(queue)).is_null() {} else {
+            __assert_fail(
+                b"queue_peek_head(queue) == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                161 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_peek_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_free(queue);
     queue = generate_queue();
@@ -315,6 +563,22 @@ pub unsafe extern "C" fn test_queue_peek_head() {
                 >(b"void test_queue_peek_head(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2959: {
+            if queue_peek_head(queue) == &mut variable4 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_peek_head(queue) == &variable4\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    171 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_head(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_head(queue) == &mut variable4 as *mut libc::c_int as QueueValue
         {} else {
@@ -329,6 +593,22 @@ pub unsafe extern "C" fn test_queue_peek_head() {
                 >(b"void test_queue_peek_head(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2913: {
+            if queue_pop_head(queue) == &mut variable4 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_head(queue) == &variable4\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    172 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_head(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_peek_head(queue) == &mut variable3 as *mut libc::c_int as QueueValue
         {} else {
@@ -343,6 +623,22 @@ pub unsafe extern "C" fn test_queue_peek_head() {
                 >(b"void test_queue_peek_head(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2867: {
+            if queue_peek_head(queue) == &mut variable3 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_peek_head(queue) == &variable3\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    173 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_head(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_head(queue) == &mut variable3 as *mut libc::c_int as QueueValue
         {} else {
@@ -357,6 +653,22 @@ pub unsafe extern "C" fn test_queue_peek_head() {
                 >(b"void test_queue_peek_head(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2821: {
+            if queue_pop_head(queue) == &mut variable3 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_head(queue) == &variable3\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    174 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_head(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_peek_head(queue) == &mut variable2 as *mut libc::c_int as QueueValue
         {} else {
@@ -371,6 +683,22 @@ pub unsafe extern "C" fn test_queue_peek_head() {
                 >(b"void test_queue_peek_head(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2775: {
+            if queue_peek_head(queue) == &mut variable2 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_peek_head(queue) == &variable2\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    175 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_head(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_head(queue) == &mut variable2 as *mut libc::c_int as QueueValue
         {} else {
@@ -385,6 +713,22 @@ pub unsafe extern "C" fn test_queue_peek_head() {
                 >(b"void test_queue_peek_head(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2729: {
+            if queue_pop_head(queue) == &mut variable2 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_head(queue) == &variable2\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    176 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_head(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_peek_head(queue) == &mut variable1 as *mut libc::c_int as QueueValue
         {} else {
@@ -399,6 +743,22 @@ pub unsafe extern "C" fn test_queue_peek_head() {
                 >(b"void test_queue_peek_head(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2682: {
+            if queue_peek_head(queue) == &mut variable1 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_peek_head(queue) == &variable1\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    177 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_head(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_head(queue) == &mut variable1 as *mut libc::c_int as QueueValue
         {} else {
@@ -413,6 +773,22 @@ pub unsafe extern "C" fn test_queue_peek_head() {
                 >(b"void test_queue_peek_head(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2636: {
+            if queue_pop_head(queue) == &mut variable1 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_head(queue) == &variable1\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    178 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_head(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
     }
     if (queue_peek_head(queue)).is_null() {} else {
@@ -426,6 +802,20 @@ pub unsafe extern "C" fn test_queue_peek_head() {
             >(b"void test_queue_peek_head(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2580: {
+        if (queue_peek_head(queue)).is_null() {} else {
+            __assert_fail(
+                b"queue_peek_head(queue) == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                181 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_peek_head(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_free(queue);
 }
@@ -454,6 +844,20 @@ pub unsafe extern "C" fn test_queue_push_tail() {
             >(b"void test_queue_push_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3461: {
+        if queue_is_empty(queue) == 0 {} else {
+            __assert_fail(
+                b"!queue_is_empty(queue)\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                202 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_head(queue) == &mut variable1 as *mut libc::c_int as QueueValue
     {} else {
@@ -467,6 +871,22 @@ pub unsafe extern "C" fn test_queue_push_tail() {
             >(b"void test_queue_push_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3415: {
+        if queue_pop_head(queue) == &mut variable1 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_head(queue) == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                206 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_head(queue) == &mut variable2 as *mut libc::c_int as QueueValue
     {} else {
@@ -480,6 +900,22 @@ pub unsafe extern "C" fn test_queue_push_tail() {
             >(b"void test_queue_push_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3369: {
+        if queue_pop_head(queue) == &mut variable2 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_head(queue) == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                207 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_head(queue) == &mut variable3 as *mut libc::c_int as QueueValue
     {} else {
@@ -493,6 +929,22 @@ pub unsafe extern "C" fn test_queue_push_tail() {
             >(b"void test_queue_push_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3323: {
+        if queue_pop_head(queue) == &mut variable3 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_head(queue) == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                208 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_head(queue) == &mut variable4 as *mut libc::c_int as QueueValue
     {} else {
@@ -506,6 +958,22 @@ pub unsafe extern "C" fn test_queue_push_tail() {
             >(b"void test_queue_push_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3277: {
+        if queue_pop_head(queue) == &mut variable4 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_head(queue) == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                209 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_tail(queue) == &mut variable4 as *mut libc::c_int as QueueValue
     {} else {
@@ -519,6 +987,22 @@ pub unsafe extern "C" fn test_queue_push_tail() {
             >(b"void test_queue_push_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3231: {
+        if queue_pop_tail(queue) == &mut variable4 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_tail(queue) == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                213 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_tail(queue) == &mut variable3 as *mut libc::c_int as QueueValue
     {} else {
@@ -532,6 +1016,22 @@ pub unsafe extern "C" fn test_queue_push_tail() {
             >(b"void test_queue_push_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3185: {
+        if queue_pop_tail(queue) == &mut variable3 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_tail(queue) == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                214 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_tail(queue) == &mut variable2 as *mut libc::c_int as QueueValue
     {} else {
@@ -545,6 +1045,22 @@ pub unsafe extern "C" fn test_queue_push_tail() {
             >(b"void test_queue_push_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3139: {
+        if queue_pop_tail(queue) == &mut variable2 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_tail(queue) == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                215 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if queue_pop_tail(queue) == &mut variable1 as *mut libc::c_int as QueueValue
     {} else {
@@ -558,6 +1074,22 @@ pub unsafe extern "C" fn test_queue_push_tail() {
             >(b"void test_queue_push_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3093: {
+        if queue_pop_tail(queue) == &mut variable1 as *mut libc::c_int as QueueValue
+        {} else {
+            __assert_fail(
+                b"queue_pop_tail(queue) == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                216 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_push_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_free(queue);
 }
@@ -576,6 +1108,20 @@ pub unsafe extern "C" fn test_queue_pop_tail() {
             >(b"void test_queue_pop_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3821: {
+        if (queue_pop_tail(queue)).is_null() {} else {
+            __assert_fail(
+                b"queue_pop_tail(queue) == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                238 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_queue_pop_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_free(queue);
     queue = generate_queue();
@@ -593,6 +1139,22 @@ pub unsafe extern "C" fn test_queue_pop_tail() {
                 >(b"void test_queue_pop_tail(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3760: {
+            if queue_pop_tail(queue) == &mut variable1 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_tail(queue) == &variable1\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    247 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 31],
+                        &[libc::c_char; 31],
+                    >(b"void test_queue_pop_tail(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_tail(queue) == &mut variable2 as *mut libc::c_int as QueueValue
         {} else {
@@ -607,6 +1169,22 @@ pub unsafe extern "C" fn test_queue_pop_tail() {
                 >(b"void test_queue_pop_tail(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3714: {
+            if queue_pop_tail(queue) == &mut variable2 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_tail(queue) == &variable2\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    248 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 31],
+                        &[libc::c_char; 31],
+                    >(b"void test_queue_pop_tail(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_tail(queue) == &mut variable3 as *mut libc::c_int as QueueValue
         {} else {
@@ -621,6 +1199,22 @@ pub unsafe extern "C" fn test_queue_pop_tail() {
                 >(b"void test_queue_pop_tail(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3668: {
+            if queue_pop_tail(queue) == &mut variable3 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_tail(queue) == &variable3\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    249 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 31],
+                        &[libc::c_char; 31],
+                    >(b"void test_queue_pop_tail(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_tail(queue) == &mut variable4 as *mut libc::c_int as QueueValue
         {} else {
@@ -635,6 +1229,22 @@ pub unsafe extern "C" fn test_queue_pop_tail() {
                 >(b"void test_queue_pop_tail(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3622: {
+            if queue_pop_tail(queue) == &mut variable4 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_tail(queue) == &variable4\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    250 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 31],
+                        &[libc::c_char; 31],
+                    >(b"void test_queue_pop_tail(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
     }
     if (queue_pop_tail(queue)).is_null() {} else {
@@ -648,6 +1258,20 @@ pub unsafe extern "C" fn test_queue_pop_tail() {
             >(b"void test_queue_pop_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3570: {
+        if (queue_pop_tail(queue)).is_null() {} else {
+            __assert_fail(
+                b"queue_pop_tail(queue) == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                253 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_queue_pop_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_free(queue);
 }
@@ -666,6 +1290,20 @@ pub unsafe extern "C" fn test_queue_peek_tail() {
             >(b"void test_queue_peek_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4327: {
+        if (queue_peek_tail(queue)).is_null() {} else {
+            __assert_fail(
+                b"queue_peek_tail(queue) == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                266 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_peek_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_free(queue);
     queue = generate_queue();
@@ -683,6 +1321,22 @@ pub unsafe extern "C" fn test_queue_peek_tail() {
                 >(b"void test_queue_peek_tail(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_4266: {
+            if queue_peek_tail(queue) == &mut variable1 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_peek_tail(queue) == &variable1\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    276 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_tail(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_tail(queue) == &mut variable1 as *mut libc::c_int as QueueValue
         {} else {
@@ -697,6 +1351,22 @@ pub unsafe extern "C" fn test_queue_peek_tail() {
                 >(b"void test_queue_peek_tail(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_4220: {
+            if queue_pop_tail(queue) == &mut variable1 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_tail(queue) == &variable1\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    277 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_tail(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_peek_tail(queue) == &mut variable2 as *mut libc::c_int as QueueValue
         {} else {
@@ -711,6 +1381,22 @@ pub unsafe extern "C" fn test_queue_peek_tail() {
                 >(b"void test_queue_peek_tail(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_4174: {
+            if queue_peek_tail(queue) == &mut variable2 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_peek_tail(queue) == &variable2\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    278 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_tail(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_tail(queue) == &mut variable2 as *mut libc::c_int as QueueValue
         {} else {
@@ -725,6 +1411,22 @@ pub unsafe extern "C" fn test_queue_peek_tail() {
                 >(b"void test_queue_peek_tail(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_4128: {
+            if queue_pop_tail(queue) == &mut variable2 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_tail(queue) == &variable2\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    279 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_tail(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_peek_tail(queue) == &mut variable3 as *mut libc::c_int as QueueValue
         {} else {
@@ -739,6 +1441,22 @@ pub unsafe extern "C" fn test_queue_peek_tail() {
                 >(b"void test_queue_peek_tail(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_4082: {
+            if queue_peek_tail(queue) == &mut variable3 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_peek_tail(queue) == &variable3\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    280 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_tail(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_tail(queue) == &mut variable3 as *mut libc::c_int as QueueValue
         {} else {
@@ -753,6 +1471,22 @@ pub unsafe extern "C" fn test_queue_peek_tail() {
                 >(b"void test_queue_peek_tail(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_4036: {
+            if queue_pop_tail(queue) == &mut variable3 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_tail(queue) == &variable3\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    281 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_tail(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_peek_tail(queue) == &mut variable4 as *mut libc::c_int as QueueValue
         {} else {
@@ -767,6 +1501,22 @@ pub unsafe extern "C" fn test_queue_peek_tail() {
                 >(b"void test_queue_peek_tail(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3990: {
+            if queue_peek_tail(queue) == &mut variable4 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_peek_tail(queue) == &variable4\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    282 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_tail(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if queue_pop_tail(queue) == &mut variable4 as *mut libc::c_int as QueueValue
         {} else {
@@ -781,6 +1531,22 @@ pub unsafe extern "C" fn test_queue_peek_tail() {
                 >(b"void test_queue_peek_tail(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3944: {
+            if queue_pop_tail(queue) == &mut variable4 as *mut libc::c_int as QueueValue
+            {} else {
+                __assert_fail(
+                    b"queue_pop_tail(queue) == &variable4\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                    283 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_queue_peek_tail(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
     }
     if (queue_peek_tail(queue)).is_null() {} else {
@@ -794,6 +1560,20 @@ pub unsafe extern "C" fn test_queue_peek_tail() {
             >(b"void test_queue_peek_tail(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3888: {
+        if (queue_peek_tail(queue)).is_null() {} else {
+            __assert_fail(
+                b"queue_peek_tail(queue) == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                286 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_queue_peek_tail(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_free(queue);
 }
@@ -812,6 +1592,20 @@ pub unsafe extern "C" fn test_queue_is_empty() {
             >(b"void test_queue_is_empty(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4581: {
+        if queue_is_empty(queue) != 0 {} else {
+            __assert_fail(
+                b"queue_is_empty(queue)\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                297 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_queue_is_empty(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_push_head(queue, &mut variable1 as *mut libc::c_int as QueueValue);
     if queue_is_empty(queue) == 0 {} else {
@@ -825,6 +1619,20 @@ pub unsafe extern "C" fn test_queue_is_empty() {
             >(b"void test_queue_is_empty(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4533: {
+        if queue_is_empty(queue) == 0 {} else {
+            __assert_fail(
+                b"!queue_is_empty(queue)\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                301 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_queue_is_empty(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_pop_head(queue);
     if queue_is_empty(queue) != 0 {} else {
@@ -838,6 +1646,20 @@ pub unsafe extern "C" fn test_queue_is_empty() {
             >(b"void test_queue_is_empty(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4490: {
+        if queue_is_empty(queue) != 0 {} else {
+            __assert_fail(
+                b"queue_is_empty(queue)\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                305 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_queue_is_empty(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_push_tail(queue, &mut variable1 as *mut libc::c_int as QueueValue);
     if queue_is_empty(queue) == 0 {} else {
@@ -851,6 +1673,20 @@ pub unsafe extern "C" fn test_queue_is_empty() {
             >(b"void test_queue_is_empty(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4442: {
+        if queue_is_empty(queue) == 0 {} else {
+            __assert_fail(
+                b"!queue_is_empty(queue)\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                309 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_queue_is_empty(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_pop_tail(queue);
     if queue_is_empty(queue) != 0 {} else {
@@ -864,6 +1700,20 @@ pub unsafe extern "C" fn test_queue_is_empty() {
             >(b"void test_queue_is_empty(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4398: {
+        if queue_is_empty(queue) != 0 {} else {
+            __assert_fail(
+                b"queue_is_empty(queue)\0" as *const u8 as *const libc::c_char,
+                b"test/test-queue.c\0" as *const u8 as *const libc::c_char,
+                313 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_queue_is_empty(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     queue_free(queue);
 }

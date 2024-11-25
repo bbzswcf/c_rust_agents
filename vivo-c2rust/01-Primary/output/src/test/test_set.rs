@@ -1,19 +1,19 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+#![feature(extern_types, label_break_value)]
 extern "C" {
     pub type _Set;
     pub type _SetEntry;
     fn sprintf(_: *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     fn atoi(__nptr: *const libc::c_char) -> libc::c_int;
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
+    fn strdup(_: *const libc::c_char) -> *mut libc::c_char;
     fn __assert_fail(
         __assertion: *const libc::c_char,
         __file: *const libc::c_char,
         __line: libc::c_uint,
         __function: *const libc::c_char,
     ) -> !;
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
-    fn alloc_test_strdup(string: *const libc::c_char) -> *mut libc::c_char;
     fn run_tests(tests_0: *mut UnitTestFunction);
     fn set_new(hash_func: SetHashFunc, equal_func: SetEqualFunc) -> *mut Set;
     fn set_free(set: *mut Set);
@@ -83,7 +83,7 @@ pub unsafe extern "C" fn generate_set() -> *mut Set {
     i = 0 as libc::c_int as libc::c_uint;
     while i < 10000 as libc::c_int as libc::c_uint {
         sprintf(buf.as_mut_ptr(), b"%i\0" as *const u8 as *const libc::c_char, i);
-        value = alloc_test_strdup(buf.as_mut_ptr());
+        value = strdup(buf.as_mut_ptr());
         set_insert(set, value as SetValue);
         if set_num_entries(set) == i.wrapping_add(1 as libc::c_int as libc::c_uint)
         {} else {
@@ -97,13 +97,29 @@ pub unsafe extern "C" fn generate_set() -> *mut Set {
                 >(b"Set *generate_set(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2044: {
+            if set_num_entries(set) == i.wrapping_add(1 as libc::c_int as libc::c_uint)
+            {} else {
+                __assert_fail(
+                    b"set_num_entries(set) == i + 1\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    57 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 24],
+                        &[libc::c_char; 24],
+                    >(b"Set *generate_set(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = i.wrapping_add(1);
         i;
     }
     set_register_free_function(
         set,
-        Some(alloc_test_free as unsafe extern "C" fn(*mut libc::c_void) -> ()),
+        Some(free as unsafe extern "C" fn(*mut libc::c_void) -> ()),
     );
     return set;
 }
@@ -124,7 +140,7 @@ pub unsafe extern "C" fn test_set_new_free() {
     );
     set_register_free_function(
         set,
-        Some(alloc_test_free as unsafe extern "C" fn(*mut libc::c_void) -> ()),
+        Some(free as unsafe extern "C" fn(*mut libc::c_void) -> ()),
     );
     if !set.is_null() {} else {
         __assert_fail(
@@ -137,10 +153,24 @@ pub unsafe extern "C" fn test_set_new_free() {
             >(b"void test_set_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2209: {
+        if !set.is_null() {} else {
+            __assert_fail(
+                b"set != NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                75 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_set_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int;
     while i < 10000 as libc::c_int {
-        value = alloc_test_malloc(::core::mem::size_of::<libc::c_int>() as libc::c_ulong)
+        value = malloc(::core::mem::size_of::<libc::c_int>() as libc::c_ulong)
             as *mut libc::c_int;
         *value = i;
         set_insert(set, value as SetValue);
@@ -210,6 +240,20 @@ pub unsafe extern "C" fn test_set_insert() {
             >(b"void test_set_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2286: {
+        if set_num_entries(set) == 10 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"set_num_entries(set) == 10\0" as *const u8 as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                122 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 27],
+                    &[libc::c_char; 27],
+                >(b"void test_set_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     set_free(set);
 }
@@ -233,6 +277,20 @@ pub unsafe extern "C" fn test_set_query() {
                 >(b"void test_set_query(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2528: {
+            if set_query(set, buf.as_mut_ptr() as SetValue) != 0 as libc::c_int {} else {
+                __assert_fail(
+                    b"set_query(set, buf) != 0\0" as *const u8 as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    139 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 26],
+                        &[libc::c_char; 26],
+                    >(b"void test_set_query(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -250,6 +308,22 @@ pub unsafe extern "C" fn test_set_query() {
             >(b"void test_set_query(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2474: {
+        if set_query(set, b"-1\0" as *const u8 as *const libc::c_char as SetValue)
+            == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"set_query(set, \"-1\") == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                144 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 26],
+                    &[libc::c_char; 26],
+                >(b"void test_set_query(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if set_query(set, b"100001\0" as *const u8 as *const libc::c_char as SetValue)
         == 0 as libc::c_int
@@ -264,6 +338,22 @@ pub unsafe extern "C" fn test_set_query() {
             >(b"void test_set_query(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2424: {
+        if set_query(set, b"100001\0" as *const u8 as *const libc::c_char as SetValue)
+            == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"set_query(set, \"100001\") == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                145 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 26],
+                    &[libc::c_char; 26],
+                >(b"void test_set_query(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     set_free(set);
 }
@@ -286,6 +376,20 @@ pub unsafe extern "C" fn test_set_remove() {
             >(b"void test_set_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3079: {
+        if num_entries == 10000 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"num_entries == 10000\0" as *const u8 as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                160 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 27],
+                    &[libc::c_char; 27],
+                >(b"void test_set_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 4000 as libc::c_int;
     while i < 6000 as libc::c_int {
@@ -301,6 +405,20 @@ pub unsafe extern "C" fn test_set_remove() {
                 >(b"void test_set_remove(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3015: {
+            if set_query(set, buf.as_mut_ptr() as SetValue) != 0 as libc::c_int {} else {
+                __assert_fail(
+                    b"set_query(set, buf) != 0\0" as *const u8 as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    170 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 27],
+                        &[libc::c_char; 27],
+                    >(b"void test_set_remove(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if set_remove(set, buf.as_mut_ptr() as SetValue) != 0 as libc::c_int {} else {
             __assert_fail(
@@ -313,6 +431,21 @@ pub unsafe extern "C" fn test_set_remove() {
                 >(b"void test_set_remove(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2967: {
+            if set_remove(set, buf.as_mut_ptr() as SetValue) != 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"set_remove(set, buf) != 0\0" as *const u8 as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    174 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 27],
+                        &[libc::c_char; 27],
+                    >(b"void test_set_remove(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if set_num_entries(set)
             == num_entries.wrapping_sub(1 as libc::c_int as libc::c_uint)
@@ -328,6 +461,23 @@ pub unsafe extern "C" fn test_set_remove() {
                 >(b"void test_set_remove(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2916: {
+            if set_num_entries(set)
+                == num_entries.wrapping_sub(1 as libc::c_int as libc::c_uint)
+            {} else {
+                __assert_fail(
+                    b"set_num_entries(set) == num_entries - 1\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    178 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 27],
+                        &[libc::c_char; 27],
+                    >(b"void test_set_remove(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if set_query(set, buf.as_mut_ptr() as SetValue) == 0 as libc::c_int {} else {
             __assert_fail(
@@ -340,6 +490,20 @@ pub unsafe extern "C" fn test_set_remove() {
                 >(b"void test_set_remove(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2868: {
+            if set_query(set, buf.as_mut_ptr() as SetValue) == 0 as libc::c_int {} else {
+                __assert_fail(
+                    b"set_query(set, buf) == 0\0" as *const u8 as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    182 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 27],
+                        &[libc::c_char; 27],
+                    >(b"void test_set_remove(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         num_entries = num_entries.wrapping_sub(1);
         num_entries;
@@ -360,6 +524,21 @@ pub unsafe extern "C" fn test_set_remove() {
                 >(b"void test_set_remove(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2790: {
+            if set_remove(set, buf.as_mut_ptr() as SetValue) == 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"set_remove(set, buf) == 0\0" as *const u8 as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    192 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 27],
+                        &[libc::c_char; 27],
+                    >(b"void test_set_remove(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if set_num_entries(set) == num_entries {} else {
             __assert_fail(
@@ -373,6 +552,21 @@ pub unsafe extern "C" fn test_set_remove() {
                 >(b"void test_set_remove(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2746: {
+            if set_num_entries(set) == num_entries {} else {
+                __assert_fail(
+                    b"set_num_entries(set) == num_entries\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    193 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 27],
+                        &[libc::c_char; 27],
+                    >(b"void test_set_remove(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -391,6 +585,21 @@ pub unsafe extern "C" fn test_set_remove() {
                 >(b"void test_set_remove(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2673: {
+            if set_remove(set, buf.as_mut_ptr() as SetValue) == 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"set_remove(set, buf) == 0\0" as *const u8 as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    199 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 27],
+                        &[libc::c_char; 27],
+                    >(b"void test_set_remove(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if set_num_entries(set) == num_entries {} else {
             __assert_fail(
@@ -404,6 +613,21 @@ pub unsafe extern "C" fn test_set_remove() {
                 >(b"void test_set_remove(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2627: {
+            if set_num_entries(set) == num_entries {} else {
+                __assert_fail(
+                    b"set_num_entries(set) == num_entries\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    200 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 27],
+                        &[libc::c_char; 27],
+                    >(b"void test_set_remove(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -500,6 +724,21 @@ pub unsafe extern "C" fn test_set_union() {
             >(b"void test_set_union(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3253: {
+        if set_num_entries(result_set) == 11 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"set_num_entries(result_set) == 11\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                237 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 26],
+                    &[libc::c_char; 26],
+                >(b"void test_set_union(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int;
     while i < 11 as libc::c_int {
@@ -519,6 +758,26 @@ pub unsafe extern "C" fn test_set_union() {
                 >(b"void test_set_union(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3173: {
+            if set_query(
+                result_set,
+                &mut *result.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as SetValue,
+            ) != 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"set_query(result_set, &result[i]) != 0\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    240 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 26],
+                        &[libc::c_char; 26],
+                    >(b"void test_set_union(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -609,6 +868,21 @@ pub unsafe extern "C" fn test_set_intersection() {
             >(b"void test_set_intersection(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3511: {
+        if set_num_entries(result_set) == 3 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"set_num_entries(result_set) == 3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                300 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_set_intersection(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int;
     while i < 3 as libc::c_int {
@@ -628,6 +902,26 @@ pub unsafe extern "C" fn test_set_intersection() {
                 >(b"void test_set_intersection(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3439: {
+            if set_query(
+                result_set,
+                &mut *result.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as SetValue,
+            ) != 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"set_query(result_set, &result[i]) != 0\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    303 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 33],
+                        &[libc::c_char; 33],
+                    >(b"void test_set_intersection(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -676,12 +970,26 @@ pub unsafe extern "C" fn test_set_to_array() {
                 >(b"void test_set_to_array(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3693: {
+            if **array.offset(i as isize) == 1 as libc::c_int {} else {
+                __assert_fail(
+                    b"*array[i] == 1\0" as *const u8 as *const libc::c_char,
+                    b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                    345 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 29],
+                        &[libc::c_char; 29],
+                    >(b"void test_set_to_array(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         **array.offset(i as isize) = 0 as libc::c_int;
         i += 1;
         i;
     }
-    alloc_test_free(array as *mut libc::c_void);
+    free(array as *mut libc::c_void);
     set_free(set);
 }
 #[no_mangle]
@@ -712,6 +1020,21 @@ pub unsafe extern "C" fn test_set_iterating() {
             >(b"void test_set_iterating(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3926: {
+        if (set_iter_next(&mut iterator)).is_null() {} else {
+            __assert_fail(
+                b"set_iter_next(&iterator) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                380 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_set_iterating(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if count == 10000 as libc::c_int {} else {
         __assert_fail(
@@ -724,6 +1047,20 @@ pub unsafe extern "C" fn test_set_iterating() {
             >(b"void test_set_iterating(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3889: {
+        if count == 10000 as libc::c_int {} else {
+            __assert_fail(
+                b"count == 10000\0" as *const u8 as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                384 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_set_iterating(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     set_free(set);
     set = set_new(
@@ -748,6 +1085,21 @@ pub unsafe extern "C" fn test_set_iterating() {
             >(b"void test_set_iterating(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3823: {
+        if set_iter_has_more(&mut iterator) == 0 as libc::c_int {} else {
+            __assert_fail(
+                b"set_iter_has_more(&iterator) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                394 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_set_iterating(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     set_free(set);
 }
@@ -787,6 +1139,20 @@ pub unsafe extern "C" fn test_set_iterating_remove() {
             >(b"void test_set_iterating_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4115: {
+        if count == 10000 as libc::c_int {} else {
+            __assert_fail(
+                b"count == 10000\0" as *const u8 as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                438 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 37],
+                    &[libc::c_char; 37],
+                >(b"void test_set_iterating_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if removed == 100 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -799,6 +1165,20 @@ pub unsafe extern "C" fn test_set_iterating_remove() {
             >(b"void test_set_iterating_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4077: {
+        if removed == 100 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"removed == 100\0" as *const u8 as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                439 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 37],
+                    &[libc::c_char; 37],
+                >(b"void test_set_iterating_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if set_num_entries(set)
         == (10000 as libc::c_int as libc::c_uint).wrapping_sub(removed)
@@ -814,13 +1194,30 @@ pub unsafe extern "C" fn test_set_iterating_remove() {
             >(b"void test_set_iterating_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4025: {
+        if set_num_entries(set)
+            == (10000 as libc::c_int as libc::c_uint).wrapping_sub(removed)
+        {} else {
+            __assert_fail(
+                b"set_num_entries(set) == 10000 - removed\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                440 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 37],
+                    &[libc::c_char; 37],
+                >(b"void test_set_iterating_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     set_free(set);
 }
 #[no_mangle]
 pub unsafe extern "C" fn new_value(mut value: libc::c_int) -> *mut libc::c_int {
     let mut result: *mut libc::c_int = 0 as *mut libc::c_int;
-    result = alloc_test_malloc(::core::mem::size_of::<libc::c_int>() as libc::c_ulong)
+    result = malloc(::core::mem::size_of::<libc::c_int>() as libc::c_ulong)
         as *mut libc::c_int;
     *result = value;
     allocated_values += 1;
@@ -829,7 +1226,7 @@ pub unsafe extern "C" fn new_value(mut value: libc::c_int) -> *mut libc::c_int {
 }
 #[no_mangle]
 pub unsafe extern "C" fn free_value(mut value: *mut libc::c_void) {
-    alloc_test_free(value);
+    free(value);
     allocated_values -= 1;
     allocated_values;
 }
@@ -871,6 +1268,20 @@ pub unsafe extern "C" fn test_set_free_function() {
             >(b"void test_set_free_function(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4362: {
+        if allocated_values == 1000 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_values == 1000\0" as *const u8 as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                484 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_set_free_function(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 500 as libc::c_int;
     set_remove(set, &mut i as *mut libc::c_int as SetValue);
@@ -885,6 +1296,20 @@ pub unsafe extern "C" fn test_set_free_function() {
             >(b"void test_set_free_function(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4314: {
+        if allocated_values == 999 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_values == 999\0" as *const u8 as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                491 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_set_free_function(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     set_free(set);
     if allocated_values == 0 as libc::c_int {} else {
@@ -898,6 +1323,20 @@ pub unsafe extern "C" fn test_set_free_function() {
             >(b"void test_set_free_function(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4271: {
+        if allocated_values == 0 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_values == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-set.c\0" as *const u8 as *const libc::c_char,
+                497 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_set_free_function(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]

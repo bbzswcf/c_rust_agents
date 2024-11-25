@@ -1,9 +1,8 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
 }
-pub type size_t = libc::c_ulong;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _Queue {
@@ -23,8 +22,7 @@ pub type Queue = _Queue;
 #[no_mangle]
 pub unsafe extern "C" fn queue_new() -> *mut Queue {
     let mut queue: *mut Queue = 0 as *mut Queue;
-    queue = alloc_test_malloc(::core::mem::size_of::<Queue>() as libc::c_ulong)
-        as *mut Queue;
+    queue = malloc(::core::mem::size_of::<Queue>() as libc::c_ulong) as *mut Queue;
     if queue.is_null() {
         return 0 as *mut Queue;
     }
@@ -51,7 +49,7 @@ pub unsafe extern "C" fn queue_pop_head(mut queue: *mut Queue) -> QueueValue {
     } else {
         (*(*queue).head).prev = 0 as *mut QueueEntry;
     }
-    alloc_test_free(entry as *mut libc::c_void);
+    free(entry as *mut libc::c_void);
     return result;
 }
 #[no_mangle]
@@ -59,7 +57,7 @@ pub unsafe extern "C" fn queue_free(mut queue: *mut Queue) {
     while queue_is_empty(queue) == 0 {
         queue_pop_head(queue);
     }
-    alloc_test_free(queue as *mut libc::c_void);
+    free(queue as *mut libc::c_void);
 }
 #[no_mangle]
 pub unsafe extern "C" fn queue_push_head(
@@ -67,7 +65,7 @@ pub unsafe extern "C" fn queue_push_head(
     mut data: QueueValue,
 ) -> libc::c_int {
     let mut new_entry: *mut QueueEntry = 0 as *mut QueueEntry;
-    new_entry = alloc_test_malloc(::core::mem::size_of::<QueueEntry>() as libc::c_ulong)
+    new_entry = malloc(::core::mem::size_of::<QueueEntry>() as libc::c_ulong)
         as *mut QueueEntry;
     if new_entry.is_null() {
         return 0 as libc::c_int;
@@ -98,7 +96,7 @@ pub unsafe extern "C" fn queue_push_tail(
     mut data: QueueValue,
 ) -> libc::c_int {
     let mut new_entry: *mut QueueEntry = 0 as *mut QueueEntry;
-    new_entry = alloc_test_malloc(::core::mem::size_of::<QueueEntry>() as libc::c_ulong)
+    new_entry = malloc(::core::mem::size_of::<QueueEntry>() as libc::c_ulong)
         as *mut QueueEntry;
     if new_entry.is_null() {
         return 0 as libc::c_int;
@@ -130,7 +128,7 @@ pub unsafe extern "C" fn queue_pop_tail(mut queue: *mut Queue) -> QueueValue {
     } else {
         (*(*queue).tail).next = 0 as *mut QueueEntry;
     }
-    alloc_test_free(entry as *mut libc::c_void);
+    free(entry as *mut libc::c_void);
     return result;
 }
 #[no_mangle]

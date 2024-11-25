@@ -1,15 +1,15 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+#![feature(extern_types, label_break_value)]
 extern "C" {
     pub type _AVLTree;
     pub type _AVLTreeNode;
+    fn free(_: *mut libc::c_void);
     fn __assert_fail(
         __assertion: *const libc::c_char,
         __file: *const libc::c_char,
         __line: libc::c_uint,
         __function: *const libc::c_char,
     ) -> !;
-    fn alloc_test_free(ptr: *mut libc::c_void);
     fn run_tests(tests_0: *mut UnitTestFunction);
     fn avl_tree_new(compare_func: AVLTreeCompareFunc) -> *mut AVLTree;
     fn avl_tree_free(tree: *mut AVLTree);
@@ -96,6 +96,21 @@ pub unsafe extern "C" fn validate_subtree(mut node: *mut AVLTreeNode) -> libc::c
                 >(b"int validate_subtree(AVLTreeNode *)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2098: {
+            if avl_tree_node_parent(left_node) == node {} else {
+                __assert_fail(
+                    b"avl_tree_node_parent(left_node) == node\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                    102 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 36],
+                        &[libc::c_char; 36],
+                    >(b"int validate_subtree(AVLTreeNode *)\0"))
+                        .as_ptr(),
+                );
+            }
         };
     }
     if !right_node.is_null() {
@@ -111,6 +126,21 @@ pub unsafe extern "C" fn validate_subtree(mut node: *mut AVLTreeNode) -> libc::c
                 >(b"int validate_subtree(AVLTreeNode *)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2043: {
+            if avl_tree_node_parent(right_node) == node {} else {
+                __assert_fail(
+                    b"avl_tree_node_parent(right_node) == node\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                    105 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 36],
+                        &[libc::c_char; 36],
+                    >(b"int validate_subtree(AVLTreeNode *)\0"))
+                        .as_ptr(),
+                );
+            }
         };
     }
     left_height = validate_subtree(left_node);
@@ -126,6 +156,20 @@ pub unsafe extern "C" fn validate_subtree(mut node: *mut AVLTreeNode) -> libc::c
             >(b"int validate_subtree(AVLTreeNode *)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1981: {
+        if *key > counter {} else {
+            __assert_fail(
+                b"*key > counter\0" as *const u8 as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                117 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 36],
+                    &[libc::c_char; 36],
+                >(b"int validate_subtree(AVLTreeNode *)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     counter = *key;
     right_height = validate_subtree(right_node);
@@ -141,6 +185,21 @@ pub unsafe extern "C" fn validate_subtree(mut node: *mut AVLTreeNode) -> libc::c
             >(b"int validate_subtree(AVLTreeNode *)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1921: {
+        if avl_tree_subtree_height(left_node) == left_height {} else {
+            __assert_fail(
+                b"avl_tree_subtree_height(left_node) == left_height\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                125 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 36],
+                    &[libc::c_char; 36],
+                >(b"int validate_subtree(AVLTreeNode *)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if avl_tree_subtree_height(right_node) == right_height {} else {
         __assert_fail(
@@ -154,6 +213,21 @@ pub unsafe extern "C" fn validate_subtree(mut node: *mut AVLTreeNode) -> libc::c
             >(b"int validate_subtree(AVLTreeNode *)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1875: {
+        if avl_tree_subtree_height(right_node) == right_height {} else {
+            __assert_fail(
+                b"avl_tree_subtree_height(right_node) == right_height\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                126 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 36],
+                    &[libc::c_char; 36],
+                >(b"int validate_subtree(AVLTreeNode *)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if left_height - right_height < 2 as libc::c_int
         && right_height - left_height < 2 as libc::c_int
@@ -169,6 +243,23 @@ pub unsafe extern "C" fn validate_subtree(mut node: *mut AVLTreeNode) -> libc::c
             >(b"int validate_subtree(AVLTreeNode *)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1812: {
+        if left_height - right_height < 2 as libc::c_int
+            && right_height - left_height < 2 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"left_height - right_height < 2 && right_height - left_height < 2\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                131 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 36],
+                    &[libc::c_char; 36],
+                >(b"int validate_subtree(AVLTreeNode *)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if left_height > right_height {
         return left_height + 1 as libc::c_int
@@ -195,6 +286,21 @@ pub unsafe extern "C" fn validate_tree(mut tree: *mut AVLTree) {
                 >(b"void validate_tree(AVLTree *)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2200: {
+            if avl_tree_subtree_height(root_node) == height {} else {
+                __assert_fail(
+                    b"avl_tree_subtree_height(root_node) == height\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                    151 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 30],
+                        &[libc::c_char; 30],
+                    >(b"void validate_tree(AVLTree *)\0"))
+                        .as_ptr(),
+                );
+            }
         };
     }
     counter = -(1 as libc::c_int);
@@ -265,6 +371,20 @@ pub unsafe extern "C" fn test_avl_tree_new() {
             >(b"void test_avl_tree_new(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2443: {
+        if !tree.is_null() {} else {
+            __assert_fail(
+                b"tree != NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                181 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_avl_tree_new(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (avl_tree_root_node(tree)).is_null() {} else {
         __assert_fail(
@@ -277,6 +397,21 @@ pub unsafe extern "C" fn test_avl_tree_new() {
             >(b"void test_avl_tree_new(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2394: {
+        if (avl_tree_root_node(tree)).is_null() {} else {
+            __assert_fail(
+                b"avl_tree_root_node(tree) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                182 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_avl_tree_new(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if avl_tree_num_entries(tree) == 0 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -289,6 +424,20 @@ pub unsafe extern "C" fn test_avl_tree_new() {
             >(b"void test_avl_tree_new(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2347: {
+        if avl_tree_num_entries(tree) == 0 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"avl_tree_num_entries(tree) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                183 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_avl_tree_new(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     avl_tree_free(tree);
 }
@@ -337,6 +486,23 @@ pub unsafe extern "C" fn test_avl_tree_insert_lookup() {
                 >(b"void test_avl_tree_insert_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2816: {
+            if avl_tree_num_entries(tree)
+                == i.wrapping_add(1 as libc::c_int as libc::c_uint)
+            {} else {
+                __assert_fail(
+                    b"avl_tree_num_entries(tree) == i + 1\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                    213 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 39],
+                        &[libc::c_char; 39],
+                    >(b"void test_avl_tree_insert_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         validate_tree(tree);
         i = i.wrapping_add(1);
@@ -353,6 +519,21 @@ pub unsafe extern "C" fn test_avl_tree_insert_lookup() {
             >(b"void test_avl_tree_insert_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2755: {
+        if !(avl_tree_root_node(tree)).is_null() {} else {
+            __assert_fail(
+                b"avl_tree_root_node(tree) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                217 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_avl_tree_insert_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int as libc::c_uint;
     while i < 1000 as libc::c_int as libc::c_uint {
@@ -368,6 +549,20 @@ pub unsafe extern "C" fn test_avl_tree_insert_lookup() {
                 >(b"void test_avl_tree_insert_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2694: {
+            if !node.is_null() {} else {
+                __assert_fail(
+                    b"node != NULL\0" as *const u8 as *const libc::c_char,
+                    b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                    223 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 39],
+                        &[libc::c_char; 39],
+                    >(b"void test_avl_tree_insert_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         value = avl_tree_node_key(node) as *mut libc::c_int;
         if *value == i as libc::c_int {} else {
@@ -381,6 +576,20 @@ pub unsafe extern "C" fn test_avl_tree_insert_lookup() {
                 >(b"void test_avl_tree_insert_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2642: {
+            if *value == i as libc::c_int {} else {
+                __assert_fail(
+                    b"*value == (int) i\0" as *const u8 as *const libc::c_char,
+                    b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                    225 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 39],
+                        &[libc::c_char; 39],
+                    >(b"void test_avl_tree_insert_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         value = avl_tree_node_value(node) as *mut libc::c_int;
         if *value == i as libc::c_int {} else {
@@ -394,6 +603,20 @@ pub unsafe extern "C" fn test_avl_tree_insert_lookup() {
                 >(b"void test_avl_tree_insert_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2586: {
+            if *value == i as libc::c_int {} else {
+                __assert_fail(
+                    b"*value == (int) i\0" as *const u8 as *const libc::c_char,
+                    b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                    227 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 39],
+                        &[libc::c_char; 39],
+                    >(b"void test_avl_tree_insert_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = i.wrapping_add(1);
         i;
@@ -412,6 +635,23 @@ pub unsafe extern "C" fn test_avl_tree_insert_lookup() {
             >(b"void test_avl_tree_insert_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2513: {
+        if (avl_tree_lookup_node(tree, &mut i as *mut libc::c_uint as AVLTreeKey))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"avl_tree_lookup_node(tree, &i) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                233 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_avl_tree_insert_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     avl_tree_free(tree);
 }
@@ -469,6 +709,20 @@ pub unsafe extern "C" fn test_avl_tree_child() {
             >(b"void test_avl_tree_child(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3165: {
+        if *p == 2 as libc::c_int {} else {
+            __assert_fail(
+                b"*p == 2\0" as *const u8 as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                261 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_avl_tree_child(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     left = avl_tree_node_child(root, AVL_TREE_NODE_LEFT);
     p = avl_tree_node_value(left) as *mut libc::c_int;
@@ -483,6 +737,20 @@ pub unsafe extern "C" fn test_avl_tree_child() {
             >(b"void test_avl_tree_child(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3107: {
+        if *p == 1 as libc::c_int {} else {
+            __assert_fail(
+                b"*p == 1\0" as *const u8 as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                265 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_avl_tree_child(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     right = avl_tree_node_child(root, AVL_TREE_NODE_RIGHT);
     p = avl_tree_node_value(right) as *mut libc::c_int;
@@ -497,6 +765,20 @@ pub unsafe extern "C" fn test_avl_tree_child() {
             >(b"void test_avl_tree_child(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3047: {
+        if *p == 3 as libc::c_int {} else {
+            __assert_fail(
+                b"*p == 3\0" as *const u8 as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                269 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_avl_tree_child(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (avl_tree_node_child(root, 10000 as AVLTreeNodeSide)).is_null() {} else {
         __assert_fail(
@@ -510,6 +792,21 @@ pub unsafe extern "C" fn test_avl_tree_child() {
             >(b"void test_avl_tree_child(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2995: {
+        if (avl_tree_node_child(root, 10000 as AVLTreeNodeSide)).is_null() {} else {
+            __assert_fail(
+                b"avl_tree_node_child(root, 10000) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                273 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_avl_tree_child(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (avl_tree_node_child(root, 2 as AVLTreeNodeSide)).is_null() {} else {
         __assert_fail(
@@ -523,6 +820,21 @@ pub unsafe extern "C" fn test_avl_tree_child() {
             >(b"void test_avl_tree_child(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2940: {
+        if (avl_tree_node_child(root, 2 as AVLTreeNodeSide)).is_null() {} else {
+            __assert_fail(
+                b"avl_tree_node_child(root, 2) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                274 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_avl_tree_child(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     avl_tree_free(tree);
 }
@@ -572,6 +884,20 @@ pub unsafe extern "C" fn test_avl_tree_lookup() {
                 >(b"void test_avl_tree_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3543: {
+            if !value.is_null() {} else {
+                __assert_fail(
+                    b"value != NULL\0" as *const u8 as *const libc::c_char,
+                    b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                    332 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_avl_tree_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if *value == i {} else {
             __assert_fail(
@@ -584,6 +910,20 @@ pub unsafe extern "C" fn test_avl_tree_lookup() {
                 >(b"void test_avl_tree_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3499: {
+            if *value == i {} else {
+                __assert_fail(
+                    b"*value == i\0" as *const u8 as *const libc::c_char,
+                    b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                    333 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_avl_tree_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -601,6 +941,22 @@ pub unsafe extern "C" fn test_avl_tree_lookup() {
             >(b"void test_avl_tree_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3436: {
+        if (avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey)).is_null()
+        {} else {
+            __assert_fail(
+                b"avl_tree_lookup(tree, &i) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                339 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_avl_tree_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 1000 as libc::c_int + 1 as libc::c_int;
     if (avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey)).is_null()
@@ -615,6 +971,22 @@ pub unsafe extern "C" fn test_avl_tree_lookup() {
             >(b"void test_avl_tree_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3379: {
+        if (avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey)).is_null()
+        {} else {
+            __assert_fail(
+                b"avl_tree_lookup(tree, &i) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                341 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_avl_tree_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 8724897 as libc::c_int;
     if (avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey)).is_null()
@@ -629,6 +1001,22 @@ pub unsafe extern "C" fn test_avl_tree_lookup() {
             >(b"void test_avl_tree_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3321: {
+        if (avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey)).is_null()
+        {} else {
+            __assert_fail(
+                b"avl_tree_lookup(tree, &i) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                343 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_avl_tree_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     avl_tree_free(tree);
 }
@@ -656,6 +1044,22 @@ pub unsafe extern "C" fn test_avl_tree_remove() {
             >(b"void test_avl_tree_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3902: {
+        if avl_tree_remove(tree, &mut i as *mut libc::c_int as AVLTreeKey)
+            == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"avl_tree_remove(tree, &i) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                361 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_avl_tree_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = -(1 as libc::c_int);
     if avl_tree_remove(tree, &mut i as *mut libc::c_int as AVLTreeKey)
@@ -671,6 +1075,22 @@ pub unsafe extern "C" fn test_avl_tree_remove() {
             >(b"void test_avl_tree_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3849: {
+        if avl_tree_remove(tree, &mut i as *mut libc::c_int as AVLTreeKey)
+            == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"avl_tree_remove(tree, &i) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                363 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_avl_tree_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     expected_entries = 1000 as libc::c_int as libc::c_uint;
     x = 0 as libc::c_int;
@@ -695,6 +1115,26 @@ pub unsafe extern "C" fn test_avl_tree_remove() {
                         >(b"void test_avl_tree_remove(void)\0"))
                             .as_ptr(),
                     );
+                }
+                'c_3753: {
+                    if avl_tree_remove(
+                        tree,
+                        &mut value as *mut libc::c_int as AVLTreeKey,
+                    ) != 0 as libc::c_int
+                    {} else {
+                        __assert_fail(
+                            b"avl_tree_remove(tree, &value) != 0\0" as *const u8
+                                as *const libc::c_char,
+                            b"test/test-avl-tree.c\0" as *const u8
+                                as *const libc::c_char,
+                            376 as libc::c_int as libc::c_uint,
+                            (*::core::mem::transmute::<
+                                &[u8; 32],
+                                &[libc::c_char; 32],
+                            >(b"void test_avl_tree_remove(void)\0"))
+                                .as_ptr(),
+                        );
+                    }
                 };
                 validate_tree(tree);
                 expected_entries = expected_entries
@@ -711,6 +1151,22 @@ pub unsafe extern "C" fn test_avl_tree_remove() {
                         >(b"void test_avl_tree_remove(void)\0"))
                             .as_ptr(),
                     );
+                }
+                'c_3698: {
+                    if avl_tree_num_entries(tree) == expected_entries {} else {
+                        __assert_fail(
+                            b"avl_tree_num_entries(tree) == expected_entries\0"
+                                as *const u8 as *const libc::c_char,
+                            b"test/test-avl-tree.c\0" as *const u8
+                                as *const libc::c_char,
+                            380 as libc::c_int as libc::c_uint,
+                            (*::core::mem::transmute::<
+                                &[u8; 32],
+                                &[libc::c_char; 32],
+                            >(b"void test_avl_tree_remove(void)\0"))
+                                .as_ptr(),
+                        );
+                    }
                 };
                 z += 1;
                 z;
@@ -732,6 +1188,21 @@ pub unsafe extern "C" fn test_avl_tree_remove() {
             >(b"void test_avl_tree_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3631: {
+        if (avl_tree_root_node(tree)).is_null() {} else {
+            __assert_fail(
+                b"avl_tree_root_node(tree) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                387 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_avl_tree_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     avl_tree_free(tree);
 }
@@ -807,6 +1278,21 @@ pub unsafe extern "C" fn test_avl_tree_to_array() {
             >(b"void test_avl_tree_to_array(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4107: {
+        if avl_tree_num_entries(tree) == num_entries {} else {
+            __assert_fail(
+                b"avl_tree_num_entries(tree) == num_entries\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                409 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_avl_tree_to_array(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     array = avl_tree_to_array(tree) as *mut *mut libc::c_int;
     i = 0 as libc::c_int as libc::c_uint;
@@ -822,11 +1308,26 @@ pub unsafe extern "C" fn test_avl_tree_to_array() {
                 >(b"void test_avl_tree_to_array(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3995: {
+            if **array.offset(i as isize) == sorted[i as usize] {} else {
+                __assert_fail(
+                    b"*array[i] == sorted[i]\0" as *const u8 as *const libc::c_char,
+                    b"test/test-avl-tree.c\0" as *const u8 as *const libc::c_char,
+                    416 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 34],
+                        &[libc::c_char; 34],
+                    >(b"void test_avl_tree_to_array(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = i.wrapping_add(1);
         i;
     }
-    alloc_test_free(array as *mut libc::c_void);
+    free(array as *mut libc::c_void);
+    avl_tree_free(tree);
 }
 static mut tests: [UnitTestFunction; 8] = unsafe {
     [

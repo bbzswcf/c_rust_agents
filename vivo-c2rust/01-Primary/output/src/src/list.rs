@@ -1,9 +1,8 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
 }
-pub type size_t = libc::c_ulong;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _ListEntry {
@@ -33,7 +32,7 @@ pub unsafe extern "C" fn list_free(mut list: *mut ListEntry) {
     while !entry.is_null() {
         let mut next: *mut ListEntry = 0 as *mut ListEntry;
         next = (*entry).next;
-        alloc_test_free(entry as *mut libc::c_void);
+        free(entry as *mut libc::c_void);
         entry = next;
     }
 }
@@ -46,7 +45,7 @@ pub unsafe extern "C" fn list_prepend(
     if list.is_null() {
         return 0 as *mut ListEntry;
     }
-    newentry = alloc_test_malloc(::core::mem::size_of::<ListEntry>() as libc::c_ulong)
+    newentry = malloc(::core::mem::size_of::<ListEntry>() as libc::c_ulong)
         as *mut ListEntry;
     if newentry.is_null() {
         return 0 as *mut ListEntry;
@@ -70,7 +69,7 @@ pub unsafe extern "C" fn list_append(
     if list.is_null() {
         return 0 as *mut ListEntry;
     }
-    newentry = alloc_test_malloc(::core::mem::size_of::<ListEntry>() as libc::c_ulong)
+    newentry = malloc(::core::mem::size_of::<ListEntry>() as libc::c_ulong)
         as *mut ListEntry;
     if newentry.is_null() {
         return 0 as *mut ListEntry;
@@ -168,7 +167,7 @@ pub unsafe extern "C" fn list_to_array(mut list: *mut ListEntry) -> *mut ListVal
     let mut length: libc::c_uint = 0;
     let mut i: libc::c_uint = 0;
     length = list_length(list);
-    array = alloc_test_malloc(
+    array = malloc(
         (::core::mem::size_of::<ListValue>() as libc::c_ulong)
             .wrapping_mul(length as libc::c_ulong),
     ) as *mut ListValue;
@@ -205,7 +204,7 @@ pub unsafe extern "C" fn list_remove_entry(
             (*(*entry).next).prev = (*entry).prev;
         }
     }
-    alloc_test_free(entry as *mut libc::c_void);
+    free(entry as *mut libc::c_void);
     return 1 as libc::c_int;
 }
 #[no_mangle]
@@ -233,7 +232,7 @@ pub unsafe extern "C" fn list_remove_data(
             if !((*rover).next).is_null() {
                 (*(*rover).next).prev = (*rover).prev;
             }
-            alloc_test_free(rover as *mut libc::c_void);
+            free(rover as *mut libc::c_void);
             entries_removed = entries_removed.wrapping_add(1);
             entries_removed;
         }
@@ -362,7 +361,7 @@ pub unsafe extern "C" fn list_iter_remove(mut iter: *mut ListIterator) {
         if !((*(*iter).current).next).is_null() {
             (*(*(*iter).current).next).prev = (*(*iter).current).prev;
         }
-        alloc_test_free((*iter).current as *mut libc::c_void);
+        free((*iter).current as *mut libc::c_void);
         (*iter).current = 0 as *mut ListEntry;
     }
 }

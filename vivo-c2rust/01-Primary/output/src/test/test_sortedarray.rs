@@ -1,16 +1,16 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+#![feature(extern_types, label_break_value)]
 extern "C" {
     pub type _SortedArray;
     fn rand() -> libc::c_int;
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
     fn __assert_fail(
         __assertion: *const libc::c_char,
         __file: *const libc::c_char,
         __line: libc::c_uint,
         __function: *const libc::c_char,
     ) -> !;
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
     fn run_tests(tests_0: *mut UnitTestFunction);
     fn int_equal(
         location1: *mut libc::c_void,
@@ -46,7 +46,6 @@ extern "C" {
         data: SortedArrayValue,
     ) -> libc::c_int;
 }
-pub type size_t = libc::c_ulong;
 pub type UnitTestFunction = Option::<unsafe extern "C" fn() -> ()>;
 pub type SortedArrayValue = *mut libc::c_void;
 pub type SortedArray = _SortedArray;
@@ -80,6 +79,28 @@ pub unsafe extern "C" fn check_sorted_prop(mut sortedarray: *mut SortedArray) {
                 >(b"void check_sorted_prop(SortedArray *)\0"))
                     .as_ptr(),
             );
+        }
+        'c_1842: {
+            if int_compare(
+                sortedarray_get(
+                    sortedarray,
+                    i.wrapping_sub(1 as libc::c_int as libc::c_uint),
+                ) as *mut libc::c_void,
+                sortedarray_get(sortedarray, i) as *mut libc::c_void,
+            ) <= 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"int_compare( sortedarray_get(sortedarray, i-1), sortedarray_get(sortedarray, i)) <= 0\0"
+                        as *const u8 as *const libc::c_char,
+                    b"test/test-sortedarray.c\0" as *const u8 as *const libc::c_char,
+                    45 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 38],
+                        &[libc::c_char; 38],
+                    >(b"void check_sorted_prop(SortedArray *)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = i.wrapping_add(1);
         i;
@@ -92,7 +113,7 @@ pub unsafe extern "C" fn free_sorted_ints(mut sortedarray: *mut SortedArray) {
     while i < sortedarray_length(sortedarray) {
         let mut pi: *mut libc::c_int = sortedarray_get(sortedarray, i)
             as *mut libc::c_int;
-        alloc_test_free(pi as *mut libc::c_void);
+        free(pi as *mut libc::c_void);
         i = i.wrapping_add(1);
         i;
     }
@@ -139,7 +160,7 @@ pub unsafe extern "C" fn generate_sortedarray_equ(
     );
     i = 0 as libc::c_int as libc::c_uint;
     while i < 20 as libc::c_int as libc::c_uint {
-        let mut pi: *mut libc::c_int = alloc_test_malloc(
+        let mut pi: *mut libc::c_int = malloc(
             ::core::mem::size_of::<libc::c_int>() as libc::c_ulong,
         ) as *mut libc::c_int;
         *pi = array[i as usize];
@@ -192,6 +213,20 @@ pub unsafe extern "C" fn test_sortedarray_new_free() {
             >(b"void test_sortedarray_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2114: {
+        if !sortedarray.is_null() {} else {
+            __assert_fail(
+                b"sortedarray != NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-sortedarray.c\0" as *const u8 as *const libc::c_char,
+                91 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 37],
+                    &[libc::c_char; 37],
+                >(b"void test_sortedarray_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     sortedarray_free(sortedarray);
     sortedarray_free(0 as *mut SortedArray);
@@ -205,7 +240,7 @@ pub unsafe extern "C" fn test_sortedarray_insert() {
         let mut i_0: libc::c_int = (rand() as libc::c_float
             / 2147483647 as libc::c_int as libc::c_float
             * 100 as libc::c_int as libc::c_float) as libc::c_int;
-        let mut pi: *mut libc::c_int = alloc_test_malloc(
+        let mut pi: *mut libc::c_int = malloc(
             ::core::mem::size_of::<libc::c_int>() as libc::c_ulong,
         ) as *mut libc::c_int;
         *pi = i_0;
@@ -224,7 +259,7 @@ pub unsafe extern "C" fn test_sortedarray_remove() {
         (15 as libc::c_int + 1 as libc::c_int) as libc::c_uint,
     ) as *mut libc::c_int;
     let mut i: libc::c_int = *ip;
-    alloc_test_free(
+    free(
         sortedarray_get(sortedarray, 15 as libc::c_int as libc::c_uint)
             as *mut libc::c_int as *mut libc::c_void,
     );
@@ -243,6 +278,23 @@ pub unsafe extern "C" fn test_sortedarray_remove() {
             >(b"void test_sortedarray_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2270: {
+        if *(sortedarray_get(sortedarray, 15 as libc::c_int as libc::c_uint)
+            as *mut libc::c_int) == i
+        {} else {
+            __assert_fail(
+                b"*((int*) sortedarray_get(sortedarray, TEST_REMOVE_EL)) == i\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-sortedarray.c\0" as *const u8 as *const libc::c_char,
+                131 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_sortedarray_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     check_sorted_prop(sortedarray);
     free_sorted_ints(sortedarray);
@@ -264,7 +316,7 @@ pub unsafe extern "C" fn test_sortedarray_remove_range() {
     }
     i = 0 as libc::c_int as libc::c_uint;
     while i < 4 as libc::c_int as libc::c_uint {
-        alloc_test_free(
+        free(
             sortedarray_get(
                 sortedarray,
                 (7 as libc::c_int as libc::c_uint).wrapping_add(i),
@@ -296,6 +348,25 @@ pub unsafe extern "C" fn test_sortedarray_remove_range() {
                 >(b"void test_sortedarray_remove_range(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2395: {
+            if *(sortedarray_get(
+                sortedarray,
+                (7 as libc::c_int as libc::c_uint).wrapping_add(i),
+            ) as *mut libc::c_int) == new[i as usize]
+            {} else {
+                __assert_fail(
+                    b"*((int*) sortedarray_get(sortedarray, TEST_REMOVE_RANGE + i)) == new[i]\0"
+                        as *const u8 as *const libc::c_char,
+                    b"test/test-sortedarray.c\0" as *const u8 as *const libc::c_char,
+                    161 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 41],
+                        &[libc::c_char; 41],
+                    >(b"void test_sortedarray_remove_range(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = i.wrapping_add(1);
         i;
@@ -324,6 +395,20 @@ pub unsafe extern "C" fn test_sortedarray_index_of() {
                 >(b"void test_sortedarray_index_of(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2670: {
+            if r >= 0 as libc::c_int {} else {
+                __assert_fail(
+                    b"r >= 0\0" as *const u8 as *const libc::c_char,
+                    b"test/test-sortedarray.c\0" as *const u8 as *const libc::c_char,
+                    175 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 37],
+                        &[libc::c_char; 37],
+                    >(b"void test_sortedarray_index_of(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if *(sortedarray_get(sortedarray, r as libc::c_uint) as *mut libc::c_int)
             == *(sortedarray_get(sortedarray, i) as *mut libc::c_int)
@@ -339,6 +424,23 @@ pub unsafe extern "C" fn test_sortedarray_index_of() {
                 >(b"void test_sortedarray_index_of(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2578: {
+            if *(sortedarray_get(sortedarray, r as libc::c_uint) as *mut libc::c_int)
+                == *(sortedarray_get(sortedarray, i) as *mut libc::c_int)
+            {} else {
+                __assert_fail(
+                    b"*((int*) sortedarray_get(sortedarray,(unsigned int) r)) == *((int*) sortedarray_get(sortedarray, i))\0"
+                        as *const u8 as *const libc::c_char,
+                    b"test/test-sortedarray.c\0" as *const u8 as *const libc::c_char,
+                    177 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 37],
+                        &[libc::c_char; 37],
+                    >(b"void test_sortedarray_index_of(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = i.wrapping_add(1);
         i;
@@ -380,6 +482,20 @@ pub unsafe extern "C" fn test_sortedarray_index_of_equ_key() {
                 >(b"void test_sortedarray_index_of_equ_key(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2808: {
+            if r >= 0 as libc::c_int {} else {
+                __assert_fail(
+                    b"r >= 0\0" as *const u8 as *const libc::c_char,
+                    b"test/test-sortedarray.c\0" as *const u8 as *const libc::c_char,
+                    197 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 45],
+                        &[libc::c_char; 45],
+                    >(b"void test_sortedarray_index_of_equ_key(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if i == r as libc::c_uint {} else {
             __assert_fail(
@@ -392,6 +508,20 @@ pub unsafe extern "C" fn test_sortedarray_index_of_equ_key() {
                 >(b"void test_sortedarray_index_of_equ_key(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2751: {
+            if i == r as libc::c_uint {} else {
+                __assert_fail(
+                    b"i == (unsigned int) r\0" as *const u8 as *const libc::c_char,
+                    b"test/test-sortedarray.c\0" as *const u8 as *const libc::c_char,
+                    198 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 45],
+                        &[libc::c_char; 45],
+                    >(b"void test_sortedarray_index_of_equ_key(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = i.wrapping_add(1);
         i;
@@ -416,6 +546,21 @@ pub unsafe extern "C" fn test_sortedarray_get() {
                 >(b"void test_sortedarray_get(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2951: {
+            if sortedarray_get(arr, i) == sortedarray_get(arr, i) {} else {
+                __assert_fail(
+                    b"sortedarray_get(arr, i) == sortedarray_get(arr, i)\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-sortedarray.c\0" as *const u8 as *const libc::c_char,
+                    210 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_sortedarray_get(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if *(sortedarray_get(arr, i) as *mut libc::c_int)
             == *(sortedarray_get(arr, i) as *mut libc::c_int)
@@ -431,6 +576,23 @@ pub unsafe extern "C" fn test_sortedarray_get() {
                 >(b"void test_sortedarray_get(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2874: {
+            if *(sortedarray_get(arr, i) as *mut libc::c_int)
+                == *(sortedarray_get(arr, i) as *mut libc::c_int)
+            {} else {
+                __assert_fail(
+                    b"*((int*) sortedarray_get(arr, i)) == *((int*) sortedarray_get(arr, i))\0"
+                        as *const u8 as *const libc::c_char,
+                    b"test/test-sortedarray.c\0" as *const u8 as *const libc::c_char,
+                    212 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_sortedarray_get(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = i.wrapping_add(1);
         i;

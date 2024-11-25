@@ -1,20 +1,20 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+#![feature(extern_types, label_break_value)]
 extern "C" {
     pub type _HashTable;
     pub type _HashTableEntry;
     fn sprintf(_: *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     fn atoi(__nptr: *const libc::c_char) -> libc::c_int;
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
     fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
+    fn strdup(_: *const libc::c_char) -> *mut libc::c_char;
     fn __assert_fail(
         __assertion: *const libc::c_char,
         __file: *const libc::c_char,
         __line: libc::c_uint,
         __function: *const libc::c_char,
     ) -> !;
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
-    fn alloc_test_strdup(string: *const libc::c_char) -> *mut libc::c_char;
     fn run_tests(tests_0: *mut UnitTestFunction);
     fn hash_table_new(
         hash_func: HashTableHashFunc,
@@ -51,7 +51,6 @@ extern "C" {
         string2: *mut libc::c_void,
     ) -> libc::c_int;
 }
-pub type size_t = libc::c_ulong;
 pub type UnitTestFunction = Option::<unsafe extern "C" fn() -> ()>;
 pub type HashTable = _HashTable;
 #[derive(Copy, Clone)]
@@ -111,7 +110,7 @@ pub unsafe extern "C" fn generate_hash_table() -> *mut HashTable {
     i = 0 as libc::c_int;
     while i < 10000 as libc::c_int {
         sprintf(buf.as_mut_ptr(), b"%i\0" as *const u8 as *const libc::c_char, i);
-        value = alloc_test_strdup(buf.as_mut_ptr());
+        value = strdup(buf.as_mut_ptr());
         hash_table_insert(hash_table, value as HashTableKey, value as HashTableValue);
         i += 1;
         i;
@@ -119,7 +118,7 @@ pub unsafe extern "C" fn generate_hash_table() -> *mut HashTable {
     hash_table_register_free_functions(
         hash_table,
         None,
-        Some(alloc_test_free as unsafe extern "C" fn(*mut libc::c_void) -> ()),
+        Some(free as unsafe extern "C" fn(*mut libc::c_void) -> ()),
     );
     return hash_table;
 }
@@ -147,6 +146,20 @@ pub unsafe extern "C" fn test_hash_table_new_free() {
             >(b"void test_hash_table_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2178: {
+        if !hash_table.is_null() {} else {
+            __assert_fail(
+                b"hash_table != NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                82 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 36],
+                    &[libc::c_char; 36],
+                >(b"void test_hash_table_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     hash_table_insert(
         hash_table,
@@ -190,6 +203,22 @@ pub unsafe extern "C" fn test_hash_table_insert_lookup() {
             >(b"void test_hash_table_insert_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2554: {
+        if hash_table_num_entries(hash_table) == 10000 as libc::c_int as libc::c_uint
+        {} else {
+            __assert_fail(
+                b"hash_table_num_entries(hash_table) == NUM_TEST_VALUES\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                121 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 41],
+                    &[libc::c_char; 41],
+                >(b"void test_hash_table_insert_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int;
     while i < 10000 as libc::c_int {
@@ -207,6 +236,20 @@ pub unsafe extern "C" fn test_hash_table_insert_lookup() {
                 >(b"void test_hash_table_insert_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2475: {
+            if strcmp(value, buf.as_mut_ptr()) == 0 as libc::c_int {} else {
+                __assert_fail(
+                    b"strcmp(value, buf) == 0\0" as *const u8 as *const libc::c_char,
+                    b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                    129 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 41],
+                        &[libc::c_char; 41],
+                    >(b"void test_hash_table_insert_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -229,6 +272,22 @@ pub unsafe extern "C" fn test_hash_table_insert_lookup() {
             >(b"void test_hash_table_insert_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2407: {
+        if (hash_table_lookup(hash_table, buf.as_mut_ptr() as HashTableKey)).is_null()
+        {} else {
+            __assert_fail(
+                b"hash_table_lookup(hash_table, buf) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                135 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 41],
+                    &[libc::c_char; 41],
+                >(b"void test_hash_table_insert_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     sprintf(
         buf.as_mut_ptr(),
@@ -248,6 +307,22 @@ pub unsafe extern "C" fn test_hash_table_insert_lookup() {
             >(b"void test_hash_table_insert_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2346: {
+        if (hash_table_lookup(hash_table, buf.as_mut_ptr() as HashTableKey)).is_null()
+        {} else {
+            __assert_fail(
+                b"hash_table_lookup(hash_table, buf) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                137 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 41],
+                    &[libc::c_char; 41],
+                >(b"void test_hash_table_insert_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     sprintf(
         buf.as_mut_ptr(),
@@ -257,8 +332,7 @@ pub unsafe extern "C" fn test_hash_table_insert_lookup() {
     hash_table_insert(
         hash_table,
         buf.as_mut_ptr() as HashTableKey,
-        alloc_test_strdup(b"hello world\0" as *const u8 as *const libc::c_char)
-            as HashTableValue,
+        strdup(b"hello world\0" as *const u8 as *const libc::c_char) as HashTableValue,
     );
     value = hash_table_lookup(hash_table, buf.as_mut_ptr() as HashTableKey)
         as *mut libc::c_char;
@@ -275,6 +349,23 @@ pub unsafe extern "C" fn test_hash_table_insert_lookup() {
             >(b"void test_hash_table_insert_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2258: {
+        if strcmp(value, b"hello world\0" as *const u8 as *const libc::c_char)
+            == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"strcmp(value, \"hello world\") == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                144 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 41],
+                    &[libc::c_char; 41],
+                >(b"void test_hash_table_insert_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     hash_table_free(hash_table);
 }
@@ -296,6 +387,22 @@ pub unsafe extern "C" fn test_hash_table_remove() {
             >(b"void test_hash_table_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2854: {
+        if hash_table_num_entries(hash_table) == 10000 as libc::c_int as libc::c_uint
+        {} else {
+            __assert_fail(
+                b"hash_table_num_entries(hash_table) == NUM_TEST_VALUES\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                156 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_hash_table_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     sprintf(
         buf.as_mut_ptr(),
@@ -315,6 +422,22 @@ pub unsafe extern "C" fn test_hash_table_remove() {
             >(b"void test_hash_table_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2794: {
+        if !(hash_table_lookup(hash_table, buf.as_mut_ptr() as HashTableKey)).is_null()
+        {} else {
+            __assert_fail(
+                b"hash_table_lookup(hash_table, buf) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                158 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_hash_table_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     hash_table_remove(hash_table, buf.as_mut_ptr() as HashTableKey);
     if hash_table_num_entries(hash_table) == 9999 as libc::c_int as libc::c_uint
@@ -330,6 +453,22 @@ pub unsafe extern "C" fn test_hash_table_remove() {
             >(b"void test_hash_table_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2742: {
+        if hash_table_num_entries(hash_table) == 9999 as libc::c_int as libc::c_uint
+        {} else {
+            __assert_fail(
+                b"hash_table_num_entries(hash_table) == 9999\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                166 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_hash_table_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (hash_table_lookup(hash_table, buf.as_mut_ptr() as HashTableKey)).is_null()
     {} else {
@@ -344,6 +483,22 @@ pub unsafe extern "C" fn test_hash_table_remove() {
             >(b"void test_hash_table_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2690: {
+        if (hash_table_lookup(hash_table, buf.as_mut_ptr() as HashTableKey)).is_null()
+        {} else {
+            __assert_fail(
+                b"hash_table_lookup(hash_table, buf) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                170 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_hash_table_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     sprintf(
         buf.as_mut_ptr(),
@@ -364,6 +519,22 @@ pub unsafe extern "C" fn test_hash_table_remove() {
             >(b"void test_hash_table_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2627: {
+        if hash_table_num_entries(hash_table) == 9999 as libc::c_int as libc::c_uint
+        {} else {
+            __assert_fail(
+                b"hash_table_num_entries(hash_table) == 9999\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                177 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_hash_table_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     hash_table_free(hash_table);
 }
@@ -395,6 +566,20 @@ pub unsafe extern "C" fn test_hash_table_iterating() {
             >(b"void test_hash_table_iterating(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3043: {
+        if count == 10000 as libc::c_int {} else {
+            __assert_fail(
+                b"count == NUM_TEST_VALUES\0" as *const u8 as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                202 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 37],
+                    &[libc::c_char; 37],
+                >(b"void test_hash_table_iterating(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     let mut pair: HashTablePair = hash_table_iter_next(&mut iterator);
     if (pair.value).is_null() {} else {
@@ -408,6 +593,20 @@ pub unsafe extern "C" fn test_hash_table_iterating() {
             >(b"void test_hash_table_iterating(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2993: {
+        if (pair.value).is_null() {} else {
+            __assert_fail(
+                b"pair.value == HASH_TABLE_NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                207 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 37],
+                    &[libc::c_char; 37],
+                >(b"void test_hash_table_iterating(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     hash_table_free(hash_table);
     hash_table = hash_table_new(
@@ -433,6 +632,21 @@ pub unsafe extern "C" fn test_hash_table_iterating() {
             >(b"void test_hash_table_iterating(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2926: {
+        if hash_table_iter_has_more(&mut iterator) == 0 as libc::c_int {} else {
+            __assert_fail(
+                b"hash_table_iter_has_more(&iterator) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                217 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 37],
+                    &[libc::c_char; 37],
+                >(b"void test_hash_table_iterating(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     hash_table_free(hash_table);
 }
@@ -479,6 +693,20 @@ pub unsafe extern "C" fn test_hash_table_iterating_remove() {
             >(b"void test_hash_table_iterating_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3365: {
+        if removed == 100 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"removed == 100\0" as *const u8 as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                265 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 44],
+                    &[libc::c_char; 44],
+                >(b"void test_hash_table_iterating_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if count == 10000 as libc::c_int {} else {
         __assert_fail(
@@ -491,6 +719,20 @@ pub unsafe extern "C" fn test_hash_table_iterating_remove() {
             >(b"void test_hash_table_iterating_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3328: {
+        if count == 10000 as libc::c_int {} else {
+            __assert_fail(
+                b"count == NUM_TEST_VALUES\0" as *const u8 as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                266 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 44],
+                    &[libc::c_char; 44],
+                >(b"void test_hash_table_iterating_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if hash_table_num_entries(hash_table)
         == (10000 as libc::c_int as libc::c_uint).wrapping_sub(removed)
@@ -506,6 +748,23 @@ pub unsafe extern "C" fn test_hash_table_iterating_remove() {
             >(b"void test_hash_table_iterating_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3276: {
+        if hash_table_num_entries(hash_table)
+            == (10000 as libc::c_int as libc::c_uint).wrapping_sub(removed)
+        {} else {
+            __assert_fail(
+                b"hash_table_num_entries(hash_table) == NUM_TEST_VALUES - removed\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                269 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 44],
+                    &[libc::c_char; 44],
+                >(b"void test_hash_table_iterating_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int;
     while i < 10000 as libc::c_int {
@@ -525,6 +784,23 @@ pub unsafe extern "C" fn test_hash_table_iterating_remove() {
                     >(b"void test_hash_table_iterating_remove(void)\0"))
                         .as_ptr(),
                 );
+            }
+            'c_3202: {
+                if (hash_table_lookup(hash_table, buf.as_mut_ptr() as HashTableKey))
+                    .is_null()
+                {} else {
+                    __assert_fail(
+                        b"hash_table_lookup(hash_table, buf) == NULL\0" as *const u8
+                            as *const libc::c_char,
+                        b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                        277 as libc::c_int as libc::c_uint,
+                        (*::core::mem::transmute::<
+                            &[u8; 44],
+                            &[libc::c_char; 44],
+                        >(b"void test_hash_table_iterating_remove(void)\0"))
+                            .as_ptr(),
+                    );
+                }
             };
         } else {
             if !(hash_table_lookup(hash_table, buf.as_mut_ptr() as HashTableKey))
@@ -541,6 +817,23 @@ pub unsafe extern "C" fn test_hash_table_iterating_remove() {
                     >(b"void test_hash_table_iterating_remove(void)\0"))
                         .as_ptr(),
                 );
+            }
+            'c_3147: {
+                if !(hash_table_lookup(hash_table, buf.as_mut_ptr() as HashTableKey))
+                    .is_null()
+                {} else {
+                    __assert_fail(
+                        b"hash_table_lookup(hash_table, buf) != NULL\0" as *const u8
+                            as *const libc::c_char,
+                        b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                        279 as libc::c_int as libc::c_uint,
+                        (*::core::mem::transmute::<
+                            &[u8; 44],
+                            &[libc::c_char; 44],
+                        >(b"void test_hash_table_iterating_remove(void)\0"))
+                            .as_ptr(),
+                    );
+                }
             };
         }
         i += 1;
@@ -551,7 +844,7 @@ pub unsafe extern "C" fn test_hash_table_iterating_remove() {
 #[no_mangle]
 pub unsafe extern "C" fn new_key(mut value: libc::c_int) -> *mut libc::c_int {
     let mut result: *mut libc::c_int = 0 as *mut libc::c_int;
-    result = alloc_test_malloc(::core::mem::size_of::<libc::c_int>() as libc::c_ulong)
+    result = malloc(::core::mem::size_of::<libc::c_int>() as libc::c_ulong)
         as *mut libc::c_int;
     *result = value;
     allocated_keys += 1;
@@ -560,14 +853,14 @@ pub unsafe extern "C" fn new_key(mut value: libc::c_int) -> *mut libc::c_int {
 }
 #[no_mangle]
 pub unsafe extern "C" fn free_key(mut key: *mut libc::c_void) {
-    alloc_test_free(key);
+    free(key);
     allocated_keys -= 1;
     allocated_keys;
 }
 #[no_mangle]
 pub unsafe extern "C" fn new_value(mut value: libc::c_int) -> *mut libc::c_int {
     let mut result: *mut libc::c_int = 0 as *mut libc::c_int;
-    result = alloc_test_malloc(::core::mem::size_of::<libc::c_int>() as libc::c_ulong)
+    result = malloc(::core::mem::size_of::<libc::c_int>() as libc::c_ulong)
         as *mut libc::c_int;
     *result = value;
     allocated_values += 1;
@@ -576,7 +869,7 @@ pub unsafe extern "C" fn new_value(mut value: libc::c_int) -> *mut libc::c_int {
 }
 #[no_mangle]
 pub unsafe extern "C" fn free_value(mut value: *mut libc::c_void) {
-    alloc_test_free(value);
+    free(value);
     allocated_values -= 1;
     allocated_values;
 }
@@ -621,6 +914,21 @@ pub unsafe extern "C" fn test_hash_table_free_functions() {
             >(b"void test_hash_table_free_functions(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3973: {
+        if allocated_keys == 10000 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_keys == NUM_TEST_VALUES\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                356 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_hash_table_free_functions(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if allocated_values == 10000 as libc::c_int {} else {
         __assert_fail(
@@ -633,6 +941,21 @@ pub unsafe extern "C" fn test_hash_table_free_functions() {
             >(b"void test_hash_table_free_functions(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3937: {
+        if allocated_values == 10000 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_values == NUM_TEST_VALUES\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                357 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_hash_table_free_functions(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 10000 as libc::c_int / 2 as libc::c_int;
     hash_table_remove(hash_table, &mut i as *mut libc::c_int as HashTableKey);
@@ -648,6 +971,21 @@ pub unsafe extern "C" fn test_hash_table_free_functions() {
             >(b"void test_hash_table_free_functions(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3883: {
+        if allocated_keys == 10000 as libc::c_int - 1 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_keys == NUM_TEST_VALUES - 1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                364 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_hash_table_free_functions(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if allocated_values == 10000 as libc::c_int - 1 as libc::c_int {} else {
         __assert_fail(
@@ -661,6 +999,21 @@ pub unsafe extern "C" fn test_hash_table_free_functions() {
             >(b"void test_hash_table_free_functions(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3843: {
+        if allocated_values == 10000 as libc::c_int - 1 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_values == NUM_TEST_VALUES - 1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                365 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_hash_table_free_functions(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     key = new_key(10000 as libc::c_int / 3 as libc::c_int);
     value = new_value(999 as libc::c_int);
@@ -675,6 +1028,21 @@ pub unsafe extern "C" fn test_hash_table_free_functions() {
             >(b"void test_hash_table_free_functions(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3792: {
+        if allocated_keys == 10000 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_keys == NUM_TEST_VALUES\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                372 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_hash_table_free_functions(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if allocated_values == 10000 as libc::c_int {} else {
         __assert_fail(
@@ -687,6 +1055,21 @@ pub unsafe extern "C" fn test_hash_table_free_functions() {
             >(b"void test_hash_table_free_functions(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3756: {
+        if allocated_values == 10000 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_values == NUM_TEST_VALUES\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                373 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_hash_table_free_functions(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     hash_table_insert(hash_table, key as HashTableKey, value as HashTableValue);
     if allocated_keys == 10000 as libc::c_int - 1 as libc::c_int {} else {
@@ -701,6 +1084,21 @@ pub unsafe extern "C" fn test_hash_table_free_functions() {
             >(b"void test_hash_table_free_functions(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3702: {
+        if allocated_keys == 10000 as libc::c_int - 1 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_keys == NUM_TEST_VALUES - 1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                377 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_hash_table_free_functions(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if allocated_values == 10000 as libc::c_int - 1 as libc::c_int {} else {
         __assert_fail(
@@ -714,6 +1112,21 @@ pub unsafe extern "C" fn test_hash_table_free_functions() {
             >(b"void test_hash_table_free_functions(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3661: {
+        if allocated_values == 10000 as libc::c_int - 1 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_values == NUM_TEST_VALUES - 1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                378 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_hash_table_free_functions(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     hash_table_free(hash_table);
     if allocated_keys == 0 as libc::c_int {} else {
@@ -727,6 +1140,20 @@ pub unsafe extern "C" fn test_hash_table_free_functions() {
             >(b"void test_hash_table_free_functions(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3618: {
+        if allocated_keys == 0 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_keys == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                384 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_hash_table_free_functions(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if allocated_values == 0 as libc::c_int {} else {
         __assert_fail(
@@ -739,6 +1166,20 @@ pub unsafe extern "C" fn test_hash_table_free_functions() {
             >(b"void test_hash_table_free_functions(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3580: {
+        if allocated_values == 0 as libc::c_int {} else {
+            __assert_fail(
+                b"allocated_values == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                385 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_hash_table_free_functions(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -791,6 +1232,20 @@ pub unsafe extern "C" fn test_hash_iterator_key_pair() {
                 >(b"void test_hash_iterator_key_pair()\0"))
                     .as_ptr(),
             );
+        }
+        'c_4094: {
+            if *key == *val {} else {
+                __assert_fail(
+                    b"*key == *val\0" as *const u8 as *const libc::c_char,
+                    b"test/test-hash-table.c\0" as *const u8 as *const libc::c_char,
+                    458 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 35],
+                        &[libc::c_char; 35],
+                    >(b"void test_hash_iterator_key_pair()\0"))
+                        .as_ptr(),
+                );
+            }
         };
     }
     hash_table_free(hash_table);

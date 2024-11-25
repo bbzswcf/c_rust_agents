@@ -1,15 +1,14 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn calloc(_: libc::c_ulong, _: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
     fn memcpy(
         _: *mut libc::c_void,
         _: *const libc::c_void,
         _: libc::c_ulong,
     ) -> *mut libc::c_void;
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
-    fn alloc_test_calloc(nmemb: size_t, bytes: size_t) -> *mut libc::c_void;
 }
-pub type size_t = libc::c_ulong;
 pub type BinomialHeapType = libc::c_uint;
 pub const BINOMIAL_HEAP_TYPE_MAX: BinomialHeapType = 1;
 pub const BINOMIAL_HEAP_TYPE_MIN: BinomialHeapType = 0;
@@ -69,8 +68,8 @@ unsafe extern "C" fn binomial_tree_unref(mut tree: *mut BinomialTree) {
             i += 1;
             i;
         }
-        alloc_test_free((*tree).subtrees as *mut libc::c_void);
-        alloc_test_free(tree as *mut libc::c_void);
+        free((*tree).subtrees as *mut libc::c_void);
+        free(tree as *mut libc::c_void);
     }
 }
 unsafe extern "C" fn binomial_tree_merge(
@@ -86,7 +85,7 @@ unsafe extern "C" fn binomial_tree_merge(
         tree1 = tree2;
         tree2 = tmp;
     }
-    new_tree = alloc_test_malloc(::core::mem::size_of::<BinomialTree>() as libc::c_ulong)
+    new_tree = malloc(::core::mem::size_of::<BinomialTree>() as libc::c_ulong)
         as *mut BinomialTree;
     if new_tree.is_null() {
         return 0 as *mut BinomialTree;
@@ -96,12 +95,12 @@ unsafe extern "C" fn binomial_tree_merge(
         .order = ((*tree1).order as libc::c_int + 1 as libc::c_int) as libc::c_ushort;
     (*new_tree).value = (*tree1).value;
     (*new_tree)
-        .subtrees = alloc_test_malloc(
+        .subtrees = malloc(
         (::core::mem::size_of::<*mut BinomialTree>() as libc::c_ulong)
             .wrapping_mul((*new_tree).order as libc::c_ulong),
     ) as *mut *mut BinomialTree;
     if ((*new_tree).subtrees).is_null() {
-        alloc_test_free(new_tree as *mut libc::c_void);
+        free(new_tree as *mut libc::c_void);
         return 0 as *mut BinomialTree;
     }
     memcpy(
@@ -132,7 +131,7 @@ unsafe extern "C" fn binomial_heap_merge_undo(
         i = i.wrapping_add(1);
         i;
     }
-    alloc_test_free(new_roots as *mut libc::c_void);
+    free(new_roots as *mut libc::c_void);
 }
 unsafe extern "C" fn binomial_heap_merge(
     mut heap: *mut BinomialHeap,
@@ -151,7 +150,7 @@ unsafe extern "C" fn binomial_heap_merge(
     } else {
         max = ((*other).roots_length).wrapping_add(1 as libc::c_int as libc::c_uint);
     }
-    new_roots = alloc_test_malloc(
+    new_roots = malloc(
         (::core::mem::size_of::<*mut BinomialTree>() as libc::c_ulong)
             .wrapping_mul(max as libc::c_ulong),
     ) as *mut *mut BinomialTree;
@@ -216,7 +215,7 @@ unsafe extern "C" fn binomial_heap_merge(
         i = i.wrapping_add(1);
         i;
     }
-    alloc_test_free((*heap).roots as *mut libc::c_void);
+    free((*heap).roots as *mut libc::c_void);
     (*heap).roots = new_roots;
     (*heap).roots_length = new_roots_length;
     return 1 as libc::c_int;
@@ -227,8 +226,8 @@ pub unsafe extern "C" fn binomial_heap_new(
     mut compare_func: BinomialHeapCompareFunc,
 ) -> *mut BinomialHeap {
     let mut new_heap: *mut BinomialHeap = 0 as *mut BinomialHeap;
-    new_heap = alloc_test_calloc(
-        1 as libc::c_int as size_t,
+    new_heap = calloc(
+        1 as libc::c_int as libc::c_ulong,
         ::core::mem::size_of::<BinomialHeap>() as libc::c_ulong,
     ) as *mut BinomialHeap;
     if new_heap.is_null() {
@@ -247,8 +246,8 @@ pub unsafe extern "C" fn binomial_heap_free(mut heap: *mut BinomialHeap) {
         i = i.wrapping_add(1);
         i;
     }
-    alloc_test_free((*heap).roots as *mut libc::c_void);
-    alloc_test_free(heap as *mut libc::c_void);
+    free((*heap).roots as *mut libc::c_void);
+    free(heap as *mut libc::c_void);
 }
 #[no_mangle]
 pub unsafe extern "C" fn binomial_heap_insert(
@@ -264,7 +263,7 @@ pub unsafe extern "C" fn binomial_heap_insert(
     };
     let mut new_tree: *mut BinomialTree = 0 as *mut BinomialTree;
     let mut result: libc::c_int = 0;
-    new_tree = alloc_test_malloc(::core::mem::size_of::<BinomialTree>() as libc::c_ulong)
+    new_tree = malloc(::core::mem::size_of::<BinomialTree>() as libc::c_ulong)
         as *mut BinomialTree;
     if new_tree.is_null() {
         return 0 as libc::c_int;

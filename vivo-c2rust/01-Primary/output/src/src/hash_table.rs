@@ -1,10 +1,9 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
-    fn alloc_test_calloc(nmemb: size_t, bytes: size_t) -> *mut libc::c_void;
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn calloc(_: libc::c_ulong, _: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
 }
-pub type size_t = libc::c_ulong;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _HashTable {
@@ -89,8 +88,8 @@ unsafe extern "C" fn hash_table_allocate_table(
     }
     (*hash_table).table_size = new_table_size;
     (*hash_table)
-        .table = alloc_test_calloc(
-        (*hash_table).table_size as size_t,
+        .table = calloc(
+        (*hash_table).table_size as libc::c_ulong,
         ::core::mem::size_of::<*mut HashTableEntry>() as libc::c_ulong,
     ) as *mut *mut HashTableEntry;
     return ((*hash_table).table != 0 as *mut libc::c_void as *mut *mut HashTableEntry)
@@ -109,7 +108,7 @@ unsafe extern "C" fn hash_table_free_entry(
         ((*hash_table).value_free_func)
             .expect("non-null function pointer")((*pair).value);
     }
-    alloc_test_free(entry as *mut libc::c_void);
+    free(entry as *mut libc::c_void);
 }
 #[no_mangle]
 pub unsafe extern "C" fn hash_table_new(
@@ -117,7 +116,7 @@ pub unsafe extern "C" fn hash_table_new(
     mut equal_func: HashTableEqualFunc,
 ) -> *mut HashTable {
     let mut hash_table: *mut HashTable = 0 as *mut HashTable;
-    hash_table = alloc_test_malloc(::core::mem::size_of::<HashTable>() as libc::c_ulong)
+    hash_table = malloc(::core::mem::size_of::<HashTable>() as libc::c_ulong)
         as *mut HashTable;
     if hash_table.is_null() {
         return 0 as *mut HashTable;
@@ -129,7 +128,7 @@ pub unsafe extern "C" fn hash_table_new(
     (*hash_table).entries = 0 as libc::c_int as libc::c_uint;
     (*hash_table).prime_index = 0 as libc::c_int as libc::c_uint;
     if hash_table_allocate_table(hash_table) == 0 {
-        alloc_test_free(hash_table as *mut libc::c_void);
+        free(hash_table as *mut libc::c_void);
         return 0 as *mut HashTable;
     }
     return hash_table;
@@ -150,8 +149,8 @@ pub unsafe extern "C" fn hash_table_free(mut hash_table: *mut HashTable) {
         i = i.wrapping_add(1);
         i;
     }
-    alloc_test_free((*hash_table).table as *mut libc::c_void);
-    alloc_test_free(hash_table as *mut libc::c_void);
+    free((*hash_table).table as *mut libc::c_void);
+    free(hash_table as *mut libc::c_void);
 }
 #[no_mangle]
 pub unsafe extern "C" fn hash_table_register_free_functions(
@@ -199,7 +198,7 @@ unsafe extern "C" fn hash_table_enlarge(mut hash_table: *mut HashTable) -> libc:
         i = i.wrapping_add(1);
         i;
     }
-    alloc_test_free(old_table as *mut libc::c_void);
+    free(old_table as *mut libc::c_void);
     return 1 as libc::c_int;
 }
 #[no_mangle]
@@ -242,9 +241,8 @@ pub unsafe extern "C" fn hash_table_insert(
         }
         rover = (*rover).next;
     }
-    newentry = alloc_test_malloc(
-        ::core::mem::size_of::<HashTableEntry>() as libc::c_ulong,
-    ) as *mut HashTableEntry;
+    newentry = malloc(::core::mem::size_of::<HashTableEntry>() as libc::c_ulong)
+        as *mut HashTableEntry;
     if newentry.is_null() {
         return 0 as libc::c_int;
     }

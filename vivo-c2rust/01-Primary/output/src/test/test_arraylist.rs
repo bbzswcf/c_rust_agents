@@ -1,4 +1,5 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+#![feature(label_break_value)]
 extern "C" {
     fn __assert_fail(
         __assertion: *const libc::c_char,
@@ -105,6 +106,20 @@ pub unsafe extern "C" fn test_arraylist_new_free() {
             >(b"void test_arraylist_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1823: {
+        if !arraylist.is_null() {} else {
+            __assert_fail(
+                b"arraylist != NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                59 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_arraylist_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_free(arraylist);
     arraylist = arraylist_new(10 as libc::c_int as libc::c_uint);
@@ -119,6 +134,20 @@ pub unsafe extern "C" fn test_arraylist_new_free() {
             >(b"void test_arraylist_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1764: {
+        if !arraylist.is_null() {} else {
+            __assert_fail(
+                b"arraylist != NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                65 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_arraylist_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_free(arraylist);
     arraylist_free(0 as *mut ArrayList);
@@ -139,6 +168,20 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2523: {
+        if (*arraylist).length == 0 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                90 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if arraylist_append(arraylist, &mut variable1 as *mut libc::c_int as ArrayListValue)
         != 0 as libc::c_int
@@ -154,6 +197,25 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2475: {
+        if arraylist_append(
+            arraylist,
+            &mut variable1 as *mut libc::c_int as ArrayListValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_append(arraylist, &variable1) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                94 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 1 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -166,6 +228,20 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2433: {
+        if (*arraylist).length == 1 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 1\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                95 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if arraylist_append(arraylist, &mut variable2 as *mut libc::c_int as ArrayListValue)
         != 0 as libc::c_int
@@ -181,6 +257,25 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2385: {
+        if arraylist_append(
+            arraylist,
+            &mut variable2 as *mut libc::c_int as ArrayListValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_append(arraylist, &variable2) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                97 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 2 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -193,6 +288,20 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2343: {
+        if (*arraylist).length == 2 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 2\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                98 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if arraylist_append(arraylist, &mut variable3 as *mut libc::c_int as ArrayListValue)
         != 0 as libc::c_int
@@ -208,6 +317,25 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2295: {
+        if arraylist_append(
+            arraylist,
+            &mut variable3 as *mut libc::c_int as ArrayListValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_append(arraylist, &variable3) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                100 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 3 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -220,6 +348,20 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2253: {
+        if (*arraylist).length == 3 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 3\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                101 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if arraylist_append(arraylist, &mut variable4 as *mut libc::c_int as ArrayListValue)
         != 0 as libc::c_int
@@ -235,6 +377,25 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2204: {
+        if arraylist_append(
+            arraylist,
+            &mut variable4 as *mut libc::c_int as ArrayListValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_append(arraylist, &variable4) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                103 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 4 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -247,6 +408,20 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2161: {
+        if (*arraylist).length == 4 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 4\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                104 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(0 as libc::c_int as isize)
         == &mut variable1 as *mut libc::c_int as ArrayListValue
@@ -261,6 +436,23 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2111: {
+        if *((*arraylist).data).offset(0 as libc::c_int as isize)
+            == &mut variable1 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[0] == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                106 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(1 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as ArrayListValue
@@ -275,6 +467,23 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2061: {
+        if *((*arraylist).data).offset(1 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[1] == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                107 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(2 as libc::c_int as isize)
         == &mut variable3 as *mut libc::c_int as ArrayListValue
@@ -289,6 +498,23 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2011: {
+        if *((*arraylist).data).offset(2 as libc::c_int as isize)
+            == &mut variable3 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[2] == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                108 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(3 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as ArrayListValue
@@ -303,6 +529,23 @@ pub unsafe extern "C" fn test_arraylist_append() {
             >(b"void test_arraylist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1961: {
+        if *((*arraylist).data).offset(3 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[3] == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                109 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int;
     while i < 10000 as libc::c_int {
@@ -319,6 +562,22 @@ pub unsafe extern "C" fn test_arraylist_append() {
                 >(b"void test_arraylist_append(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_1903: {
+            if arraylist_append(arraylist, 0 as *mut libc::c_void) != 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"arraylist_append(arraylist, NULL) != 0\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                    114 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 33],
+                        &[libc::c_char; 33],
+                    >(b"void test_arraylist_append(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -341,6 +600,20 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3222: {
+        if (*arraylist).length == 0 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                144 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if arraylist_prepend(arraylist, &mut variable1 as *mut libc::c_int as ArrayListValue)
         != 0 as libc::c_int
@@ -356,6 +629,25 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3174: {
+        if arraylist_prepend(
+            arraylist,
+            &mut variable1 as *mut libc::c_int as ArrayListValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_prepend(arraylist, &variable1) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                148 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 1 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -368,6 +660,20 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3132: {
+        if (*arraylist).length == 1 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 1\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                149 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if arraylist_prepend(arraylist, &mut variable2 as *mut libc::c_int as ArrayListValue)
         != 0 as libc::c_int
@@ -383,6 +689,25 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3084: {
+        if arraylist_prepend(
+            arraylist,
+            &mut variable2 as *mut libc::c_int as ArrayListValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_prepend(arraylist, &variable2) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                151 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 2 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -395,6 +720,20 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3042: {
+        if (*arraylist).length == 2 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 2\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                152 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if arraylist_prepend(arraylist, &mut variable3 as *mut libc::c_int as ArrayListValue)
         != 0 as libc::c_int
@@ -410,6 +749,25 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2994: {
+        if arraylist_prepend(
+            arraylist,
+            &mut variable3 as *mut libc::c_int as ArrayListValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_prepend(arraylist, &variable3) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                154 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 3 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -422,6 +780,20 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2952: {
+        if (*arraylist).length == 3 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 3\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                155 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if arraylist_prepend(arraylist, &mut variable4 as *mut libc::c_int as ArrayListValue)
         != 0 as libc::c_int
@@ -437,6 +809,25 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2903: {
+        if arraylist_prepend(
+            arraylist,
+            &mut variable4 as *mut libc::c_int as ArrayListValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_prepend(arraylist, &variable4) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                157 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 4 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -449,6 +840,20 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2861: {
+        if (*arraylist).length == 4 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 4\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                158 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(0 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as ArrayListValue
@@ -463,6 +868,23 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2811: {
+        if *((*arraylist).data).offset(0 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[0] == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                160 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(1 as libc::c_int as isize)
         == &mut variable3 as *mut libc::c_int as ArrayListValue
@@ -477,6 +899,23 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2761: {
+        if *((*arraylist).data).offset(1 as libc::c_int as isize)
+            == &mut variable3 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[1] == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                161 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(2 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as ArrayListValue
@@ -491,6 +930,23 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2711: {
+        if *((*arraylist).data).offset(2 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[2] == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                162 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(3 as libc::c_int as isize)
         == &mut variable1 as *mut libc::c_int as ArrayListValue
@@ -505,6 +961,23 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
             >(b"void test_arraylist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2661: {
+        if *((*arraylist).data).offset(3 as libc::c_int as isize)
+            == &mut variable1 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[3] == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                163 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_arraylist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int;
     while i < 10000 as libc::c_int {
@@ -521,6 +994,22 @@ pub unsafe extern "C" fn test_arraylist_prepend() {
                 >(b"void test_arraylist_prepend(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2603: {
+            if arraylist_prepend(arraylist, 0 as *mut libc::c_void) != 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"arraylist_prepend(arraylist, NULL) != 0\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                    168 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 34],
+                        &[libc::c_char; 34],
+                    >(b"void test_arraylist_prepend(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -543,6 +1032,20 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4810: {
+        if (*arraylist).length == 16 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 16\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                199 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if arraylist_insert(
         arraylist,
@@ -561,6 +1064,26 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4758: {
+        if arraylist_insert(
+            arraylist,
+            17 as libc::c_int as libc::c_uint,
+            &mut variable1 as *mut libc::c_int as ArrayListValue,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_insert(arraylist, 17, &variable1) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                200 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 16 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -573,6 +1096,20 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4716: {
+        if (*arraylist).length == 16 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 16\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                201 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 16 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -585,6 +1122,20 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4674: {
+        if (*arraylist).length == 16 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 16\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                205 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(4 as libc::c_int as isize)
         == &mut variable1 as *mut libc::c_int as ArrayListValue
@@ -599,6 +1150,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4624: {
+        if *((*arraylist).data).offset(4 as libc::c_int as isize)
+            == &mut variable1 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[4] == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                206 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(5 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as ArrayListValue
@@ -613,6 +1181,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4574: {
+        if *((*arraylist).data).offset(5 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[5] == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                207 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(6 as libc::c_int as isize)
         == &mut variable3 as *mut libc::c_int as ArrayListValue
@@ -627,6 +1212,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4524: {
+        if *((*arraylist).data).offset(6 as libc::c_int as isize)
+            == &mut variable3 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[6] == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                208 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if arraylist_insert(
         arraylist,
@@ -645,6 +1247,26 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4472: {
+        if arraylist_insert(
+            arraylist,
+            5 as libc::c_int as libc::c_uint,
+            &mut variable4 as *mut libc::c_int as ArrayListValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_insert(arraylist, 5, &variable4) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                210 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 17 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -657,6 +1279,20 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4430: {
+        if (*arraylist).length == 17 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 17\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                212 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(4 as libc::c_int as isize)
         == &mut variable1 as *mut libc::c_int as ArrayListValue
@@ -671,6 +1307,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4380: {
+        if *((*arraylist).data).offset(4 as libc::c_int as isize)
+            == &mut variable1 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[4] == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                213 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(5 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as ArrayListValue
@@ -685,6 +1338,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4330: {
+        if *((*arraylist).data).offset(5 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[5] == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                214 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(6 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as ArrayListValue
@@ -699,6 +1369,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4280: {
+        if *((*arraylist).data).offset(6 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[6] == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                215 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(7 as libc::c_int as isize)
         == &mut variable3 as *mut libc::c_int as ArrayListValue
@@ -713,6 +1400,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4230: {
+        if *((*arraylist).data).offset(7 as libc::c_int as isize)
+            == &mut variable3 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[7] == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                216 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(0 as libc::c_int as isize)
         == &mut variable1 as *mut libc::c_int as ArrayListValue
@@ -727,6 +1431,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4180: {
+        if *((*arraylist).data).offset(0 as libc::c_int as isize)
+            == &mut variable1 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[0] == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                220 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(1 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as ArrayListValue
@@ -741,6 +1462,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4130: {
+        if *((*arraylist).data).offset(1 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[1] == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                221 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(2 as libc::c_int as isize)
         == &mut variable3 as *mut libc::c_int as ArrayListValue
@@ -755,6 +1493,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4080: {
+        if *((*arraylist).data).offset(2 as libc::c_int as isize)
+            == &mut variable3 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[2] == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                222 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if arraylist_insert(
         arraylist,
@@ -773,6 +1528,26 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4027: {
+        if arraylist_insert(
+            arraylist,
+            0 as libc::c_int as libc::c_uint,
+            &mut variable4 as *mut libc::c_int as ArrayListValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_insert(arraylist, 0, &variable4) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                224 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 18 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -785,6 +1560,20 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3985: {
+        if (*arraylist).length == 18 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 18\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                226 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(0 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as ArrayListValue
@@ -799,6 +1588,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3935: {
+        if *((*arraylist).data).offset(0 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[0] == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                227 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(1 as libc::c_int as isize)
         == &mut variable1 as *mut libc::c_int as ArrayListValue
@@ -813,6 +1619,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3885: {
+        if *((*arraylist).data).offset(1 as libc::c_int as isize)
+            == &mut variable1 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[1] == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                228 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(2 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as ArrayListValue
@@ -827,6 +1650,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3835: {
+        if *((*arraylist).data).offset(2 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[2] == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                229 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(3 as libc::c_int as isize)
         == &mut variable3 as *mut libc::c_int as ArrayListValue
@@ -841,6 +1681,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3785: {
+        if *((*arraylist).data).offset(3 as libc::c_int as isize)
+            == &mut variable3 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[3] == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                230 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(15 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as ArrayListValue
@@ -855,6 +1712,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3735: {
+        if *((*arraylist).data).offset(15 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[15] == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                234 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(16 as libc::c_int as isize)
         == &mut variable3 as *mut libc::c_int as ArrayListValue
@@ -869,6 +1743,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3685: {
+        if *((*arraylist).data).offset(16 as libc::c_int as isize)
+            == &mut variable3 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[16] == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                235 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(17 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as ArrayListValue
@@ -883,6 +1774,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3635: {
+        if *((*arraylist).data).offset(17 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[17] == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                236 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if arraylist_insert(
         arraylist,
@@ -901,6 +1809,26 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3582: {
+        if arraylist_insert(
+            arraylist,
+            18 as libc::c_int as libc::c_uint,
+            &mut variable1 as *mut libc::c_int as ArrayListValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_insert(arraylist, 18, &variable1) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                238 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (*arraylist).length == 19 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -913,6 +1841,20 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3539: {
+        if (*arraylist).length == 19 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 19\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                240 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(15 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as ArrayListValue
@@ -927,6 +1869,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3489: {
+        if *((*arraylist).data).offset(15 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[15] == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                241 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(16 as libc::c_int as isize)
         == &mut variable3 as *mut libc::c_int as ArrayListValue
@@ -941,6 +1900,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3439: {
+        if *((*arraylist).data).offset(16 as libc::c_int as isize)
+            == &mut variable3 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[16] == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                242 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(17 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as ArrayListValue
@@ -955,6 +1931,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3389: {
+        if *((*arraylist).data).offset(17 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[17] == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                243 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(18 as libc::c_int as isize)
         == &mut variable1 as *mut libc::c_int as ArrayListValue
@@ -969,6 +1962,23 @@ pub unsafe extern "C" fn test_arraylist_insert() {
             >(b"void test_arraylist_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3339: {
+        if *((*arraylist).data).offset(18 as libc::c_int as isize)
+            == &mut variable1 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[18] == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                244 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int;
     while i < 10000 as libc::c_int {
@@ -997,6 +2007,20 @@ pub unsafe extern "C" fn test_arraylist_remove_range() {
             >(b"void test_arraylist_remove_range(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5395: {
+        if (*arraylist).length == 16 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 16\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                261 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_arraylist_remove_range(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(3 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as ArrayListValue
@@ -1011,6 +2035,23 @@ pub unsafe extern "C" fn test_arraylist_remove_range() {
             >(b"void test_arraylist_remove_range(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5345: {
+        if *((*arraylist).data).offset(3 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[3] == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                262 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_arraylist_remove_range(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(4 as libc::c_int as isize)
         == &mut variable1 as *mut libc::c_int as ArrayListValue
@@ -1025,6 +2066,23 @@ pub unsafe extern "C" fn test_arraylist_remove_range() {
             >(b"void test_arraylist_remove_range(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5295: {
+        if *((*arraylist).data).offset(4 as libc::c_int as isize)
+            == &mut variable1 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[4] == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                263 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_arraylist_remove_range(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(5 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as ArrayListValue
@@ -1039,6 +2097,23 @@ pub unsafe extern "C" fn test_arraylist_remove_range() {
             >(b"void test_arraylist_remove_range(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5245: {
+        if *((*arraylist).data).offset(5 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[5] == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                264 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_arraylist_remove_range(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(6 as libc::c_int as isize)
         == &mut variable3 as *mut libc::c_int as ArrayListValue
@@ -1053,6 +2128,23 @@ pub unsafe extern "C" fn test_arraylist_remove_range() {
             >(b"void test_arraylist_remove_range(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5195: {
+        if *((*arraylist).data).offset(6 as libc::c_int as isize)
+            == &mut variable3 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[6] == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                265 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_arraylist_remove_range(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_remove_range(
         arraylist,
@@ -1070,6 +2162,20 @@ pub unsafe extern "C" fn test_arraylist_remove_range() {
             >(b"void test_arraylist_remove_range(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5144: {
+        if (*arraylist).length == 13 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 13\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                269 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_arraylist_remove_range(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(3 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as ArrayListValue
@@ -1084,6 +2190,23 @@ pub unsafe extern "C" fn test_arraylist_remove_range() {
             >(b"void test_arraylist_remove_range(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5094: {
+        if *((*arraylist).data).offset(3 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[3] == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                270 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_arraylist_remove_range(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(4 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as ArrayListValue
@@ -1098,6 +2221,23 @@ pub unsafe extern "C" fn test_arraylist_remove_range() {
             >(b"void test_arraylist_remove_range(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5044: {
+        if *((*arraylist).data).offset(4 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[4] == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                271 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_arraylist_remove_range(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(5 as libc::c_int as isize)
         == &mut variable1 as *mut libc::c_int as ArrayListValue
@@ -1112,6 +2252,23 @@ pub unsafe extern "C" fn test_arraylist_remove_range() {
             >(b"void test_arraylist_remove_range(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4994: {
+        if *((*arraylist).data).offset(5 as libc::c_int as isize)
+            == &mut variable1 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[5] == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                272 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_arraylist_remove_range(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(6 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as ArrayListValue
@@ -1126,6 +2283,23 @@ pub unsafe extern "C" fn test_arraylist_remove_range() {
             >(b"void test_arraylist_remove_range(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4944: {
+        if *((*arraylist).data).offset(6 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[6] == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                273 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_arraylist_remove_range(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_remove_range(
         arraylist,
@@ -1148,6 +2322,20 @@ pub unsafe extern "C" fn test_arraylist_remove_range() {
             >(b"void test_arraylist_remove_range(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4883: {
+        if (*arraylist).length == 13 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 13\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                280 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_arraylist_remove_range(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_free(arraylist);
 }
@@ -1166,6 +2354,20 @@ pub unsafe extern "C" fn test_arraylist_remove() {
             >(b"void test_arraylist_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5965: {
+        if (*arraylist).length == 16 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 16\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                291 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(3 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as ArrayListValue
@@ -1180,6 +2382,23 @@ pub unsafe extern "C" fn test_arraylist_remove() {
             >(b"void test_arraylist_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5915: {
+        if *((*arraylist).data).offset(3 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[3] == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                292 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(4 as libc::c_int as isize)
         == &mut variable1 as *mut libc::c_int as ArrayListValue
@@ -1194,6 +2413,23 @@ pub unsafe extern "C" fn test_arraylist_remove() {
             >(b"void test_arraylist_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5865: {
+        if *((*arraylist).data).offset(4 as libc::c_int as isize)
+            == &mut variable1 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[4] == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                293 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(5 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as ArrayListValue
@@ -1208,6 +2444,23 @@ pub unsafe extern "C" fn test_arraylist_remove() {
             >(b"void test_arraylist_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5815: {
+        if *((*arraylist).data).offset(5 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[5] == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                294 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(6 as libc::c_int as isize)
         == &mut variable3 as *mut libc::c_int as ArrayListValue
@@ -1222,6 +2475,23 @@ pub unsafe extern "C" fn test_arraylist_remove() {
             >(b"void test_arraylist_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5765: {
+        if *((*arraylist).data).offset(6 as libc::c_int as isize)
+            == &mut variable3 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[6] == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                295 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_remove(arraylist, 4 as libc::c_int as libc::c_uint);
     if (*arraylist).length == 15 as libc::c_int as libc::c_uint {} else {
@@ -1235,6 +2505,20 @@ pub unsafe extern "C" fn test_arraylist_remove() {
             >(b"void test_arraylist_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5716: {
+        if (*arraylist).length == 15 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 15\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                299 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(3 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as ArrayListValue
@@ -1249,6 +2533,23 @@ pub unsafe extern "C" fn test_arraylist_remove() {
             >(b"void test_arraylist_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5666: {
+        if *((*arraylist).data).offset(3 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[3] == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                300 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(4 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as ArrayListValue
@@ -1263,6 +2564,23 @@ pub unsafe extern "C" fn test_arraylist_remove() {
             >(b"void test_arraylist_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5616: {
+        if *((*arraylist).data).offset(4 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[4] == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                301 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(5 as libc::c_int as isize)
         == &mut variable3 as *mut libc::c_int as ArrayListValue
@@ -1277,6 +2595,23 @@ pub unsafe extern "C" fn test_arraylist_remove() {
             >(b"void test_arraylist_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5566: {
+        if *((*arraylist).data).offset(5 as libc::c_int as isize)
+            == &mut variable3 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[5] == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                302 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(6 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as ArrayListValue
@@ -1291,6 +2626,23 @@ pub unsafe extern "C" fn test_arraylist_remove() {
             >(b"void test_arraylist_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5516: {
+        if *((*arraylist).data).offset(6 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[6] == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                303 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_remove(arraylist, 15 as libc::c_int as libc::c_uint);
     if (*arraylist).length == 15 as libc::c_int as libc::c_uint {} else {
@@ -1304,6 +2656,20 @@ pub unsafe extern "C" fn test_arraylist_remove() {
             >(b"void test_arraylist_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5466: {
+        if (*arraylist).length == 15 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 15\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                309 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_arraylist_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_free(arraylist);
 }
@@ -1365,6 +2731,20 @@ pub unsafe extern "C" fn test_arraylist_index_of() {
                 >(b"void test_arraylist_index_of(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_6156: {
+            if index == i {} else {
+                __assert_fail(
+                    b"index == i\0" as *const u8 as *const libc::c_char,
+                    b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                    340 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 35],
+                        &[libc::c_char; 35],
+                    >(b"void test_arraylist_index_of(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -1393,6 +2773,32 @@ pub unsafe extern "C" fn test_arraylist_index_of() {
             >(b"void test_arraylist_index_of(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_6094: {
+        if arraylist_index_of(
+            arraylist,
+            Some(
+                int_equal
+                    as unsafe extern "C" fn(
+                        *mut libc::c_void,
+                        *mut libc::c_void,
+                    ) -> libc::c_int,
+            ),
+            &mut val as *mut libc::c_int as ArrayListValue,
+        ) < 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_index_of(arraylist, int_equal, &val) < 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                346 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_arraylist_index_of(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     val = 57 as libc::c_int;
     if arraylist_index_of(
@@ -1418,6 +2824,32 @@ pub unsafe extern "C" fn test_arraylist_index_of() {
             >(b"void test_arraylist_index_of(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_6035: {
+        if arraylist_index_of(
+            arraylist,
+            Some(
+                int_equal
+                    as unsafe extern "C" fn(
+                        *mut libc::c_void,
+                        *mut libc::c_void,
+                    ) -> libc::c_int,
+            ),
+            &mut val as *mut libc::c_int as ArrayListValue,
+        ) < 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"arraylist_index_of(arraylist, int_equal, &val) < 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                348 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_arraylist_index_of(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_free(arraylist);
 }
@@ -1437,6 +2869,20 @@ pub unsafe extern "C" fn test_arraylist_clear() {
             >(b"void test_arraylist_clear(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_6379: {
+        if (*arraylist).length == 0 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                362 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_arraylist_clear(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_append(arraylist, &mut variable1 as *mut libc::c_int as ArrayListValue);
     arraylist_append(arraylist, &mut variable2 as *mut libc::c_int as ArrayListValue);
@@ -1454,6 +2900,20 @@ pub unsafe extern "C" fn test_arraylist_clear() {
             >(b"void test_arraylist_clear(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_6299: {
+        if (*arraylist).length == 0 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                373 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_arraylist_clear(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_free(arraylist);
 }
@@ -1527,6 +2987,21 @@ pub unsafe extern "C" fn test_arraylist_sort() {
             >(b"void test_arraylist_sort(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_6773: {
+        if (*arraylist).length == num_entries {} else {
+            __assert_fail(
+                b"arraylist->length == num_entries\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                396 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_arraylist_sort(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int as libc::c_uint;
     while i < num_entries {
@@ -1543,6 +3018,20 @@ pub unsafe extern "C" fn test_arraylist_sort() {
                 >(b"void test_arraylist_sort(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_6677: {
+            if *value == sorted[i as usize] {} else {
+                __assert_fail(
+                    b"*value == sorted[i]\0" as *const u8 as *const libc::c_char,
+                    b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                    404 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 31],
+                        &[libc::c_char; 31],
+                    >(b"void test_arraylist_sort(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = i.wrapping_add(1);
         i;
@@ -1570,6 +3059,20 @@ pub unsafe extern "C" fn test_arraylist_sort() {
             >(b"void test_arraylist_sort(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_6609: {
+        if (*arraylist).length == 0 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                415 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_arraylist_sort(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_free(arraylist);
     arraylist = arraylist_new(5 as libc::c_int as libc::c_uint);
@@ -1599,6 +3102,20 @@ pub unsafe extern "C" fn test_arraylist_sort() {
             >(b"void test_arraylist_sort(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_6536: {
+        if (*arraylist).length == 1 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"arraylist->length == 1\0" as *const u8 as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                426 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_arraylist_sort(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *((*arraylist).data).offset(0 as libc::c_int as isize)
         == &mut *entries.as_mut_ptr().offset(0 as libc::c_int as isize)
@@ -1614,6 +3131,24 @@ pub unsafe extern "C" fn test_arraylist_sort() {
             >(b"void test_arraylist_sort(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_6462: {
+        if *((*arraylist).data).offset(0 as libc::c_int as isize)
+            == &mut *entries.as_mut_ptr().offset(0 as libc::c_int as isize)
+                as *mut libc::c_int as ArrayListValue
+        {} else {
+            __assert_fail(
+                b"arraylist->data[0] == &entries[0]\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-arraylist.c\0" as *const u8 as *const libc::c_char,
+                427 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_arraylist_sort(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     arraylist_free(arraylist);
 }

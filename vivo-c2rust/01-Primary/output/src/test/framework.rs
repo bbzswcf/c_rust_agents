@@ -1,4 +1,5 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+#![feature(label_break_value)]
 extern "C" {
     fn __assert_fail(
         __assertion: *const libc::c_char,
@@ -18,13 +19,27 @@ unsafe extern "C" fn run_test(mut test: UnitTestFunction) {
         __assert_fail(
             b"alloc_test_get_allocated() == 0\0" as *const u8 as *const libc::c_char,
             b"test/framework.c\0" as *const u8 as *const libc::c_char,
-            45 as libc::c_int as libc::c_uint,
+            41 as libc::c_int as libc::c_uint,
             (*::core::mem::transmute::<
                 &[u8; 32],
                 &[libc::c_char; 32],
             >(b"void run_test(UnitTestFunction)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1624: {
+        if alloc_test_get_allocated() == 0 as libc::c_int as size_t {} else {
+            __assert_fail(
+                b"alloc_test_get_allocated() == 0\0" as *const u8 as *const libc::c_char,
+                b"test/framework.c\0" as *const u8 as *const libc::c_char,
+                41 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void run_test(UnitTestFunction)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]

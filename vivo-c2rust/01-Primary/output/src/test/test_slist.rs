@@ -1,14 +1,14 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+#![feature(extern_types, label_break_value)]
 extern "C" {
     pub type _SListEntry;
+    fn free(_: *mut libc::c_void);
     fn __assert_fail(
         __assertion: *const libc::c_char,
         __file: *const libc::c_char,
         __line: libc::c_uint,
         __function: *const libc::c_char,
     ) -> !;
-    fn alloc_test_free(ptr: *mut libc::c_void);
     fn run_tests(tests_0: *mut UnitTestFunction);
     fn slist_free(list: *mut SListEntry);
     fn slist_prepend(list: *mut *mut SListEntry, data: SListValue) -> *mut SListEntry;
@@ -88,6 +88,23 @@ pub unsafe extern "C" fn generate_list() -> *mut SListEntry {
             >(b"SListEntry *generate_list(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1891: {
+        if !(slist_append(&mut list, &mut variable1 as *mut libc::c_int as SListValue))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_append(&list, &variable1) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                39 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"SListEntry *generate_list(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if !(slist_append(&mut list, &mut variable2 as *mut libc::c_int as SListValue))
         .is_null()
@@ -103,6 +120,23 @@ pub unsafe extern "C" fn generate_list() -> *mut SListEntry {
             >(b"SListEntry *generate_list(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1837: {
+        if !(slist_append(&mut list, &mut variable2 as *mut libc::c_int as SListValue))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_append(&list, &variable2) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                40 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"SListEntry *generate_list(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if !(slist_append(&mut list, &mut variable3 as *mut libc::c_int as SListValue))
         .is_null()
@@ -118,6 +152,23 @@ pub unsafe extern "C" fn generate_list() -> *mut SListEntry {
             >(b"SListEntry *generate_list(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1783: {
+        if !(slist_append(&mut list, &mut variable3 as *mut libc::c_int as SListValue))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_append(&list, &variable3) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                41 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"SListEntry *generate_list(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if !(slist_append(&mut list, &mut variable4 as *mut libc::c_int as SListValue))
         .is_null()
@@ -133,6 +184,23 @@ pub unsafe extern "C" fn generate_list() -> *mut SListEntry {
             >(b"SListEntry *generate_list(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1723: {
+        if !(slist_append(&mut list, &mut variable4 as *mut libc::c_int as SListValue))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_append(&list, &variable4) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                42 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"SListEntry *generate_list(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     return list;
 }
@@ -153,6 +221,23 @@ pub unsafe extern "C" fn test_slist_append() {
             >(b"void test_slist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2380: {
+        if !(slist_append(&mut list, &mut variable1 as *mut libc::c_int as SListValue))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_append(&list, &variable1) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                51 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_slist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if !(slist_append(&mut list, &mut variable2 as *mut libc::c_int as SListValue))
         .is_null()
@@ -168,6 +253,23 @@ pub unsafe extern "C" fn test_slist_append() {
             >(b"void test_slist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2326: {
+        if !(slist_append(&mut list, &mut variable2 as *mut libc::c_int as SListValue))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_append(&list, &variable2) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                52 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_slist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if !(slist_append(&mut list, &mut variable3 as *mut libc::c_int as SListValue))
         .is_null()
@@ -183,6 +285,23 @@ pub unsafe extern "C" fn test_slist_append() {
             >(b"void test_slist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2272: {
+        if !(slist_append(&mut list, &mut variable3 as *mut libc::c_int as SListValue))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_append(&list, &variable3) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                53 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_slist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if !(slist_append(&mut list, &mut variable4 as *mut libc::c_int as SListValue))
         .is_null()
@@ -198,6 +317,23 @@ pub unsafe extern "C" fn test_slist_append() {
             >(b"void test_slist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2218: {
+        if !(slist_append(&mut list, &mut variable4 as *mut libc::c_int as SListValue))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_append(&list, &variable4) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                54 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_slist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_length(list) == 4 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -210,6 +346,20 @@ pub unsafe extern "C" fn test_slist_append() {
             >(b"void test_slist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2172: {
+        if slist_length(list) == 4 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"slist_length(list) == 4\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                55 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_slist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_nth_data(list, 0 as libc::c_int as libc::c_uint)
         == &mut variable1 as *mut libc::c_int as SListValue
@@ -225,6 +375,23 @@ pub unsafe extern "C" fn test_slist_append() {
             >(b"void test_slist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2122: {
+        if slist_nth_data(list, 0 as libc::c_int as libc::c_uint)
+            == &mut variable1 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 0) == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                57 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_slist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_nth_data(list, 1 as libc::c_int as libc::c_uint)
         == &mut variable2 as *mut libc::c_int as SListValue
@@ -240,6 +407,23 @@ pub unsafe extern "C" fn test_slist_append() {
             >(b"void test_slist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2072: {
+        if slist_nth_data(list, 1 as libc::c_int as libc::c_uint)
+            == &mut variable2 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 1) == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                58 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_slist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_nth_data(list, 2 as libc::c_int as libc::c_uint)
         == &mut variable3 as *mut libc::c_int as SListValue
@@ -255,6 +439,23 @@ pub unsafe extern "C" fn test_slist_append() {
             >(b"void test_slist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2022: {
+        if slist_nth_data(list, 2 as libc::c_int as libc::c_uint)
+            == &mut variable3 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 2) == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                59 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_slist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_nth_data(list, 3 as libc::c_int as libc::c_uint)
         == &mut variable4 as *mut libc::c_int as SListValue
@@ -270,6 +471,23 @@ pub unsafe extern "C" fn test_slist_append() {
             >(b"void test_slist_append(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1969: {
+        if slist_nth_data(list, 3 as libc::c_int as libc::c_uint)
+            == &mut variable4 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 3) == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                60 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_slist_append(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     slist_free(list);
 }
@@ -290,6 +508,23 @@ pub unsafe extern "C" fn test_slist_prepend() {
             >(b"void test_slist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2820: {
+        if !(slist_prepend(&mut list, &mut variable1 as *mut libc::c_int as SListValue))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_prepend(&list, &variable1) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                76 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_slist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if !(slist_prepend(&mut list, &mut variable2 as *mut libc::c_int as SListValue))
         .is_null()
@@ -305,6 +540,23 @@ pub unsafe extern "C" fn test_slist_prepend() {
             >(b"void test_slist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2766: {
+        if !(slist_prepend(&mut list, &mut variable2 as *mut libc::c_int as SListValue))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_prepend(&list, &variable2) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                77 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_slist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if !(slist_prepend(&mut list, &mut variable3 as *mut libc::c_int as SListValue))
         .is_null()
@@ -320,6 +572,23 @@ pub unsafe extern "C" fn test_slist_prepend() {
             >(b"void test_slist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2712: {
+        if !(slist_prepend(&mut list, &mut variable3 as *mut libc::c_int as SListValue))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_prepend(&list, &variable3) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                78 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_slist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if !(slist_prepend(&mut list, &mut variable4 as *mut libc::c_int as SListValue))
         .is_null()
@@ -335,6 +604,23 @@ pub unsafe extern "C" fn test_slist_prepend() {
             >(b"void test_slist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2657: {
+        if !(slist_prepend(&mut list, &mut variable4 as *mut libc::c_int as SListValue))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_prepend(&list, &variable4) != NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                79 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_slist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_nth_data(list, 0 as libc::c_int as libc::c_uint)
         == &mut variable4 as *mut libc::c_int as SListValue
@@ -350,6 +636,23 @@ pub unsafe extern "C" fn test_slist_prepend() {
             >(b"void test_slist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2607: {
+        if slist_nth_data(list, 0 as libc::c_int as libc::c_uint)
+            == &mut variable4 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 0) == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                81 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_slist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_nth_data(list, 1 as libc::c_int as libc::c_uint)
         == &mut variable3 as *mut libc::c_int as SListValue
@@ -365,6 +668,23 @@ pub unsafe extern "C" fn test_slist_prepend() {
             >(b"void test_slist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2557: {
+        if slist_nth_data(list, 1 as libc::c_int as libc::c_uint)
+            == &mut variable3 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 1) == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                82 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_slist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_nth_data(list, 2 as libc::c_int as libc::c_uint)
         == &mut variable2 as *mut libc::c_int as SListValue
@@ -380,6 +700,23 @@ pub unsafe extern "C" fn test_slist_prepend() {
             >(b"void test_slist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2507: {
+        if slist_nth_data(list, 2 as libc::c_int as libc::c_uint)
+            == &mut variable2 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 2) == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                83 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_slist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_nth_data(list, 3 as libc::c_int as libc::c_uint)
         == &mut variable1 as *mut libc::c_int as SListValue
@@ -395,6 +732,23 @@ pub unsafe extern "C" fn test_slist_prepend() {
             >(b"void test_slist_prepend(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2456: {
+        if slist_nth_data(list, 3 as libc::c_int as libc::c_uint)
+            == &mut variable1 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 3) == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                84 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_slist_prepend(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     slist_free(list);
 }
@@ -422,6 +776,21 @@ pub unsafe extern "C" fn test_slist_next() {
             >(b"void test_slist_next(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3134: {
+        if slist_data(rover) == &mut variable1 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_data(rover) == &variable1\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                119 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 27],
+                    &[libc::c_char; 27],
+                >(b"void test_slist_next(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     rover = slist_next(rover);
     if slist_data(rover) == &mut variable2 as *mut libc::c_int as SListValue {} else {
@@ -435,6 +804,21 @@ pub unsafe extern "C" fn test_slist_next() {
             >(b"void test_slist_next(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3081: {
+        if slist_data(rover) == &mut variable2 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_data(rover) == &variable2\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                121 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 27],
+                    &[libc::c_char; 27],
+                >(b"void test_slist_next(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     rover = slist_next(rover);
     if slist_data(rover) == &mut variable3 as *mut libc::c_int as SListValue {} else {
@@ -448,6 +832,21 @@ pub unsafe extern "C" fn test_slist_next() {
             >(b"void test_slist_next(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3028: {
+        if slist_data(rover) == &mut variable3 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_data(rover) == &variable3\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                123 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 27],
+                    &[libc::c_char; 27],
+                >(b"void test_slist_next(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     rover = slist_next(rover);
     if slist_data(rover) == &mut variable4 as *mut libc::c_int as SListValue {} else {
@@ -461,6 +860,21 @@ pub unsafe extern "C" fn test_slist_next() {
             >(b"void test_slist_next(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2974: {
+        if slist_data(rover) == &mut variable4 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_data(rover) == &variable4\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                125 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 27],
+                    &[libc::c_char; 27],
+                >(b"void test_slist_next(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     rover = slist_next(rover);
     if rover.is_null() {} else {
@@ -474,6 +888,20 @@ pub unsafe extern "C" fn test_slist_next() {
             >(b"void test_slist_next(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2921: {
+        if rover.is_null() {} else {
+            __assert_fail(
+                b"rover == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                127 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 27],
+                    &[libc::c_char; 27],
+                >(b"void test_slist_next(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     slist_free(list);
 }
@@ -494,6 +922,21 @@ pub unsafe extern "C" fn test_slist_nth_entry() {
             >(b"void test_slist_nth_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3482: {
+        if slist_data(entry) == &mut variable1 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_data(entry) == &variable1\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                142 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_slist_nth_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     entry = slist_nth_entry(list, 1 as libc::c_int as libc::c_uint);
     if slist_data(entry) == &mut variable2 as *mut libc::c_int as SListValue {} else {
@@ -507,6 +950,21 @@ pub unsafe extern "C" fn test_slist_nth_entry() {
             >(b"void test_slist_nth_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3427: {
+        if slist_data(entry) == &mut variable2 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_data(entry) == &variable2\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                144 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_slist_nth_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     entry = slist_nth_entry(list, 2 as libc::c_int as libc::c_uint);
     if slist_data(entry) == &mut variable3 as *mut libc::c_int as SListValue {} else {
@@ -520,6 +978,21 @@ pub unsafe extern "C" fn test_slist_nth_entry() {
             >(b"void test_slist_nth_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3372: {
+        if slist_data(entry) == &mut variable3 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_data(entry) == &variable3\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                146 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_slist_nth_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     entry = slist_nth_entry(list, 3 as libc::c_int as libc::c_uint);
     if slist_data(entry) == &mut variable4 as *mut libc::c_int as SListValue {} else {
@@ -533,6 +1006,21 @@ pub unsafe extern "C" fn test_slist_nth_entry() {
             >(b"void test_slist_nth_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3317: {
+        if slist_data(entry) == &mut variable4 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_data(entry) == &variable4\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                148 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_slist_nth_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     entry = slist_nth_entry(list, 4 as libc::c_int as libc::c_uint);
     if entry.is_null() {} else {
@@ -546,6 +1034,20 @@ pub unsafe extern "C" fn test_slist_nth_entry() {
             >(b"void test_slist_nth_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3266: {
+        if entry.is_null() {} else {
+            __assert_fail(
+                b"entry == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                153 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_slist_nth_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     entry = slist_nth_entry(list, 400 as libc::c_int as libc::c_uint);
     if entry.is_null() {} else {
@@ -559,6 +1061,20 @@ pub unsafe extern "C" fn test_slist_nth_entry() {
             >(b"void test_slist_nth_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3213: {
+        if entry.is_null() {} else {
+            __assert_fail(
+                b"entry == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                155 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_slist_nth_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     slist_free(list);
 }
@@ -580,6 +1096,23 @@ pub unsafe extern "C" fn test_slist_nth_data() {
             >(b"void test_slist_nth_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3811: {
+        if slist_nth_data(list, 0 as libc::c_int as libc::c_uint)
+            == &mut variable1 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 0) == &variable1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                168 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_slist_nth_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_nth_data(list, 1 as libc::c_int as libc::c_uint)
         == &mut variable2 as *mut libc::c_int as SListValue
@@ -595,6 +1128,23 @@ pub unsafe extern "C" fn test_slist_nth_data() {
             >(b"void test_slist_nth_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3761: {
+        if slist_nth_data(list, 1 as libc::c_int as libc::c_uint)
+            == &mut variable2 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 1) == &variable2\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                169 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_slist_nth_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_nth_data(list, 2 as libc::c_int as libc::c_uint)
         == &mut variable3 as *mut libc::c_int as SListValue
@@ -610,6 +1160,23 @@ pub unsafe extern "C" fn test_slist_nth_data() {
             >(b"void test_slist_nth_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3711: {
+        if slist_nth_data(list, 2 as libc::c_int as libc::c_uint)
+            == &mut variable3 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 2) == &variable3\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                170 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_slist_nth_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_nth_data(list, 3 as libc::c_int as libc::c_uint)
         == &mut variable4 as *mut libc::c_int as SListValue
@@ -625,6 +1192,23 @@ pub unsafe extern "C" fn test_slist_nth_data() {
             >(b"void test_slist_nth_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3661: {
+        if slist_nth_data(list, 3 as libc::c_int as libc::c_uint)
+            == &mut variable4 as *mut libc::c_int as SListValue
+        {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 3) == &variable4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                171 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_slist_nth_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (slist_nth_data(list, 4 as libc::c_int as libc::c_uint)).is_null() {} else {
         __assert_fail(
@@ -637,6 +1221,20 @@ pub unsafe extern "C" fn test_slist_nth_data() {
             >(b"void test_slist_nth_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3611: {
+        if (slist_nth_data(list, 4 as libc::c_int as libc::c_uint)).is_null() {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 4) == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                175 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_slist_nth_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (slist_nth_data(list, 400 as libc::c_int as libc::c_uint)).is_null() {} else {
         __assert_fail(
@@ -649,6 +1247,21 @@ pub unsafe extern "C" fn test_slist_nth_data() {
             >(b"void test_slist_nth_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3559: {
+        if (slist_nth_data(list, 400 as libc::c_int as libc::c_uint)).is_null() {} else {
+            __assert_fail(
+                b"slist_nth_data(list, 400) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                176 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_slist_nth_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     slist_free(list);
 }
@@ -667,6 +1280,20 @@ pub unsafe extern "C" fn test_slist_length() {
             >(b"void test_slist_length(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3981: {
+        if slist_length(list) == 4 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"slist_length(list) == 4\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                189 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_slist_length(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     slist_prepend(&mut list, &mut variable1 as *mut libc::c_int as SListValue);
     if slist_length(list) == 5 as libc::c_int as libc::c_uint {} else {
@@ -680,6 +1307,20 @@ pub unsafe extern "C" fn test_slist_length() {
             >(b"void test_slist_length(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3929: {
+        if slist_length(list) == 5 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"slist_length(list) == 5\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                195 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_slist_length(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_length(0 as *mut SListEntry) == 0 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -692,6 +1333,21 @@ pub unsafe extern "C" fn test_slist_length() {
             >(b"void test_slist_length(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3881: {
+        if slist_length(0 as *mut SListEntry) == 0 as libc::c_int as libc::c_uint
+        {} else {
+            __assert_fail(
+                b"slist_length(NULL) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                199 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_slist_length(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     slist_free(list);
 }
@@ -714,6 +1370,21 @@ pub unsafe extern "C" fn test_slist_remove_entry() {
             >(b"void test_slist_remove_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4351: {
+        if slist_remove_entry(&mut list, entry) != 0 as libc::c_int {} else {
+            __assert_fail(
+                b"slist_remove_entry(&list, entry) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                215 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_slist_remove_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_length(list) == 3 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -726,6 +1397,20 @@ pub unsafe extern "C" fn test_slist_remove_entry() {
             >(b"void test_slist_remove_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4307: {
+        if slist_length(list) == 3 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"slist_length(list) == 3\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                216 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_slist_remove_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     entry = slist_nth_entry(list, 0 as libc::c_int as libc::c_uint);
     if slist_remove_entry(&mut list, entry) != 0 as libc::c_int {} else {
@@ -740,6 +1425,21 @@ pub unsafe extern "C" fn test_slist_remove_entry() {
             >(b"void test_slist_remove_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4252: {
+        if slist_remove_entry(&mut list, entry) != 0 as libc::c_int {} else {
+            __assert_fail(
+                b"slist_remove_entry(&list, entry) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                221 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_slist_remove_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_length(list) == 2 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -752,6 +1452,20 @@ pub unsafe extern "C" fn test_slist_remove_entry() {
             >(b"void test_slist_remove_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4208: {
+        if slist_length(list) == 2 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"slist_length(list) == 2\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                222 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_slist_remove_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_remove_entry(&mut list, entry) == 0 as libc::c_int {} else {
         __assert_fail(
@@ -765,6 +1479,21 @@ pub unsafe extern "C" fn test_slist_remove_entry() {
             >(b"void test_slist_remove_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4161: {
+        if slist_remove_entry(&mut list, entry) == 0 as libc::c_int {} else {
+            __assert_fail(
+                b"slist_remove_entry(&list, entry) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                228 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_slist_remove_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_remove_entry(&mut list, 0 as *mut SListEntry) == 0 as libc::c_int {} else {
         __assert_fail(
@@ -778,6 +1507,22 @@ pub unsafe extern "C" fn test_slist_remove_entry() {
             >(b"void test_slist_remove_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4110: {
+        if slist_remove_entry(&mut list, 0 as *mut SListEntry) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"slist_remove_entry(&list, NULL) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                232 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_slist_remove_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_remove_entry(&mut empty_list, 0 as *mut SListEntry) == 0 as libc::c_int
     {} else {
@@ -792,6 +1537,22 @@ pub unsafe extern "C" fn test_slist_remove_entry() {
             >(b"void test_slist_remove_entry(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4052: {
+        if slist_remove_entry(&mut empty_list, 0 as *mut SListEntry) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"slist_remove_entry(&empty_list, NULL) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                236 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_slist_remove_entry(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     slist_free(list);
 }
@@ -854,6 +1615,32 @@ pub unsafe extern "C" fn test_slist_remove_data() {
             >(b"void test_slist_remove_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4846: {
+        if slist_remove_data(
+            &mut list,
+            Some(
+                int_equal
+                    as unsafe extern "C" fn(
+                        *mut libc::c_void,
+                        *mut libc::c_void,
+                    ) -> libc::c_int,
+            ),
+            &mut val as *mut libc::c_int as SListValue,
+        ) == 0 as libc::c_int as libc::c_uint
+        {} else {
+            __assert_fail(
+                b"slist_remove_data(&list, int_equal, &val) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                260 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_slist_remove_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     val = 56 as libc::c_int;
     if slist_remove_data(
@@ -879,6 +1666,32 @@ pub unsafe extern "C" fn test_slist_remove_data() {
             >(b"void test_slist_remove_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4789: {
+        if slist_remove_data(
+            &mut list,
+            Some(
+                int_equal
+                    as unsafe extern "C" fn(
+                        *mut libc::c_void,
+                        *mut libc::c_void,
+                    ) -> libc::c_int,
+            ),
+            &mut val as *mut libc::c_int as SListValue,
+        ) == 0 as libc::c_int as libc::c_uint
+        {} else {
+            __assert_fail(
+                b"slist_remove_data(&list, int_equal, &val) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                262 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_slist_remove_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     val = 8 as libc::c_int;
     if slist_remove_data(
@@ -904,6 +1717,32 @@ pub unsafe extern "C" fn test_slist_remove_data() {
             >(b"void test_slist_remove_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4732: {
+        if slist_remove_data(
+            &mut list,
+            Some(
+                int_equal
+                    as unsafe extern "C" fn(
+                        *mut libc::c_void,
+                        *mut libc::c_void,
+                    ) -> libc::c_int,
+            ),
+            &mut val as *mut libc::c_int as SListValue,
+        ) == 1 as libc::c_int as libc::c_uint
+        {} else {
+            __assert_fail(
+                b"slist_remove_data(&list, int_equal, &val) == 1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                267 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_slist_remove_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_length(list) == num_entries.wrapping_sub(1 as libc::c_int as libc::c_uint)
     {} else {
@@ -918,6 +1757,23 @@ pub unsafe extern "C" fn test_slist_remove_data() {
             >(b"void test_slist_remove_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4682: {
+        if slist_length(list)
+            == num_entries.wrapping_sub(1 as libc::c_int as libc::c_uint)
+        {} else {
+            __assert_fail(
+                b"slist_length(list) == num_entries - 1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                268 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_slist_remove_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     val = 4 as libc::c_int;
     if slist_remove_data(
@@ -943,6 +1799,32 @@ pub unsafe extern "C" fn test_slist_remove_data() {
             >(b"void test_slist_remove_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4625: {
+        if slist_remove_data(
+            &mut list,
+            Some(
+                int_equal
+                    as unsafe extern "C" fn(
+                        *mut libc::c_void,
+                        *mut libc::c_void,
+                    ) -> libc::c_int,
+            ),
+            &mut val as *mut libc::c_int as SListValue,
+        ) == 4 as libc::c_int as libc::c_uint
+        {} else {
+            __assert_fail(
+                b"slist_remove_data(&list, int_equal, &val) == 4\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                273 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_slist_remove_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_length(list) == num_entries.wrapping_sub(5 as libc::c_int as libc::c_uint)
     {} else {
@@ -957,6 +1839,23 @@ pub unsafe extern "C" fn test_slist_remove_data() {
             >(b"void test_slist_remove_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4575: {
+        if slist_length(list)
+            == num_entries.wrapping_sub(5 as libc::c_int as libc::c_uint)
+        {} else {
+            __assert_fail(
+                b"slist_length(list) == num_entries - 5\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                274 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_slist_remove_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     val = 89 as libc::c_int;
     if slist_remove_data(
@@ -982,6 +1881,32 @@ pub unsafe extern "C" fn test_slist_remove_data() {
             >(b"void test_slist_remove_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4514: {
+        if slist_remove_data(
+            &mut list,
+            Some(
+                int_equal
+                    as unsafe extern "C" fn(
+                        *mut libc::c_void,
+                        *mut libc::c_void,
+                    ) -> libc::c_int,
+            ),
+            &mut val as *mut libc::c_int as SListValue,
+        ) == 1 as libc::c_int as libc::c_uint
+        {} else {
+            __assert_fail(
+                b"slist_remove_data(&list, int_equal, &val) == 1\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                279 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_slist_remove_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_length(list) == num_entries.wrapping_sub(6 as libc::c_int as libc::c_uint)
     {} else {
@@ -996,6 +1921,23 @@ pub unsafe extern "C" fn test_slist_remove_data() {
             >(b"void test_slist_remove_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4440: {
+        if slist_length(list)
+            == num_entries.wrapping_sub(6 as libc::c_int as libc::c_uint)
+        {} else {
+            __assert_fail(
+                b"slist_length(list) == num_entries - 6\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                280 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_slist_remove_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     slist_free(list);
 }
@@ -1069,6 +2011,21 @@ pub unsafe extern "C" fn test_slist_sort() {
             >(b"void test_slist_sort(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5133: {
+        if slist_length(list) == num_entries {} else {
+            __assert_fail(
+                b"slist_length(list) == num_entries\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                303 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 27],
+                    &[libc::c_char; 27],
+                >(b"void test_slist_sort(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int as libc::c_uint;
     while i < num_entries {
@@ -1085,6 +2042,20 @@ pub unsafe extern "C" fn test_slist_sort() {
                 >(b"void test_slist_sort(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_5022: {
+            if *value == sorted[i as usize] {} else {
+                __assert_fail(
+                    b"*value == sorted[i]\0" as *const u8 as *const libc::c_char,
+                    b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                    311 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 27],
+                        &[libc::c_char; 27],
+                    >(b"void test_slist_sort(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = i.wrapping_add(1);
         i;
@@ -1112,6 +2083,20 @@ pub unsafe extern "C" fn test_slist_sort() {
             >(b"void test_slist_sort(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4952: {
+        if list.is_null() {} else {
+            __assert_fail(
+                b"list == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                322 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 27],
+                    &[libc::c_char; 27],
+                >(b"void test_slist_sort(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -1173,6 +2158,20 @@ pub unsafe extern "C" fn test_slist_find_data() {
                 >(b"void test_slist_find_data(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_5424: {
+            if !result.is_null() {} else {
+                __assert_fail(
+                    b"result != NULL\0" as *const u8 as *const libc::c_char,
+                    b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                    350 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_slist_find_data(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         data = slist_data(result) as *mut libc::c_int;
         if *data == val {} else {
@@ -1186,6 +2185,20 @@ pub unsafe extern "C" fn test_slist_find_data() {
                 >(b"void test_slist_find_data(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_5372: {
+            if *data == val {} else {
+                __assert_fail(
+                    b"*data == val\0" as *const u8 as *const libc::c_char,
+                    b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                    353 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 32],
+                        &[libc::c_char; 32],
+                    >(b"void test_slist_find_data(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -1215,6 +2228,33 @@ pub unsafe extern "C" fn test_slist_find_data() {
             >(b"void test_slist_find_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5302: {
+        if (slist_find_data(
+            list,
+            Some(
+                int_equal
+                    as unsafe extern "C" fn(
+                        *mut libc::c_void,
+                        *mut libc::c_void,
+                    ) -> libc::c_int,
+            ),
+            &mut val as *mut libc::c_int as SListValue,
+        ))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_find_data(list, int_equal, &val) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                359 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_slist_find_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     val = 56 as libc::c_int;
     if (slist_find_data(
@@ -1241,6 +2281,33 @@ pub unsafe extern "C" fn test_slist_find_data() {
             >(b"void test_slist_find_data(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5239: {
+        if (slist_find_data(
+            list,
+            Some(
+                int_equal
+                    as unsafe extern "C" fn(
+                        *mut libc::c_void,
+                        *mut libc::c_void,
+                    ) -> libc::c_int,
+            ),
+            &mut val as *mut libc::c_int as SListValue,
+        ))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"slist_find_data(list, int_equal, &val) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                361 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_slist_find_data(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     slist_free(list);
 }
@@ -1263,6 +2330,22 @@ pub unsafe extern "C" fn test_slist_to_array() {
             >(b"void test_slist_to_array(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5713: {
+        if *array.offset(0 as libc::c_int as isize)
+            == &mut variable1 as *mut libc::c_int as *mut libc::c_void
+        {} else {
+            __assert_fail(
+                b"array[0] == &variable1\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                375 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_slist_to_array(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *array.offset(1 as libc::c_int as isize)
         == &mut variable2 as *mut libc::c_int as *mut libc::c_void
@@ -1277,6 +2360,22 @@ pub unsafe extern "C" fn test_slist_to_array() {
             >(b"void test_slist_to_array(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5667: {
+        if *array.offset(1 as libc::c_int as isize)
+            == &mut variable2 as *mut libc::c_int as *mut libc::c_void
+        {} else {
+            __assert_fail(
+                b"array[1] == &variable2\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                376 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_slist_to_array(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *array.offset(2 as libc::c_int as isize)
         == &mut variable3 as *mut libc::c_int as *mut libc::c_void
@@ -1291,6 +2390,22 @@ pub unsafe extern "C" fn test_slist_to_array() {
             >(b"void test_slist_to_array(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5621: {
+        if *array.offset(2 as libc::c_int as isize)
+            == &mut variable3 as *mut libc::c_int as *mut libc::c_void
+        {} else {
+            __assert_fail(
+                b"array[2] == &variable3\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                377 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_slist_to_array(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if *array.offset(3 as libc::c_int as isize)
         == &mut variable4 as *mut libc::c_int as *mut libc::c_void
@@ -1305,8 +2420,24 @@ pub unsafe extern "C" fn test_slist_to_array() {
             >(b"void test_slist_to_array(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5574: {
+        if *array.offset(3 as libc::c_int as isize)
+            == &mut variable4 as *mut libc::c_int as *mut libc::c_void
+        {} else {
+            __assert_fail(
+                b"array[3] == &variable4\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                378 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_slist_to_array(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
-    alloc_test_free(array as *mut libc::c_void);
+    free(array as *mut libc::c_void);
     slist_free(list);
 }
 #[no_mangle]
@@ -1351,6 +2482,21 @@ pub unsafe extern "C" fn test_slist_iterate() {
             >(b"void test_slist_iterate(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5980: {
+        if (slist_iter_next(&mut iter)).is_null() {} else {
+            __assert_fail(
+                b"slist_iter_next(&iter) == SLIST_NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                440 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_slist_iterate(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     slist_iter_remove(&mut iter);
     if counter == 50 as libc::c_int {} else {
@@ -1364,6 +2510,20 @@ pub unsafe extern "C" fn test_slist_iterate() {
             >(b"void test_slist_iterate(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5939: {
+        if counter == 50 as libc::c_int {} else {
+            __assert_fail(
+                b"counter == 50\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                446 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_slist_iterate(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if slist_length(list) == 25 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -1376,6 +2536,20 @@ pub unsafe extern "C" fn test_slist_iterate() {
             >(b"void test_slist_iterate(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5894: {
+        if slist_length(list) == 25 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"slist_length(list) == 25\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                447 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_slist_iterate(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     slist_free(list);
     list = 0 as *mut SListEntry;
@@ -1400,6 +2574,20 @@ pub unsafe extern "C" fn test_slist_iterate() {
             >(b"void test_slist_iterate(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_5796: {
+        if counter == 0 as libc::c_int {} else {
+            __assert_fail(
+                b"counter == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                471 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_slist_iterate(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -1451,6 +2639,32 @@ pub unsafe extern "C" fn test_slist_iterate_bad_remove() {
                     >(b"void test_slist_iterate_bad_remove(void)\0"))
                         .as_ptr(),
                 );
+            }
+            'c_6140: {
+                if slist_remove_data(
+                    &mut list,
+                    Some(
+                        int_equal
+                            as unsafe extern "C" fn(
+                                *mut libc::c_void,
+                                *mut libc::c_void,
+                            ) -> libc::c_int,
+                    ),
+                    val as SListValue,
+                ) != 0 as libc::c_int as libc::c_uint
+                {} else {
+                    __assert_fail(
+                        b"slist_remove_data(&list, int_equal, val) != 0\0" as *const u8
+                            as *const libc::c_char,
+                        b"test/test-slist.c\0" as *const u8 as *const libc::c_char,
+                        508 as libc::c_int as libc::c_uint,
+                        (*::core::mem::transmute::<
+                            &[u8; 41],
+                            &[libc::c_char; 41],
+                        >(b"void test_slist_iterate_bad_remove(void)\0"))
+                            .as_ptr(),
+                    );
+                }
             };
             slist_iter_remove(&mut iter);
         }

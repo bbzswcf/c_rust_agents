@@ -1,9 +1,8 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
 }
-pub type size_t = libc::c_ulong;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _SListEntry {
@@ -32,7 +31,7 @@ pub unsafe extern "C" fn slist_free(mut list: *mut SListEntry) {
     while !entry.is_null() {
         let mut next: *mut SListEntry = 0 as *mut SListEntry;
         next = (*entry).next;
-        alloc_test_free(entry as *mut libc::c_void);
+        free(entry as *mut libc::c_void);
         entry = next;
     }
 }
@@ -42,7 +41,7 @@ pub unsafe extern "C" fn slist_prepend(
     mut data: SListValue,
 ) -> *mut SListEntry {
     let mut newentry: *mut SListEntry = 0 as *mut SListEntry;
-    newentry = alloc_test_malloc(::core::mem::size_of::<SListEntry>() as libc::c_ulong)
+    newentry = malloc(::core::mem::size_of::<SListEntry>() as libc::c_ulong)
         as *mut SListEntry;
     if newentry.is_null() {
         return 0 as *mut SListEntry;
@@ -59,7 +58,7 @@ pub unsafe extern "C" fn slist_append(
 ) -> *mut SListEntry {
     let mut rover: *mut SListEntry = 0 as *mut SListEntry;
     let mut newentry: *mut SListEntry = 0 as *mut SListEntry;
-    newentry = alloc_test_malloc(::core::mem::size_of::<SListEntry>() as libc::c_ulong)
+    newentry = malloc(::core::mem::size_of::<SListEntry>() as libc::c_ulong)
         as *mut SListEntry;
     if newentry.is_null() {
         return 0 as *mut SListEntry;
@@ -142,7 +141,7 @@ pub unsafe extern "C" fn slist_to_array(mut list: *mut SListEntry) -> *mut SList
     let mut length: libc::c_uint = 0;
     let mut i: libc::c_uint = 0;
     length = slist_length(list);
-    array = alloc_test_malloc(
+    array = malloc(
         (::core::mem::size_of::<SListValue>() as libc::c_ulong)
             .wrapping_mul(length as libc::c_ulong),
     ) as *mut SListValue;
@@ -182,7 +181,7 @@ pub unsafe extern "C" fn slist_remove_entry(
             (*rover).next = (*entry).next;
         }
     }
-    alloc_test_free(entry as *mut libc::c_void);
+    free(entry as *mut libc::c_void);
     return 1 as libc::c_int;
 }
 #[no_mangle]
@@ -201,7 +200,7 @@ pub unsafe extern "C" fn slist_remove_data(
             != 0 as libc::c_int
         {
             next = (**rover).next;
-            alloc_test_free(*rover as *mut libc::c_void);
+            free(*rover as *mut libc::c_void);
             *rover = next;
             entries_removed = entries_removed.wrapping_add(1);
             entries_removed;
@@ -315,7 +314,7 @@ pub unsafe extern "C" fn slist_iter_next(mut iter: *mut SListIterator) -> SListV
 pub unsafe extern "C" fn slist_iter_remove(mut iter: *mut SListIterator) {
     if !(((*iter).current).is_null() || (*iter).current != *(*iter).prev_next) {
         *(*iter).prev_next = (*(*iter).current).next;
-        alloc_test_free((*iter).current as *mut libc::c_void);
+        free((*iter).current as *mut libc::c_void);
         (*iter).current = 0 as *mut SListEntry;
     }
 }

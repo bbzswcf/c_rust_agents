@@ -1,15 +1,14 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn realloc(_: *mut libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
     fn memmove(
         _: *mut libc::c_void,
         _: *const libc::c_void,
         _: libc::c_ulong,
     ) -> *mut libc::c_void;
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
-    fn alloc_test_realloc(ptr: *mut libc::c_void, bytes: size_t) -> *mut libc::c_void;
 }
-pub type size_t = libc::c_ulong;
 pub type SortedArrayValue = *mut libc::c_void;
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -97,18 +96,18 @@ pub unsafe extern "C" fn sortedarray_new(
     if length == 0 as libc::c_int as libc::c_uint {
         length = 16 as libc::c_int as libc::c_uint;
     }
-    let mut array: *mut SortedArrayValue = alloc_test_malloc(
+    let mut array: *mut SortedArrayValue = malloc(
         (::core::mem::size_of::<SortedArrayValue>() as libc::c_ulong)
             .wrapping_mul(length as libc::c_ulong),
     ) as *mut SortedArrayValue;
     if array.is_null() {
         return 0 as *mut SortedArray;
     }
-    let mut sortedarray: *mut SortedArray = alloc_test_malloc(
+    let mut sortedarray: *mut SortedArray = malloc(
         ::core::mem::size_of::<SortedArray>() as libc::c_ulong,
     ) as *mut SortedArray;
     if sortedarray.is_null() {
-        alloc_test_free(array as *mut libc::c_void);
+        free(array as *mut libc::c_void);
         return 0 as *mut SortedArray;
     }
     (*sortedarray).data = array;
@@ -121,8 +120,8 @@ pub unsafe extern "C" fn sortedarray_new(
 #[no_mangle]
 pub unsafe extern "C" fn sortedarray_free(mut sortedarray: *mut SortedArray) {
     if !sortedarray.is_null() {
-        alloc_test_free((*sortedarray).data as *mut libc::c_void);
-        alloc_test_free(sortedarray as *mut libc::c_void);
+        free((*sortedarray).data as *mut libc::c_void);
+        free(sortedarray as *mut libc::c_void);
     }
 }
 #[no_mangle]
@@ -198,7 +197,7 @@ pub unsafe extern "C" fn sortedarray_insert(
         let mut data_0: *mut SortedArrayValue = 0 as *mut SortedArrayValue;
         newsize = ((*sortedarray)._alloced)
             .wrapping_mul(2 as libc::c_int as libc::c_uint);
-        data_0 = alloc_test_realloc(
+        data_0 = realloc(
             (*sortedarray).data as *mut libc::c_void,
             (::core::mem::size_of::<SortedArrayValue>() as libc::c_ulong)
                 .wrapping_mul(newsize as libc::c_ulong),

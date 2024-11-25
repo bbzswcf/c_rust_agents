@@ -66,7 +66,7 @@ void test_binomial_heap_insert(void)
 	// alloc_test_set_limit(0);
 	// assert(binomial_heap_insert(heap, &i) == 0);
 
-	// binomial_heap_free(heap);
+	binomial_heap_free(heap);
 }
 
 void test_min_heap(void)

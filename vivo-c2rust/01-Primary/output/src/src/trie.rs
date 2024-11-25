@@ -1,10 +1,9 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
-    fn alloc_test_calloc(nmemb: size_t, bytes: size_t) -> *mut libc::c_void;
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn calloc(_: libc::c_ulong, _: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
 }
-pub type size_t = libc::c_ulong;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _Trie {
@@ -23,8 +22,7 @@ pub type Trie = _Trie;
 #[no_mangle]
 pub unsafe extern "C" fn trie_new() -> *mut Trie {
     let mut new_trie: *mut Trie = 0 as *mut Trie;
-    new_trie = alloc_test_malloc(::core::mem::size_of::<Trie>() as libc::c_ulong)
-        as *mut Trie;
+    new_trie = malloc(::core::mem::size_of::<Trie>() as libc::c_ulong) as *mut Trie;
     if new_trie.is_null() {
         return 0 as *mut Trie;
     }
@@ -63,9 +61,9 @@ pub unsafe extern "C" fn trie_free(mut trie: *mut Trie) {
             i += 1;
             i;
         }
-        alloc_test_free(node as *mut libc::c_void);
+        free(node as *mut libc::c_void);
     }
-    alloc_test_free(trie as *mut libc::c_void);
+    free(trie as *mut libc::c_void);
 }
 unsafe extern "C" fn trie_find_end(
     mut trie: *mut Trie,
@@ -127,7 +125,7 @@ unsafe extern "C" fn trie_insert_rollback(
         (*node).use_count = ((*node).use_count).wrapping_sub(1);
         (*node).use_count;
         if (*node).use_count == 0 as libc::c_int as libc::c_uint {
-            alloc_test_free(node as *mut libc::c_void);
+            free(node as *mut libc::c_void);
             if !prev_ptr.is_null() {
                 *prev_ptr = 0 as *mut TrieNode;
             }
@@ -160,8 +158,8 @@ pub unsafe extern "C" fn trie_insert(
     loop {
         node = *rover;
         if node.is_null() {
-            node = alloc_test_calloc(
-                1 as libc::c_int as size_t,
+            node = calloc(
+                1 as libc::c_int as libc::c_ulong,
                 ::core::mem::size_of::<TrieNode>() as libc::c_ulong,
             ) as *mut TrieNode;
             if node.is_null() {
@@ -210,8 +208,8 @@ pub unsafe extern "C" fn trie_insert_binary(
     loop {
         node = *rover;
         if node.is_null() {
-            node = alloc_test_calloc(
-                1 as libc::c_int as size_t,
+            node = calloc(
+                1 as libc::c_int as libc::c_ulong,
                 ::core::mem::size_of::<TrieNode>() as libc::c_ulong,
             ) as *mut TrieNode;
             if node.is_null() {
@@ -262,7 +260,7 @@ pub unsafe extern "C" fn trie_remove_binary(
         (*node).use_count = ((*node).use_count).wrapping_sub(1);
         (*node).use_count;
         if (*node).use_count <= 0 as libc::c_int as libc::c_uint {
-            alloc_test_free(node as *mut libc::c_void);
+            free(node as *mut libc::c_void);
             if !last_next_ptr.is_null() {
                 *last_next_ptr = 0 as *mut TrieNode;
                 last_next_ptr = 0 as *mut *mut TrieNode;
@@ -306,7 +304,7 @@ pub unsafe extern "C" fn trie_remove(
         (*node).use_count = ((*node).use_count).wrapping_sub(1);
         (*node).use_count;
         if (*node).use_count <= 0 as libc::c_int as libc::c_uint {
-            alloc_test_free(node as *mut libc::c_void);
+            free(node as *mut libc::c_void);
             if !last_next_ptr.is_null() {
                 *last_next_ptr = 0 as *mut TrieNode;
                 last_next_ptr = 0 as *mut *mut TrieNode;

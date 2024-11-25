@@ -1,10 +1,9 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
-    fn alloc_test_realloc(ptr: *mut libc::c_void, bytes: size_t) -> *mut libc::c_void;
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn realloc(_: *mut libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
 }
-pub type size_t = libc::c_ulong;
 pub type BinaryHeapType = libc::c_uint;
 pub const BINARY_HEAP_TYPE_MAX: BinaryHeapType = 1;
 pub const BINARY_HEAP_TYPE_MIN: BinaryHeapType = 0;
@@ -41,7 +40,7 @@ pub unsafe extern "C" fn binary_heap_new(
     mut compare_func: BinaryHeapCompareFunc,
 ) -> *mut BinaryHeap {
     let mut heap: *mut BinaryHeap = 0 as *mut BinaryHeap;
-    heap = alloc_test_malloc(::core::mem::size_of::<BinaryHeap>() as libc::c_ulong)
+    heap = malloc(::core::mem::size_of::<BinaryHeap>() as libc::c_ulong)
         as *mut BinaryHeap;
     if heap.is_null() {
         return 0 as *mut BinaryHeap;
@@ -51,20 +50,20 @@ pub unsafe extern "C" fn binary_heap_new(
     (*heap).compare_func = compare_func;
     (*heap).alloced_size = 16 as libc::c_int as libc::c_uint;
     (*heap)
-        .values = alloc_test_malloc(
+        .values = malloc(
         (::core::mem::size_of::<BinaryHeapValue>() as libc::c_ulong)
             .wrapping_mul((*heap).alloced_size as libc::c_ulong),
     ) as *mut BinaryHeapValue;
     if ((*heap).values).is_null() {
-        alloc_test_free(heap as *mut libc::c_void);
+        free(heap as *mut libc::c_void);
         return 0 as *mut BinaryHeap;
     }
     return heap;
 }
 #[no_mangle]
 pub unsafe extern "C" fn binary_heap_free(mut heap: *mut BinaryHeap) {
-    alloc_test_free((*heap).values as *mut libc::c_void);
-    alloc_test_free(heap as *mut libc::c_void);
+    free((*heap).values as *mut libc::c_void);
+    free(heap as *mut libc::c_void);
 }
 #[no_mangle]
 pub unsafe extern "C" fn binary_heap_insert(
@@ -77,7 +76,7 @@ pub unsafe extern "C" fn binary_heap_insert(
     let mut parent: libc::c_uint = 0;
     if (*heap).num_values >= (*heap).alloced_size {
         new_size = ((*heap).alloced_size).wrapping_mul(2 as libc::c_int as libc::c_uint);
-        new_values = alloc_test_realloc(
+        new_values = realloc(
             (*heap).values as *mut libc::c_void,
             (::core::mem::size_of::<BinaryHeapValue>() as libc::c_ulong)
                 .wrapping_mul(new_size as libc::c_ulong),

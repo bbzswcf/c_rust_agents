@@ -1,8 +1,10 @@
 CC = gcc
 CFLAGS = -std=c99 -w -Wextra -g -I src -I test
-CPPFLAGS = -std=c++98 -w -Wextra -g -I src -I test
+# CFLAGS = -std=gnu99 -w -Wextra -g -I src -I test
 SRC_DIR = src
 TEST_DIR = test
+# MACRO = -DALLOC_TESTING_C
+MACRO = -DALLOC_TESTING
 
 # 源文件和框架文件
 SRC_FILES = \
@@ -33,6 +35,7 @@ HASH_FILES = \
 COMPARE_TEST_FILE = $(TEST_DIR)/test-compare-functions.c
 HASH_TEST_FILE = $(TEST_DIR)/test-hash-functions.c
 
+# FRAMEWORK = $(TEST_DIR)/alloc-testing.c $(TEST_DIR)/framework.c
 FRAMEWORK = $(TEST_DIR)/alloc-testing.c $(TEST_DIR)/framework.c
 # FRAMEWORK = 
 
@@ -63,16 +66,14 @@ all: $(EXEC_FILES)
 
 # 通用规则：每个可执行文件依赖于源文件、框架文件和对应的测试文件
 $(OTHER_EXEC_FILES): %:  $(FRAMEWORK) $(TEST_DIR)/%.c $(SRC_FILES) $(COMPARE_FILES) $(HASH_FILES)
-	$(CC) $(CFLAGS) -DALLOC_TESTING -o $@ $(FRAMEWORK) $(TEST_DIR)/$@.c $(SRC_DIR)/$(@:test-%=%).c $(COMPARE_FILES) $(HASH_FILES)
+	$(CC) $(CFLAGS) $(MACRO) -o $@ $(FRAMEWORK) $(TEST_DIR)/$@.c $(SRC_DIR)/$(@:test-%=%).c $(COMPARE_FILES) $(HASH_FILES)
 
 compare-functions: $(COMPARE_FILES) $(FRAMEWORK) $(COMPARE_TEST_FILE)
-	$(CC) $(CFLAGS) -DALLOC_TESTING -o compare-functions $^
+	$(CC) $(CFLAGS) $(MACRO) -o compare-functions $^
 
 hash-functions: $(HASH_FILES) $(FRAMEWORK) $(HASH_TEST_FILE)
-	$(CC) $(CFLAGS) -DALLOC_TESTING -o hash-functions $^
+	$(CC) $(CFLAGS) $(MACRO) -o hash-functions $^
 
-test-cpp: $(FRAMEWORK) $(TEST_DIR)/test-cpp.cpp $(SRC_FILES) $(COMPARE_FILES) $(HASH_FILES)
-	$(CC) $(CPPFLAGS) -DALLOC_TESTING_C -o test-cpp $^
  
 # 运行所有测试文件
 run: $(EXEC_FILES)

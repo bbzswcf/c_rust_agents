@@ -1,15 +1,14 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn calloc(_: libc::c_ulong, _: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
     fn memcpy(
         _: *mut libc::c_void,
         _: *const libc::c_void,
         _: libc::c_ulong,
     ) -> *mut libc::c_void;
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
-    fn alloc_test_calloc(nmemb: size_t, bytes: size_t) -> *mut libc::c_void;
 }
-pub type size_t = libc::c_ulong;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _BloomFilter {
@@ -102,20 +101,20 @@ pub unsafe extern "C" fn bloom_filter_new(
     {
         return 0 as *mut BloomFilter;
     }
-    filter = alloc_test_malloc(::core::mem::size_of::<BloomFilter>() as libc::c_ulong)
+    filter = malloc(::core::mem::size_of::<BloomFilter>() as libc::c_ulong)
         as *mut BloomFilter;
     if filter.is_null() {
         return 0 as *mut BloomFilter;
     }
     (*filter)
-        .table = alloc_test_calloc(
+        .table = calloc(
         table_size
             .wrapping_add(7 as libc::c_int as libc::c_uint)
-            .wrapping_div(8 as libc::c_int as libc::c_uint) as size_t,
-        1 as libc::c_int as size_t,
+            .wrapping_div(8 as libc::c_int as libc::c_uint) as libc::c_ulong,
+        1 as libc::c_int as libc::c_ulong,
     ) as *mut libc::c_uchar;
     if ((*filter).table).is_null() {
-        alloc_test_free(filter as *mut libc::c_void);
+        free(filter as *mut libc::c_void);
         return 0 as *mut BloomFilter;
     }
     (*filter).hash_func = hash_func;
@@ -125,8 +124,8 @@ pub unsafe extern "C" fn bloom_filter_new(
 }
 #[no_mangle]
 pub unsafe extern "C" fn bloom_filter_free(mut bloomfilter: *mut BloomFilter) {
-    alloc_test_free((*bloomfilter).table as *mut libc::c_void);
-    alloc_test_free(bloomfilter as *mut libc::c_void);
+    free((*bloomfilter).table as *mut libc::c_void);
+    free(bloomfilter as *mut libc::c_void);
 }
 #[no_mangle]
 pub unsafe extern "C" fn bloom_filter_insert(

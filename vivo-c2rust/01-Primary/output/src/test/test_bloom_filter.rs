@@ -1,5 +1,5 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+#![feature(extern_types, label_break_value)]
 extern "C" {
     pub type _BloomFilter;
     fn __assert_fail(
@@ -58,6 +58,20 @@ pub unsafe extern "C" fn test_bloom_filter_new_free() {
             >(b"void test_bloom_filter_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1786: {
+        if !filter.is_null() {} else {
+            __assert_fail(
+                b"filter != NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                39 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_bloom_filter_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     bloom_filter_free(filter);
     filter = bloom_filter_new(
@@ -76,6 +90,20 @@ pub unsafe extern "C" fn test_bloom_filter_new_free() {
             >(b"void test_bloom_filter_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1728: {
+        if !filter.is_null() {} else {
+            __assert_fail(
+                b"filter != NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                47 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_bloom_filter_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     bloom_filter_free(filter);
     filter = bloom_filter_new(
@@ -94,6 +122,20 @@ pub unsafe extern "C" fn test_bloom_filter_new_free() {
             >(b"void test_bloom_filter_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1661: {
+        if filter.is_null() {} else {
+            __assert_fail(
+                b"filter == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                55 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_bloom_filter_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -120,6 +162,25 @@ pub unsafe extern "C" fn test_bloom_filter_insert_query() {
             >(b"void test_bloom_filter_insert_query(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2020: {
+        if bloom_filter_query(
+            filter,
+            b"test 1\0" as *const u8 as *const libc::c_char as BloomFilterValue,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"bloom_filter_query(filter, \"test 1\") == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                82 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_bloom_filter_insert_query(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if bloom_filter_query(
         filter,
@@ -137,6 +198,25 @@ pub unsafe extern "C" fn test_bloom_filter_insert_query() {
             >(b"void test_bloom_filter_insert_query(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1972: {
+        if bloom_filter_query(
+            filter,
+            b"test 2\0" as *const u8 as *const libc::c_char as BloomFilterValue,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"bloom_filter_query(filter, \"test 2\") == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                83 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_bloom_filter_insert_query(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     bloom_filter_insert(
         filter,
@@ -162,6 +242,25 @@ pub unsafe extern "C" fn test_bloom_filter_insert_query() {
             >(b"void test_bloom_filter_insert_query(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1907: {
+        if bloom_filter_query(
+            filter,
+            b"test 1\0" as *const u8 as *const libc::c_char as BloomFilterValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"bloom_filter_query(filter, \"test 1\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                92 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_bloom_filter_insert_query(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if bloom_filter_query(
         filter,
@@ -179,6 +278,25 @@ pub unsafe extern "C" fn test_bloom_filter_insert_query() {
             >(b"void test_bloom_filter_insert_query(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1856: {
+        if bloom_filter_query(
+            filter,
+            b"test 2\0" as *const u8 as *const libc::c_char as BloomFilterValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"bloom_filter_query(filter, \"test 2\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                93 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_bloom_filter_insert_query(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     bloom_filter_free(filter);
 }
@@ -224,6 +342,25 @@ pub unsafe extern "C" fn test_bloom_filter_read_load() {
             >(b"void test_bloom_filter_read_load(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2150: {
+        if bloom_filter_query(
+            filter2,
+            b"test 1\0" as *const u8 as *const libc::c_char as BloomFilterValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"bloom_filter_query(filter2, \"test 1\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                125 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_bloom_filter_read_load(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if bloom_filter_query(
         filter2,
@@ -241,6 +378,25 @@ pub unsafe extern "C" fn test_bloom_filter_read_load() {
             >(b"void test_bloom_filter_read_load(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2100: {
+        if bloom_filter_query(
+            filter2,
+            b"test 2\0" as *const u8 as *const libc::c_char as BloomFilterValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"bloom_filter_query(filter2, \"test 2\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                126 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 39],
+                    &[libc::c_char; 39],
+                >(b"void test_bloom_filter_read_load(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     bloom_filter_free(filter2);
 }
@@ -287,6 +443,25 @@ pub unsafe extern "C" fn test_bloom_filter_intersection() {
             >(b"void test_bloom_filter_intersection(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2400: {
+        if bloom_filter_query(
+            filter2,
+            b"test 2\0" as *const u8 as *const libc::c_char as BloomFilterValue,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"bloom_filter_query(filter2, \"test 2\") == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                154 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_bloom_filter_intersection(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     result = bloom_filter_intersection(filter1, filter2);
     if bloom_filter_query(
@@ -305,6 +480,25 @@ pub unsafe extern "C" fn test_bloom_filter_intersection() {
             >(b"void test_bloom_filter_intersection(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2342: {
+        if bloom_filter_query(
+            result,
+            b"test 1\0" as *const u8 as *const libc::c_char as BloomFilterValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"bloom_filter_query(result, \"test 1\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                163 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_bloom_filter_intersection(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if bloom_filter_query(
         result,
@@ -322,8 +516,29 @@ pub unsafe extern "C" fn test_bloom_filter_intersection() {
             >(b"void test_bloom_filter_intersection(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2294: {
+        if bloom_filter_query(
+            result,
+            b"test 2\0" as *const u8 as *const libc::c_char as BloomFilterValue,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"bloom_filter_query(result, \"test 2\") == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                164 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 42],
+                    &[libc::c_char; 42],
+                >(b"void test_bloom_filter_intersection(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     bloom_filter_free(result);
+    bloom_filter_free(filter1);
+    bloom_filter_free(filter2);
 }
 #[no_mangle]
 pub unsafe extern "C" fn test_bloom_filter_union() {
@@ -365,6 +580,25 @@ pub unsafe extern "C" fn test_bloom_filter_union() {
             >(b"void test_bloom_filter_union(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2576: {
+        if bloom_filter_query(
+            result,
+            b"test 1\0" as *const u8 as *const libc::c_char as BloomFilterValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"bloom_filter_query(result, \"test 1\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                202 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_bloom_filter_union(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if bloom_filter_query(
         result,
@@ -382,8 +616,29 @@ pub unsafe extern "C" fn test_bloom_filter_union() {
             >(b"void test_bloom_filter_union(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2527: {
+        if bloom_filter_query(
+            result,
+            b"test 2\0" as *const u8 as *const libc::c_char as BloomFilterValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"bloom_filter_query(result, \"test 2\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                203 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_bloom_filter_union(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     bloom_filter_free(result);
+    bloom_filter_free(filter1);
+    bloom_filter_free(filter2);
 }
 #[no_mangle]
 pub unsafe extern "C" fn test_bloom_filter_mismatch() {
@@ -411,6 +666,21 @@ pub unsafe extern "C" fn test_bloom_filter_mismatch() {
             >(b"void test_bloom_filter_mismatch(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2995: {
+        if (bloom_filter_intersection(filter1, filter2)).is_null() {} else {
+            __assert_fail(
+                b"bloom_filter_intersection(filter1, filter2) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                231 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_bloom_filter_mismatch(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (bloom_filter_union(filter1, filter2)).is_null() {} else {
         __assert_fail(
@@ -424,6 +694,21 @@ pub unsafe extern "C" fn test_bloom_filter_mismatch() {
             >(b"void test_bloom_filter_mismatch(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2943: {
+        if (bloom_filter_union(filter1, filter2)).is_null() {} else {
+            __assert_fail(
+                b"bloom_filter_union(filter1, filter2) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                232 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_bloom_filter_mismatch(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     bloom_filter_free(filter2);
     filter2 = bloom_filter_new(
@@ -445,6 +730,21 @@ pub unsafe extern "C" fn test_bloom_filter_mismatch() {
             >(b"void test_bloom_filter_mismatch(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2875: {
+        if (bloom_filter_intersection(filter1, filter2)).is_null() {} else {
+            __assert_fail(
+                b"bloom_filter_intersection(filter1, filter2) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                238 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_bloom_filter_mismatch(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (bloom_filter_union(filter1, filter2)).is_null() {} else {
         __assert_fail(
@@ -458,6 +758,21 @@ pub unsafe extern "C" fn test_bloom_filter_mismatch() {
             >(b"void test_bloom_filter_mismatch(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2823: {
+        if (bloom_filter_union(filter1, filter2)).is_null() {} else {
+            __assert_fail(
+                b"bloom_filter_union(filter1, filter2) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                239 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_bloom_filter_mismatch(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     bloom_filter_free(filter2);
     filter2 = bloom_filter_new(
@@ -477,6 +792,21 @@ pub unsafe extern "C" fn test_bloom_filter_mismatch() {
             >(b"void test_bloom_filter_mismatch(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2754: {
+        if (bloom_filter_intersection(filter1, filter2)).is_null() {} else {
+            __assert_fail(
+                b"bloom_filter_intersection(filter1, filter2) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                245 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_bloom_filter_mismatch(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (bloom_filter_union(filter1, filter2)).is_null() {} else {
         __assert_fail(
@@ -490,6 +820,21 @@ pub unsafe extern "C" fn test_bloom_filter_mismatch() {
             >(b"void test_bloom_filter_mismatch(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2701: {
+        if (bloom_filter_union(filter1, filter2)).is_null() {} else {
+            __assert_fail(
+                b"bloom_filter_union(filter1, filter2) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-bloom-filter.c\0" as *const u8 as *const libc::c_char,
+                246 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_bloom_filter_mismatch(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     bloom_filter_free(filter2);
     bloom_filter_free(filter1);

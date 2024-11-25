@@ -171,8 +171,8 @@ void test_bloom_filter_intersection(void)
 	// result = bloom_filter_intersection(filter1, filter2);
 	// assert(result == NULL);
 
-	// bloom_filter_free(filter1);
-	// bloom_filter_free(filter2);
+	bloom_filter_free(filter1);
+	bloom_filter_free(filter2);
 }
 
 void test_bloom_filter_union(void)
@@ -210,8 +210,8 @@ void test_bloom_filter_union(void)
 	// result = bloom_filter_union(filter1, filter2);
 	// assert(result == NULL);
 
-	// bloom_filter_free(filter1);
-	// bloom_filter_free(filter2);
+	bloom_filter_free(filter1);
+	bloom_filter_free(filter2);
 }
 
 /* Test attempts to do union/intersection of mismatched filters */

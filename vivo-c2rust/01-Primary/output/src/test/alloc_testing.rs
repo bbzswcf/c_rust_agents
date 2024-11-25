@@ -1,4 +1,5 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+#![feature(label_break_value)]
 extern "C" {
     fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
     fn free(_: *mut libc::c_void);
@@ -49,6 +50,21 @@ unsafe extern "C" fn alloc_test_get_header(
             >(b"BlockHeader *alloc_test_get_header(void *)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2156: {
+        if (*result).magic_number == 0x72ec82d2 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"result->magic_number == ALLOC_TEST_MAGIC\0" as *const u8
+                    as *const libc::c_char,
+                b"test/alloc-testing.c\0" as *const u8 as *const libc::c_char,
+                78 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 43],
+                    &[libc::c_char; 43],
+                >(b"BlockHeader *alloc_test_get_header(void *)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     return result;
 }
@@ -116,6 +132,20 @@ pub unsafe extern "C" fn alloc_test_free(mut ptr: *mut libc::c_void) {
             >(b"void alloc_test_free(void *)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2088: {
+        if allocated_bytes >= block_size {} else {
+            __assert_fail(
+                b"allocated_bytes >= block_size\0" as *const u8 as *const libc::c_char,
+                b"test/alloc-testing.c\0" as *const u8 as *const libc::c_char,
+                155 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void alloc_test_free(void *)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     alloc_test_overwrite(ptr, (*header).bytes, 0xdeadbeef as libc::c_uint);
     (*header).magic_number = 0 as libc::c_int as libc::c_uint;

@@ -1,15 +1,15 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+#![feature(extern_types, label_break_value)]
 extern "C" {
     pub type _RBTree;
     pub type _RBTreeNode;
+    fn free(_: *mut libc::c_void);
     fn __assert_fail(
         __assertion: *const libc::c_char,
         __file: *const libc::c_char,
         __line: libc::c_uint,
         __function: *const libc::c_char,
     ) -> !;
-    fn alloc_test_free(ptr: *mut libc::c_void);
     fn run_tests(tests_0: *mut UnitTestFunction);
     fn rb_tree_new(compare_func: RBTreeCompareFunc) -> *mut RBTree;
     fn rb_tree_free(tree: *mut RBTree);
@@ -134,6 +134,20 @@ pub unsafe extern "C" fn test_rb_tree_new() {
             >(b"void test_rb_tree_new(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1958: {
+        if !tree.is_null() {} else {
+            __assert_fail(
+                b"tree != NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                109 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_rb_tree_new(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (rb_tree_root_node(tree)).is_null() {} else {
         __assert_fail(
@@ -146,6 +160,20 @@ pub unsafe extern "C" fn test_rb_tree_new() {
             >(b"void test_rb_tree_new(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1908: {
+        if (rb_tree_root_node(tree)).is_null() {} else {
+            __assert_fail(
+                b"rb_tree_root_node(tree) == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                110 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_rb_tree_new(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if rb_tree_num_entries(tree) == 0 as libc::c_int {} else {
         __assert_fail(
@@ -158,6 +186,20 @@ pub unsafe extern "C" fn test_rb_tree_new() {
             >(b"void test_rb_tree_new(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1860: {
+        if rb_tree_num_entries(tree) == 0 as libc::c_int {} else {
+            __assert_fail(
+                b"rb_tree_num_entries(tree) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                111 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_rb_tree_new(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     rb_tree_free(tree);
 }
@@ -205,6 +247,21 @@ pub unsafe extern "C" fn test_rb_tree_insert_lookup() {
                 >(b"void test_rb_tree_insert_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2385: {
+            if rb_tree_num_entries(tree) == i + 1 as libc::c_int {} else {
+                __assert_fail(
+                    b"rb_tree_num_entries(tree) == i + 1\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                    141 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 38],
+                        &[libc::c_char; 38],
+                    >(b"void test_rb_tree_insert_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         validate_tree(tree);
         i += 1;
@@ -221,6 +278,20 @@ pub unsafe extern "C" fn test_rb_tree_insert_lookup() {
             >(b"void test_rb_tree_insert_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2324: {
+        if !(rb_tree_root_node(tree)).is_null() {} else {
+            __assert_fail(
+                b"rb_tree_root_node(tree) != NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                145 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_rb_tree_insert_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int;
     while i < 1000 as libc::c_int {
@@ -236,6 +307,20 @@ pub unsafe extern "C" fn test_rb_tree_insert_lookup() {
                 >(b"void test_rb_tree_insert_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2265: {
+            if !node.is_null() {} else {
+                __assert_fail(
+                    b"node != NULL\0" as *const u8 as *const libc::c_char,
+                    b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                    151 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 38],
+                        &[libc::c_char; 38],
+                    >(b"void test_rb_tree_insert_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         value = rb_tree_node_key(node) as *mut libc::c_int;
         if *value == i {} else {
@@ -249,6 +334,20 @@ pub unsafe extern "C" fn test_rb_tree_insert_lookup() {
                 >(b"void test_rb_tree_insert_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2214: {
+            if *value == i {} else {
+                __assert_fail(
+                    b"*value == i\0" as *const u8 as *const libc::c_char,
+                    b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                    153 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 38],
+                        &[libc::c_char; 38],
+                    >(b"void test_rb_tree_insert_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         value = rb_tree_node_value(node) as *mut libc::c_int;
         if *value == i {} else {
@@ -262,6 +361,20 @@ pub unsafe extern "C" fn test_rb_tree_insert_lookup() {
                 >(b"void test_rb_tree_insert_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2160: {
+            if *value == i {} else {
+                __assert_fail(
+                    b"*value == i\0" as *const u8 as *const libc::c_char,
+                    b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                    155 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 38],
+                        &[libc::c_char; 38],
+                    >(b"void test_rb_tree_insert_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -280,6 +393,22 @@ pub unsafe extern "C" fn test_rb_tree_insert_lookup() {
             >(b"void test_rb_tree_insert_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2092: {
+        if (rb_tree_lookup_node(tree, &mut i as *mut libc::c_int as RBTreeKey)).is_null()
+        {} else {
+            __assert_fail(
+                b"rb_tree_lookup_node(tree, &i) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                161 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_rb_tree_insert_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 1000 as libc::c_int + 100 as libc::c_int;
     if (rb_tree_lookup_node(tree, &mut i as *mut libc::c_int as RBTreeKey)).is_null()
@@ -295,6 +424,22 @@ pub unsafe extern "C" fn test_rb_tree_insert_lookup() {
             >(b"void test_rb_tree_insert_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2030: {
+        if (rb_tree_lookup_node(tree, &mut i as *mut libc::c_int as RBTreeKey)).is_null()
+        {} else {
+            __assert_fail(
+                b"rb_tree_lookup_node(tree, &i) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                163 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_rb_tree_insert_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     rb_tree_free(tree);
 }
@@ -352,6 +497,20 @@ pub unsafe extern "C" fn test_rb_tree_child() {
             >(b"void test_rb_tree_child(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2731: {
+        if *p == 2 as libc::c_int {} else {
+            __assert_fail(
+                b"*p == 2\0" as *const u8 as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                191 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_rb_tree_child(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     left = rb_tree_node_child(root, RB_TREE_NODE_LEFT);
     p = rb_tree_node_value(left) as *mut libc::c_int;
@@ -366,6 +525,20 @@ pub unsafe extern "C" fn test_rb_tree_child() {
             >(b"void test_rb_tree_child(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2673: {
+        if *p == 1 as libc::c_int {} else {
+            __assert_fail(
+                b"*p == 1\0" as *const u8 as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                195 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_rb_tree_child(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     right = rb_tree_node_child(root, RB_TREE_NODE_RIGHT);
     p = rb_tree_node_value(right) as *mut libc::c_int;
@@ -380,6 +553,20 @@ pub unsafe extern "C" fn test_rb_tree_child() {
             >(b"void test_rb_tree_child(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2613: {
+        if *p == 3 as libc::c_int {} else {
+            __assert_fail(
+                b"*p == 3\0" as *const u8 as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                199 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_rb_tree_child(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (rb_tree_node_child(root, 10000 as RBTreeNodeSide)).is_null() {} else {
         __assert_fail(
@@ -393,6 +580,21 @@ pub unsafe extern "C" fn test_rb_tree_child() {
             >(b"void test_rb_tree_child(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2560: {
+        if (rb_tree_node_child(root, 10000 as RBTreeNodeSide)).is_null() {} else {
+            __assert_fail(
+                b"rb_tree_node_child(root, 10000) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                203 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_rb_tree_child(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (rb_tree_node_child(root, 2 as RBTreeNodeSide)).is_null() {} else {
         __assert_fail(
@@ -405,6 +607,21 @@ pub unsafe extern "C" fn test_rb_tree_child() {
             >(b"void test_rb_tree_child(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2505: {
+        if (rb_tree_node_child(root, 2 as RBTreeNodeSide)).is_null() {} else {
+            __assert_fail(
+                b"rb_tree_node_child(root, 2) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                204 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_rb_tree_child(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     rb_tree_free(tree);
 }
@@ -454,6 +671,20 @@ pub unsafe extern "C" fn test_rb_tree_lookup() {
                 >(b"void test_rb_tree_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3108: {
+            if !value.is_null() {} else {
+                __assert_fail(
+                    b"value != NULL\0" as *const u8 as *const libc::c_char,
+                    b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                    262 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 31],
+                        &[libc::c_char; 31],
+                    >(b"void test_rb_tree_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         if *value == i {} else {
             __assert_fail(
@@ -466,6 +697,20 @@ pub unsafe extern "C" fn test_rb_tree_lookup() {
                 >(b"void test_rb_tree_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3065: {
+            if *value == i {} else {
+                __assert_fail(
+                    b"*value == i\0" as *const u8 as *const libc::c_char,
+                    b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                    263 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 31],
+                        &[libc::c_char; 31],
+                    >(b"void test_rb_tree_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -483,6 +728,22 @@ pub unsafe extern "C" fn test_rb_tree_lookup() {
             >(b"void test_rb_tree_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3002: {
+        if (rb_tree_lookup(tree, &mut i as *mut libc::c_int as RBTreeKey)).is_null()
+        {} else {
+            __assert_fail(
+                b"rb_tree_lookup(tree, &i) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                269 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_rb_tree_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 1000 as libc::c_int + 1 as libc::c_int;
     if (rb_tree_lookup(tree, &mut i as *mut libc::c_int as RBTreeKey)).is_null()
@@ -497,6 +758,22 @@ pub unsafe extern "C" fn test_rb_tree_lookup() {
             >(b"void test_rb_tree_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2945: {
+        if (rb_tree_lookup(tree, &mut i as *mut libc::c_int as RBTreeKey)).is_null()
+        {} else {
+            __assert_fail(
+                b"rb_tree_lookup(tree, &i) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                271 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_rb_tree_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 8724897 as libc::c_int;
     if (rb_tree_lookup(tree, &mut i as *mut libc::c_int as RBTreeKey)).is_null()
@@ -511,6 +788,22 @@ pub unsafe extern "C" fn test_rb_tree_lookup() {
             >(b"void test_rb_tree_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2887: {
+        if (rb_tree_lookup(tree, &mut i as *mut libc::c_int as RBTreeKey)).is_null()
+        {} else {
+            __assert_fail(
+                b"rb_tree_lookup(tree, &i) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                273 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_rb_tree_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     rb_tree_free(tree);
 }
@@ -537,6 +830,22 @@ pub unsafe extern "C" fn test_rb_tree_remove() {
             >(b"void test_rb_tree_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3465: {
+        if rb_tree_remove(tree, &mut i as *mut libc::c_int as RBTreeKey)
+            == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"rb_tree_remove(tree, &i) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                291 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_rb_tree_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = -(1 as libc::c_int);
     if rb_tree_remove(tree, &mut i as *mut libc::c_int as RBTreeKey) == 0 as libc::c_int
@@ -551,6 +860,22 @@ pub unsafe extern "C" fn test_rb_tree_remove() {
             >(b"void test_rb_tree_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3412: {
+        if rb_tree_remove(tree, &mut i as *mut libc::c_int as RBTreeKey)
+            == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"rb_tree_remove(tree, &i) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                293 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_rb_tree_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     expected_entries = 1000 as libc::c_int;
     x = 0 as libc::c_int;
@@ -575,6 +900,23 @@ pub unsafe extern "C" fn test_rb_tree_remove() {
                         >(b"void test_rb_tree_remove(void)\0"))
                             .as_ptr(),
                     );
+                }
+                'c_3317: {
+                    if rb_tree_remove(tree, &mut value as *mut libc::c_int as RBTreeKey)
+                        != 0 as libc::c_int
+                    {} else {
+                        __assert_fail(
+                            b"rb_tree_remove(tree, &value) != 0\0" as *const u8
+                                as *const libc::c_char,
+                            b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                            306 as libc::c_int as libc::c_uint,
+                            (*::core::mem::transmute::<
+                                &[u8; 31],
+                                &[libc::c_char; 31],
+                            >(b"void test_rb_tree_remove(void)\0"))
+                                .as_ptr(),
+                        );
+                    }
                 };
                 validate_tree(tree);
                 expected_entries -= 1 as libc::c_int;
@@ -590,6 +932,21 @@ pub unsafe extern "C" fn test_rb_tree_remove() {
                         >(b"void test_rb_tree_remove(void)\0"))
                             .as_ptr(),
                     );
+                }
+                'c_3263: {
+                    if rb_tree_num_entries(tree) == expected_entries {} else {
+                        __assert_fail(
+                            b"rb_tree_num_entries(tree) == expected_entries\0"
+                                as *const u8 as *const libc::c_char,
+                            b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                            310 as libc::c_int as libc::c_uint,
+                            (*::core::mem::transmute::<
+                                &[u8; 31],
+                                &[libc::c_char; 31],
+                            >(b"void test_rb_tree_remove(void)\0"))
+                                .as_ptr(),
+                        );
+                    }
                 };
                 z += 1;
                 z;
@@ -611,6 +968,20 @@ pub unsafe extern "C" fn test_rb_tree_remove() {
             >(b"void test_rb_tree_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3196: {
+        if (rb_tree_root_node(tree)).is_null() {} else {
+            __assert_fail(
+                b"rb_tree_root_node(tree) == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                317 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_rb_tree_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     rb_tree_free(tree);
 }
@@ -686,6 +1057,21 @@ pub unsafe extern "C" fn test_rb_tree_to_array() {
             >(b"void test_rb_tree_to_array(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3669: {
+        if rb_tree_num_entries(tree) == num_entries {} else {
+            __assert_fail(
+                b"rb_tree_num_entries(tree) == num_entries\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                339 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"void test_rb_tree_to_array(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     array = rb_tree_to_array(tree) as *mut *mut libc::c_int;
     i = 0 as libc::c_int;
@@ -701,11 +1087,25 @@ pub unsafe extern "C" fn test_rb_tree_to_array() {
                 >(b"void test_rb_tree_to_array(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3558: {
+            if **array.offset(i as isize) == sorted[i as usize] {} else {
+                __assert_fail(
+                    b"*array[i] == sorted[i]\0" as *const u8 as *const libc::c_char,
+                    b"test/test-rb-tree.c\0" as *const u8 as *const libc::c_char,
+                    346 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 33],
+                        &[libc::c_char; 33],
+                    >(b"void test_rb_tree_to_array(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
     }
-    alloc_test_free(array as *mut libc::c_void);
+    free(array as *mut libc::c_void);
     rb_tree_free(tree);
 }
 static mut tests: [UnitTestFunction; 7] = unsafe {

@@ -1,9 +1,8 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
 }
-pub type size_t = libc::c_ulong;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _AVLTree {
@@ -35,7 +34,7 @@ pub unsafe extern "C" fn avl_tree_new(
     mut compare_func: AVLTreeCompareFunc,
 ) -> *mut AVLTree {
     let mut new_tree: *mut AVLTree = 0 as *mut AVLTree;
-    new_tree = alloc_test_malloc(::core::mem::size_of::<AVLTree>() as libc::c_ulong)
+    new_tree = malloc(::core::mem::size_of::<AVLTree>() as libc::c_ulong)
         as *mut AVLTree;
     if new_tree.is_null() {
         return 0 as *mut AVLTree;
@@ -60,12 +59,12 @@ unsafe extern "C" fn avl_tree_free_subtree(
         tree,
         (*node).children[AVL_TREE_NODE_RIGHT as libc::c_int as usize],
     );
-    alloc_test_free(node as *mut libc::c_void);
+    free(node as *mut libc::c_void);
 }
 #[no_mangle]
 pub unsafe extern "C" fn avl_tree_free(mut tree: *mut AVLTree) {
     avl_tree_free_subtree(tree, (*tree).root_node);
-    alloc_test_free(tree as *mut libc::c_void);
+    free(tree as *mut libc::c_void);
 }
 #[no_mangle]
 pub unsafe extern "C" fn avl_tree_subtree_height(
@@ -222,7 +221,7 @@ pub unsafe extern "C" fn avl_tree_insert(
                 as *mut *mut AVLTreeNode;
         }
     }
-    new_node = alloc_test_malloc(::core::mem::size_of::<AVLTreeNode>() as libc::c_ulong)
+    new_node = malloc(::core::mem::size_of::<AVLTreeNode>() as libc::c_ulong)
         as *mut AVLTreeNode;
     if new_node.is_null() {
         return 0 as *mut AVLTreeNode;
@@ -303,7 +302,7 @@ pub unsafe extern "C" fn avl_tree_remove_node(
         (*swap_node).height = (*node).height;
         avl_tree_node_replace(tree, node, swap_node);
     }
-    alloc_test_free(node as *mut libc::c_void);
+    free(node as *mut libc::c_void);
     (*tree).num_nodes = ((*tree).num_nodes).wrapping_sub(1);
     (*tree).num_nodes;
     avl_tree_balance_to_root(tree, balance_startpoint);
@@ -415,7 +414,7 @@ unsafe extern "C" fn avl_tree_to_array_add_subtree(
 pub unsafe extern "C" fn avl_tree_to_array(mut tree: *mut AVLTree) -> *mut AVLTreeValue {
     let mut array: *mut AVLTreeValue = 0 as *mut AVLTreeValue;
     let mut index: libc::c_int = 0;
-    array = alloc_test_malloc(
+    array = malloc(
         (::core::mem::size_of::<AVLTreeValue>() as libc::c_ulong)
             .wrapping_mul((*tree).num_nodes as libc::c_ulong),
     ) as *mut AVLTreeValue;

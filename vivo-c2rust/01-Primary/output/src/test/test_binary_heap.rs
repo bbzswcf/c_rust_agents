@@ -1,5 +1,5 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+#![feature(extern_types, label_break_value)]
 extern "C" {
     pub type _BinaryHeap;
     fn __assert_fail(
@@ -88,6 +88,26 @@ pub unsafe extern "C" fn test_binary_heap_insert() {
                 >(b"void test_binary_heap_insert(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_1287: {
+            if binary_heap_insert(
+                heap,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as BinaryHeapValue,
+            ) != 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"binary_heap_insert(heap, &test_array[i]) != 0\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-binary-heap.c\0" as *const u8 as *const libc::c_char,
+                    64 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 35],
+                        &[libc::c_char; 35],
+                    >(b"void test_binary_heap_insert(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -104,6 +124,22 @@ pub unsafe extern "C" fn test_binary_heap_insert() {
             >(b"void test_binary_heap_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1231: {
+        if binary_heap_num_entries(heap) == 10000 as libc::c_int as libc::c_uint
+        {} else {
+            __assert_fail(
+                b"binary_heap_num_entries(heap) == NUM_TEST_VALUES\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-binary-heap.c\0" as *const u8 as *const libc::c_char,
+                67 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_binary_heap_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     binary_heap_free(heap);
 }
@@ -142,6 +178,26 @@ pub unsafe extern "C" fn test_min_heap() {
                 >(b"void test_min_heap(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_1566: {
+            if binary_heap_insert(
+                heap,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as BinaryHeapValue,
+            ) != 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"binary_heap_insert(heap, &test_array[i]) != 0\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-binary-heap.c\0" as *const u8 as *const libc::c_char,
+                    84 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 25],
+                        &[libc::c_char; 25],
+                    >(b"void test_min_heap(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -160,6 +216,20 @@ pub unsafe extern "C" fn test_min_heap() {
                 >(b"void test_min_heap(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_1494: {
+            if *val == i + 1 as libc::c_int {} else {
+                __assert_fail(
+                    b"*val == i + 1\0" as *const u8 as *const libc::c_char,
+                    b"test/test-binary-heap.c\0" as *const u8 as *const libc::c_char,
+                    93 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 25],
+                        &[libc::c_char; 25],
+                    >(b"void test_min_heap(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = *val;
     }
@@ -174,6 +244,21 @@ pub unsafe extern "C" fn test_min_heap() {
             >(b"void test_min_heap(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1437: {
+        if binary_heap_num_entries(heap) == 0 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"binary_heap_num_entries(heap) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-binary-heap.c\0" as *const u8 as *const libc::c_char,
+                99 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 25],
+                    &[libc::c_char; 25],
+                >(b"void test_min_heap(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (binary_heap_pop(heap)).is_null() {} else {
         __assert_fail(
@@ -187,6 +272,21 @@ pub unsafe extern "C" fn test_min_heap() {
             >(b"void test_min_heap(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1388: {
+        if (binary_heap_pop(heap)).is_null() {} else {
+            __assert_fail(
+                b"binary_heap_pop(heap) == BINARY_HEAP_NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-binary-heap.c\0" as *const u8 as *const libc::c_char,
+                100 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 25],
+                    &[libc::c_char; 25],
+                >(b"void test_min_heap(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     binary_heap_free(heap);
 }
@@ -225,6 +325,26 @@ pub unsafe extern "C" fn test_max_heap() {
                 >(b"void test_max_heap(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_1745: {
+            if binary_heap_insert(
+                heap,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as BinaryHeapValue,
+            ) != 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"binary_heap_insert(heap, &test_array[i]) != 0\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-binary-heap.c\0" as *const u8 as *const libc::c_char,
+                    117 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 25],
+                        &[libc::c_char; 25],
+                    >(b"void test_max_heap(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -243,6 +363,20 @@ pub unsafe extern "C" fn test_max_heap() {
                 >(b"void test_max_heap(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_1675: {
+            if *val == i - 1 as libc::c_int {} else {
+                __assert_fail(
+                    b"*val == i - 1\0" as *const u8 as *const libc::c_char,
+                    b"test/test-binary-heap.c\0" as *const u8 as *const libc::c_char,
+                    126 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 25],
+                        &[libc::c_char; 25],
+                    >(b"void test_max_heap(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = *val;
     }

@@ -1,9 +1,8 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
 }
-pub type size_t = libc::c_ulong;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _RBTree {
@@ -102,8 +101,7 @@ pub unsafe extern "C" fn rb_tree_new(
     mut compare_func: RBTreeCompareFunc,
 ) -> *mut RBTree {
     let mut new_tree: *mut RBTree = 0 as *mut RBTree;
-    new_tree = alloc_test_malloc(::core::mem::size_of::<RBTree>() as libc::c_ulong)
-        as *mut RBTree;
+    new_tree = malloc(::core::mem::size_of::<RBTree>() as libc::c_ulong) as *mut RBTree;
     if new_tree.is_null() {
         return 0 as *mut RBTree;
     }
@@ -120,13 +118,13 @@ unsafe extern "C" fn rb_tree_free_subtree(mut node: *mut RBTreeNode) {
         rb_tree_free_subtree(
             (*node).children[RB_TREE_NODE_RIGHT as libc::c_int as usize],
         );
-        alloc_test_free(node as *mut libc::c_void);
+        free(node as *mut libc::c_void);
     }
 }
 #[no_mangle]
 pub unsafe extern "C" fn rb_tree_free(mut tree: *mut RBTree) {
     rb_tree_free_subtree((*tree).root_node);
-    alloc_test_free(tree as *mut libc::c_void);
+    free(tree as *mut libc::c_void);
 }
 unsafe extern "C" fn rb_tree_insert_case1(
     mut tree: *mut RBTree,
@@ -217,7 +215,7 @@ pub unsafe extern "C" fn rb_tree_insert(
     let mut rover: *mut *mut RBTreeNode = 0 as *mut *mut RBTreeNode;
     let mut parent: *mut RBTreeNode = 0 as *mut RBTreeNode;
     let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
-    node = alloc_test_malloc(::core::mem::size_of::<RBTreeNode>() as libc::c_ulong)
+    node = malloc(::core::mem::size_of::<RBTreeNode>() as libc::c_ulong)
         as *mut RBTreeNode;
     if node.is_null() {
         return 0 as *mut RBTreeNode;

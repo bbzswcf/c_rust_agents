@@ -1,8 +1,10 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+#![feature(extern_types, label_break_value)]
 extern "C" {
     pub type _Trie;
     fn sprintf(_: *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
     fn memset(
         _: *mut libc::c_void,
         _: libc::c_int,
@@ -15,8 +17,6 @@ extern "C" {
         __line: libc::c_uint,
         __function: *const libc::c_char,
     ) -> !;
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
     fn run_tests(tests_0: *mut UnitTestFunction);
     fn trie_new() -> *mut Trie;
     fn trie_free(trie: *mut Trie);
@@ -120,6 +120,27 @@ pub unsafe extern "C" fn generate_trie() -> *mut Trie {
                 >(b"Trie *generate_trie(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2073: {
+            if trie_insert(
+                trie,
+                (test_strings[i as usize]).as_mut_ptr(),
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as TrieValue,
+            ) != 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"trie_insert(trie, test_strings[i], &test_array[i]) != 0\0"
+                        as *const u8 as *const libc::c_char,
+                    b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                    60 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 26],
+                        &[libc::c_char; 26],
+                    >(b"Trie *generate_trie(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         entries = entries.wrapping_add(1);
         entries;
@@ -135,6 +156,21 @@ pub unsafe extern "C" fn generate_trie() -> *mut Trie {
                 >(b"Trie *generate_trie(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2020: {
+            if trie_num_entries(trie) == entries {} else {
+                __assert_fail(
+                    b"trie_num_entries(trie) == entries\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                    64 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 26],
+                        &[libc::c_char; 26],
+                    >(b"Trie *generate_trie(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -156,6 +192,20 @@ pub unsafe extern "C" fn test_trie_new_free() {
             >(b"void test_trie_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2559: {
+        if !trie.is_null() {} else {
+            __assert_fail(
+                b"trie != NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                78 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_trie_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     trie_free(trie);
     trie = trie_new();
@@ -176,6 +226,26 @@ pub unsafe extern "C" fn test_trie_new_free() {
             >(b"void test_trie_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2495: {
+        if trie_insert(
+            trie,
+            b"hello\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+            b"there\0" as *const u8 as *const libc::c_char as TrieValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert(trie, \"hello\", \"there\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                86 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_trie_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_insert(
         trie,
@@ -194,6 +264,26 @@ pub unsafe extern "C" fn test_trie_new_free() {
             >(b"void test_trie_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2439: {
+        if trie_insert(
+            trie,
+            b"hell\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+            b"testing\0" as *const u8 as *const libc::c_char as TrieValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert(trie, \"hell\", \"testing\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                87 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_trie_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_insert(
         trie,
@@ -212,6 +302,26 @@ pub unsafe extern "C" fn test_trie_new_free() {
             >(b"void test_trie_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2383: {
+        if trie_insert(
+            trie,
+            b"testing\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+            b"testing\0" as *const u8 as *const libc::c_char as TrieValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert(trie, \"testing\", \"testing\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                88 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_trie_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_insert(
         trie,
@@ -230,6 +340,26 @@ pub unsafe extern "C" fn test_trie_new_free() {
             >(b"void test_trie_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2326: {
+        if trie_insert(
+            trie,
+            b"\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+            b"asfasf\0" as *const u8 as *const libc::c_char as TrieValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert(trie, \"\", \"asfasf\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                89 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_trie_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     trie_free(trie);
     trie = trie_new();
@@ -250,6 +380,26 @@ pub unsafe extern "C" fn test_trie_new_free() {
             >(b"void test_trie_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2261: {
+        if trie_insert(
+            trie,
+            b"hello\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+            b"there\0" as *const u8 as *const libc::c_char as TrieValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert(trie, \"hello\", \"there\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                97 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_trie_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_remove(
         trie,
@@ -266,6 +416,25 @@ pub unsafe extern "C" fn test_trie_new_free() {
             >(b"void test_trie_new_free(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2209: {
+        if trie_remove(
+            trie,
+            b"hello\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_remove(trie, \"hello\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                98 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_trie_new_free(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     trie_free(trie);
 }
@@ -293,6 +462,26 @@ pub unsafe extern "C" fn test_trie_insert() {
             >(b"void test_trie_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2669: {
+        if trie_insert(
+            trie,
+            b"hello world\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+            0 as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert(trie, \"hello world\", NULL) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                120 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_trie_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_num_entries(trie) == entries {} else {
         __assert_fail(
@@ -305,6 +494,21 @@ pub unsafe extern "C" fn test_trie_insert() {
             >(b"void test_trie_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2623: {
+        if trie_num_entries(trie) == entries {} else {
+            __assert_fail(
+                b"trie_num_entries(trie) == entries\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                121 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_trie_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     trie_free(trie);
 }
@@ -332,6 +536,26 @@ pub unsafe extern "C" fn test_trie_lookup() {
             >(b"void test_trie_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2888: {
+        if (trie_lookup(
+            trie,
+            b"000000000000000\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+        ))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"trie_lookup(trie, \"000000000000000\") == TRIE_NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                151 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_trie_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (trie_lookup(
         trie,
@@ -350,6 +574,26 @@ pub unsafe extern "C" fn test_trie_lookup() {
             >(b"void test_trie_lookup(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2835: {
+        if (trie_lookup(
+            trie,
+            b"\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+        ))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"trie_lookup(trie, \"\") == TRIE_NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                152 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_trie_lookup(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int;
     while i < 10000 as libc::c_int {
@@ -366,6 +610,20 @@ pub unsafe extern "C" fn test_trie_lookup() {
                 >(b"void test_trie_lookup(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2762: {
+            if *val == i {} else {
+                __assert_fail(
+                    b"*val == i\0" as *const u8 as *const libc::c_char,
+                    b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                    162 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 28],
+                        &[libc::c_char; 28],
+                    >(b"void test_trie_lookup(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -395,6 +653,25 @@ pub unsafe extern "C" fn test_trie_remove() {
             >(b"void test_trie_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3179: {
+        if trie_remove(
+            trie,
+            b"000000000000000\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_remove(trie, \"000000000000000\") == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                179 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_trie_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_remove(trie, b"\0" as *const u8 as *const libc::c_char as *mut libc::c_char)
         == 0 as libc::c_int
@@ -409,6 +686,24 @@ pub unsafe extern "C" fn test_trie_remove() {
             >(b"void test_trie_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3131: {
+        if trie_remove(
+            trie,
+            b"\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_remove(trie, \"\") == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                180 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_trie_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     entries = trie_num_entries(trie);
     if entries == 10000 as libc::c_int as libc::c_uint {} else {
@@ -422,6 +717,20 @@ pub unsafe extern "C" fn test_trie_remove() {
             >(b"void test_trie_remove(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3085: {
+        if entries == 10000 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"entries == NUM_TEST_VALUES\0" as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                184 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_trie_remove(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     i = 0 as libc::c_int;
     while i < 10000 as libc::c_int {
@@ -437,6 +746,20 @@ pub unsafe extern "C" fn test_trie_remove() {
                 >(b"void test_trie_remove(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_3021: {
+            if trie_remove(trie, buf.as_mut_ptr()) != 0 as libc::c_int {} else {
+                __assert_fail(
+                    b"trie_remove(trie, buf) != 0\0" as *const u8 as *const libc::c_char,
+                    b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                    194 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 28],
+                        &[libc::c_char; 28],
+                    >(b"void test_trie_remove(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         entries = entries.wrapping_sub(1);
         entries;
@@ -452,6 +775,21 @@ pub unsafe extern "C" fn test_trie_remove() {
                 >(b"void test_trie_remove(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_2974: {
+            if trie_num_entries(trie) == entries {} else {
+                __assert_fail(
+                    b"trie_num_entries(trie) == entries\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                    196 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 28],
+                        &[libc::c_char; 28],
+                    >(b"void test_trie_remove(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -463,7 +801,7 @@ pub unsafe extern "C" fn test_trie_replace() {
     let mut trie: *mut Trie = 0 as *mut Trie;
     let mut val: *mut libc::c_int = 0 as *mut libc::c_int;
     trie = generate_trie();
-    val = alloc_test_malloc(::core::mem::size_of::<libc::c_int>() as libc::c_ulong)
+    val = malloc(::core::mem::size_of::<libc::c_int>() as libc::c_ulong)
         as *mut libc::c_int;
     *val = 999 as libc::c_int;
     if trie_insert(
@@ -483,6 +821,26 @@ pub unsafe extern "C" fn test_trie_replace() {
             >(b"void test_trie_replace(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3356: {
+        if trie_insert(
+            trie,
+            b"999\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+            val as TrieValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert(trie, \"999\", val) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                213 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_trie_replace(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_num_entries(trie) == 10000 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -496,6 +854,21 @@ pub unsafe extern "C" fn test_trie_replace() {
             >(b"void test_trie_replace(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3312: {
+        if trie_num_entries(trie) == 10000 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"trie_num_entries(trie) == NUM_TEST_VALUES\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                214 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_trie_replace(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_lookup(
         trie,
@@ -512,8 +885,27 @@ pub unsafe extern "C" fn test_trie_replace() {
             >(b"void test_trie_replace(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3258: {
+        if trie_lookup(
+            trie,
+            b"999\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+        ) == val as TrieValue
+        {} else {
+            __assert_fail(
+                b"trie_lookup(trie, \"999\") == val\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                216 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_trie_replace(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
-    alloc_test_free(val as *mut libc::c_void);
+    free(val as *mut libc::c_void);
     trie_free(trie);
 }
 #[no_mangle]
@@ -537,6 +929,26 @@ pub unsafe extern "C" fn test_trie_insert_empty() {
             >(b"void test_trie_insert_empty(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3634: {
+        if trie_insert(
+            trie,
+            b"\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+            buf.as_mut_ptr() as TrieValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert(trie, \"\", buf) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                230 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_trie_insert_empty(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_num_entries(trie) != 0 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -549,6 +961,20 @@ pub unsafe extern "C" fn test_trie_insert_empty() {
             >(b"void test_trie_insert_empty(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3590: {
+        if trie_num_entries(trie) != 0 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"trie_num_entries(trie) != 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                231 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_trie_insert_empty(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_lookup(trie, b"\0" as *const u8 as *const libc::c_char as *mut libc::c_char)
         == buf.as_mut_ptr() as TrieValue
@@ -563,6 +989,24 @@ pub unsafe extern "C" fn test_trie_insert_empty() {
             >(b"void test_trie_insert_empty(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3537: {
+        if trie_lookup(
+            trie,
+            b"\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+        ) == buf.as_mut_ptr() as TrieValue
+        {} else {
+            __assert_fail(
+                b"trie_lookup(trie, \"\") == buf\0" as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                232 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_trie_insert_empty(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_remove(trie, b"\0" as *const u8 as *const libc::c_char as *mut libc::c_char)
         != 0 as libc::c_int
@@ -577,6 +1021,24 @@ pub unsafe extern "C" fn test_trie_insert_empty() {
             >(b"void test_trie_insert_empty(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3489: {
+        if trie_remove(
+            trie,
+            b"\0" as *const u8 as *const libc::c_char as *mut libc::c_char,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_remove(trie, \"\") != 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                233 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_trie_insert_empty(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_num_entries(trie) == 0 as libc::c_int as libc::c_uint {} else {
         __assert_fail(
@@ -589,13 +1051,27 @@ pub unsafe extern "C" fn test_trie_insert_empty() {
             >(b"void test_trie_insert_empty(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3445: {
+        if trie_num_entries(trie) == 0 as libc::c_int as libc::c_uint {} else {
+            __assert_fail(
+                b"trie_num_entries(trie) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                235 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 34],
+                    &[libc::c_char; 34],
+                >(b"void test_trie_insert_empty(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     trie_free(trie);
 }
 unsafe extern "C" fn test_trie_free_long() {
     let mut long_string: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut trie: *mut Trie = 0 as *mut Trie;
-    long_string = alloc_test_malloc(4096 as libc::c_int as size_t) as *mut libc::c_char;
+    long_string = malloc(4096 as libc::c_int as libc::c_ulong) as *mut libc::c_char;
     memset(
         long_string as *mut libc::c_void,
         'A' as i32,
@@ -608,7 +1084,7 @@ unsafe extern "C" fn test_trie_free_long() {
     trie = trie_new();
     trie_insert(trie, long_string, long_string as TrieValue);
     trie_free(trie);
-    alloc_test_free(long_string as *mut libc::c_void);
+    free(long_string as *mut libc::c_void);
 }
 unsafe extern "C" fn test_trie_negative_keys() {
     let mut my_key: [libc::c_char; 6] = [
@@ -639,6 +1115,26 @@ unsafe extern "C" fn test_trie_negative_keys() {
             >(b"void test_trie_negative_keys(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3997: {
+        if trie_insert(
+            trie,
+            my_key.as_mut_ptr(),
+            b"hello world\0" as *const u8 as *const libc::c_char as TrieValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert(trie, my_key, \"hello world\") != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                273 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_negative_keys(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     value = trie_lookup(trie, my_key.as_mut_ptr());
     if strcmp(
@@ -656,6 +1152,24 @@ unsafe extern "C" fn test_trie_negative_keys() {
             >(b"void test_trie_negative_keys(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3940: {
+        if strcmp(
+            value as *const libc::c_char,
+            b"hello world\0" as *const u8 as *const libc::c_char,
+        ) == 0
+        {} else {
+            __assert_fail(
+                b"!strcmp(value, \"hello world\")\0" as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                277 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_negative_keys(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_remove(trie, my_key.as_mut_ptr()) != 0 as libc::c_int {} else {
         __assert_fail(
@@ -668,6 +1182,20 @@ unsafe extern "C" fn test_trie_negative_keys() {
             >(b"void test_trie_negative_keys(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3894: {
+        if trie_remove(trie, my_key.as_mut_ptr()) != 0 as libc::c_int {} else {
+            __assert_fail(
+                b"trie_remove(trie, my_key) != 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                279 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_negative_keys(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_remove(trie, my_key.as_mut_ptr()) == 0 as libc::c_int {} else {
         __assert_fail(
@@ -680,6 +1208,20 @@ unsafe extern "C" fn test_trie_negative_keys() {
             >(b"void test_trie_negative_keys(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3847: {
+        if trie_remove(trie, my_key.as_mut_ptr()) == 0 as libc::c_int {} else {
+            __assert_fail(
+                b"trie_remove(trie, my_key) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                280 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_negative_keys(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (trie_lookup(trie, my_key.as_mut_ptr())).is_null() {} else {
         __assert_fail(
@@ -692,6 +1234,21 @@ unsafe extern "C" fn test_trie_negative_keys() {
             >(b"void test_trie_negative_keys(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3779: {
+        if (trie_lookup(trie, my_key.as_mut_ptr())).is_null() {} else {
+            __assert_fail(
+                b"trie_lookup(trie, my_key) == NULL\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                281 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_negative_keys(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     trie_free(trie);
 }
@@ -717,6 +1274,27 @@ pub unsafe extern "C" fn generate_binary_trie() -> *mut Trie {
             >(b"Trie *generate_binary_trie(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4128: {
+        if trie_insert_binary(
+            trie,
+            bin_key2.as_mut_ptr(),
+            ::core::mem::size_of::<[libc::c_uchar; 8]>() as libc::c_ulong as libc::c_int,
+            b"goodbye world\0" as *const u8 as *const libc::c_char as TrieValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert_binary(trie, bin_key2, sizeof(bin_key2), \"goodbye world\") != 0\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                296 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"Trie *generate_binary_trie(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_insert_binary(
         trie,
@@ -736,6 +1314,27 @@ pub unsafe extern "C" fn generate_binary_trie() -> *mut Trie {
             >(b"Trie *generate_binary_trie(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4065: {
+        if trie_insert_binary(
+            trie,
+            bin_key.as_mut_ptr(),
+            ::core::mem::size_of::<[libc::c_uchar; 7]>() as libc::c_ulong as libc::c_int,
+            b"hello world\0" as *const u8 as *const libc::c_char as TrieValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert_binary(trie, bin_key, sizeof(bin_key), \"hello world\") != 0\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                299 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 33],
+                    &[libc::c_char; 33],
+                >(b"Trie *generate_binary_trie(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     return trie;
 }
@@ -762,6 +1361,27 @@ pub unsafe extern "C" fn test_trie_insert_binary() {
             >(b"void test_trie_insert_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4397: {
+        if trie_insert_binary(
+            trie,
+            bin_key.as_mut_ptr(),
+            ::core::mem::size_of::<[libc::c_uchar; 7]>() as libc::c_ulong as libc::c_int,
+            b"hi world\0" as *const u8 as *const libc::c_char as TrieValue,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert_binary(trie, bin_key, sizeof(bin_key), \"hi world\") != 0\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                315 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_insert_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_insert_binary(
         trie,
@@ -781,6 +1401,27 @@ pub unsafe extern "C" fn test_trie_insert_binary() {
             >(b"void test_trie_insert_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4336: {
+        if trie_insert_binary(
+            trie,
+            bin_key3.as_mut_ptr(),
+            ::core::mem::size_of::<[libc::c_uchar; 3]>() as libc::c_ulong as libc::c_int,
+            0 as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_insert_binary(trie, bin_key3, sizeof(bin_key3), NULL) == 0\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                320 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_insert_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     value = trie_lookup_binary(
         trie,
@@ -798,6 +1439,21 @@ pub unsafe extern "C" fn test_trie_insert_binary() {
             >(b"void test_trie_insert_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4275: {
+        if strcmp(value, b"hi world\0" as *const u8 as *const libc::c_char) == 0
+        {} else {
+            __assert_fail(
+                b"!strcmp(value, \"hi world\")\0" as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                325 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_insert_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     value = trie_lookup_binary(
         trie,
@@ -816,6 +1472,22 @@ pub unsafe extern "C" fn test_trie_insert_binary() {
             >(b"void test_trie_insert_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4213: {
+        if strcmp(value, b"goodbye world\0" as *const u8 as *const libc::c_char) == 0
+        {} else {
+            __assert_fail(
+                b"!strcmp(value, \"goodbye world\")\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                328 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_insert_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     trie_free(trie);
 }
@@ -842,6 +1514,20 @@ pub unsafe extern "C" fn test_trie_remove_binary() {
             >(b"void test_trie_remove_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4937: {
+        if value.is_null() {} else {
+            __assert_fail(
+                b"value == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                361 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_remove_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_remove_binary(
         trie,
@@ -860,6 +1546,26 @@ pub unsafe extern "C" fn test_trie_remove_binary() {
             >(b"void test_trie_remove_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4883: {
+        if trie_remove_binary(
+            trie,
+            bin_key3.as_mut_ptr(),
+            ::core::mem::size_of::<[libc::c_uchar; 3]>() as libc::c_ulong as libc::c_int,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_remove_binary(trie, bin_key3, sizeof(bin_key3)) == 0\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                363 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_remove_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (trie_lookup_binary(
         trie,
@@ -879,6 +1585,27 @@ pub unsafe extern "C" fn test_trie_remove_binary() {
             >(b"void test_trie_remove_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4827: {
+        if (trie_lookup_binary(
+            trie,
+            bin_key4.as_mut_ptr(),
+            ::core::mem::size_of::<[libc::c_uchar; 4]>() as libc::c_ulong as libc::c_int,
+        ))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"trie_lookup_binary(trie, bin_key4, sizeof(bin_key4)) == 0\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                365 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_remove_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_remove_binary(
         trie,
@@ -897,6 +1624,26 @@ pub unsafe extern "C" fn test_trie_remove_binary() {
             >(b"void test_trie_remove_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4773: {
+        if trie_remove_binary(
+            trie,
+            bin_key4.as_mut_ptr(),
+            ::core::mem::size_of::<[libc::c_uchar; 4]>() as libc::c_ulong as libc::c_int,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_remove_binary(trie, bin_key4, sizeof(bin_key4)) == 0\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                366 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_remove_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_remove_binary(
         trie,
@@ -915,6 +1662,26 @@ pub unsafe extern "C" fn test_trie_remove_binary() {
             >(b"void test_trie_remove_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4718: {
+        if trie_remove_binary(
+            trie,
+            bin_key2.as_mut_ptr(),
+            ::core::mem::size_of::<[libc::c_uchar; 8]>() as libc::c_ulong as libc::c_int,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_remove_binary(trie, bin_key2, sizeof(bin_key2)) != 0\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                370 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_remove_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (trie_lookup_binary(
         trie,
@@ -934,6 +1701,27 @@ pub unsafe extern "C" fn test_trie_remove_binary() {
             >(b"void test_trie_remove_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4659: {
+        if (trie_lookup_binary(
+            trie,
+            bin_key2.as_mut_ptr(),
+            ::core::mem::size_of::<[libc::c_uchar; 8]>() as libc::c_ulong as libc::c_int,
+        ))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"trie_lookup_binary(trie, bin_key2, sizeof(bin_key2)) == NULL\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                371 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_remove_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if !(trie_lookup_binary(
         trie,
@@ -953,6 +1741,27 @@ pub unsafe extern "C" fn test_trie_remove_binary() {
             >(b"void test_trie_remove_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4601: {
+        if !(trie_lookup_binary(
+            trie,
+            bin_key.as_mut_ptr(),
+            ::core::mem::size_of::<[libc::c_uchar; 7]>() as libc::c_ulong as libc::c_int,
+        ))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"trie_lookup_binary(trie, bin_key, sizeof(bin_key)) != NULL\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                372 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_remove_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if trie_remove_binary(
         trie,
@@ -971,6 +1780,26 @@ pub unsafe extern "C" fn test_trie_remove_binary() {
             >(b"void test_trie_remove_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4546: {
+        if trie_remove_binary(
+            trie,
+            bin_key.as_mut_ptr(),
+            ::core::mem::size_of::<[libc::c_uchar; 7]>() as libc::c_ulong as libc::c_int,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"trie_remove_binary(trie, bin_key, sizeof(bin_key)) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                374 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_remove_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if (trie_lookup_binary(
         trie,
@@ -990,6 +1819,27 @@ pub unsafe extern "C" fn test_trie_remove_binary() {
             >(b"void test_trie_remove_binary(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_4487: {
+        if (trie_lookup_binary(
+            trie,
+            bin_key.as_mut_ptr(),
+            ::core::mem::size_of::<[libc::c_uchar; 7]>() as libc::c_ulong as libc::c_int,
+        ))
+            .is_null()
+        {} else {
+            __assert_fail(
+                b"trie_lookup_binary(trie, bin_key, sizeof(bin_key)) == NULL\0"
+                    as *const u8 as *const libc::c_char,
+                b"test/test-trie.c\0" as *const u8 as *const libc::c_char,
+                375 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_trie_remove_binary(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     trie_free(trie);
 }

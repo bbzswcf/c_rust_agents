@@ -426,7 +426,7 @@ void test_avl_tree_to_array(void)
 	// assert(array == NULL);
 	// validate_tree(tree);
 
-	// avl_tree_free(tree);
+	avl_tree_free(tree);
 }
 
 static UnitTestFunction tests[] = {

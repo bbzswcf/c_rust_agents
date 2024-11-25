@@ -1,4 +1,5 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+#![feature(label_break_value)]
 extern "C" {
     fn __assert_fail(
         __assertion: *const libc::c_char,
@@ -61,6 +62,24 @@ pub unsafe extern "C" fn test_int_compare() {
             >(b"void test_int_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1744: {
+        if int_compare(
+            &mut a as *mut libc::c_int as *mut libc::c_void,
+            &mut b as *mut libc::c_int as *mut libc::c_void,
+        ) < 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"int_compare(&a, &b) < 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                42 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_int_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if int_compare(
         &mut b as *mut libc::c_int as *mut libc::c_void,
@@ -77,6 +96,24 @@ pub unsafe extern "C" fn test_int_compare() {
             >(b"void test_int_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1691: {
+        if int_compare(
+            &mut b as *mut libc::c_int as *mut libc::c_void,
+            &mut a as *mut libc::c_int as *mut libc::c_void,
+        ) > 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"int_compare(&b, &a) > 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                46 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_int_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if int_compare(
         &mut a as *mut libc::c_int as *mut libc::c_void,
@@ -93,6 +130,24 @@ pub unsafe extern "C" fn test_int_compare() {
             >(b"void test_int_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1631: {
+        if int_compare(
+            &mut a as *mut libc::c_int as *mut libc::c_void,
+            &mut c as *mut libc::c_int as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"int_compare(&a, &c) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                50 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_int_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -115,6 +170,24 @@ pub unsafe extern "C" fn test_int_equal() {
             >(b"void test_int_equal(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1857: {
+        if int_equal(
+            &mut a as *mut libc::c_int as *mut libc::c_void,
+            &mut c as *mut libc::c_int as *mut libc::c_void,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"int_equal(&a, &c) != 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                61 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 26],
+                    &[libc::c_char; 26],
+                >(b"void test_int_equal(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if int_equal(
         &mut a as *mut libc::c_int as *mut libc::c_void,
@@ -131,6 +204,24 @@ pub unsafe extern "C" fn test_int_equal() {
             >(b"void test_int_equal(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1801: {
+        if int_equal(
+            &mut a as *mut libc::c_int as *mut libc::c_void,
+            &mut b as *mut libc::c_int as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"int_equal(&a, &b) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                65 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 26],
+                    &[libc::c_char; 26],
+                >(b"void test_int_equal(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -154,6 +245,27 @@ pub unsafe extern "C" fn test_pointer_compare() {
             >(b"void test_pointer_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2044: {
+        if pointer_compare(
+            &mut *array.as_mut_ptr().offset(0 as libc::c_int as isize)
+                as *mut libc::c_int as *mut libc::c_void,
+            &mut *array.as_mut_ptr().offset(4 as libc::c_int as isize)
+                as *mut libc::c_int as *mut libc::c_void,
+        ) < 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"pointer_compare(&array[0], &array[4]) < 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                75 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_pointer_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if pointer_compare(
         &mut *array.as_mut_ptr().offset(3 as libc::c_int as isize) as *mut libc::c_int
@@ -173,6 +285,27 @@ pub unsafe extern "C" fn test_pointer_compare() {
             >(b"void test_pointer_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1981: {
+        if pointer_compare(
+            &mut *array.as_mut_ptr().offset(3 as libc::c_int as isize)
+                as *mut libc::c_int as *mut libc::c_void,
+            &mut *array.as_mut_ptr().offset(2 as libc::c_int as isize)
+                as *mut libc::c_int as *mut libc::c_void,
+        ) > 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"pointer_compare(&array[3], &array[2]) > 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                80 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_pointer_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if pointer_compare(
         &mut *array.as_mut_ptr().offset(4 as libc::c_int as isize) as *mut libc::c_int
@@ -192,6 +325,27 @@ pub unsafe extern "C" fn test_pointer_compare() {
             >(b"void test_pointer_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1915: {
+        if pointer_compare(
+            &mut *array.as_mut_ptr().offset(4 as libc::c_int as isize)
+                as *mut libc::c_int as *mut libc::c_void,
+            &mut *array.as_mut_ptr().offset(4 as libc::c_int as isize)
+                as *mut libc::c_int as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"pointer_compare(&array[4], &array[4]) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                84 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 32],
+                    &[libc::c_char; 32],
+                >(b"void test_pointer_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -213,6 +367,24 @@ pub unsafe extern "C" fn test_pointer_equal() {
             >(b"void test_pointer_equal(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2164: {
+        if pointer_equal(
+            &mut a as *mut libc::c_int as *mut libc::c_void,
+            &mut a as *mut libc::c_int as *mut libc::c_void,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"pointer_equal(&a, &a) != 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                93 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_pointer_equal(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if pointer_equal(
         &mut a as *mut libc::c_int as *mut libc::c_void,
@@ -229,6 +401,24 @@ pub unsafe extern "C" fn test_pointer_equal() {
             >(b"void test_pointer_equal(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2111: {
+        if pointer_equal(
+            &mut a as *mut libc::c_int as *mut libc::c_void,
+            &mut b as *mut libc::c_int as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"pointer_equal(&a, &b) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                97 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 30],
+                    &[libc::c_char; 30],
+                >(b"void test_pointer_equal(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -260,6 +450,25 @@ pub unsafe extern "C" fn test_string_compare() {
             >(b"void test_string_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2333: {
+        if string_compare(
+            test1.as_mut_ptr() as *mut libc::c_void,
+            test2.as_mut_ptr() as *mut libc::c_void,
+        ) < 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_compare(test1, test2) < 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                108 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_string_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_compare(
         test2.as_mut_ptr() as *mut libc::c_void,
@@ -276,6 +485,25 @@ pub unsafe extern "C" fn test_string_compare() {
             >(b"void test_string_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2279: {
+        if string_compare(
+            test2.as_mut_ptr() as *mut libc::c_void,
+            test1.as_mut_ptr() as *mut libc::c_void,
+        ) > 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_compare(test2, test1) > 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                112 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_string_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_compare(
         test1.as_mut_ptr() as *mut libc::c_void,
@@ -292,6 +520,25 @@ pub unsafe extern "C" fn test_string_compare() {
             >(b"void test_string_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2222: {
+        if string_compare(
+            test1.as_mut_ptr() as *mut libc::c_void,
+            test3.as_mut_ptr() as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_compare(test1, test3) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                116 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 31],
+                    &[libc::c_char; 31],
+                >(b"void test_string_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -331,6 +578,24 @@ pub unsafe extern "C" fn test_string_equal() {
             >(b"void test_string_equal(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2556: {
+        if string_equal(
+            test1.as_mut_ptr() as *mut libc::c_void,
+            test5.as_mut_ptr() as *mut libc::c_void,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_equal(test1, test5) != 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                129 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_string_equal(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_equal(
         test1.as_mut_ptr() as *mut libc::c_void,
@@ -347,6 +612,24 @@ pub unsafe extern "C" fn test_string_equal() {
             >(b"void test_string_equal(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2503: {
+        if string_equal(
+            test1.as_mut_ptr() as *mut libc::c_void,
+            test2.as_mut_ptr() as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_equal(test1, test2) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                134 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_string_equal(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_equal(
         test1.as_mut_ptr() as *mut libc::c_void,
@@ -363,6 +646,24 @@ pub unsafe extern "C" fn test_string_equal() {
             >(b"void test_string_equal(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2450: {
+        if string_equal(
+            test1.as_mut_ptr() as *mut libc::c_void,
+            test3.as_mut_ptr() as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_equal(test1, test3) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                135 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_string_equal(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_equal(
         test1.as_mut_ptr() as *mut libc::c_void,
@@ -379,6 +680,24 @@ pub unsafe extern "C" fn test_string_equal() {
             >(b"void test_string_equal(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2394: {
+        if string_equal(
+            test1.as_mut_ptr() as *mut libc::c_void,
+            test4.as_mut_ptr() as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_equal(test1, test4) == 0\0" as *const u8 as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                138 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 29],
+                    &[libc::c_char; 29],
+                >(b"void test_string_equal(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -423,6 +742,25 @@ pub unsafe extern "C" fn test_string_nocase_compare() {
             >(b"void test_string_nocase_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2836: {
+        if string_nocase_compare(
+            test1.as_mut_ptr() as *mut libc::c_void,
+            test2.as_mut_ptr() as *mut libc::c_void,
+        ) < 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_nocase_compare(test1, test2) < 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                152 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_string_nocase_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_nocase_compare(
         test2.as_mut_ptr() as *mut libc::c_void,
@@ -440,6 +778,25 @@ pub unsafe extern "C" fn test_string_nocase_compare() {
             >(b"void test_string_nocase_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2784: {
+        if string_nocase_compare(
+            test2.as_mut_ptr() as *mut libc::c_void,
+            test1.as_mut_ptr() as *mut libc::c_void,
+        ) > 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_nocase_compare(test2, test1) > 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                156 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_string_nocase_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_nocase_compare(
         test1.as_mut_ptr() as *mut libc::c_void,
@@ -457,6 +814,25 @@ pub unsafe extern "C" fn test_string_nocase_compare() {
             >(b"void test_string_nocase_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2729: {
+        if string_nocase_compare(
+            test1.as_mut_ptr() as *mut libc::c_void,
+            test3.as_mut_ptr() as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_nocase_compare(test1, test3) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                160 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_string_nocase_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_nocase_compare(
         test4.as_mut_ptr() as *mut libc::c_void,
@@ -474,6 +850,25 @@ pub unsafe extern "C" fn test_string_nocase_compare() {
             >(b"void test_string_nocase_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2677: {
+        if string_nocase_compare(
+            test4.as_mut_ptr() as *mut libc::c_void,
+            test5.as_mut_ptr() as *mut libc::c_void,
+        ) < 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_nocase_compare(test4, test5) < 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                164 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_string_nocase_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_nocase_compare(
         test5.as_mut_ptr() as *mut libc::c_void,
@@ -491,6 +886,25 @@ pub unsafe extern "C" fn test_string_nocase_compare() {
             >(b"void test_string_nocase_compare(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2621: {
+        if string_nocase_compare(
+            test5.as_mut_ptr() as *mut libc::c_void,
+            test6.as_mut_ptr() as *mut libc::c_void,
+        ) < 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_nocase_compare(test5, test6) < 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                165 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 38],
+                    &[libc::c_char; 38],
+                >(b"void test_string_nocase_compare(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -531,6 +945,25 @@ pub unsafe extern "C" fn test_string_nocase_equal() {
             >(b"void test_string_nocase_equal(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3057: {
+        if string_nocase_equal(
+            test1.as_mut_ptr() as *mut libc::c_void,
+            test5.as_mut_ptr() as *mut libc::c_void,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_nocase_equal(test1, test5) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                178 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 36],
+                    &[libc::c_char; 36],
+                >(b"void test_string_nocase_equal(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_nocase_equal(
         test1.as_mut_ptr() as *mut libc::c_void,
@@ -548,6 +981,25 @@ pub unsafe extern "C" fn test_string_nocase_equal() {
             >(b"void test_string_nocase_equal(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_3005: {
+        if string_nocase_equal(
+            test1.as_mut_ptr() as *mut libc::c_void,
+            test2.as_mut_ptr() as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_nocase_equal(test1, test2) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                183 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 36],
+                    &[libc::c_char; 36],
+                >(b"void test_string_nocase_equal(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_nocase_equal(
         test1.as_mut_ptr() as *mut libc::c_void,
@@ -565,6 +1017,25 @@ pub unsafe extern "C" fn test_string_nocase_equal() {
             >(b"void test_string_nocase_equal(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2953: {
+        if string_nocase_equal(
+            test1.as_mut_ptr() as *mut libc::c_void,
+            test3.as_mut_ptr() as *mut libc::c_void,
+        ) == 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_nocase_equal(test1, test3) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                184 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 36],
+                    &[libc::c_char; 36],
+                >(b"void test_string_nocase_equal(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_nocase_equal(
         test1.as_mut_ptr() as *mut libc::c_void,
@@ -582,6 +1053,25 @@ pub unsafe extern "C" fn test_string_nocase_equal() {
             >(b"void test_string_nocase_equal(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2897: {
+        if string_nocase_equal(
+            test1.as_mut_ptr() as *mut libc::c_void,
+            test4.as_mut_ptr() as *mut libc::c_void,
+        ) != 0 as libc::c_int
+        {} else {
+            __assert_fail(
+                b"string_nocase_equal(test1, test4) != 0\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-compare-functions.c\0" as *const u8 as *const libc::c_char,
+                187 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 36],
+                    &[libc::c_char; 36],
+                >(b"void test_string_nocase_equal(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 static mut tests: [UnitTestFunction; 9] = unsafe {

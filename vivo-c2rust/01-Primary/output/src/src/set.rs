@@ -1,10 +1,9 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
 extern "C" {
-    fn alloc_test_malloc(bytes: size_t) -> *mut libc::c_void;
-    fn alloc_test_free(ptr: *mut libc::c_void);
-    fn alloc_test_calloc(nmemb: size_t, bytes: size_t) -> *mut libc::c_void;
+    fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
+    fn calloc(_: libc::c_ulong, _: libc::c_ulong) -> *mut libc::c_void;
+    fn free(_: *mut libc::c_void);
 }
-pub type size_t = libc::c_ulong;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct _Set {
@@ -74,8 +73,8 @@ unsafe extern "C" fn set_allocate_table(mut set: *mut Set) -> libc::c_int {
             .wrapping_mul(10 as libc::c_int as libc::c_uint);
     }
     (*set)
-        .table = alloc_test_calloc(
-        (*set).table_size as size_t,
+        .table = calloc(
+        (*set).table_size as libc::c_ulong,
         ::core::mem::size_of::<*mut SetEntry>() as libc::c_ulong,
     ) as *mut *mut SetEntry;
     return ((*set).table != 0 as *mut libc::c_void as *mut *mut SetEntry) as libc::c_int;
@@ -84,7 +83,7 @@ unsafe extern "C" fn set_free_entry(mut set: *mut Set, mut entry: *mut SetEntry)
     if ((*set).free_func).is_some() {
         ((*set).free_func).expect("non-null function pointer")((*entry).data);
     }
-    alloc_test_free(entry as *mut libc::c_void);
+    free(entry as *mut libc::c_void);
 }
 #[no_mangle]
 pub unsafe extern "C" fn set_new(
@@ -92,8 +91,7 @@ pub unsafe extern "C" fn set_new(
     mut equal_func: SetEqualFunc,
 ) -> *mut Set {
     let mut new_set: *mut Set = 0 as *mut Set;
-    new_set = alloc_test_malloc(::core::mem::size_of::<Set>() as libc::c_ulong)
-        as *mut Set;
+    new_set = malloc(::core::mem::size_of::<Set>() as libc::c_ulong) as *mut Set;
     if new_set.is_null() {
         return 0 as *mut Set;
     }
@@ -103,7 +101,7 @@ pub unsafe extern "C" fn set_new(
     (*new_set).prime_index = 0 as libc::c_int as libc::c_uint;
     (*new_set).free_func = None;
     if set_allocate_table(new_set) == 0 {
-        alloc_test_free(new_set as *mut libc::c_void);
+        free(new_set as *mut libc::c_void);
         return 0 as *mut Set;
     }
     return new_set;
@@ -124,8 +122,8 @@ pub unsafe extern "C" fn set_free(mut set: *mut Set) {
         i = i.wrapping_add(1);
         i;
     }
-    alloc_test_free((*set).table as *mut libc::c_void);
-    alloc_test_free(set as *mut libc::c_void);
+    free((*set).table as *mut libc::c_void);
+    free(set as *mut libc::c_void);
 }
 #[no_mangle]
 pub unsafe extern "C" fn set_register_free_function(
@@ -169,7 +167,7 @@ unsafe extern "C" fn set_enlarge(mut set: *mut Set) -> libc::c_int {
         i = i.wrapping_add(1);
         i;
     }
-    alloc_test_free(old_table as *mut libc::c_void);
+    free(old_table as *mut libc::c_void);
     return 1 as libc::c_int;
 }
 #[no_mangle]
@@ -199,7 +197,7 @@ pub unsafe extern "C" fn set_insert(
         }
         rover = (*rover).next;
     }
-    newentry = alloc_test_malloc(::core::mem::size_of::<SetEntry>() as libc::c_ulong)
+    newentry = malloc(::core::mem::size_of::<SetEntry>() as libc::c_ulong)
         as *mut SetEntry;
     if newentry.is_null() {
         return 0 as libc::c_int;
@@ -268,7 +266,7 @@ pub unsafe extern "C" fn set_to_array(mut set: *mut Set) -> *mut SetValue {
     let mut array_counter: libc::c_int = 0;
     let mut i: libc::c_uint = 0;
     let mut rover: *mut SetEntry = 0 as *mut SetEntry;
-    array = alloc_test_malloc(
+    array = malloc(
         (::core::mem::size_of::<SetValue>() as libc::c_ulong)
             .wrapping_mul((*set).entries as libc::c_ulong),
     ) as *mut SetValue;

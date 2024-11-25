@@ -1,5 +1,5 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(extern_types)]
+#![feature(extern_types, label_break_value)]
 extern "C" {
     pub type _BinomialHeap;
     fn __assert_fail(
@@ -91,6 +91,26 @@ pub unsafe extern "C" fn test_binomial_heap_insert() {
                 >(b"void test_binomial_heap_insert(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_1287: {
+            if binomial_heap_insert(
+                heap,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as BinomialHeapValue,
+            ) != 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"binomial_heap_insert(heap, &test_array[i]) != 0\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-binomial-heap.c\0" as *const u8 as *const libc::c_char,
+                    60 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 37],
+                        &[libc::c_char; 37],
+                    >(b"void test_binomial_heap_insert(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -107,7 +127,24 @@ pub unsafe extern "C" fn test_binomial_heap_insert() {
             >(b"void test_binomial_heap_insert(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1231: {
+        if binomial_heap_num_entries(heap) == 10000 as libc::c_int as libc::c_uint
+        {} else {
+            __assert_fail(
+                b"binomial_heap_num_entries(heap) == NUM_TEST_VALUES\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-binomial-heap.c\0" as *const u8 as *const libc::c_char,
+                62 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 37],
+                    &[libc::c_char; 37],
+                >(b"void test_binomial_heap_insert(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
+    binomial_heap_free(heap);
 }
 #[no_mangle]
 pub unsafe extern "C" fn test_min_heap() {
@@ -144,6 +181,26 @@ pub unsafe extern "C" fn test_min_heap() {
                 >(b"void test_min_heap(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_1526: {
+            if binomial_heap_insert(
+                heap,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as BinomialHeapValue,
+            ) != 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"binomial_heap_insert(heap, &test_array[i]) != 0\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-binomial-heap.c\0" as *const u8 as *const libc::c_char,
+                    84 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 25],
+                        &[libc::c_char; 25],
+                    >(b"void test_min_heap(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -162,6 +219,20 @@ pub unsafe extern "C" fn test_min_heap() {
                 >(b"void test_min_heap(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_1454: {
+            if *val == i + 1 as libc::c_int {} else {
+                __assert_fail(
+                    b"*val == i + 1\0" as *const u8 as *const libc::c_char,
+                    b"test/test-binomial-heap.c\0" as *const u8 as *const libc::c_char,
+                    93 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 25],
+                        &[libc::c_char; 25],
+                    >(b"void test_min_heap(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = *val;
     }
@@ -177,6 +248,20 @@ pub unsafe extern "C" fn test_min_heap() {
             >(b"void test_min_heap(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1388: {
+        if val.is_null() {} else {
+            __assert_fail(
+                b"val == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-binomial-heap.c\0" as *const u8 as *const libc::c_char,
+                100 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 25],
+                    &[libc::c_char; 25],
+                >(b"void test_min_heap(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     binomial_heap_free(heap);
 }
@@ -215,6 +300,26 @@ pub unsafe extern "C" fn test_max_heap() {
                 >(b"void test_max_heap(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_1757: {
+            if binomial_heap_insert(
+                heap,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as BinomialHeapValue,
+            ) != 0 as libc::c_int
+            {} else {
+                __assert_fail(
+                    b"binomial_heap_insert(heap, &test_array[i]) != 0\0" as *const u8
+                        as *const libc::c_char,
+                    b"test/test-binomial-heap.c\0" as *const u8 as *const libc::c_char,
+                    117 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 25],
+                        &[libc::c_char; 25],
+                    >(b"void test_max_heap(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i += 1;
         i;
@@ -233,6 +338,20 @@ pub unsafe extern "C" fn test_max_heap() {
                 >(b"void test_max_heap(void)\0"))
                     .as_ptr(),
             );
+        }
+        'c_1687: {
+            if *val == i - 1 as libc::c_int {} else {
+                __assert_fail(
+                    b"*val == i - 1\0" as *const u8 as *const libc::c_char,
+                    b"test/test-binomial-heap.c\0" as *const u8 as *const libc::c_char,
+                    126 as libc::c_int as libc::c_uint,
+                    (*::core::mem::transmute::<
+                        &[u8; 25],
+                        &[libc::c_char; 25],
+                    >(b"void test_max_heap(void)\0"))
+                        .as_ptr(),
+                );
+            }
         };
         i = *val;
     }
@@ -248,6 +367,20 @@ pub unsafe extern "C" fn test_max_heap() {
             >(b"void test_max_heap(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1624: {
+        if val.is_null() {} else {
+            __assert_fail(
+                b"val == NULL\0" as *const u8 as *const libc::c_char,
+                b"test/test-binomial-heap.c\0" as *const u8 as *const libc::c_char,
+                133 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 25],
+                    &[libc::c_char; 25],
+                >(b"void test_max_heap(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     binomial_heap_free(heap);
 }

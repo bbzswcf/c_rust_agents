@@ -1,4 +1,5 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+#![feature(label_break_value)]
 extern "C" {
     fn __assert_fail(
         __assertion: *const libc::c_char,
@@ -48,6 +49,30 @@ pub unsafe extern "C" fn test_pointer_hash() {
                     >(b"void test_pointer_hash(void)\0"))
                         .as_ptr(),
                 );
+            }
+            'c_1623: {
+                if pointer_hash(
+                    &mut *array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                        as *mut libc::c_void,
+                )
+                    != pointer_hash(
+                        &mut *array.as_mut_ptr().offset(j as isize) as *mut libc::c_int
+                            as *mut libc::c_void,
+                    )
+                {} else {
+                    __assert_fail(
+                        b"pointer_hash(&array[i]) != pointer_hash(&array[j])\0"
+                            as *const u8 as *const libc::c_char,
+                        b"test/test-hash-functions.c\0" as *const u8
+                            as *const libc::c_char,
+                        50 as libc::c_int as libc::c_uint,
+                        (*::core::mem::transmute::<
+                            &[u8; 29],
+                            &[libc::c_char; 29],
+                        >(b"void test_pointer_hash(void)\0"))
+                            .as_ptr(),
+                    );
+                }
             };
             j += 1;
             j;
@@ -91,6 +116,30 @@ pub unsafe extern "C" fn test_int_hash() {
                     >(b"void test_int_hash(void)\0"))
                         .as_ptr(),
                 );
+            }
+            'c_1822: {
+                if int_hash(
+                    &mut *array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                        as *mut libc::c_void,
+                )
+                    != int_hash(
+                        &mut *array.as_mut_ptr().offset(j as isize) as *mut libc::c_int
+                            as *mut libc::c_void,
+                    )
+                {} else {
+                    __assert_fail(
+                        b"int_hash(&array[i]) != int_hash(&array[j])\0" as *const u8
+                            as *const libc::c_char,
+                        b"test/test-hash-functions.c\0" as *const u8
+                            as *const libc::c_char,
+                        70 as libc::c_int as libc::c_uint,
+                        (*::core::mem::transmute::<
+                            &[u8; 25],
+                            &[libc::c_char; 25],
+                        >(b"void test_int_hash(void)\0"))
+                            .as_ptr(),
+                    );
+                }
             };
             j += 1;
             j;
@@ -113,6 +162,22 @@ pub unsafe extern "C" fn test_int_hash() {
             >(b"void test_int_hash(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1749: {
+        if int_hash(&mut i as *mut libc::c_int as *mut libc::c_void)
+            == int_hash(&mut j as *mut libc::c_int as *mut libc::c_void)
+        {} else {
+            __assert_fail(
+                b"int_hash(&i) == int_hash(&j)\0" as *const u8 as *const libc::c_char,
+                b"test/test-hash-functions.c\0" as *const u8 as *const libc::c_char,
+                79 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 25],
+                    &[libc::c_char; 25],
+                >(b"void test_int_hash(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -151,6 +216,23 @@ pub unsafe extern "C" fn test_string_hash() {
             >(b"void test_string_hash(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2116: {
+        if string_hash(test1.as_mut_ptr() as *mut libc::c_void)
+            != string_hash(test2.as_mut_ptr() as *mut libc::c_void)
+        {} else {
+            __assert_fail(
+                b"string_hash(test1) != string_hash(test2)\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-functions.c\0" as *const u8 as *const libc::c_char,
+                92 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_string_hash(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_hash(test1.as_mut_ptr() as *mut libc::c_void)
         != string_hash(test3.as_mut_ptr() as *mut libc::c_void)
@@ -166,6 +248,23 @@ pub unsafe extern "C" fn test_string_hash() {
             >(b"void test_string_hash(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2059: {
+        if string_hash(test1.as_mut_ptr() as *mut libc::c_void)
+            != string_hash(test3.as_mut_ptr() as *mut libc::c_void)
+        {} else {
+            __assert_fail(
+                b"string_hash(test1) != string_hash(test3)\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-functions.c\0" as *const u8 as *const libc::c_char,
+                96 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_string_hash(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_hash(test1.as_mut_ptr() as *mut libc::c_void)
         != string_hash(test5.as_mut_ptr() as *mut libc::c_void)
@@ -181,6 +280,23 @@ pub unsafe extern "C" fn test_string_hash() {
             >(b"void test_string_hash(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2003: {
+        if string_hash(test1.as_mut_ptr() as *mut libc::c_void)
+            != string_hash(test5.as_mut_ptr() as *mut libc::c_void)
+        {} else {
+            __assert_fail(
+                b"string_hash(test1) != string_hash(test5)\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-functions.c\0" as *const u8 as *const libc::c_char,
+                100 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_string_hash(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_hash(test1.as_mut_ptr() as *mut libc::c_void)
         == string_hash(test4.as_mut_ptr() as *mut libc::c_void)
@@ -196,6 +312,23 @@ pub unsafe extern "C" fn test_string_hash() {
             >(b"void test_string_hash(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_1942: {
+        if string_hash(test1.as_mut_ptr() as *mut libc::c_void)
+            == string_hash(test4.as_mut_ptr() as *mut libc::c_void)
+        {} else {
+            __assert_fail(
+                b"string_hash(test1) == string_hash(test4)\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-functions.c\0" as *const u8 as *const libc::c_char,
+                104 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 28],
+                    &[libc::c_char; 28],
+                >(b"void test_string_hash(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 #[no_mangle]
@@ -234,6 +367,23 @@ pub unsafe extern "C" fn test_string_nocase_hash() {
             >(b"void test_string_nocase_hash(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2355: {
+        if string_nocase_hash(test1.as_mut_ptr() as *mut libc::c_void)
+            != string_nocase_hash(test2.as_mut_ptr() as *mut libc::c_void)
+        {} else {
+            __assert_fail(
+                b"string_nocase_hash(test1) != string_nocase_hash(test2)\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-functions.c\0" as *const u8 as *const libc::c_char,
+                117 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_string_nocase_hash(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_nocase_hash(test1.as_mut_ptr() as *mut libc::c_void)
         != string_nocase_hash(test3.as_mut_ptr() as *mut libc::c_void)
@@ -249,6 +399,23 @@ pub unsafe extern "C" fn test_string_nocase_hash() {
             >(b"void test_string_nocase_hash(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2299: {
+        if string_nocase_hash(test1.as_mut_ptr() as *mut libc::c_void)
+            != string_nocase_hash(test3.as_mut_ptr() as *mut libc::c_void)
+        {} else {
+            __assert_fail(
+                b"string_nocase_hash(test1) != string_nocase_hash(test3)\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-functions.c\0" as *const u8 as *const libc::c_char,
+                121 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_string_nocase_hash(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_nocase_hash(test1.as_mut_ptr() as *mut libc::c_void)
         == string_nocase_hash(test5.as_mut_ptr() as *mut libc::c_void)
@@ -264,6 +431,23 @@ pub unsafe extern "C" fn test_string_nocase_hash() {
             >(b"void test_string_nocase_hash(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2243: {
+        if string_nocase_hash(test1.as_mut_ptr() as *mut libc::c_void)
+            == string_nocase_hash(test5.as_mut_ptr() as *mut libc::c_void)
+        {} else {
+            __assert_fail(
+                b"string_nocase_hash(test1) == string_nocase_hash(test5)\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-functions.c\0" as *const u8 as *const libc::c_char,
+                125 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_string_nocase_hash(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
     if string_nocase_hash(test1.as_mut_ptr() as *mut libc::c_void)
         == string_nocase_hash(test4.as_mut_ptr() as *mut libc::c_void)
@@ -279,6 +463,23 @@ pub unsafe extern "C" fn test_string_nocase_hash() {
             >(b"void test_string_nocase_hash(void)\0"))
                 .as_ptr(),
         );
+    }
+    'c_2183: {
+        if string_nocase_hash(test1.as_mut_ptr() as *mut libc::c_void)
+            == string_nocase_hash(test4.as_mut_ptr() as *mut libc::c_void)
+        {} else {
+            __assert_fail(
+                b"string_nocase_hash(test1) == string_nocase_hash(test4)\0" as *const u8
+                    as *const libc::c_char,
+                b"test/test-hash-functions.c\0" as *const u8 as *const libc::c_char,
+                129 as libc::c_int as libc::c_uint,
+                (*::core::mem::transmute::<
+                    &[u8; 35],
+                    &[libc::c_char; 35],
+                >(b"void test_string_nocase_hash(void)\0"))
+                    .as_ptr(),
+            );
+        }
     };
 }
 static mut tests: [UnitTestFunction; 5] = unsafe {
