@@ -1,0 +1,75 @@
+import json
+import os
+# 文件路径
+metadata_file_path = '../tool/c_metadata.json'
+PROJ_DIR = "primary"
+TEST_DIR = os.path.join(PROJ_DIR, "tests")
+SRC_DIR = os.path.join(PROJ_DIR, "src")
+LIB_FILE = os.path.join(SRC_DIR, "lib.rs")
+
+
+
+
+
+
+test_func="""
+
+#[test]
+fn {func_name}() {{
+    unsafe {{
+        {content}
+    }}
+}}
+"""
+
+test_ignore_func="""
+    #[test]
+    #[ignore]
+    fn {func_name}() {{
+        unsafe {{
+            {content}
+        }}
+    }}
+"""
+
+
+def remove_stest_functions(path):
+    # 打开文件并读取内容
+    with open(metadata_file_path, 'r') as file:
+        metadata = json.load(file)
+
+    for key, value in metadata.items():
+        if "test" not in key:
+            continue
+        filename = key.split('/')[1]
+        filename = filename.replace('-', '_')
+        if "cpp" in filename:
+            filename = filename.replace('.cpp', '.rs')
+        else:
+            filename = filename.replace('.c', '.rs')
+        func_signatures = value["func_signatures"]
+        func_signatures = [func for func in func_signatures if "test" in func]
+        func_names = [s.split(' ')[-1].split('(')[0] for s in func_signatures]
+        
+        # print(func_names)
+        # content = '\n\t\t'.join([f"{func_name}();" for func_name in func_names])
+        # print(content)
+        path = os.path.join(TEST_DIR, filename)
+        if os.path.isfile(path):
+            print(filename)
+            with open(path, 'r') as file:
+                file_content = file.read()
+            
+            for f in func_names:
+                content = f"{f}();"
+                if "test_rb_tree_remove" in f or "test_rb_tree_to_array" in f:
+                    func_code = test_ignore_func.format(func_name=f"s_{f}", content = content)
+                else:
+                    func_code = test_func.format(func_name=f"s_{f}", content = content)
+                file_content = file_content.replace(func_code, "")
+
+            with open(path, 'w') as file:
+                file.write(file_content)
+            
+if __name__ == "__main__":
+    remove_stest_functions("../primary")
