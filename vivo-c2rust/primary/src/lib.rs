@@ -15,7 +15,6 @@ pub mod trie;
 pub mod arraylist;
 pub mod compare_int;
 pub mod binary_heap;
-pub mod framework;
 pub mod bloom_filter;
 pub mod queue;
 pub mod hash_int;

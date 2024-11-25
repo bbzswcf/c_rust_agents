@@ -1,3 +1,4 @@
+#!/bin/bash
 count_safe_ratio() {
     a=$(tree-grepper -q rust '((function_item (function_modifiers) @_m)@f (#match? @_m "unsafe"))' | grep ':f:' | wc -l)
     b=$(tree-grepper -q rust '((function_item)@f)' | grep :f: | wc -l)

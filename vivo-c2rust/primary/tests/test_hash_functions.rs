@@ -325,9 +325,33 @@ pub fn main() {
 }
 
 
+#[test]
+fn s_test_pointer_hash() {
+    unsafe {
+        test_pointer_hash();
+    }
+}
 
 
+#[test]
+fn s_test_int_hash() {
+    unsafe {
+        test_int_hash();
+    }
+}
 
 
+#[test]
+fn s_test_string_hash() {
+    unsafe {
+        test_string_hash();
+    }
+}
 
 
+#[test]
+fn s_test_string_nocase_hash() {
+    unsafe {
+        test_string_nocase_hash();
+    }
+}

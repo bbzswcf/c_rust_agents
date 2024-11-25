@@ -954,21 +954,81 @@ pub fn main() {
 }
 
 
+#[test]
+fn s_test_set_new_free() {
+    unsafe {
+        test_set_new_free();
+    }
+}
 
 
+#[test]
+fn s_test_set_insert() {
+    unsafe {
+        test_set_insert();
+    }
+}
 
 
+#[test]
+fn s_test_set_query() {
+    unsafe {
+        test_set_query();
+    }
+}
 
 
+#[test]
+fn s_test_set_remove() {
+    unsafe {
+        test_set_remove();
+    }
+}
 
 
+#[test]
+fn s_test_set_union() {
+    unsafe {
+        test_set_union();
+    }
+}
 
 
+#[test]
+fn s_test_set_intersection() {
+    unsafe {
+        test_set_intersection();
+    }
+}
 
 
+#[test]
+fn s_test_set_to_array() {
+    unsafe {
+        test_set_to_array();
+    }
+}
 
 
+#[test]
+fn s_test_set_iterating() {
+    unsafe {
+        test_set_iterating();
+    }
+}
 
 
+#[test]
+fn s_test_set_iterating_remove() {
+    unsafe {
+        test_set_iterating_remove();
+    }
+}
 
 
+#[test]
+fn s_test_set_free_function() {
+    unsafe {
+        test_set_free_function();
+    }
+}

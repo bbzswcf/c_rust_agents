@@ -332,6 +332,8 @@ pub unsafe extern "C" fn test_bloom_filter_intersection() {
         );
     };
     bloom_filter_free(result);
+    bloom_filter_free(filter1);
+    bloom_filter_free(filter2);
 }
 #[no_mangle]
 pub unsafe extern "C" fn test_bloom_filter_union() {
@@ -392,6 +394,8 @@ pub unsafe extern "C" fn test_bloom_filter_union() {
         );
     };
     bloom_filter_free(result);
+    bloom_filter_free(filter1);
+    bloom_filter_free(filter2);
 }
 #[no_mangle]
 pub unsafe extern "C" fn test_bloom_filter_mismatch() {
@@ -541,13 +545,49 @@ pub fn main() {
 }
 
 
+#[test]
+fn s_test_bloom_filter_new_free() {
+    unsafe {
+        test_bloom_filter_new_free();
+    }
+}
 
 
+#[test]
+fn s_test_bloom_filter_insert_query() {
+    unsafe {
+        test_bloom_filter_insert_query();
+    }
+}
 
 
+#[test]
+fn s_test_bloom_filter_read_load() {
+    unsafe {
+        test_bloom_filter_read_load();
+    }
+}
 
 
+#[test]
+fn s_test_bloom_filter_intersection() {
+    unsafe {
+        test_bloom_filter_intersection();
+    }
+}
 
 
+#[test]
+fn s_test_bloom_filter_union() {
+    unsafe {
+        test_bloom_filter_union();
+    }
+}
 
 
+#[test]
+fn s_test_bloom_filter_mismatch() {
+    unsafe {
+        test_bloom_filter_mismatch();
+    }
+}

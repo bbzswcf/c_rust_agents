@@ -632,17 +632,65 @@ pub fn main() {
 }
 
 
+#[test]
+fn s_test_int_compare() {
+    unsafe {
+        test_int_compare();
+    }
+}
 
 
+#[test]
+fn s_test_int_equal() {
+    unsafe {
+        test_int_equal();
+    }
+}
 
 
+#[test]
+fn s_test_pointer_compare() {
+    unsafe {
+        test_pointer_compare();
+    }
+}
 
 
+#[test]
+fn s_test_pointer_equal() {
+    unsafe {
+        test_pointer_equal();
+    }
+}
 
 
+#[test]
+fn s_test_string_compare() {
+    unsafe {
+        test_string_compare();
+    }
+}
 
 
+#[test]
+fn s_test_string_equal() {
+    unsafe {
+        test_string_equal();
+    }
+}
 
 
+#[test]
+fn s_test_string_nocase_compare() {
+    unsafe {
+        test_string_nocase_compare();
+    }
+}
 
 
+#[test]
+fn s_test_string_nocase_equal() {
+    unsafe {
+        test_string_nocase_equal();
+    }
+}

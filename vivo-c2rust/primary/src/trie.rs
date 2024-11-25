@@ -21,117 +21,132 @@ pub struct _TrieNode {
 pub type TrieValue = *mut libc::c_void;
 pub type Trie = _Trie;
 #[no_mangle]
-pub unsafe extern "C" fn trie_new() -> *mut Trie {
+pub extern "C" fn trie_new() -> *mut Trie {
     let mut new_trie: *mut Trie = 0 as *mut Trie;
-    new_trie = alloc_test_malloc(::core::mem::size_of::<Trie>() as libc::c_ulong)
-        as *mut Trie;
+    new_trie = unsafe { alloc_test_malloc(::core::mem::size_of::<Trie>() as libc::c_ulong) as *mut Trie };
     if new_trie.is_null() {
         return 0 as *mut Trie;
     }
-    (*new_trie).root_node = 0 as *mut TrieNode;
-    return new_trie;
+    unsafe {
+        (*new_trie).root_node = 0 as *mut TrieNode;
+    }
+    new_trie
 }
-unsafe extern "C" fn trie_free_list_push(
+extern "C" fn trie_free_list_push(
     mut list: *mut *mut TrieNode,
     mut node: *mut TrieNode,
 ) {
-    (*node).data = *list as TrieValue;
-    *list = node;
+    unsafe {
+        (*node).data = *list as TrieValue;
+        *list = node;
+    }
 }
-unsafe extern "C" fn trie_free_list_pop(mut list: *mut *mut TrieNode) -> *mut TrieNode {
-    let mut result: *mut TrieNode = 0 as *mut TrieNode;
-    result = *list;
-    *list = (*result).data as *mut TrieNode;
-    return result;
+extern "C" fn trie_free_list_pop(mut list: *mut *mut TrieNode) -> *mut TrieNode {
+    let mut result: *mut TrieNode = std::ptr::null_mut();
+    unsafe {
+        result = *list;
+        *list = (*result).data as *mut TrieNode;
+    }
+    result
 }
 #[no_mangle]
-pub unsafe extern "C" fn trie_free(mut trie: *mut Trie) {
-    let mut free_list: *mut TrieNode = 0 as *mut TrieNode;
-    let mut node: *mut TrieNode = 0 as *mut TrieNode;
+pub extern "C" fn trie_free(mut trie: *mut Trie) {
+    let mut free_list: *mut TrieNode = std::ptr::null_mut();
+    let mut node: *mut TrieNode = std::ptr::null_mut();
     let mut i: libc::c_int = 0;
-    free_list = 0 as *mut TrieNode;
-    if !((*trie).root_node).is_null() {
-        trie_free_list_push(&mut free_list, (*trie).root_node);
+
+    if !trie.is_null() {
+        unsafe {
+            if !(*trie).root_node.is_null() {
+                trie_free_list_push(&mut free_list, (*trie).root_node);
+            }
+        }
     }
+
     while !free_list.is_null() {
         node = trie_free_list_pop(&mut free_list);
-        i = 0 as libc::c_int;
-        while i < 256 as libc::c_int {
-            if !((*node).next[i as usize]).is_null() {
-                trie_free_list_push(&mut free_list, (*node).next[i as usize]);
+        i = 0;
+        while i < 256 {
+            unsafe {
+                if !(*node).next[i as usize].is_null() {
+                    trie_free_list_push(&mut free_list, (*node).next[i as usize]);
+                }
             }
             i += 1;
-            i;
         }
-        alloc_test_free(node as *mut libc::c_void);
+        unsafe { alloc_test_free(node as *mut libc::c_void); }
     }
-    alloc_test_free(trie as *mut libc::c_void);
+
+    if !trie.is_null() {
+        unsafe { alloc_test_free(trie as *mut libc::c_void); }
+    }
 }
-unsafe extern "C" fn trie_find_end(
+extern "C" fn trie_find_end(
     mut trie: *mut Trie,
     mut key: *mut libc::c_char,
 ) -> *mut TrieNode {
-    let mut node: *mut TrieNode = 0 as *mut TrieNode;
-    let mut p: *mut libc::c_char = 0 as *mut libc::c_char;
-    node = (*trie).root_node;
-    p = key;
-    while *p as libc::c_int != '\0' as i32 {
-        if node.is_null() {
-            return 0 as *mut TrieNode;
+    let mut node: *mut TrieNode = std::ptr::null_mut();
+    let mut p: *mut libc::c_char = std::ptr::null_mut();
+    unsafe {
+        node = (*trie).root_node;
+        p = key;
+        while *p as libc::c_int != '\0' as i32 {
+            if node.is_null() {
+                return std::ptr::null_mut();
+            }
+            node = (*node).next[*p as libc::c_uchar as usize];
+            p = p.offset(1);
         }
-        node = (*node).next[*p as libc::c_uchar as usize];
-        p = p.offset(1);
-        p;
     }
-    return node;
+    node
 }
-unsafe extern "C" fn trie_find_end_binary(
+extern "C" fn trie_find_end_binary(
     mut trie: *mut Trie,
     mut key: *mut libc::c_uchar,
     mut key_length: libc::c_int,
 ) -> *mut TrieNode {
-    let mut node: *mut TrieNode = 0 as *mut TrieNode;
+    let mut node: *mut TrieNode = std::ptr::null_mut();
     let mut j: libc::c_int = 0;
     let mut c: libc::c_int = 0;
-    node = (*trie).root_node;
-    j = 0 as libc::c_int;
+    unsafe {
+        node = (*trie).root_node;
+    }
+    j = 0;
     while j < key_length {
         if node.is_null() {
-            return 0 as *mut TrieNode;
+            return std::ptr::null_mut();
         }
-        c = *key.offset(j as isize) as libc::c_int;
-        node = (*node).next[c as usize];
+        unsafe {
+            c = *key.offset(j as isize) as libc::c_int;
+            node = (*node).next[c as usize];
+        }
         j += 1;
-        j;
     }
-    return node;
+    node
 }
-unsafe extern "C" fn trie_insert_rollback(
+extern "C" fn trie_insert_rollback(
     mut trie: *mut Trie,
     mut key: *mut libc::c_uchar,
 ) {
-    let mut node: *mut TrieNode = 0 as *mut TrieNode;
-    let mut prev_ptr: *mut *mut TrieNode = 0 as *mut *mut TrieNode;
-    let mut next_node: *mut TrieNode = 0 as *mut TrieNode;
-    let mut next_prev_ptr: *mut *mut TrieNode = 0 as *mut *mut TrieNode;
-    let mut p: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
-    node = (*trie).root_node;
-    prev_ptr = &mut (*trie).root_node;
+    let mut node: *mut TrieNode = std::ptr::null_mut();
+    let mut prev_ptr: *mut *mut TrieNode = std::ptr::null_mut();
+    let mut next_node: *mut TrieNode = std::ptr::null_mut();
+    let mut next_prev_ptr: *mut *mut TrieNode = std::ptr::null_mut();
+    let mut p: *mut libc::c_uchar = std::ptr::null_mut();
+    node = unsafe { (*trie).root_node };
+    prev_ptr = &mut unsafe { (*trie).root_node };
     p = key;
     while !node.is_null() {
-        next_prev_ptr = &mut *((*node).next).as_mut_ptr().offset(*p as isize)
-            as *mut *mut TrieNode;
-        next_node = *next_prev_ptr;
-        p = p.offset(1);
-        p;
-        (*node).use_count = ((*node).use_count).wrapping_sub(1);
-        (*node).use_count;
-        if (*node).use_count == 0 as libc::c_int as libc::c_uint {
-            alloc_test_free(node as *mut libc::c_void);
+        next_prev_ptr = unsafe { &mut *((*node).next).as_mut_ptr().offset(*p as isize) as *mut *mut TrieNode };
+        next_node = unsafe { *next_prev_ptr };
+        p = unsafe { p.offset(1) };
+        unsafe { (*node).use_count = ((*node).use_count).wrapping_sub(1) };
+        if unsafe { (*node).use_count == 0 } {
+            unsafe { alloc_test_free(node as *mut libc::c_void) };
             if !prev_ptr.is_null() {
-                *prev_ptr = 0 as *mut TrieNode;
+                unsafe { *prev_ptr = std::ptr::null_mut() };
             }
-            next_prev_ptr = 0 as *mut *mut TrieNode;
+            next_prev_ptr = std::ptr::null_mut();
         }
         node = next_node;
         prev_ptr = next_prev_ptr;
@@ -187,99 +202,113 @@ pub unsafe extern "C" fn trie_insert(
     return 1 as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn trie_insert_binary(
+pub extern "C" fn trie_insert_binary(
     mut trie: *mut Trie,
     mut key: *mut libc::c_uchar,
     mut key_length: libc::c_int,
     mut value: TrieValue,
 ) -> libc::c_int {
-    let mut rover: *mut *mut TrieNode = 0 as *mut *mut TrieNode;
-    let mut node: *mut TrieNode = 0 as *mut TrieNode;
+    let mut rover: *mut *mut TrieNode = std::ptr::null_mut();
+    let mut node: *mut TrieNode = std::ptr::null_mut();
     let mut p: libc::c_int = 0;
     let mut c: libc::c_int = 0;
+
     if value.is_null() {
         return 0 as libc::c_int;
     }
-    node = trie_find_end_binary(trie, key, key_length);
-    if !node.is_null() && !((*node).data).is_null() {
-        (*node).data = value;
-        return 1 as libc::c_int;
+
+    unsafe {
+        node = trie_find_end_binary(trie, key, key_length);
+        if !node.is_null() && !((*node).data).is_null() {
+            (*node).data = value;
+            return 1 as libc::c_int;
+        }
     }
-    rover = &mut (*trie).root_node;
+
+    rover = unsafe { &mut (*trie).root_node };
     p = 0 as libc::c_int;
+
     loop {
-        node = *rover;
+        node = unsafe { *rover };
         if node.is_null() {
-            node = alloc_test_calloc(
-                1 as libc::c_int as size_t,
-                ::core::mem::size_of::<TrieNode>() as libc::c_ulong,
-            ) as *mut TrieNode;
+            node = unsafe { alloc_test_calloc(1 as libc::c_int as size_t, ::core::mem::size_of::<TrieNode>() as libc::c_ulong) as *mut TrieNode };
             if node.is_null() {
-                trie_insert_rollback(trie, key);
+                unsafe { trie_insert_rollback(trie, key) };
                 return 0 as libc::c_int;
             }
-            (*node).data = 0 as *mut libc::c_void;
-            *rover = node;
+            unsafe {
+                (*node).data = std::ptr::null_mut();
+                *rover = node;
+            }
         }
-        (*node).use_count = ((*node).use_count).wrapping_add(1);
-        (*node).use_count;
-        c = *key.offset(p as isize) as libc::c_int;
+        unsafe {
+            (*node).use_count = (*node).use_count.wrapping_add(1);
+        }
+        c = unsafe { *key.offset(p as isize) as libc::c_int };
         if p == key_length {
-            (*node).data = value;
+            unsafe {
+                (*node).data = value;
+            }
             break;
         } else {
-            rover = &mut *((*node).next).as_mut_ptr().offset(c as isize)
-                as *mut *mut TrieNode;
+            rover = unsafe { &mut *((*node).next).as_mut_ptr().offset(c as isize) };
             p += 1;
-            p;
         }
     }
     return 1 as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn trie_remove_binary(
+pub extern "C" fn trie_remove_binary(
     mut trie: *mut Trie,
     mut key: *mut libc::c_uchar,
     mut key_length: libc::c_int,
 ) -> libc::c_int {
-    let mut node: *mut TrieNode = 0 as *mut TrieNode;
-    let mut next: *mut TrieNode = 0 as *mut TrieNode;
-    let mut last_next_ptr: *mut *mut TrieNode = 0 as *mut *mut TrieNode;
+    let mut node: *mut TrieNode = std::ptr::null_mut();
+    let mut next: *mut TrieNode = std::ptr::null_mut();
+    let mut last_next_ptr: *mut *mut TrieNode = std::ptr::null_mut();
     let mut p: libc::c_int = 0;
     let mut c: libc::c_int = 0;
-    node = trie_find_end_binary(trie, key, key_length);
-    if !node.is_null() && !((*node).data).is_null() {
-        (*node).data = 0 as *mut libc::c_void;
-    } else {
-        return 0 as libc::c_int
-    }
-    node = (*trie).root_node;
-    last_next_ptr = &mut (*trie).root_node;
-    p = 0 as libc::c_int;
-    loop {
-        c = *key.offset(p as isize) as libc::c_int;
-        next = (*node).next[c as usize];
-        (*node).use_count = ((*node).use_count).wrapping_sub(1);
-        (*node).use_count;
-        if (*node).use_count <= 0 as libc::c_int as libc::c_uint {
-            alloc_test_free(node as *mut libc::c_void);
-            if !last_next_ptr.is_null() {
-                *last_next_ptr = 0 as *mut TrieNode;
-                last_next_ptr = 0 as *mut *mut TrieNode;
+
+    unsafe {
+        node = trie_find_end_binary(trie, key, key_length);
+        if !node.is_null() && !((*node).data).is_null() {
+            (*node).data = std::ptr::null_mut();
+        } else {
+            return 0;
+        }
+
+        node = (*trie).root_node;
+        last_next_ptr = &mut (*trie).root_node;
+        p = 0;
+
+        while p <= key_length {
+            c = *key.offset(p as isize) as libc::c_int;
+            next = (*node).next[c as usize];
+            (*node).use_count = (*node).use_count.wrapping_sub(1);
+
+            if (*node).use_count == 0 {
+                alloc_test_free(node as *mut libc::c_void);
+                if !last_next_ptr.is_null() {
+                    *last_next_ptr = std::ptr::null_mut();
+                    last_next_ptr = std::ptr::null_mut();
+                }
             }
+
+            if p == key_length {
+                break;
+            }
+
+            p += 1;
+
+            if !last_next_ptr.is_null() {
+                last_next_ptr = &mut (*node).next[c as usize];
+            }
+
+            node = next;
         }
-        if p == key_length {
-            break;
-        }
-        p += 1;
-        p;
-        if !last_next_ptr.is_null() {
-            last_next_ptr = &mut *((*node).next).as_mut_ptr().offset(c as isize)
-                as *mut *mut TrieNode;
-        }
-        node = next;
     }
-    return 1 as libc::c_int;
+
+    return 1;
 }
 #[no_mangle]
 pub unsafe extern "C" fn trie_remove(

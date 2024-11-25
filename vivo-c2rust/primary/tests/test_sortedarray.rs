@@ -485,15 +485,57 @@ pub fn main() {
 }
 
 
+#[test]
+fn s_test_sortedarray_new_free() {
+    unsafe {
+        test_sortedarray_new_free();
+    }
+}
 
 
+#[test]
+fn s_test_sortedarray_insert() {
+    unsafe {
+        test_sortedarray_insert();
+    }
+}
 
 
+#[test]
+fn s_test_sortedarray_remove() {
+    unsafe {
+        test_sortedarray_remove();
+    }
+}
 
 
+#[test]
+fn s_test_sortedarray_remove_range() {
+    unsafe {
+        test_sortedarray_remove_range();
+    }
+}
 
 
+#[test]
+fn s_test_sortedarray_index_of() {
+    unsafe {
+        test_sortedarray_index_of();
+    }
+}
 
 
+#[test]
+fn s_test_sortedarray_index_of_equ_key() {
+    unsafe {
+        test_sortedarray_index_of_equ_key();
+    }
+}
 
 
+#[test]
+fn s_test_sortedarray_get() {
+    unsafe {
+        test_sortedarray_get();
+    }
+}

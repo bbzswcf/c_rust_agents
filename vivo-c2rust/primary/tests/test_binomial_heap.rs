@@ -116,6 +116,7 @@ pub unsafe extern "C" fn test_binomial_heap_insert() {
                 .as_ptr(),
         );
     };
+    binomial_heap_free(heap);
 }
 #[no_mangle]
 pub unsafe extern "C" fn test_min_heap() {
@@ -301,9 +302,33 @@ pub fn main() {
 }
 
 
+#[test]
+fn s_test_binomial_heap_new_free() {
+    unsafe {
+        test_binomial_heap_new_free();
+    }
+}
 
 
+#[test]
+fn s_test_binomial_heap_insert() {
+    unsafe {
+        test_binomial_heap_insert();
+    }
+}
 
 
+#[test]
+fn s_test_min_heap() {
+    unsafe {
+        test_min_heap();
+    }
+}
 
 
+#[test]
+fn s_test_max_heap() {
+    unsafe {
+        test_max_heap();
+    }
+}
