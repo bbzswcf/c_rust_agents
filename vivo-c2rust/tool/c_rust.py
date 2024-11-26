@@ -364,16 +364,16 @@ if __name__ == "__main__":
     assert_start_time = time.time()
     for root, dirs, files in os.walk(TEST_PATH):
         for file in files:
-            if "arraylist" not in file:
-                continue
+            # if "arraylist" not in file:
+            #     continue
             logging.info(f"注释{file}中的main函数")
             remove_main_and_tests(os.path.join(root, file))
             logging.info("assert宏替换")
             assert_optimize(os.path.join(root, file))
     for root, dirs, files in os.walk(SRC_PATH):
         for file in files:
-            if "arraylist" not in file:
-                continue
+            # if "arraylist" not in file:
+            #     continue
             if "alloc_testing" in file:
                 logging.info("当前文件为alloc_testing，先进行assert替换")
                 assert_optimize(file_path = os.path.join(root, file))
@@ -386,8 +386,8 @@ if __name__ == "__main__":
     first_start_time = time.time()
     for root, dirs, files in os.walk(SRC_PATH):
         for file in files:
-            if "arraylist" not in file:
-                continue
+            # if "arraylist" not in file:
+            #     continue
             module_name = file.split('.')[0]
             file_path = os.path.join(root, file)
 
@@ -398,8 +398,8 @@ if __name__ == "__main__":
 
     for root, dirs, files in os.walk(TEST_PATH):
         for file in files:
-            if "arraylist" not in file:
-                continue
+            # if "arraylist" not in file:
+            #     continue
             start_index = len("test_")
             end_index = file.find(".rs")
             module_name = file[start_index:end_index]
@@ -432,8 +432,8 @@ if __name__ == "__main__":
     second_start_time = time.time()
     for root, dirs, files in os.walk(SRC_PATH):
         for file in files:
-            if "arraylist" not in file:
-                continue
+            # if "arraylist" not in file:
+            #     continue
             module_name = file.split('.')[0]
             file_path = os.path.join(root, file)
 
@@ -443,8 +443,8 @@ if __name__ == "__main__":
 
     for root, dirs, files in os.walk(TEST_PATH):
         for file in files:
-            if "arraylist" not in file:
-                continue
+            # if "arraylist" not in file:
+            #     continue
             start_index = len("test_")
             end_index = file.find(".rs")
             module_name = file[start_index:end_index]
