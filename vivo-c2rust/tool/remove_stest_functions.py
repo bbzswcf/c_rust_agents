@@ -1,17 +1,6 @@
 import json
 import os
-# 文件路径
-metadata_file_path = '../tool/c_metadata.json'
-PROJ_DIR = "primary"
-TEST_DIR = os.path.join(PROJ_DIR, "tests")
-SRC_DIR = os.path.join(PROJ_DIR, "src")
-LIB_FILE = os.path.join(SRC_DIR, "lib.rs")
-
-
-
-
-
-
+import logging
 test_func="""
 
 #[test]
@@ -23,17 +12,22 @@ fn {func_name}() {{
 """
 
 test_ignore_func="""
-    #[test]
-    #[ignore]
-    fn {func_name}() {{
-        unsafe {{
-            {content}
-        }}
+#[test]
+#[ignore]
+fn {func_name}() {{
+    unsafe {{
+        {content}
     }}
+}}
 """
 
 
 def remove_stest_functions(path):
+    metadata_file_path = './c_metadata.json'
+    PROJ_DIR = path
+    TEST_DIR = os.path.join(PROJ_DIR, "tests")
+    SRC_DIR = os.path.join(PROJ_DIR, "src")
+    LIB_FILE = os.path.join(SRC_DIR, "lib.rs")
     # 打开文件并读取内容
     with open(metadata_file_path, 'r') as file:
         metadata = json.load(file)
@@ -56,7 +50,7 @@ def remove_stest_functions(path):
         # print(content)
         path = os.path.join(TEST_DIR, filename)
         if os.path.isfile(path):
-            print(filename)
+            logging.info(f"remove s_test for {filename}")
             with open(path, 'r') as file:
                 file_content = file.read()
             

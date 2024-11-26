@@ -114,12 +114,6 @@ void test_rb_tree_new(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-
-	// tree = rb_tree_new((RBTreeCompareFunc) int_compare);
-
-	// assert(tree == NULL);
-
 }
 
 void test_rb_tree_insert_lookup(void)
@@ -208,27 +202,16 @@ void test_rb_tree_child(void)
 
 void test_out_of_memory(void)
 {
-// 	RBTree *tree;
-// 	RBTreeNode *node;
-// 	int i;
+	RBTree *tree;
+	RBTreeNode *node;
+	int i;
 
-// 	/* Create a tree */
+	/* Create a tree */
 
-// 	tree = create_tree();
+	tree = create_tree();
 
-// 	/* Set a limit to stop any more entries from being added. */
+	/* Set a limit to stop any more entries from being added. */
 
-// 	alloc_test_set_limit(0);
-
-// 	/* Try to add some more nodes and verify that this fails. */
-
-// 	for (i=10000; i<20000; ++i) {
-// 		node = rb_tree_insert(tree, &i, &i);
-// 		assert(node == NULL);
-// 		validate_tree(tree);
-// 	}
-
-// 	rb_tree_free(tree);
 }
 
 void test_rb_tree_free(void)
@@ -350,13 +333,6 @@ void test_rb_tree_to_array(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-
-	// array = (int **) rb_tree_to_array(tree);
-	// assert(array == NULL);
-	// validate_tree(tree);
-
-	rb_tree_free(tree);
 }
 
 static UnitTestFunction tests[] = {

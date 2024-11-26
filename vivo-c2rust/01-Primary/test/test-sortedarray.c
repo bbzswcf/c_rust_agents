@@ -95,11 +95,6 @@ void test_sortedarray_new_free(void)
 	sortedarray_free(NULL);
 
 	/* low memory */
-	// alloc_test_set_limit(0);
-	// sortedarray = sortedarray_new(0, int_equal, int_compare);
-	// assert(sortedarray == NULL);
-
-	// alloc_test_set_limit(-1);
 }
 
 void test_sortedarray_insert(void)

@@ -3,6 +3,7 @@
 # 测试文件中重新封装test函数
 import json
 import os
+import logging
 # 文件路径
 test_func="""
 #[test]
@@ -23,7 +24,7 @@ fn {func_name}() {{
 """
 
 def add_stest_functions(path):
-    metadata_file_path = '../tool/c_metadata.json'
+    metadata_file_path = './c_metadata.json'
     PROJ_DIR = path
     TEST_DIR = os.path.join(PROJ_DIR, "tests")
     SRC_DIR = os.path.join(PROJ_DIR, "src")
@@ -52,8 +53,8 @@ def add_stest_functions(path):
         # print(content)
         path = os.path.join(TEST_DIR, filename)
         if os.path.isfile(path):
-            print(f"add s_test for {filename}")
-            
+            logging.info(f"add s_test for {filename}")
+            # print(f"add s_test for {filename}")
             with open(path, 'a') as file:
                 for f in func_names:
                     content = f"{f}();"

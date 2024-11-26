@@ -61,12 +61,6 @@ void test_slist_append(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-	// assert(slist_length(list) == 4);
-	// assert(slist_append(&list, &variable1) == NULL);
-	// assert(slist_length(list) == 4);
-
-	slist_free(list);
 }
 
 void test_slist_prepend(void)
@@ -85,12 +79,6 @@ void test_slist_prepend(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-	// assert(slist_length(list) == 4);
-	// assert(slist_prepend(&list, &variable1) == NULL);
-	// assert(slist_length(list) == 4);
-
-	slist_free(list);
 }
 
 void test_slist_free(void)
@@ -381,12 +369,6 @@ void test_slist_to_array(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-
-	// array = slist_to_array(list);
-	// assert(array == NULL);
-
-	slist_free(list);
 }
 
 void test_slist_iterate(void)

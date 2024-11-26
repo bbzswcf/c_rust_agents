@@ -71,13 +71,6 @@ void test_arraylist_new_free(void)
 
 	/* Test low memory scenarios (failed malloc) */
 
-	// alloc_test_set_limit(0);
-	// arraylist = arraylist_new(0);
-	// assert(arraylist == NULL);
-
-	// alloc_test_set_limit(1);
-	// arraylist = arraylist_new(100);
-	// assert(arraylist == NULL);
 }
 
 void test_arraylist_append(void)
@@ -118,19 +111,8 @@ void test_arraylist_append(void)
 
 	/* Test low memory scenario */
 
-	// arraylist = arraylist_new(100);
+	arraylist = arraylist_new(100);
 
-	// alloc_test_set_limit(0);
-
-	// for (i=0; i<100; ++i) {
-	// 	assert(arraylist_append(arraylist, NULL) != 0);
-	// }
-
-	// assert(arraylist->length == 100);
-	// assert(arraylist_append(arraylist, NULL) == 0);
-	// assert(arraylist->length == 100);
-
-	// arraylist_free(arraylist);
 }
 
 
@@ -172,19 +154,8 @@ void test_arraylist_prepend(void)
 
 	/* Test low memory scenario */
 
-	// arraylist = arraylist_new(100);
+	arraylist = arraylist_new(100);
 
-	// alloc_test_set_limit(0);
-
-	// for (i=0; i<100; ++i) {
-	// 	assert(arraylist_prepend(arraylist, NULL) != 0);
-	// }
-
-	// assert(arraylist->length == 100);
-	// assert(arraylist_prepend(arraylist, NULL) == 0);
-	// assert(arraylist->length == 100);
-
-	// arraylist_free(arraylist);
 }
 
 void test_arraylist_insert(void)

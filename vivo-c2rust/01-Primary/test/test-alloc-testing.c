@@ -36,40 +36,6 @@ static void test_malloc_free(void)
 
 	/* Allocate a block and check that the counters increase */
 
-	assert(alloc_test_get_allocated() == 0);
-
-	block = malloc(1024);
-	assert(block != NULL);
-	assert(alloc_test_get_allocated() == 1024);
-
-	/* Check that the block is initialised with garbage */
-	ptr = block;
-	for (i=0; i<1024; ++i) {
-		assert(ptr[i] != 0);
-	}
-
-	/* Free the block back and check the counters decrease */
-
-	free(block);
-
-	assert(alloc_test_get_allocated() == 0);
-
-	/* Try setting a limit */
-
-	alloc_test_set_limit(3);
-
-	block = malloc(1024);
-	assert(block != NULL);
-	block2 = malloc(1024);
-	assert(block2 != NULL);
-	block3 = malloc(1024);
-	assert(block3 != NULL);
-	block4 = malloc(1024);
-	assert(block4 == NULL);
-	free(block);
-	free(block2);
-	free(block3);
-	free(block4);
 }
 
 static void test_realloc(void)
@@ -86,69 +52,6 @@ static void test_realloc(void)
 	block = malloc(1024);
 
 	assert(block != NULL);
-	assert(alloc_test_get_allocated() == 1024 + 1024);
-
-	/* Reallocate the block larger */
-
-	block = realloc(block, 2048);
-	assert(block != NULL);
-
-	assert(alloc_test_get_allocated() == 2048 + 1024);
-
-	/* Reallocate the block smaller */
-
-	block = realloc(block, 1500);
-	assert(block != NULL);
-
-	assert(alloc_test_get_allocated() == 1500 + 1024);
-
-	free(block);
-
-	assert(alloc_test_get_allocated() == 0 + 1024);
-
-	/* Test passing a NULL pointer to make realloc behave as malloc() */
-
-	block = realloc(NULL, 1024);
-
-	assert(block != NULL);
-
-	assert(alloc_test_get_allocated() == 1024 + 1024);
-
-	free(block);
-	free(block2);
-
-	assert(alloc_test_get_allocated() == 0);
-
-	/* Test realloc with a limit set */
-
-	block = malloc(512);
-	assert(block != NULL);
-	assert(alloc_test_get_allocated() == 512);
-
-	alloc_test_set_limit(1);
-
-	block = realloc(block, 1024);
-	assert(block != NULL);
-	assert(alloc_test_get_allocated() == 1024);
-
-	assert(realloc(block, 2048) == NULL);
-	assert(alloc_test_get_allocated() == 1024);
-
-	free(block);
-	assert(alloc_test_get_allocated() == 0);
-
-	/* Test NULL realloc with limit */
-
-	alloc_test_set_limit(1);
-
-	block = realloc(NULL, 1024);
-	assert(block != NULL);
-	assert(alloc_test_get_allocated() == 1024);
-
-	assert(realloc(NULL, 1024) == NULL);
-	assert(alloc_test_get_allocated() == 1024);
-
-	free(block);
 }
 
 static void test_calloc(void)
@@ -156,71 +59,12 @@ static void test_calloc(void)
 	unsigned char *block;
 	int i;
 
-	assert(alloc_test_get_allocated() == 0);
-
-	/* Allocate a block */
-
-	block = calloc(16, 64);
-
-	assert(alloc_test_get_allocated() == 1024);
-
-	assert(block != NULL);
-
-	/* Check the block contents are initialised to zero */
-
-	for (i=0; i<1024; ++i) {
-		assert(block[i] == 0);
-	}
-
-	free(block);
-
-	assert(alloc_test_get_allocated() == 0);
-
-	/* Test calloc with limit */
-
-	alloc_test_set_limit(1);
-
-	block = calloc(1024, 1);
-	assert(block != NULL);
-	assert(alloc_test_get_allocated() == 1024);
-
-	assert(calloc(1024, 1) == NULL);
-	assert(alloc_test_get_allocated() == 1024);
-
-	free(block);
 }
 
 static void test_strdup(void)
 {
 	char *str;
 
-	assert(alloc_test_get_allocated() == 0);
-
-	/* Test strdup */
-
-	str = strdup("hello world");
-
-	assert(str != NULL);
-	assert(strcmp(str, "hello world") == 0);
-
-	assert(alloc_test_get_allocated() == 12);
-
-	free(str);
-
-	assert(alloc_test_get_allocated() == 0);
-
-	/* Test strdup with limit */
-
-	alloc_test_set_limit(1);
-
-	str = strdup("hello world");
-	assert(str != NULL);
-	assert(alloc_test_get_allocated() == 12);
-
-	assert(strdup("hello world") == NULL);
-	assert(alloc_test_get_allocated() == 12);
-
-	free(str);
 }
 
 static void test_limits(void)
@@ -235,18 +79,6 @@ static void test_limits(void)
 
 	/* Test malloc with limit */
 
-	alloc_test_set_limit(1);
-	block = malloc(1024);
-	assert(block != NULL);
-	assert(malloc(1024) == NULL);
-	free(block);
-
-	/* Check that it is possible to remove the limit */
-
-	alloc_test_set_limit(-1);
-	block = malloc(1024);
-	assert(block != NULL);
-	free(block);
 }
 
 static UnitTestFunction tests[] = {

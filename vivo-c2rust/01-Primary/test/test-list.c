@@ -81,13 +81,6 @@ void test_list_append(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-	// assert(list_length(list) == 4);
-	// assert(list_append(&list, &variable1) == NULL);
-	// assert(list_length(list) == 4);
-	// check_list_integrity(list);
-
-	list_free(list);
 }
 
 void test_list_prepend(void)
@@ -110,13 +103,6 @@ void test_list_prepend(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-	// assert(list_length(list) == 4);
-	// assert(list_prepend(&list, &variable1) == NULL);
-	// assert(list_length(list) == 4);
-	// check_list_integrity(list);
-
-	list_free(list);
 }
 
 void test_list_free(void)
@@ -425,12 +411,6 @@ void test_list_to_array(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-
-	// array = list_to_array(list);
-	// assert(array == NULL);
-
-	list_free(list);
 }
 
 void test_list_iterate(void)

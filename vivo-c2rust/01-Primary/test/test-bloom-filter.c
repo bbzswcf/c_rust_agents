@@ -56,17 +56,6 @@ void test_bloom_filter_new_free(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-
-	// filter = bloom_filter_new(128, string_hash, 1);
-
-	// assert(filter == NULL);
-
-	// alloc_test_set_limit(1);
-
-	// filter = bloom_filter_new(128, string_hash, 1);
-
-	// assert(filter == NULL);
 }
 
 void test_bloom_filter_insert_query(void)
@@ -167,12 +156,6 @@ void test_bloom_filter_intersection(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-	// result = bloom_filter_intersection(filter1, filter2);
-	// assert(result == NULL);
-
-	bloom_filter_free(filter1);
-	bloom_filter_free(filter2);
 }
 
 void test_bloom_filter_union(void)
@@ -206,12 +189,6 @@ void test_bloom_filter_union(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-	// result = bloom_filter_union(filter1, filter2);
-	// assert(result == NULL);
-
-	bloom_filter_free(filter1);
-	bloom_filter_free(filter2);
 }
 
 /* Test attempts to do union/intersection of mismatched filters */

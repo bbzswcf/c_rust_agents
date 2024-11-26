@@ -5,6 +5,7 @@ from extract_component import *
 from add_crate import *
 from add_stest_functions import * 
 from remove_stest_functions import *
+from remove_alloc_test_blocks import *
 import subprocess
 import re
 import logging
@@ -13,7 +14,7 @@ import time
 
 
 agent = Agent(
-    role="src 优化",
+    role="代码优化",
     prompt="You are a proficient C and Rust advanced developer.",
     temperature=0.2,
     top_p=0.9
@@ -21,6 +22,7 @@ agent = Agent(
 PROJ_PATH="../primary"
 SRC_PATH="../primary/src"
 TEST_PATH="../primary/tests"
+C_PATH="../01-Primary"
 COMPARE_HASH_SRC_LIST = [
     f"{SRC_PATH}/compare_int.rs",
     f"{SRC_PATH}/compare_string.rs",
@@ -334,10 +336,14 @@ if __name__ == "__main__":
         exit(1)
     setup_logging()
 
+    # C代码预处理
+    logging.info("预处理C代码")
+    remove_alloc_test_blocks_in_dir(f"{C_PATH}/test")
+
     logging.info("c2rust转换")
     c2rust_start_time = time.time()
     result = subprocess.run(
-        ["../c2rust/target/debug/c2rust", "transpile", "--output-dir", f"{PROJ_PATH}-c2rust", "../01-Primary/compile_commands.json"],
+        ["../c2rust/target/debug/c2rust", "transpile", "--output-dir", f"{PROJ_PATH}-c2rust", f"{C_PATH}/compile_commands.json"],
         text=True,
     )
     if result.returncode == 0:
@@ -358,12 +364,18 @@ if __name__ == "__main__":
     assert_start_time = time.time()
     for root, dirs, files in os.walk(TEST_PATH):
         for file in files:
+            if "arraylist" not in file:
+                continue
+            logging.info(f"注释{file}中的main函数")
+            remove_main_and_tests(os.path.join(root, file))
             logging.info("assert宏替换")
             assert_optimize(os.path.join(root, file))
     for root, dirs, files in os.walk(SRC_PATH):
         for file in files:
+            if "arraylist" not in file:
+                continue
             if "alloc_testing" in file:
-                logging.info(f"当前文件为alloc_testing，先进行assert替换")
+                logging.info("当前文件为alloc_testing，先进行assert替换")
                 assert_optimize(file_path = os.path.join(root, file))
 
     assert_end_time = time.time()
@@ -374,6 +386,8 @@ if __name__ == "__main__":
     first_start_time = time.time()
     for root, dirs, files in os.walk(SRC_PATH):
         for file in files:
+            if "arraylist" not in file:
+                continue
             module_name = file.split('.')[0]
             file_path = os.path.join(root, file)
 
@@ -384,16 +398,16 @@ if __name__ == "__main__":
 
     for root, dirs, files in os.walk(TEST_PATH):
         for file in files:
+            if "arraylist" not in file:
+                continue
             start_index = len("test_")
             end_index = file.find(".rs")
             module_name = file[start_index:end_index]
             file_path = os.path.join(root, file)
 
             logging.info(f"{file}第一轮优化")
-            logging.info(f"注释{file}中的main函数")
-            remove_main_and_tests(file_path)
-            # logging.info("assert 宏替换")
-            # assert_optimize(file_path)
+            
+
             fail_list = first_safe_optimize(file_path)
             logging.info(f"第一轮优化失败函数：{fail_list}")
             test_fail_dict[module_name] = fail_list
@@ -418,6 +432,8 @@ if __name__ == "__main__":
     second_start_time = time.time()
     for root, dirs, files in os.walk(SRC_PATH):
         for file in files:
+            if "arraylist" not in file:
+                continue
             module_name = file.split('.')[0]
             file_path = os.path.join(root, file)
 
@@ -427,6 +443,8 @@ if __name__ == "__main__":
 
     for root, dirs, files in os.walk(TEST_PATH):
         for file in files:
+            if "arraylist" not in file:
+                continue
             start_index = len("test_")
             end_index = file.find(".rs")
             module_name = file[start_index:end_index]

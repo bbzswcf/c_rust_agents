@@ -3,6 +3,7 @@
 # 测试文件中重新封装test函数
 import json
 import os
+import logging
 metadata_file_path = './c_metadata.json'
 
 
@@ -24,7 +25,7 @@ def add_crate(path):
             # 将 pub mod 文件名; 写入 lib.rs 文件
             with open(LIB_FILE, 'a') as lib_file:
                 lib_file.write(f"pub mod {modulename};\n")
-    print("lib.rs 文件已更新。")
+    logging.info("lib.rs 文件已更新。")
 
 
 
@@ -50,7 +51,7 @@ def add_crate(path):
         # print(content)
         path = os.path.join(TEST_DIR, filename)
         if os.path.isfile(path):
-            print(filename)
+            logging.info(f"add import for {filename}")
             with open(path, 'r') as file:
                 lines = file.readlines()
             for i, line in enumerate(lines):

@@ -43,9 +43,6 @@ void test_binomial_heap_new_free(void)
 
 	/* Test for out of memory */
 
-	// alloc_test_set_limit(0);
-
-	// assert(binomial_heap_new(BINOMIAL_HEAP_TYPE_MIN, int_compare) == NULL);
 }
 
 void test_binomial_heap_insert(void)
@@ -63,10 +60,6 @@ void test_binomial_heap_insert(void)
 
 	/* Test for out of memory */
 
-	// alloc_test_set_limit(0);
-	// assert(binomial_heap_insert(heap, &i) == 0);
-
-	binomial_heap_free(heap);
 }
 
 void test_min_heap(void)
@@ -190,55 +183,35 @@ static void verify_heap(BinomialHeap *heap)
 
 static void test_insert_out_of_memory(void)
 {
-// 	BinomialHeap *heap;
-// 	int i;
+	BinomialHeap *heap;
+	int i;
 
-// 	/* There are various memory allocations performed during the insert;
-// 	 * probe at different limit levels to catch them all. */
+	/* There are various memory allocations performed during the insert;
+	 * probe at different limit levels to catch them all. */
 
-// 	for (i=0; i<6; ++i) {
-// 		heap = generate_heap();
+	for (i=0; i<6; ++i) {
+		heap = generate_heap();
 
-// 		/* Insert should fail */
+		/* Insert should fail */
 
-// 		alloc_test_set_limit(i);
-// 		test_array[TEST_VALUE] = TEST_VALUE;
-// 		assert(binomial_heap_insert(heap,
-// 		                            &test_array[TEST_VALUE]) == 0);
-// 		alloc_test_set_limit(-1);
-
-// 		/* Check that the heap is unharmed */
-
-// 		verify_heap(heap);
-
-// 		binomial_heap_free(heap);
-// 	}
 }
 
 /* Test out of memory when doing a pop */
 
 void test_pop_out_of_memory(void)
 {
-// 	BinomialHeap *heap;
-// 	int i;
+	BinomialHeap *heap;
+	int i;
 
-// 	/* There are various memory allocations performed as part of the merge
-// 	 * done during the pop.  Probe at different limit levels to catch them
-// 	 * all. */
+	/* There are various memory allocations performed as part of the merge
+	 * done during the pop.  Probe at different limit levels to catch them
+	 * all. */
 
-// 	for (i=0; i<6; ++i) {
-// 		heap = generate_heap();
+	for (i=0; i<6; ++i) {
+		heap = generate_heap();
 
-// 		/* Pop should fail */
+		/* Pop should fail */
 
-// 		alloc_test_set_limit(i);
-// 		assert(binomial_heap_pop(heap) == NULL);
-// 		alloc_test_set_limit(-1);
-
-// 		/* Check the heap is unharmed */
-
-// 		binomial_heap_free(heap);
-// 	}
 }
 
 static UnitTestFunction tests[] = {

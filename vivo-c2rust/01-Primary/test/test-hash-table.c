@@ -94,15 +94,6 @@ void test_hash_table_new_free(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-	// hash_table = hash_table_new(int_hash, int_equal);
-	// assert(hash_table == NULL);
-	// assert(alloc_test_get_allocated() == 0);
-
-	// alloc_test_set_limit(1);
-	// hash_table = hash_table_new(int_hash, int_equal);
-	// assert(hash_table == NULL);
-	// assert(alloc_test_get_allocated() == 0);
 }
 
 /* Test insert and lookup functions */
@@ -389,47 +380,14 @@ void test_hash_table_free_functions(void)
 
 void test_hash_table_out_of_memory(void)
 {
-// 	HashTable *hash_table;
-// 	int values[66];
-// 	unsigned int i;
+	HashTable *hash_table;
+	int values[66];
+	unsigned int i;
 
-// 	hash_table = hash_table_new(int_hash, int_equal);
+	hash_table = hash_table_new(int_hash, int_equal);
 
-// 	/* Test normal failure */
+	/* Test normal failure */
 
-// 	alloc_test_set_limit(0);
-// 	values[0] = 0;
-// 	assert(hash_table_insert(hash_table, &values[0], &values[0]) == 0);
-// 	assert(hash_table_num_entries(hash_table) == 0);
-
-// 	alloc_test_set_limit(-1);
-
-// 	/* Test failure when increasing table size.
-// 	 * The initial table size is 193 entries.  The table increases in
-// 	 * size when 1/3 full, so the 66th entry should cause the insert
-// 	 * to fail.
-// 	 */
-
-// 	for (i=0; i<65; ++i) {
-// 		values[i] = (int) i;
-
-// 		assert(hash_table_insert(hash_table,
-// 		                         &values[i], &values[i]) != 0);
-// 		assert(hash_table_num_entries(hash_table) == i + 1);
-// 	}
-
-// 	assert(hash_table_num_entries(hash_table) == 65);
-
-// 	/* Test the 66th insert */
-
-// 	alloc_test_set_limit(0);
-
-// 	values[65] = 65;
-
-// 	assert(hash_table_insert(hash_table, &values[65], &values[65]) == 0);
-// 	assert(hash_table_num_entries(hash_table) == 65);
-
-// 	hash_table_free(hash_table);
 }
 
 void test_hash_iterator_key_pair()

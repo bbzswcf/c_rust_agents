@@ -90,14 +90,6 @@ void test_set_new_free(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-	// set = set_new(int_hash, int_equal);
-	// assert(set == NULL);
-
-	// alloc_test_set_limit(1);
-	// set = set_new(int_hash, int_equal);
-	// assert(set == NULL);
-	// assert(alloc_test_get_allocated() == 0);
 }
 
 void test_set_insert(void)
@@ -244,26 +236,6 @@ void test_set_union(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-	// assert(set_union(set1, set2) == NULL);
-
-	/* Can allocate set, can't copy all set1 values */
-
-	// alloc_test_set_limit(2 + 2);
-	// allocated = alloc_test_get_allocated();
-	// assert(set_union(set1, set2) == NULL);
-	// assert(alloc_test_get_allocated() == allocated);
-
-	/* Can allocate set, can copy set1 values,
-	 * can't copy all set2 values */
-
-	// alloc_test_set_limit(2 + 7 + 2);
-	// allocated = alloc_test_get_allocated();
-	// assert(set_union(set1, set2) == NULL);
-	// assert(alloc_test_get_allocated() == allocated);
-
-	set_free(set1);
-	set_free(set2);
 }
 
 void test_set_intersection(void)
@@ -305,19 +277,6 @@ void test_set_intersection(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-	// assert(set_intersection(set1, set2) == NULL);
-
-	/* Can allocate set, can't copy all values */
-
-	// alloc_test_set_limit(2 + 2);
-	// allocated = alloc_test_get_allocated();
-	// assert(set_intersection(set1, set2) == NULL);
-	// assert(alloc_test_get_allocated() == allocated);
-
-	set_free(set1);
-	set_free(set2);
-	set_free(result_set);
 }
 
 void test_set_to_array(void)
@@ -348,11 +307,6 @@ void test_set_to_array(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-	// assert(set_to_array(set) == NULL);
-
-	free(array);
-	set_free(set);
 }
 
 void test_set_iterating(void)
@@ -501,45 +455,14 @@ void test_set_free_function(void)
 
 void test_set_out_of_memory(void)
 {
-// 	Set *set;
-// 	int values[66];
-// 	unsigned int i;
+	Set *set;
+	int values[66];
+	unsigned int i;
 
-// 	set = set_new(int_hash, int_equal);
+	set = set_new(int_hash, int_equal);
 
-// 	/* Test normal failure */
+	/* Test normal failure */
 
-// 	alloc_test_set_limit(0);
-// 	values[0] = 0;
-// 	assert(set_insert(set, &values[0]) == 0);
-// 	assert(set_num_entries(set) == 0);
-
-// 	alloc_test_set_limit(-1);
-
-// 	/* Test failure when increasing table size.
-// 	 * The initial table size is 193 entries.  The table increases in
-// 	 * size when 1/3 full, so the 66th entry should cause the insert
-// 	 * to fail. */
-
-// 	for (i=0; i<65; ++i) {
-// 		values[i] = (int) i;
-
-// 		assert(set_insert(set, &values[i]) != 0);
-// 		assert(set_num_entries(set) == i + 1);
-// 	}
-
-// 	assert(set_num_entries(set) == 65);
-
-// 	/* Test the 66th insert */
-
-// 	alloc_test_set_limit(0);
-
-// 	values[65] = 65;
-
-// 	assert(set_insert(set, &values[65]) == 0);
-// 	assert(set_num_entries(set) == 65);
-
-// 	set_free(set);
 }
 
 

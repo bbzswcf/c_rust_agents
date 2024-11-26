@@ -186,12 +186,6 @@ void test_avl_tree_new(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-
-	// tree = avl_tree_new((AVLTreeCompareFunc) int_compare);
-
-	// assert(tree == NULL);
-
 }
 
 void test_avl_tree_insert_lookup(void)
@@ -278,27 +272,16 @@ void test_avl_tree_child(void)
 
 void test_out_of_memory(void)
 {
-// 	AVLTree *tree;
-// 	AVLTreeNode *node;
-// 	int i;
+	AVLTree *tree;
+	AVLTreeNode *node;
+	int i;
 
-// 	/* Create a tree */
+	/* Create a tree */
 
-// 	tree = create_tree();
+	tree = create_tree();
 
-// 	/* Set a limit to stop any more entries from being added. */
+	/* Set a limit to stop any more entries from being added. */
 
-// 	alloc_test_set_limit(0);
-
-// 	/* Try to add some more nodes and verify that this fails. */
-
-// 	for (i=10000; i<20000; ++i) {
-// 		node = avl_tree_insert(tree, &i, &i);
-// 		assert(node == NULL);
-// 		validate_tree(tree);
-// 	}
-
-// 	avl_tree_free(tree);
 }
 
 void test_avl_tree_free(void)
@@ -420,13 +403,6 @@ void test_avl_tree_to_array(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-
-	// array = (int **) avl_tree_to_array(tree);
-	// assert(array == NULL);
-	// validate_tree(tree);
-
-	avl_tree_free(tree);
 }
 
 static UnitTestFunction tests[] = {
@@ -437,6 +413,7 @@ static UnitTestFunction tests[] = {
 	test_avl_tree_lookup,
 	test_avl_tree_remove,
 	test_avl_tree_to_array,
+	test_out_of_memory,
 	NULL
 };
 

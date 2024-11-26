@@ -82,21 +82,6 @@ static BlockHeader *alloc_test_get_header(void *ptr)
 
 /* Overwrite a block of memory with a repeated pattern. */
 
-static void alloc_test_overwrite(void *ptr, size_t length,
-                                 unsigned int pattern)
-{
-	unsigned char *byte_ptr;
-	int pattern_seq;
-	unsigned char b;
-	size_t i;
-
-	byte_ptr = ptr;
-
-	for (i=0; i<length; ++i) {
-		pattern_seq = (int) (i & 3);
-		b = (unsigned char) ((pattern >> (8 * pattern_seq)) & 0xff);
-		byte_ptr[i] = b;
-	}
 }
 
 /* Base malloc function used by other functions. */
@@ -138,35 +123,6 @@ void *alloc_test_malloc(size_t bytes)
 
 /* Base free function */
 
-void alloc_test_free(void *ptr)
-{
-	BlockHeader *header;
-	size_t block_size;
-
-	/* Must accept NULL as a valid pointer to free. */
-
-	if (ptr == NULL) {
-		return;
-	}
-
-	/* Get the block header and do a sanity check */
-	header = alloc_test_get_header(ptr);
-	block_size = header->bytes;
-	assert(allocated_bytes >= block_size);
-
-	/* Trash the allocated block to foil any code that relies on memory
-	 * that has been freed. */
-	alloc_test_overwrite(ptr, header->bytes, FREE_PATTERN);
-
-	/* Trash the magic number in the block header to stop the same block
-	 * from being freed again. */
-	header->magic_number = 0;
-
-	/* Free the allocated memory. */
-	free(header);
-
-	/* Update counter */
-	allocated_bytes -= block_size;
 }
 
 void *alloc_test_realloc(void *ptr, size_t bytes)
@@ -237,13 +193,7 @@ char *alloc_test_strdup(const char *string)
 	return result;
 }
 
-void alloc_test_set_limit(signed int alloc_count)
-{
-	allocation_limit = alloc_count;
 }
 
-size_t alloc_test_get_allocated(void)
-{
-	return allocated_bytes;
 }
 

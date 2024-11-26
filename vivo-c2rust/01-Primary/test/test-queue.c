@@ -73,9 +73,6 @@ void test_queue_new_free(void)
 
 	/* Test allocation when there is no free memory */
 
-	// alloc_test_set_limit(0);
-	// queue = queue_new();
-	// assert(queue == NULL);
 }
 
 void test_queue_push_head(void)
@@ -114,12 +111,8 @@ void test_queue_push_head(void)
 
 	/* Test behavior when running out of memory. */
 
-	// queue = queue_new();
+	queue = queue_new();
 
-	// alloc_test_set_limit(0);
-	// assert(!queue_push_head(queue, &variable1));
-
-	// queue_free(queue);
 }
 
 void test_queue_pop_head(void)
@@ -219,12 +212,8 @@ void test_queue_push_tail(void)
 
 	/* Test behavior when running out of memory. */
 
-	// queue = queue_new();
+	queue = queue_new();
 
-	// alloc_test_set_limit(0);
-	// assert(!queue_push_tail(queue, &variable1));
-
-	// queue_free(queue);
 }
 
 void test_queue_pop_tail(void)

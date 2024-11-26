@@ -101,9 +101,6 @@ void test_trie_new_free(void)
 
 	/* Test out of memory scenario */
 
-	// alloc_test_set_limit(0);
-	// trie = trie_new();
-	// assert(trie == NULL);
 }
 
 void test_trie_insert(void)
@@ -122,19 +119,6 @@ void test_trie_insert(void)
 
 	/* Test out of memory scenario */
 
-	// allocated = alloc_test_get_allocated();
-	// alloc_test_set_limit(0);
-	// assert(trie_insert(trie, "a", "test value") == 0);
-	// assert(trie_num_entries(trie) == entries);
-
-	/* Test rollback */
-
-	// alloc_test_set_limit(5);
-	// assert(trie_insert(trie, "hello world", "test value") == 0);
-	// assert(alloc_test_get_allocated() == allocated);
-	// assert(trie_num_entries(trie) == entries);
-
-	trie_free(trie);
 }
 
 void test_trie_lookup(void)
@@ -332,20 +316,10 @@ void test_trie_insert_binary(void)
 
 void test_trie_insert_out_of_memory(void)
 {
-// 	Trie *trie;
+	Trie *trie;
 
-// 	trie = generate_binary_trie();
+	trie = generate_binary_trie();
 
-// 	alloc_test_set_limit(3);
-
-// 	assert(trie_insert_binary(trie,
-// 	                          bin_key4, sizeof(bin_key4),
-// 	                          "test value") == 0);
-
-// 	assert(trie_lookup_binary(trie, bin_key4, sizeof(bin_key4)) == NULL);
-// 	assert(trie_num_entries(trie) == 2);
-
-// 	trie_free(trie);
 }
 
 void test_trie_remove_binary(void)
