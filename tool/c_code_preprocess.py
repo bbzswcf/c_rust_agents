@@ -304,6 +304,7 @@ def code_preprocess(directory: str):
                 metadata[relative_path]['includes'].append({'code': node.text.decode('utf-8').strip()})
             elif node.type == 'function_definition':
                 func_signature = ' '.join(node.text.decode('utf-8').split('{')[0].split()).strip()
+                func_signature = func_signature.replace('static ', '')
                 func_name = func_signature.split('(')[0].split()[-1].replace('*', '')
 
                 metadata[relative_path]['functions'].append({'name': func_name,'signature': func_signature, 'code': node.text.decode('utf-8'), 'rust_code': '', 'rust_signature': ''})
@@ -359,6 +360,7 @@ def code_preprocess(directory: str):
                 metadata[relative_path]['includes'].append({'code': node.text.decode('utf-8').strip()})
             elif node.type == 'function_definition':
                 func_signature = ' '.join(node.text.decode('utf-8').split('{')[0].split()).strip()
+                func_signature = func_signature.replace('static ', '')
                 func_name = func_signature.split('(')[0].split()[-1].replace('*', '')
 
                 metadata[relative_path]['functions'].append({'name': func_name,'signature': func_signature, 'code': node.text.decode('utf-8'), 'rust_code': '', 'rust_signature': ''})

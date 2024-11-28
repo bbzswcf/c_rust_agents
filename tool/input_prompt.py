@@ -1,5 +1,5 @@
 type_convert_input_prompt="""
-Translate the following C definitions of types, structs, variable and macros to Rust.
+Translate the following C definitions of types, structs, variable and macros to Rust and implement new() for structs.
 C definitions:
 ```c
 {c_code}
@@ -34,6 +34,16 @@ struct ArrayList<T> {{
     pub length: u32,
     pub _alloced: u32,
 }}
+
+impl<T> ArrayList<T> {{
+    pub fn new() -> Self {{
+		Self {{
+			data: vec![],
+			length: 0,
+			_alloced: 0,
+		}}
+    }}
+}}
 ```
 3. For recursive structures in C, that is, structures that contain pointers to the structure itself, translate pointers to structures into Link<T>, where T is determined by the type of structure.
 Example:
@@ -62,6 +72,18 @@ pub struct _AVLTreeNode<K, V> {{
     pub value: AVLTreeValue<V>,
     pub height: i32,
 }}
+
+impl <K, V> AVLTreeNode<K, V> {{
+    pub fn new() -> Self {{
+        Self {{
+            children: [None, None],
+            parent: None,
+            key: None,
+            value: None,
+            height: 0,
+        }}
+    }}
+}}
 ```
 4. For two-dimensional pointer in C, use LinkRover<T> in Rust. 
 LinkRover<T> has been defined in other rust file, do not define it again.
@@ -87,13 +109,29 @@ pub struct _SListEntry<T> {{
     pub data: SListValue<T>,
     pub next: Link<SListEntry<T>>,
 }}
+impl <T> SListEntry<T> {{
+    pub fn new() -> Self {{
+        Self {{
+            data: None,
+            next: None,
+        }}
+    }}
+}}
 pub struct _SListIterator<T> {{
     pub prev_next: LinkRover<SListEntry<T>>,
     pub current: Link<SListEntry<T>>,
 }}
+impl <T> SListIterator<T> {{
+    pub fn new() -> Self {{
+        Self {{
+            prev_next: LinkRover::new(None),
+            current: None,
+        }}
+    }}
+}}
 ```
 Remember to output only the converted Rust code without any explanations or comments.
-Declare all items(strctures, enums, functions, constants, etc.) using pub(public) to allow importing.
+Declare all items(strctures, enums, constants, etc.) using pub(public) to allow importing.
 Keep all variable names unchanged, and do not change the case of variable names.
 LinkRover<T> and Link<T> has been defined in other rust file, use them directly, do not define again.
 """
@@ -103,100 +141,25 @@ Syntax_prompt_2 = """Convert the following C code into Rust by strictly followin
 ```c
 $c_code
 ```
-## Contextual Metadata:
-The difinitions of the elements used in the C code have been provided in Rust as follows.
-```rust
-$rust_items
-```
-Below are the Rust function signatures for functions from other modules that are called within the C code.
-$function_call_mappings
-## Additional Instructions:
-1.When converting C's `memmove` operations to Rust, prefer using ownership transfer with `take()` in a reverse iteration, e.g.:
-```c
-memmove(&arraylist->data[index + 1], &arraylist->data[index], (arraylist->length - index) * sizeof(ArrayListValue));
-```
-```rust
-for i in (index..arraylist.length).rev() {
-arraylist.data[(i + 1) as usize] = arraylist.data[i as usize].take();
-}
-```
-2.For type Link<T>, we implement LinkTrait<T> for it, which includes the following methods:
-```rust
-pub struct LinkRover<T>(*mut Link<T>);
-pub trait LinkTrait<T>{
-    fn borrow(&self) -> &T;
-    fn borrow_mut(&mut self) -> &mut T;
-    fn new(value: T) -> Self;
-    fn drop(&mut self);
-    fn rover(&mut self) -> LinkRover<T>;
-}
-```
-Use new() and drop() to create and free Link<T> objects.
-Example:
-C:
-```c
-AVLTreeNode *new_node = (AVLTreeNode *) malloc(sizeof(AVLTreeNode));
-free(new_node)
-```
-Rust:
-```rust
-let mut new_node: Link<AVLTreeNode<K, V>>;
-new_node = Link::new(AVLTreeNode::new());
-new_node.drop()
-```
-Use borrow() and borrow_mut() are to obtain references to T objects owned in Link<T>.
-Example:
-```c
-if (node->children[1-direction] != NULL) {
-    node->children[1-direction]->parent = node;
-}
-```
-```rust
-if node.borrow().children[1 - direction as usize].is_some() {
-    node.borrow_mut().children[1 - direction as usize].borrow_mut().parent = node;
-}
-```
-Use rover() to obtain address of Link<T> objects.
-Example:
-C:
-```c
-rover = &tree->root_node;
-```
-Rust:
-```rust
-rover = tree.root_node.rover();
-```
-LinkRover<T> corresponds to the two-dimensional pointer in C, we implement Deref and DerefMut traits for it, so use it as a regular reference. 
-The value(*) operation in C also corresponds to a value on LinkRover, while the address(&) operation corresponds to the rover() method.
-Example:
-```c
-AVLTreeNode **rover;
-rover = &tree->root_node;
-while (*rover != NULL) {
-    previous_node = *rover;
-    if (tree->compare_func(key, (*rover)->key) < 0) {
-        rover = &((*rover)->children[AVL_TREE_NODE_LEFT]);
-    } else {
-        rover = &((*rover)->children[AVL_TREE_NODE_RIGHT]);
-    }
-}
-```
-```rust
-let mut rover: LinkRover<AVLTreeNode<K, V>>;
-rover = tree.root_node.rover();
-while rover.is_some() {
-    previous_node = *rover;
-    if (tree.compare_func)(&key, &rover.borrow().key) < 0 {
-        rover = rover.borrow_mut().children[avl_tree_node_left!()].rover();
-    } 
-    else {
-        rover = rover.borrow_mut().children[avl_tree_node_right!()].rover();
-    }
-}
-```
+$rust_items $function_call_mappings $insight
 Output only the converted Rust code without any explanations.
 Declare functions using pub(public) to allow importing.
+Only return the function implementation without redefining any structs, variables, or types that are already defined in the codebase.
 """
+
+Syntax_prompt_2_simple = """Convert the following C code into Rust by strictly following the rules below.
+## C code:
+```c
+$c_code
+```
+$function_call_mappings
+
+
+Output only the converted Rust code without any explanations.
+Declare functions using pub(public) to allow importing.
+Only return the function implementation without redefining any structs, variables, or types that are already defined in the codebase.
+"""
+
 
 test_prompt="""
 Convert the following C code into Rust by strictly following the rules below.
@@ -204,13 +167,9 @@ Convert the following C code into Rust by strictly following the rules below.
 ```c
 $c_code
 ```
-## Contextual Metadata:
-The difinitions of the elements used in the C code have been provided in Rust as follows.
-```rust
-$rust_items
-```
-Below are the Rust function signatures for functions from other modules that are called within the C code.
-$function_call_mappings
+$rust_items $function_call_mappings $insight
+Output only the converted Rust code without any explanations.
+Only return the function implementation without redefining any structs, variables, or types that are already defined in the codebase.
 """
 
 feedback_input_prompt="""

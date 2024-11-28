@@ -1,17 +1,11 @@
 # 设置Agent
-import os
 from Agent_prompt import *
 from openai import OpenAI
 from LLM_config import *
 import time
 
-# siliconflow_key = "sk-ewfzqneuiyrzxbkautzrjsfulfxtyxwlunettvibwfxjbust"
-# siliconflow_key = siliconflow_key
 
-siliconflow_base_url = "https://api.siliconflow.cn/v1"
-
-
-client = OpenAI(api_key=siliconflow_key, base_url=siliconflow_base_url)
+client = OpenAI(api_key=deepseek_key, base_url=deepseek_base_url)
 
 class Agent:
     def __init__(self, role: str, prompt: str, temperature: float, top_p: float):
@@ -37,7 +31,7 @@ class Agent:
             
             try:
                 response = client.chat.completions.create(
-                    model="deepseek-ai/DeepSeek-V2.5",
+                    model="deepseek-chat",
                     messages=message_list,
                     temperature=self.temperature,
                     top_p=self.top_p,
@@ -75,13 +69,6 @@ class Agent:
 
 # 创建不同的Agent
 
-# api_agent = Agent(
-#     role="API Conversion Expert",
-#     prompt=API_prompt,
-#     temperature=0.2,
-#     top_p=0.9
-# )
-
 syntax_agent = Agent(
     role="Syntax Conversion Expert",
     prompt=Syntax_system_prompt,
@@ -90,7 +77,7 @@ syntax_agent = Agent(
 )
     # temperature=0.2,
     # top_p=0.9
-# )
+
 
 feedback_agent = Agent(
     role="Feedback Expert",
@@ -110,7 +97,7 @@ optimize_agent_2 = Agent(
     temperature=0,
     top_p=1)
     # temperature=0.2,
-    # top_p=0.95)
+    # top_p=0.95
 
 # fix_agent = Agent(
 #     role="fix Expert",

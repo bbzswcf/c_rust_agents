@@ -16,42 +16,26 @@ from c_code_preprocess import preprocess, head_preprocess
 # These are common test framework files that don't need translation
 EXCEPT_FILES = ['framework', 'alloc-testing', 'test-alloc-testing']
 
-def add_to_translation_order(dependencies, current_key, translation_order):
+def get_translation_order(dependencies, metadata):
     """
-    Add a file and its dependencies to the translation order list.
+    Sort test files by their functional complexity for easier translation.
+    The complexity is calculated by:
+    1. Number of dependencies (fewer dependencies = simpler)
+    2. Number of functions in dependent files 
+    Returns a list of files in suggested translation order.
     """
-    if current_key in translation_order:
-        return
-        
-    deps = dependencies.get(current_key, [])
-    
-    if not deps:
-        translation_order.append(current_key)
-    else:
-        all_deps_processed = all(dep in translation_order for dep in deps)
-        
-        if all_deps_processed:
-            last_dep_pos = max(translation_order.index(dep) for dep in deps)
-            translation_order.insert(last_dep_pos + 1, current_key)
-        else:
-            for dep in deps:
-                if dep not in translation_order:
-                    add_to_translation_order(dependencies, dep, translation_order)
-            translation_order.append(current_key)
-
-def get_translation_order(dependencies):
-    """
-    Generate a topological order of files based on their dependencies.
-    This function processes test files first by adding them and their dependencies
-    to the translation order list.
-    """
-    translation_order = []
+    file_order = []
     for file, deps in dependencies.items():
-        if file.startswith('test'):
-            add_to_translation_order(dependencies, file, translation_order)
-    for file in translation_order:
-        if file.startswith('src'):
-            translation_order[translation_order.index(file)] = file + '.c'
+        if not file.startswith('test'):
+            continue
+        func_counts = -len(deps)
+        for dep in deps:
+            dep_name = dep + '.c'
+            func_counts += len(metadata[dep_name]["func_signatures"])
+        file_order.append((file, func_counts))
+    file_order = sorted(file_order, key=lambda x: x[1], reverse=False)
+    print(file_order)
+    translation_order = [file for file, _ in file_order]
     return translation_order
 
 def analyze_directory(metadata):
@@ -335,7 +319,7 @@ if __name__ == "__main__":
     #     print(f"  {file}: {deps}")
 
     # # Get and print the suggested translation order
-    # translation_order = get_translation_order(dependencies)
+    # translation_order = get_translation_order(dependencies, metadata)
     # print("\nSuggested translation order:")
     # count = 1
     # for i, file in enumerate(translation_order, 1):
