@@ -10,5 +10,5 @@ tool/LLM_config.py
 tool/tree_sitter_c_config.py
 .gitignore
 local/
-
+rust-translation/
 c_rust_agents.egg-info/
