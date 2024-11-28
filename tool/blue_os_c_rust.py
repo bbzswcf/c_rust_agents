@@ -3,6 +3,7 @@ import re
 import sys
 import time
 import json
+import shutil
 import chardet
 import logging
 import argparse
@@ -13,7 +14,7 @@ from string import Template
 from Agents import *
 from input_prompt import *
 from Agent_prompt import *
-# from Agent_prompt_simple import *
+from insight_input import *
 from tree_sitter_analyzer import (
     analyze_directory,
     get_translation_order,
@@ -171,8 +172,24 @@ def compile_and_test_rust(test_func: str, temp_test_project_dir: str) -> tuple[b
     cargo_toml = os.path.join(current_dir, os.path.join(temp_test_project_dir, "Cargo.toml"))
 
     try:
-        compile_command = ["cargo", "test", test_func, "--manifest-path", cargo_toml]
-        compile_result = subprocess.run(compile_command, capture_output=True, text=True, encoding="utf-8")
+        # 添加 --quiet 参数来抑制警告,只显示错误
+        # 添加 RUSTFLAGS 环境变量来设置编译标志
+        env = os.environ.copy()
+        env['RUSTFLAGS'] = '-A warnings'  # -A warnings 表示允许所有警告
+        
+        compile_command = [
+            "cargo", "test", 
+            test_func, 
+            "--manifest-path", cargo_toml,
+            "--quiet"  # 只显示错误信息
+        ]
+        compile_result = subprocess.run(
+            compile_command, 
+            capture_output=True, 
+            text=True, 
+            encoding="utf-8",
+            env=env  # 使用修改后的环境变量
+        )
         logging.info("动态测试结果：")
         logging.info(compile_result.stdout+compile_result.stderr)
 
@@ -195,6 +212,7 @@ def compile_and_test_rust(test_func: str, temp_test_project_dir: str) -> tuple[b
         return True, ""
     except Exception as e:
         return False, f"Rust test error:\n{str(e)}"
+
 
 def check_changelog(rust_code_lines, changelog):
     # 正则表达式模式来匹配OriginalCode和FixedCode块
@@ -228,15 +246,29 @@ def check_changelog(rust_code_lines, changelog):
                 applied_logpairs.append((original_code, fixed_code))
     return applied_logpairs
 
-def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust_items: str, rust_code_file: str,
-                             rust_result_dir: str, metadata: dict, user_input: str, example_input: list[str], example_output: list[str]) -> tuple[bool, str]:
+
+def insight_mapping(func_name: str, c_code: str, rust_items: str):
+    insight_prompt = ""
+    if "free" in func_name:
+        insight_prompt = insight_free
+    elif "new" in func_name:
+        insight_prompt = insight_new
+    elif "insert" in func_name:
+        insight_prompt = insight_insert
+    elif 'compare' in func_name or 'hash' in func_name:
+        insight_prompt = insight_compare_hash
+
+    if 'memmove' in c_code:
+        insight_prompt += '\n' + insight_memmove
+
+    if 'Link' in rust_items:
+        insight_prompt += '\n' + insight_link
+
+    return insight_prompt
+
+
+def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust_items: str, rust_code_file: str, rust_result_dir: str, metadata: dict, user_input: str, example_input: list[str], example_output: list[str]) -> tuple[bool, str]:
     c_code = c_func_info['code']
-    
-    # logging.info("开始API转换")
-    # api_conversion = api_agent.generate_response(
-    #     f"""\nExtract and convert only the C-specific APIs to their Rust equivalents:\n{c_code}\n"""
-    # )
-    # logging.info(api_conversion)
     logging.info("开始语法转换")
 
     # 从c_func_info中找到对应depend_file中的Rust_func_name
@@ -253,9 +285,17 @@ def convert_c_funcs_to_rust(c_file: str, func_name: str, c_func_info: dict, rust
         if rust_func:
             function_call_mappings += f"""{c_func} <----> {rust_func}\n"""
 
+    insight = insight_mapping(func_name, c_code, rust_items)
+    if function_call_mappings or rust_items:
+        if rust_items:
+            rust_items = """## Contextual Metadata:\nThe difinitions of the elements used in the C code have been provided in Rust as follows.\n```rust\n""" + rust_items + "\n```\n\n"
+            if function_call_mappings:
+                function_call_mappings = """Below are the Rust function signatures for functions from other modules that are called within the C code.\n""" + function_call_mappings + "\n\n"
+        else:
+            function_call_mappings = """## Contextual Metadata:\nBelow are the Rust function signatures for functions from other modules that are called within the C code.\n\n""" + function_call_mappings + "\n\n"
+
     template = Template(user_input)
-    combined_syntax_input = template.substitute(c_code=c_code, rust_items=rust_items, function_call_mappings=function_call_mappings)
-    # combined_syntax_input += """\nOnly return the function implementation without redefining any structs, variables, or types that are already defined in the codebase."""
+    combined_syntax_input = template.substitute(c_code=c_code, rust_items=rust_items, function_call_mappings=function_call_mappings, insight=insight)
     logging.info(f"语法专家prompt: {combined_syntax_input}")
 
     rust_code = syntax_agent.generate_response(combined_syntax_input, example_input, example_output)
@@ -392,7 +432,7 @@ def convert_c_initialization_to_rust(c_file: str, rust_code_file: str, rust_resu
 
     logging.info("开始语法转换")
     if 'test' in c_file:
-        combined_syntax_input = f"""\nConvert the following C code to Rust.\nC code:\n{pre_code}\nOutput only the converted Rust code without any explanations.\n"""
+        combined_syntax_input = f"""\nTranslate the following C definitions of types, structs, variables and macros to Rust. Initialize variables to default values.\nC code:\n{pre_code}\nOutput only the converted Rust code without any explanations.\n"""
     else:
         combined_syntax_input = type_convert_input_prompt.format(c_code=pre_code)
     logging.info(f"语法专家prompt: {combined_syntax_input}")
@@ -452,18 +492,17 @@ def process_files():
     parser = argparse.ArgumentParser(description='Process C files and convert them to Rust.')
     parser.add_argument('--c_code_dir', default='./Input/01-Primary', type=str, help='Directory path to analyze')
     parser.add_argument('--output_dir', default='./Output/primary', type=str, help='Directory path to save results')
-    # parser.add_argument('--file_name', default='arraylist', type=str, help='single file for test' )
     args = parser.parse_args()
-    # 清空metadata
-    code_preprocess("./Input/01-Primary")
 
     # 创建新的结果文件夹
     rust_code_dir = os.path.join(args.output_dir, "src")
     lib_file_path = os.path.join(rust_code_dir, "lib.rs")
-
+    
     successful_test_count = 0
     total_test_count = 0
 
+    # 清空metadata
+    code_preprocess("./Input/01-Primary")
     # 读取元数据
     metadata = json.load(open('tool/c_metadata.json', 'r', encoding='utf-8'))
 
@@ -475,21 +514,11 @@ def process_files():
             translated_flags[file_relapath][func_info['name']] = None
         
     dependencies = analyze_directory(metadata)
-    translation_order = get_translation_order(dependencies)
+    translation_order = get_translation_order(dependencies, metadata)
 
-    logging.info(f"翻译顺序：{translation_order}")
-    logging.info(f"翻译文件总数：{len(translation_order)}")
+    logging.info(f"测试文件翻译顺序：{translation_order}")
     
-    translation_order = ['test\\test-compare-functions.c', 'test\\test-hash-functions.c', 'test\\test-arraylist.c','test\\test-avl-tree.c', 'test\\test-binary-heap.c', 'test\\test-binomial-heap.c', 'test\\test-bloom-filter.c', 'test\\test-hash-table.c', 'test\\test-list.c', 'test\\test-queue.c', 'test\\test-set.c', 'test\\test-slist.c', 'test\\test-trie.c', 'test\\test-sortedarray.c', 'test\\test-rb-tree.c', 'test\\test-cpp.cpp'] # 调试
-    # translation_order = translation_order[14:24] # 调试 compare 10/41
-    # translation_order = translation_order[:14] # 调试 arraylist 3/30
-    # translation_order = translation_order[24:30] # 调试 queue 11/34
-    # translation_order = translation_order[30:32] # 调试 test-cpp
-    # translation_order = translation_order[32:34] # 调试 test-rb-tree
-    # translation_order = translation_order[34:] # 调试 test-sortedarray
     for problem_path in translation_order:
-        if not problem_path.startswith("test"):
-            continue
 
         problem_total_path = os.path.join(args.c_code_dir, problem_path)
         test_file_name = os.path.splitext(os.path.basename(problem_path))[0]
@@ -598,6 +627,11 @@ def process_files():
                         rust_items += metadata[include_file]['rust_items'] + '\n'
                 rust_items += metadata[depend_file]['rust_items'] + '\n'
                 rust_items = rust_items.strip()
+                user_input_example = Syntax_example_input
+                user_output_example = Syntax_example_output
+                if 'hash' or 'compare' in depend_file:
+                    user_input_example = Syntax_hash_compare_example_input
+                    user_output_example = Syntax_hash_compare_example_output
                 success,rust_code = convert_c_funcs_to_rust(
                     depend_file,
                     depend_func,
@@ -607,8 +641,8 @@ def process_files():
                     args.output_dir,
                     metadata,
                     Syntax_prompt_2,
-                    Syntax_example_input,
-                    Syntax_example_output
+                    user_input_example,
+                    user_output_example
                 )
                 if not success:
                     translated_flags[depend_file][depend_func] = False
@@ -785,7 +819,7 @@ def process_files():
             # 更新metadata
             function_count = 0
             if extra_use_codes:
-                metadata[problem_path]['rust_items'] += '\n' + extra_use_codes
+                metadata[problem_path]['rust_items'] = extra_use_codes + '\n' + metadata[problem_path]['rust_items']
             for depend_func, depend_file in depend_files_and_funcs:
                 if translated_flags[depend_file][depend_func] != True:
                     for func_info in metadata[depend_file]['functions']:
@@ -823,6 +857,113 @@ def process_files():
     logging.info(f"测试成功率：{(successful_test_count/total_test_count * 100):.2f}%")
 
 
+def create_temp_rust_project(project_path: str, project_name) -> bool:
+    """
+    在指定目录下创建一个新的Rust库项目，如果项目已存在则跳过
+    """
+    try:
+        if os.path.exists(project_path):
+            if os.path.exists(os.path.join(project_path, "Cargo.toml")):
+                logging.info(f"Rust project already exists at {project_path}")
+                return True
+            else:
+                logging.error(f"Directory exists but is not a Rust project: {project_path}")
+                return False
+        
+        os.makedirs(os.path.dirname(project_path), exist_ok=True)
+        
+        result = subprocess.run(
+            ['cargo', 'new', '--lib', project_path],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+
+        cargo_content = f"""[package]
+name = "{project_name}"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name         = "{project_name}"
+crate-type   = ["rlib", "cdylib"]
+
+[profile.dev]
+overflow-checks = false
+opt-level = 3
+
+[dependencies]
+lazy_static = "1.5.0"
+libc = "0.2.155"
+"""
+        write_file_with_utf8(os.path.join(project_path, 'Cargo.toml'), cargo_content)
+
+        # Copy translation_utils directory to project src directory
+        translation_utils_src = 'tool/translation_utils/'
+        translation_utils_dest = os.path.join(project_path, 'src/translation_utils/')
+        if os.path.exists(translation_utils_src):
+            os.makedirs(translation_utils_dest, exist_ok=True)
+            for root, dirs, files in os.walk(translation_utils_src):
+                rel_path = os.path.relpath(root, translation_utils_src)
+                dest_dir = os.path.join(translation_utils_dest, rel_path)
+                os.makedirs(dest_dir, exist_ok=True)
+                for file_name in files:
+                    src_file = os.path.join(root, file_name)
+                    dest_file = os.path.join(dest_dir, file_name)
+                    shutil.copy2(src_file, dest_file)
+        
+        if result.returncode == 0:
+            logging.info(f"Successfully created Rust project at {project_path}")
+            return True
+        else:
+            logging.error(f"Failed to create Rust project: {result.stderr}")
+            return False
+            
+    except Exception as e:
+        logging.error(f"Error creating Rust project: {str(e)}")
+        return False
+
+def setup_projects():
+    """创建主项目和临时项目"""
+    base_dir = os.path.join(os.getcwd(), "Output")
+    primary_path = os.path.join(base_dir, "primary")
+    temp_path = os.path.join(base_dir, "primary_temp")
+    
+    if not create_temp_rust_project(primary_path, "primary"):
+        raise Exception("Failed to create primary project")
+    if not create_temp_rust_project(temp_path, "primary_temp"):
+        raise Exception("Failed to create temporary project")
+
+def cleanup_projects():
+    """
+    删除主项目和临时项目目录
+    Returns:
+        bool: 删除是否成功
+    """
+    try:
+        base_dir = os.path.join(os.getcwd(), "Output")
+        primary_path = os.path.join(base_dir, "primary")
+        temp_path = os.path.join(base_dir, "primary_temp")
+        
+        # 删除主项目
+        if os.path.exists(primary_path):
+            shutil.rmtree(primary_path)
+            logging.info(f"Successfully removed primary project at {primary_path}")
+            
+        # 删除临时项目    
+        if os.path.exists(temp_path):
+            shutil.rmtree(temp_path)
+            logging.info(f"Successfully removed temporary project at {temp_path}")
+            
+        return True
+            
+    except Exception as e:
+        logging.error(f"Error cleaning up projects: {str(e)}")
+        return False
+
+
 if __name__ == "__main__":
     setup_logging()
+    setup_projects()
     process_files()
+    cleanup_projects()

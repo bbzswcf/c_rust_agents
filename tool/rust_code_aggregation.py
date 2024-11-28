@@ -29,39 +29,57 @@ def insert_file(file_path: str, content: str):
 def create_project_structure():
     """创建项目基本结构"""
     # 使用 subprocess 运行 cargo new --lib 命令
+    project_path = os.path.join(output_path, project_name)
+    if os.path.exists(project_path):
+        shutil.rmtree(project_path)
     subprocess.run(["cargo", "new", "--lib", project_name], check=True, cwd=output_path)
     project_path = os.path.join(output_path, project_name)
     lib_path = os.path.join(project_path, "src/lib.rs")
     os.makedirs(os.path.join(project_path, 'tests'), exist_ok=True)
-    cargo_content = """libc = \"0.2\""""
-    insert_file(os.path.join(project_path, "Cargo.toml"), cargo_content)
+    cargo_content = f"""[package]
+name = "{project_name}"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name         = "{project_name}"
+crate-type   = ["rlib", "cdylib"]
+
+[profile.dev]
+overflow-checks = false
+opt-level = 3
+
+[dependencies]
+lazy_static = "1.5.0"
+libc = "0.2.155"
+"""
+    write_file(os.path.join(project_path, "Cargo.toml"), cargo_content)
     
 
 def generate_rust_files(metadata: dict):
     project_path = os.path.join(output_path, project_name)
     lib_path = os.path.join(project_path, "src/lib.rs")
-    write_file(lib_path, "pub mod translation_utils;\n")
+    write_file(lib_path, "pub(crate) mod translation_utils;\n")
 
     dependencies = analyze_directory(metadata)
 
     for file_path, file_info in metadata.items():
         file_name = os.path.splitext(os.path.basename(file_path.replace('-', '_')))[0]
-        rust_file_path = ''
-        if file_path.startswith('src'):
-            insert_file(lib_path, f"pub mod {file_name};\n")
-            rust_file_path = os.path.join(project_path, 'src', file_name + '.rs')
-        else:
-            rust_file_path = os.path.join(project_path, 'tests', file_name + '.rs')
+        rust_file_path = os.path.join(project_path, 'src', file_name + '.rs')
+        insert_file(lib_path, f"pub(crate) mod {file_name};\n")
+        if not file_path.startswith('src'):
             for depend_file in dependencies[file_path]:
                 if depend_file.startswith('src'):
                     rust_mod_name = os.path.basename(depend_file.replace('-', '_'))
-                    insert_file(rust_file_path, f"use {project_name}::{rust_mod_name}::*;\n")
+                    insert_file(rust_file_path, f"use crate::{rust_mod_name}::*;\n")
         
-        insert_file(rust_file_path, file_info['rust_items'])
+        insert_file(rust_file_path, f"use crate::translation_utils::*;")
+        insert_file(rust_file_path, file_info['rust_items']+ '\n')
         for func_info in file_info['functions']:
-            insert_file(rust_file_path, func_info['rust_code'])
+            insert_file(rust_file_path, func_info['rust_code']+ '\n')
+            
     # Copy translation_utils directory to project src directory
-    translation_utils_src = os.path.join(output_path, 'primary/src/translation_utils/')
+    translation_utils_src = 'tool/translation_utils/'
     translation_utils_dest = os.path.join(project_path, 'src/translation_utils/')
     if os.path.exists(translation_utils_src):
         os.makedirs(translation_utils_dest, exist_ok=True)
