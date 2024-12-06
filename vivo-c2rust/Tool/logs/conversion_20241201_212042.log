@@ -1,0 +1,3344 @@
+2024-12-01 21:20:42 - INFO - c2rust转换耗时2.6941299438476562e-05秒
+2024-12-01 21:20:42 - INFO - hash_table.rs第二轮优化
+2024-12-01 21:20:42 - INFO - prompt输入：
+2024-12-01 21:20:42 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+extern "C" fn hash_table_allocate_table(
+    mut hash_table: *mut HashTable,
+) -> libc::c_int {
+    let mut new_table_size: libc::c_uint = 0;
+    unsafe {
+        if (*hash_table).prime_index < hash_table_num_primes {
+            new_table_size = hash_table_primes[(*hash_table).prime_index as usize];
+        } else {
+            new_table_size = ((*hash_table).entries)
+                .wrapping_mul(10);
+        }
+        (*hash_table).table_size = new_table_size;
+        (*hash_table)
+            .table = alloc_test_calloc(
+            (*hash_table).table_size as size_t,
+            std::mem::size_of::<*mut HashTableEntry>() as libc::c_ulong,
+        ) as *mut *mut HashTableEntry;
+    }
+    unsafe {
+        return ((*hash_table).table != std::ptr::null_mut()) as libc::c_int;
+    }
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:20:42 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:21:00 - INFO - LLM输出：
+2024-12-01 21:21:00 - INFO - extern "C" fn hash_table_allocate_table(
+    mut hash_table: *mut HashTable,
+) -> libc::c_int {
+    let mut new_table_size: libc::c_uint = 0;
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+    if boxed_hash_table.prime_index < unsafe { hash_table_num_primes } {
+        new_table_size = unsafe { hash_table_primes[boxed_hash_table.prime_index as usize] };
+    } else {
+        new_table_size = boxed_hash_table.entries.wrapping_mul(10);
+    }
+    boxed_hash_table.table_size = new_table_size;
+    boxed_hash_table.table = alloc_test_calloc(
+        boxed_hash_table.table_size as size_t,
+        std::mem::size_of::<*mut HashTableEntry>() as libc::c_ulong,
+    ) as *mut *mut HashTableEntry;
+    hash_table = Box::into_raw(boxed_hash_table);
+    return (unsafe { (*hash_table).table != std::ptr::null_mut() }) as libc::c_int;
+}
+2024-12-01 21:21:00 - INFO - 替换并测试
+2024-12-01 21:21:02 - INFO - 所有测试通过！
+2024-12-01 21:21:02 - INFO - prompt输入：
+2024-12-01 21:21:02 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+extern "C" fn hash_table_free_entry(
+    mut hash_table: *mut HashTable,
+    mut entry: *mut HashTableEntry,
+) {
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+
+    
+    unsafe {
+        pair = &mut (*entry).pair;
+    }
+
+    
+    unsafe {
+        if ((*hash_table).key_free_func).is_some() {
+            ((*hash_table).key_free_func).expect("non-null function pointer")((*pair).key);
+        }
+        if ((*hash_table).value_free_func).is_some() {
+            ((*hash_table).value_free_func)
+                .expect("non-null function pointer")((*pair).value);
+        }
+    }
+
+    
+    unsafe {
+        alloc_test_free(entry as *mut libc::c_void);
+    }
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:21:03 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:21:18 - INFO - LLM输出：
+2024-12-01 21:21:18 - INFO - extern "C" fn hash_table_free_entry(
+    mut hash_table: *mut HashTable,
+    mut entry: *mut HashTableEntry,
+) {
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+    let mut boxed_entry = unsafe { Box::from_raw(entry) };
+    pair = &mut boxed_entry.pair;
+    if boxed_hash_table.key_free_func.is_some() {
+        unsafe { boxed_hash_table.key_free_func.expect("non-null function pointer")((*pair).key) };
+    }
+    if boxed_hash_table.value_free_func.is_some() {
+        unsafe { boxed_hash_table.value_free_func.expect("non-null function pointer")((*pair).value) };
+    }
+    alloc_test_free(entry as *mut libc::c_void);
+    hash_table = Box::into_raw(boxed_hash_table);
+    entry = Box::into_raw(boxed_entry);
+}
+2024-12-01 21:21:18 - INFO - 替换并测试
+2024-12-01 21:21:21 - INFO - 所有测试通过！
+2024-12-01 21:21:21 - INFO - prompt输入：
+2024-12-01 21:21:21 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_new(
+    mut hash_func: HashTableHashFunc,
+    mut equal_func: HashTableEqualFunc,
+) -> *mut HashTable {
+    let mut hash_table: *mut HashTable = std::ptr::null_mut();
+
+    
+    unsafe {
+        hash_table = alloc_test_malloc(std::mem::size_of::<HashTable>() as libc::c_ulong)
+            as *mut HashTable;
+    }
+
+    if hash_table.is_null() {
+        return std::ptr::null_mut();
+    }
+
+    
+    unsafe {
+        (*hash_table).hash_func = hash_func;
+        (*hash_table).equal_func = equal_func;
+        (*hash_table).key_free_func = None;
+        (*hash_table).value_free_func = None;
+        (*hash_table).entries = 0;
+        (*hash_table).prime_index = 0;
+    }
+
+    
+    if unsafe { hash_table_allocate_table(hash_table) } == 0 {
+        
+        unsafe { alloc_test_free(hash_table as *mut libc::c_void) };
+        return std::ptr::null_mut();
+    }
+
+    hash_table
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:21:21 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:21:39 - INFO - LLM输出：
+2024-12-01 21:21:39 - INFO - pub extern "C" fn hash_table_new(
+    mut hash_func: HashTableHashFunc,
+    mut equal_func: HashTableEqualFunc,
+) -> *mut HashTable {
+    let hash_table: *mut HashTable = unsafe {
+        alloc_test_malloc(std::mem::size_of::<HashTable>() as libc::c_ulong) as *mut HashTable
+    };
+
+    if hash_table.is_null() {
+        return std::ptr::null_mut();
+    }
+
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+    boxed_hash_table.hash_func = hash_func;
+    boxed_hash_table.equal_func = equal_func;
+    boxed_hash_table.key_free_func = None;
+    boxed_hash_table.value_free_func = None;
+    boxed_hash_table.entries = 0;
+    boxed_hash_table.prime_index = 0;
+
+    if hash_table_allocate_table(hash_table) == 0 {
+        alloc_test_free(hash_table as *mut libc::c_void);
+        return std::ptr::null_mut();
+    }
+
+    let hash_table = Box::into_raw(boxed_hash_table);
+    hash_table
+}
+2024-12-01 21:21:39 - INFO - 替换并测试
+2024-12-01 21:21:42 - INFO - 所有测试通过！
+2024-12-01 21:21:42 - INFO - prompt输入：
+2024-12-01 21:21:42 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_free(mut hash_table: *mut HashTable) {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut next: *mut HashTableEntry = std::ptr::null_mut();
+    let mut i: libc::c_uint = 0;
+
+    while i < unsafe { (*hash_table).table_size } {
+        rover = unsafe { *((*hash_table).table).offset(i as isize) };
+        while !rover.is_null() {
+            next = unsafe { (*rover).next };
+            unsafe { hash_table_free_entry(hash_table, rover) };
+            rover = next;
+        }
+        i = i.wrapping_add(1);
+    }
+
+    unsafe {
+        alloc_test_free((*hash_table).table as *mut libc::c_void);
+        alloc_test_free(hash_table as *mut libc::c_void);
+    }
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:21:42 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:21:58 - INFO - LLM输出：
+2024-12-01 21:21:58 - INFO - pub extern "C" fn hash_table_free(mut hash_table: *mut HashTable) {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut next: *mut HashTableEntry = std::ptr::null_mut();
+    let mut i: libc::c_uint = 0;
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+
+    while i < boxed_hash_table.table_size {
+        rover = unsafe { *boxed_hash_table.table.offset(i as isize) };
+        while !rover.is_null() {
+            next = unsafe { (*rover).next };
+            hash_table_free_entry(hash_table, rover);
+            rover = next;
+        }
+        i = i.wrapping_add(1);
+    }
+
+    alloc_test_free(boxed_hash_table.table as *mut libc::c_void);
+    alloc_test_free(hash_table as *mut libc::c_void);
+    hash_table = Box::into_raw(boxed_hash_table);
+}
+2024-12-01 21:21:58 - INFO - 替换并测试
+2024-12-01 21:22:01 - INFO - 所有测试通过！
+2024-12-01 21:22:01 - INFO - prompt输入：
+2024-12-01 21:22:01 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_register_free_functions(
+    hash_table: *mut HashTable,
+    key_free_func: HashTableKeyFreeFunc,
+    value_free_func: HashTableValueFreeFunc,
+) {
+    
+    unsafe {
+        (*hash_table).key_free_func = key_free_func;
+        (*hash_table).value_free_func = value_free_func;
+    }
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:22:01 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:22:10 - INFO - LLM输出：
+2024-12-01 21:22:10 - INFO - pub extern "C" fn hash_table_register_free_functions(
+    hash_table: *mut HashTable,
+    key_free_func: HashTableKeyFreeFunc,
+    value_free_func: HashTableValueFreeFunc,
+) {
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+    boxed_hash_table.key_free_func = key_free_func;
+    boxed_hash_table.value_free_func = value_free_func;
+    let hash_table = Box::into_raw(boxed_hash_table);
+}
+2024-12-01 21:22:10 - INFO - 替换并测试
+2024-12-01 21:22:13 - INFO - 所有测试通过！
+2024-12-01 21:22:13 - INFO - prompt输入：
+2024-12-01 21:22:13 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+extern "C" fn hash_table_enlarge(mut hash_table: *mut HashTable) -> libc::c_int {
+    let mut old_table: *mut *mut HashTableEntry = std::ptr::null_mut();
+    let mut old_table_size: libc::c_uint = 0;
+    let mut old_prime_index: libc::c_uint = 0;
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut next: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let mut i: libc::c_uint = 0;
+
+    
+    unsafe {
+        old_table = (*hash_table).table;
+        old_table_size = (*hash_table).table_size;
+        old_prime_index = (*hash_table).prime_index;
+        (*hash_table).prime_index = ((*hash_table).prime_index).wrapping_add(1);
+    }
+
+    if unsafe { hash_table_allocate_table(hash_table) } == 0 {
+        
+        unsafe {
+            (*hash_table).table = old_table;
+            (*hash_table).table_size = old_table_size;
+            (*hash_table).prime_index = old_prime_index;
+        }
+        return 0;
+    }
+
+    i = 0;
+    while i < old_table_size {
+        
+        unsafe {
+            rover = *old_table.add(i as usize);
+        }
+        while !rover.is_null() {
+            
+            unsafe {
+                next = (*rover).next;
+                pair = &mut (*rover).pair;
+                index = ((*hash_table).hash_func)
+                    .expect("non-null function pointer")((*pair).key)
+                    .wrapping_rem((*hash_table).table_size);
+                (*rover).next = *((*hash_table).table).add(index as usize);
+                let ref mut fresh0 = *((*hash_table).table).add(index as usize);
+                *fresh0 = rover;
+            }
+            rover = next;
+        }
+        i = i.wrapping_add(1);
+    }
+
+    
+    unsafe {
+        alloc_test_free(old_table as *mut libc::c_void);
+    }
+
+    return 1;
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:22:13 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:22:50 - INFO - LLM输出：
+2024-12-01 21:22:50 - INFO - extern "C" fn hash_table_enlarge(mut hash_table: *mut HashTable) -> libc::c_int {
+    let mut old_table: *mut *mut HashTableEntry = std::ptr::null_mut();
+    let mut old_table_size: libc::c_uint = 0;
+    let mut old_prime_index: libc::c_uint = 0;
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut next: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let mut i: libc::c_uint = 0;
+
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+    old_table = boxed_hash_table.table;
+    old_table_size = boxed_hash_table.table_size;
+    old_prime_index = boxed_hash_table.prime_index;
+    boxed_hash_table.prime_index = boxed_hash_table.prime_index.wrapping_add(1);
+
+    if hash_table_allocate_table(hash_table) == 0 {
+        boxed_hash_table.table = old_table;
+        boxed_hash_table.table_size = old_table_size;
+        boxed_hash_table.prime_index = old_prime_index;
+        hash_table = Box::into_raw(boxed_hash_table);
+        return 0;
+    }
+
+    i = 0;
+    while i < old_table_size {
+        rover = unsafe { *old_table.add(i as usize) };
+        while !rover.is_null() {
+            next = unsafe { (*rover).next };
+            pair = unsafe { &mut (*rover).pair };
+            index = unsafe {
+                (boxed_hash_table.hash_func)
+                    .expect("non-null function pointer")((*pair).key)
+                    .wrapping_rem(boxed_hash_table.table_size)
+            };
+            unsafe {
+                (*rover).next = *boxed_hash_table.table.add(index as usize);
+                let ref mut fresh0 = *boxed_hash_table.table.add(index as usize);
+                *fresh0 = rover;
+            }
+            rover = next;
+        }
+        i = i.wrapping_add(1);
+    }
+
+    unsafe {
+        alloc_test_free(old_table as *mut libc::c_void);
+    }
+
+    hash_table = Box::into_raw(boxed_hash_table);
+    return 1;
+}
+2024-12-01 21:22:50 - INFO - 替换并测试
+2024-12-01 21:22:53 - INFO - 所有测试通过！
+2024-12-01 21:22:53 - INFO - prompt输入：
+2024-12-01 21:22:53 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+
+    
+    unsafe {
+        if ((*hash_table).entries)
+            .wrapping_mul(3)
+            .wrapping_div((*hash_table).table_size) > 0
+        {
+            if hash_table_enlarge(hash_table) == 0 {
+                return 0;
+            }
+        }
+        index = ((*hash_table).hash_func.unwrap())(key).wrapping_rem((*hash_table).table_size);
+        rover = *((*hash_table).table).offset(index as isize);
+    }
+
+    while !rover.is_null() {
+        
+        unsafe {
+            pair = &mut (*rover).pair;
+            if ((*hash_table).equal_func.unwrap())((*pair).key, key) != 0 {
+                if ((*hash_table).value_free_func).is_some() {
+                    ((*hash_table).value_free_func.unwrap())((*pair).value);
+                }
+                if ((*hash_table).key_free_func).is_some() {
+                    ((*hash_table).key_free_func.unwrap())((*pair).key);
+                }
+                (*pair).key = key;
+                (*pair).value = value;
+                return 1;
+            }
+            rover = (*rover).next;
+        }
+    }
+
+    
+    unsafe {
+        newentry = alloc_test_malloc(
+            std::mem::size_of::<HashTableEntry>() as libc::c_ulong,
+        ) as *mut HashTableEntry;
+    }
+
+    if newentry.is_null() {
+        return 0;
+    }
+
+    
+    unsafe {
+        (*newentry).pair.key = key;
+        (*newentry).pair.value = value;
+        (*newentry).next = *((*hash_table).table).offset(index as isize);
+        let ref mut fresh1 = *((*hash_table).table).offset(index as isize);
+        *fresh1 = newentry;
+        (*hash_table).entries = ((*hash_table).entries).wrapping_add(1);
+    }
+
+    return 1;
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:22:53 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:23:38 - INFO - LLM输出：
+2024-12-01 21:23:38 - INFO - pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+
+    if (boxed_hash_table.entries as libc::c_ulong)
+        .wrapping_mul(3)
+        .wrapping_div(boxed_hash_table.table_size as libc::c_ulong)
+        > 0
+    {
+        if hash_table_enlarge(hash_table) == 0 {
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 0;
+        }
+    }
+
+    index = (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size);
+    rover = unsafe { *boxed_hash_table.table.offset(index as isize) };
+
+    while !rover.is_null() {
+        pair = unsafe { &mut (*rover).pair };
+        if (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 {
+            if boxed_hash_table.value_free_func.is_some() {
+                (boxed_hash_table.value_free_func.unwrap())((*pair).value);
+            }
+            if boxed_hash_table.key_free_func.is_some() {
+                (boxed_hash_table.key_free_func.unwrap())((*pair).key);
+            }
+            (*pair).key = key;
+            (*pair).value = value;
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 1;
+        }
+        rover = unsafe { (*rover).next };
+    }
+
+    newentry = alloc_test_malloc(std::mem::size_of::<HashTableEntry>() as libc::c_ulong)
+        as *mut HashTableEntry;
+
+    if newentry.is_null() {
+        hash_table = Box::into_raw(boxed_hash_table);
+        return 0;
+    }
+
+    let mut boxed_newentry = unsafe { Box::from_raw(newentry) };
+    boxed_newentry.pair.key = key;
+    boxed_newentry.pair.value = value;
+    boxed_newentry.next = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    let ref mut fresh1 = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    *fresh1 = newentry;
+    boxed_hash_table.entries = boxed_hash_table.entries.wrapping_add(1);
+    newentry = Box::into_raw(boxed_newentry);
+    hash_table = Box::into_raw(boxed_hash_table);
+
+    return 1;
+}
+2024-12-01 21:23:38 - INFO - 替换并测试
+2024-12-01 21:23:38 - INFO - 测试未通过！
+2024-12-01 21:23:38 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:251:13
+    |
+251 |     index = (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:256:51
+    |
+256 |         if (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 {
+    |                                                   ^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:256:12
+    |
+256 |         if (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:258:61
+    |
+258 |                 (boxed_hash_table.value_free_func.unwrap())((*pair).value);
+    |                                                             ^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:258:17
+    |
+258 |                 (boxed_hash_table.value_free_func.unwrap())((*pair).value);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:261:59
+    |
+261 |                 (boxed_hash_table.key_free_func.unwrap())((*pair).key);
+    |                                                           ^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:261:17
+    |
+261 |                 (boxed_hash_table.key_free_func.unwrap())((*pair).key);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:263:13
+    |
+263 |             (*pair).key = key;
+    |             ^^^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:264:13
+    |
+264 |             (*pair).value = value;
+    |             ^^^^^^^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 9 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 9 previous errors
+
+2024-12-01 21:23:38 - INFO - cnt=0 测试失败，还原重试
+2024-12-01 21:23:38 - INFO - prompt输入：
+2024-12-01 21:23:38 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+
+    
+    unsafe {
+        if ((*hash_table).entries)
+            .wrapping_mul(3)
+            .wrapping_div((*hash_table).table_size) > 0
+        {
+            if hash_table_enlarge(hash_table) == 0 {
+                return 0;
+            }
+        }
+        index = ((*hash_table).hash_func.unwrap())(key).wrapping_rem((*hash_table).table_size);
+        rover = *((*hash_table).table).offset(index as isize);
+    }
+
+    while !rover.is_null() {
+        
+        unsafe {
+            pair = &mut (*rover).pair;
+            if ((*hash_table).equal_func.unwrap())((*pair).key, key) != 0 {
+                if ((*hash_table).value_free_func).is_some() {
+                    ((*hash_table).value_free_func.unwrap())((*pair).value);
+                }
+                if ((*hash_table).key_free_func).is_some() {
+                    ((*hash_table).key_free_func.unwrap())((*pair).key);
+                }
+                (*pair).key = key;
+                (*pair).value = value;
+                return 1;
+            }
+            rover = (*rover).next;
+        }
+    }
+
+    
+    unsafe {
+        newentry = alloc_test_malloc(
+            std::mem::size_of::<HashTableEntry>() as libc::c_ulong,
+        ) as *mut HashTableEntry;
+    }
+
+    if newentry.is_null() {
+        return 0;
+    }
+
+    
+    unsafe {
+        (*newentry).pair.key = key;
+        (*newentry).pair.value = value;
+        (*newentry).next = *((*hash_table).table).offset(index as isize);
+        let ref mut fresh1 = *((*hash_table).table).offset(index as isize);
+        *fresh1 = newentry;
+        (*hash_table).entries = ((*hash_table).entries).wrapping_add(1);
+    }
+
+    return 1;
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+Here is your previous generation and it encountered the following errors.You should try to avoid.
+Previous Code:
+pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+
+    if (boxed_hash_table.entries as libc::c_ulong)
+        .wrapping_mul(3)
+        .wrapping_div(boxed_hash_table.table_size as libc::c_ulong)
+        > 0
+    {
+        if hash_table_enlarge(hash_table) == 0 {
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 0;
+        }
+    }
+
+    index = (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size);
+    rover = unsafe { *boxed_hash_table.table.offset(index as isize) };
+
+    while !rover.is_null() {
+        pair = unsafe { &mut (*rover).pair };
+        if (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 {
+            if boxed_hash_table.value_free_func.is_some() {
+                (boxed_hash_table.value_free_func.unwrap())((*pair).value);
+            }
+            if boxed_hash_table.key_free_func.is_some() {
+                (boxed_hash_table.key_free_func.unwrap())((*pair).key);
+            }
+            (*pair).key = key;
+            (*pair).value = value;
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 1;
+        }
+        rover = unsafe { (*rover).next };
+    }
+
+    newentry = alloc_test_malloc(std::mem::size_of::<HashTableEntry>() as libc::c_ulong)
+        as *mut HashTableEntry;
+
+    if newentry.is_null() {
+        hash_table = Box::into_raw(boxed_hash_table);
+        return 0;
+    }
+
+    let mut boxed_newentry = unsafe { Box::from_raw(newentry) };
+    boxed_newentry.pair.key = key;
+    boxed_newentry.pair.value = value;
+    boxed_newentry.next = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    let ref mut fresh1 = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    *fresh1 = newentry;
+    boxed_hash_table.entries = boxed_hash_table.entries.wrapping_add(1);
+    newentry = Box::into_raw(boxed_newentry);
+    hash_table = Box::into_raw(boxed_hash_table);
+
+    return 1;
+}
+Error Message:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:251:13
+    |
+251 |     index = (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:256:51
+    |
+256 |         if (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 {
+    |                                                   ^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:256:12
+    |
+256 |         if (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:258:61
+    |
+258 |                 (boxed_hash_table.value_free_func.unwrap())((*pair).value);
+    |                                                             ^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:258:17
+    |
+258 |                 (boxed_hash_table.value_free_func.unwrap())((*pair).value);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:261:59
+    |
+261 |                 (boxed_hash_table.key_free_func.unwrap())((*pair).key);
+    |                                                           ^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:261:17
+    |
+261 |                 (boxed_hash_table.key_free_func.unwrap())((*pair).key);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:263:13
+    |
+263 |             (*pair).key = key;
+    |             ^^^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:264:13
+    |
+264 |             (*pair).value = value;
+    |             ^^^^^^^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 9 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 9 previous errors
+
+
+2024-12-01 21:23:38 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:24:23 - INFO - LLM输出：
+2024-12-01 21:24:23 - INFO - pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+
+    if (boxed_hash_table.entries as libc::c_ulong)
+        .wrapping_mul(3)
+        .wrapping_div(boxed_hash_table.table_size as libc::c_ulong)
+        > 0
+    {
+        if hash_table_enlarge(hash_table) == 0 {
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 0;
+        }
+    }
+
+    index = unsafe {
+        (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size)
+    };
+    rover = unsafe { *boxed_hash_table.table.offset(index as isize) };
+
+    while !rover.is_null() {
+        pair = unsafe { &mut (*rover).pair };
+        if unsafe { (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 } {
+            if boxed_hash_table.value_free_func.is_some() {
+                unsafe { (boxed_hash_table.value_free_func.unwrap())((*pair).value) };
+            }
+            if boxed_hash_table.key_free_func.is_some() {
+                unsafe { (boxed_hash_table.key_free_func.unwrap())((*pair).key) };
+            }
+            unsafe {
+                (*pair).key = key;
+                (*pair).value = value;
+            }
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 1;
+        }
+        rover = unsafe { (*rover).next };
+    }
+
+    newentry = alloc_test_malloc(std::mem::size_of::<HashTableEntry>() as libc::c_ulong)
+        as *mut HashTableEntry;
+
+    if newentry.is_null() {
+        hash_table = Box::into_raw(boxed_hash_table);
+        return 0;
+    }
+
+    let mut boxed_newentry = unsafe { Box::from_raw(newentry) };
+    boxed_newentry.pair.key = key;
+    boxed_newentry.pair.value = value;
+    boxed_newentry.next = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    let ref mut fresh1 = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    *fresh1 = newentry;
+    boxed_hash_table.entries = boxed_hash_table.entries.wrapping_add(1);
+    newentry = Box::into_raw(boxed_newentry);
+    hash_table = Box::into_raw(boxed_hash_table);
+
+    return 1;
+}
+2024-12-01 21:24:23 - INFO - 替换并测试
+2024-12-01 21:24:25 - INFO - 测试未通过！
+2024-12-01 21:24:25 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+    Finished test [unoptimized + debuginfo] target(s) in 0.99s
+     Running unittests src/lib.rs (target/debug/deps/primary-bfb925db83312313)
+     Running tests/test_arraylist.rs (target/debug/deps/test_arraylist-9c7ee82c0ee90446)
+     Running tests/test_avl_tree.rs (target/debug/deps/test_avl_tree-ca6d8f514dc091da)
+     Running tests/test_binary_heap.rs (target/debug/deps/test_binary_heap-4e18bb3bd58bc88d)
+     Running tests/test_binomial_heap.rs (target/debug/deps/test_binomial_heap-b02d164796d96374)
+     Running tests/test_bloom_filter.rs (target/debug/deps/test_bloom_filter-6daa93a2eb55b2bc)
+     Running tests/test_compare_functions.rs (target/debug/deps/test_compare_functions-1253af407a0fda70)
+     Running tests/test_hash_functions.rs (target/debug/deps/test_hash_functions-e7038b38c73d1325)
+     Running tests/test_hash_table.rs (target/debug/deps/test_hash_table-b347a88da4be8cf9)
+error: test failed, to rerun pass '--test test_hash_table'
+
+Caused by:
+  process didn't exit successfully: `/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary/target/debug/deps/test_hash_table-b347a88da4be8cf9 --test-threads=1` (signal: 11, SIGSEGV: invalid memory reference)
+
+2024-12-01 21:24:25 - INFO - cnt=1 测试失败，还原重试
+2024-12-01 21:24:25 - INFO - prompt输入：
+2024-12-01 21:24:25 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+
+    
+    unsafe {
+        if ((*hash_table).entries)
+            .wrapping_mul(3)
+            .wrapping_div((*hash_table).table_size) > 0
+        {
+            if hash_table_enlarge(hash_table) == 0 {
+                return 0;
+            }
+        }
+        index = ((*hash_table).hash_func.unwrap())(key).wrapping_rem((*hash_table).table_size);
+        rover = *((*hash_table).table).offset(index as isize);
+    }
+
+    while !rover.is_null() {
+        
+        unsafe {
+            pair = &mut (*rover).pair;
+            if ((*hash_table).equal_func.unwrap())((*pair).key, key) != 0 {
+                if ((*hash_table).value_free_func).is_some() {
+                    ((*hash_table).value_free_func.unwrap())((*pair).value);
+                }
+                if ((*hash_table).key_free_func).is_some() {
+                    ((*hash_table).key_free_func.unwrap())((*pair).key);
+                }
+                (*pair).key = key;
+                (*pair).value = value;
+                return 1;
+            }
+            rover = (*rover).next;
+        }
+    }
+
+    
+    unsafe {
+        newentry = alloc_test_malloc(
+            std::mem::size_of::<HashTableEntry>() as libc::c_ulong,
+        ) as *mut HashTableEntry;
+    }
+
+    if newentry.is_null() {
+        return 0;
+    }
+
+    
+    unsafe {
+        (*newentry).pair.key = key;
+        (*newentry).pair.value = value;
+        (*newentry).next = *((*hash_table).table).offset(index as isize);
+        let ref mut fresh1 = *((*hash_table).table).offset(index as isize);
+        *fresh1 = newentry;
+        (*hash_table).entries = ((*hash_table).entries).wrapping_add(1);
+    }
+
+    return 1;
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+Here is your previous generation and it encountered an "invalid memory reference" error. Please ensure that the Box variables are converted back to raw pointers before each return point in the function.
+Previous Code:
+pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+
+    if (boxed_hash_table.entries as libc::c_ulong)
+        .wrapping_mul(3)
+        .wrapping_div(boxed_hash_table.table_size as libc::c_ulong)
+        > 0
+    {
+        if hash_table_enlarge(hash_table) == 0 {
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 0;
+        }
+    }
+
+    index = unsafe {
+        (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size)
+    };
+    rover = unsafe { *boxed_hash_table.table.offset(index as isize) };
+
+    while !rover.is_null() {
+        pair = unsafe { &mut (*rover).pair };
+        if unsafe { (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 } {
+            if boxed_hash_table.value_free_func.is_some() {
+                unsafe { (boxed_hash_table.value_free_func.unwrap())((*pair).value) };
+            }
+            if boxed_hash_table.key_free_func.is_some() {
+                unsafe { (boxed_hash_table.key_free_func.unwrap())((*pair).key) };
+            }
+            unsafe {
+                (*pair).key = key;
+                (*pair).value = value;
+            }
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 1;
+        }
+        rover = unsafe { (*rover).next };
+    }
+
+    newentry = alloc_test_malloc(std::mem::size_of::<HashTableEntry>() as libc::c_ulong)
+        as *mut HashTableEntry;
+
+    if newentry.is_null() {
+        hash_table = Box::into_raw(boxed_hash_table);
+        return 0;
+    }
+
+    let mut boxed_newentry = unsafe { Box::from_raw(newentry) };
+    boxed_newentry.pair.key = key;
+    boxed_newentry.pair.value = value;
+    boxed_newentry.next = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    let ref mut fresh1 = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    *fresh1 = newentry;
+    boxed_hash_table.entries = boxed_hash_table.entries.wrapping_add(1);
+    newentry = Box::into_raw(boxed_newentry);
+    hash_table = Box::into_raw(boxed_hash_table);
+
+    return 1;
+}
+
+2024-12-01 21:24:25 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:25:10 - INFO - LLM输出：
+2024-12-01 21:25:10 - INFO - pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+
+    if (boxed_hash_table.entries as libc::c_ulong)
+        .wrapping_mul(3)
+        .wrapping_div(boxed_hash_table.table_size as libc::c_ulong)
+        > 0
+    {
+        if hash_table_enlarge(hash_table) == 0 {
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 0;
+        }
+    }
+
+    index = unsafe {
+        (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size)
+    };
+    rover = unsafe { *boxed_hash_table.table.offset(index as isize) };
+
+    while !rover.is_null() {
+        pair = unsafe { &mut (*rover).pair };
+        if unsafe { (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 } {
+            if boxed_hash_table.value_free_func.is_some() {
+                unsafe { (boxed_hash_table.value_free_func.unwrap())((*pair).value) };
+            }
+            if boxed_hash_table.key_free_func.is_some() {
+                unsafe { (boxed_hash_table.key_free_func.unwrap())((*pair).key) };
+            }
+            unsafe {
+                (*pair).key = key;
+                (*pair).value = value;
+            }
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 1;
+        }
+        rover = unsafe { (*rover).next };
+    }
+
+    newentry = alloc_test_malloc(std::mem::size_of::<HashTableEntry>() as libc::c_ulong)
+        as *mut HashTableEntry;
+
+    if newentry.is_null() {
+        hash_table = Box::into_raw(boxed_hash_table);
+        return 0;
+    }
+
+    let mut boxed_newentry = unsafe { Box::from_raw(newentry) };
+    boxed_newentry.pair.key = key;
+    boxed_newentry.pair.value = value;
+    boxed_newentry.next = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    let ref mut fresh1 = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    *fresh1 = newentry;
+    boxed_hash_table.entries = boxed_hash_table.entries.wrapping_add(1);
+    newentry = Box::into_raw(boxed_newentry);
+    hash_table = Box::into_raw(boxed_hash_table);
+
+    return 1;
+}
+2024-12-01 21:25:10 - INFO - 替换并测试
+2024-12-01 21:25:12 - INFO - 测试未通过！
+2024-12-01 21:25:12 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+    Finished test [unoptimized + debuginfo] target(s) in 0.80s
+     Running unittests src/lib.rs (target/debug/deps/primary-bfb925db83312313)
+     Running tests/test_arraylist.rs (target/debug/deps/test_arraylist-9c7ee82c0ee90446)
+     Running tests/test_avl_tree.rs (target/debug/deps/test_avl_tree-ca6d8f514dc091da)
+     Running tests/test_binary_heap.rs (target/debug/deps/test_binary_heap-4e18bb3bd58bc88d)
+     Running tests/test_binomial_heap.rs (target/debug/deps/test_binomial_heap-b02d164796d96374)
+     Running tests/test_bloom_filter.rs (target/debug/deps/test_bloom_filter-6daa93a2eb55b2bc)
+     Running tests/test_compare_functions.rs (target/debug/deps/test_compare_functions-1253af407a0fda70)
+     Running tests/test_hash_functions.rs (target/debug/deps/test_hash_functions-e7038b38c73d1325)
+     Running tests/test_hash_table.rs (target/debug/deps/test_hash_table-b347a88da4be8cf9)
+error: test failed, to rerun pass '--test test_hash_table'
+
+Caused by:
+  process didn't exit successfully: `/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary/target/debug/deps/test_hash_table-b347a88da4be8cf9 --test-threads=1` (signal: 11, SIGSEGV: invalid memory reference)
+
+2024-12-01 21:25:12 - INFO - cnt=2 测试失败，还原重试
+2024-12-01 21:25:12 - INFO - prompt输入：
+2024-12-01 21:25:12 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+
+    
+    unsafe {
+        if ((*hash_table).entries)
+            .wrapping_mul(3)
+            .wrapping_div((*hash_table).table_size) > 0
+        {
+            if hash_table_enlarge(hash_table) == 0 {
+                return 0;
+            }
+        }
+        index = ((*hash_table).hash_func.unwrap())(key).wrapping_rem((*hash_table).table_size);
+        rover = *((*hash_table).table).offset(index as isize);
+    }
+
+    while !rover.is_null() {
+        
+        unsafe {
+            pair = &mut (*rover).pair;
+            if ((*hash_table).equal_func.unwrap())((*pair).key, key) != 0 {
+                if ((*hash_table).value_free_func).is_some() {
+                    ((*hash_table).value_free_func.unwrap())((*pair).value);
+                }
+                if ((*hash_table).key_free_func).is_some() {
+                    ((*hash_table).key_free_func.unwrap())((*pair).key);
+                }
+                (*pair).key = key;
+                (*pair).value = value;
+                return 1;
+            }
+            rover = (*rover).next;
+        }
+    }
+
+    
+    unsafe {
+        newentry = alloc_test_malloc(
+            std::mem::size_of::<HashTableEntry>() as libc::c_ulong,
+        ) as *mut HashTableEntry;
+    }
+
+    if newentry.is_null() {
+        return 0;
+    }
+
+    
+    unsafe {
+        (*newentry).pair.key = key;
+        (*newentry).pair.value = value;
+        (*newentry).next = *((*hash_table).table).offset(index as isize);
+        let ref mut fresh1 = *((*hash_table).table).offset(index as isize);
+        *fresh1 = newentry;
+        (*hash_table).entries = ((*hash_table).entries).wrapping_add(1);
+    }
+
+    return 1;
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+Here is your previous generation and it encountered an "invalid memory reference" error. Please ensure that the Box variables are converted back to raw pointers before each return point in the function.
+Previous Code:
+pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+
+    if (boxed_hash_table.entries as libc::c_ulong)
+        .wrapping_mul(3)
+        .wrapping_div(boxed_hash_table.table_size as libc::c_ulong)
+        > 0
+    {
+        if hash_table_enlarge(hash_table) == 0 {
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 0;
+        }
+    }
+
+    index = unsafe {
+        (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size)
+    };
+    rover = unsafe { *boxed_hash_table.table.offset(index as isize) };
+
+    while !rover.is_null() {
+        pair = unsafe { &mut (*rover).pair };
+        if unsafe { (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 } {
+            if boxed_hash_table.value_free_func.is_some() {
+                unsafe { (boxed_hash_table.value_free_func.unwrap())((*pair).value) };
+            }
+            if boxed_hash_table.key_free_func.is_some() {
+                unsafe { (boxed_hash_table.key_free_func.unwrap())((*pair).key) };
+            }
+            unsafe {
+                (*pair).key = key;
+                (*pair).value = value;
+            }
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 1;
+        }
+        rover = unsafe { (*rover).next };
+    }
+
+    newentry = alloc_test_malloc(std::mem::size_of::<HashTableEntry>() as libc::c_ulong)
+        as *mut HashTableEntry;
+
+    if newentry.is_null() {
+        hash_table = Box::into_raw(boxed_hash_table);
+        return 0;
+    }
+
+    let mut boxed_newentry = unsafe { Box::from_raw(newentry) };
+    boxed_newentry.pair.key = key;
+    boxed_newentry.pair.value = value;
+    boxed_newentry.next = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    let ref mut fresh1 = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    *fresh1 = newentry;
+    boxed_hash_table.entries = boxed_hash_table.entries.wrapping_add(1);
+    newentry = Box::into_raw(boxed_newentry);
+    hash_table = Box::into_raw(boxed_hash_table);
+
+    return 1;
+}
+
+2024-12-01 21:25:12 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:25:58 - INFO - LLM输出：
+2024-12-01 21:25:58 - INFO - pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+
+    if (boxed_hash_table.entries as libc::c_ulong)
+        .wrapping_mul(3)
+        .wrapping_div(boxed_hash_table.table_size as libc::c_ulong)
+        > 0
+    {
+        if hash_table_enlarge(hash_table) == 0 {
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 0;
+        }
+    }
+
+    index = unsafe {
+        (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size)
+    };
+    rover = unsafe { *boxed_hash_table.table.offset(index as isize) };
+
+    while !rover.is_null() {
+        pair = unsafe { &mut (*rover).pair };
+        if unsafe { (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 } {
+            if boxed_hash_table.value_free_func.is_some() {
+                unsafe { (boxed_hash_table.value_free_func.unwrap())((*pair).value) };
+            }
+            if boxed_hash_table.key_free_func.is_some() {
+                unsafe { (boxed_hash_table.key_free_func.unwrap())((*pair).key) };
+            }
+            unsafe {
+                (*pair).key = key;
+                (*pair).value = value;
+            }
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 1;
+        }
+        rover = unsafe { (*rover).next };
+    }
+
+    newentry = alloc_test_malloc(std::mem::size_of::<HashTableEntry>() as libc::c_ulong)
+        as *mut HashTableEntry;
+
+    if newentry.is_null() {
+        hash_table = Box::into_raw(boxed_hash_table);
+        return 0;
+    }
+
+    let mut boxed_newentry = unsafe { Box::from_raw(newentry) };
+    boxed_newentry.pair.key = key;
+    boxed_newentry.pair.value = value;
+    boxed_newentry.next = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    let ref mut fresh1 = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    *fresh1 = newentry;
+    boxed_hash_table.entries = boxed_hash_table.entries.wrapping_add(1);
+    newentry = Box::into_raw(boxed_newentry);
+    hash_table = Box::into_raw(boxed_hash_table);
+
+    return 1;
+}
+2024-12-01 21:25:58 - INFO - 替换并测试
+2024-12-01 21:25:59 - INFO - 测试未通过！
+2024-12-01 21:25:59 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+    Finished test [unoptimized + debuginfo] target(s) in 0.97s
+     Running unittests src/lib.rs (target/debug/deps/primary-bfb925db83312313)
+     Running tests/test_arraylist.rs (target/debug/deps/test_arraylist-9c7ee82c0ee90446)
+     Running tests/test_avl_tree.rs (target/debug/deps/test_avl_tree-ca6d8f514dc091da)
+     Running tests/test_binary_heap.rs (target/debug/deps/test_binary_heap-4e18bb3bd58bc88d)
+     Running tests/test_binomial_heap.rs (target/debug/deps/test_binomial_heap-b02d164796d96374)
+     Running tests/test_bloom_filter.rs (target/debug/deps/test_bloom_filter-6daa93a2eb55b2bc)
+     Running tests/test_compare_functions.rs (target/debug/deps/test_compare_functions-1253af407a0fda70)
+     Running tests/test_hash_functions.rs (target/debug/deps/test_hash_functions-e7038b38c73d1325)
+     Running tests/test_hash_table.rs (target/debug/deps/test_hash_table-b347a88da4be8cf9)
+error: test failed, to rerun pass '--test test_hash_table'
+
+Caused by:
+  process didn't exit successfully: `/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary/target/debug/deps/test_hash_table-b347a88da4be8cf9 --test-threads=1` (signal: 11, SIGSEGV: invalid memory reference)
+
+2024-12-01 21:25:59 - INFO - cnt=3 测试失败，还原重试
+2024-12-01 21:25:59 - INFO - prompt输入：
+2024-12-01 21:25:59 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+
+    
+    unsafe {
+        if ((*hash_table).entries)
+            .wrapping_mul(3)
+            .wrapping_div((*hash_table).table_size) > 0
+        {
+            if hash_table_enlarge(hash_table) == 0 {
+                return 0;
+            }
+        }
+        index = ((*hash_table).hash_func.unwrap())(key).wrapping_rem((*hash_table).table_size);
+        rover = *((*hash_table).table).offset(index as isize);
+    }
+
+    while !rover.is_null() {
+        
+        unsafe {
+            pair = &mut (*rover).pair;
+            if ((*hash_table).equal_func.unwrap())((*pair).key, key) != 0 {
+                if ((*hash_table).value_free_func).is_some() {
+                    ((*hash_table).value_free_func.unwrap())((*pair).value);
+                }
+                if ((*hash_table).key_free_func).is_some() {
+                    ((*hash_table).key_free_func.unwrap())((*pair).key);
+                }
+                (*pair).key = key;
+                (*pair).value = value;
+                return 1;
+            }
+            rover = (*rover).next;
+        }
+    }
+
+    
+    unsafe {
+        newentry = alloc_test_malloc(
+            std::mem::size_of::<HashTableEntry>() as libc::c_ulong,
+        ) as *mut HashTableEntry;
+    }
+
+    if newentry.is_null() {
+        return 0;
+    }
+
+    
+    unsafe {
+        (*newentry).pair.key = key;
+        (*newentry).pair.value = value;
+        (*newentry).next = *((*hash_table).table).offset(index as isize);
+        let ref mut fresh1 = *((*hash_table).table).offset(index as isize);
+        *fresh1 = newentry;
+        (*hash_table).entries = ((*hash_table).entries).wrapping_add(1);
+    }
+
+    return 1;
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+Here is your previous generation and it encountered an "invalid memory reference" error. Please ensure that the Box variables are converted back to raw pointers before each return point in the function.
+Previous Code:
+pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+
+    if (boxed_hash_table.entries as libc::c_ulong)
+        .wrapping_mul(3)
+        .wrapping_div(boxed_hash_table.table_size as libc::c_ulong)
+        > 0
+    {
+        if hash_table_enlarge(hash_table) == 0 {
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 0;
+        }
+    }
+
+    index = unsafe {
+        (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size)
+    };
+    rover = unsafe { *boxed_hash_table.table.offset(index as isize) };
+
+    while !rover.is_null() {
+        pair = unsafe { &mut (*rover).pair };
+        if unsafe { (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 } {
+            if boxed_hash_table.value_free_func.is_some() {
+                unsafe { (boxed_hash_table.value_free_func.unwrap())((*pair).value) };
+            }
+            if boxed_hash_table.key_free_func.is_some() {
+                unsafe { (boxed_hash_table.key_free_func.unwrap())((*pair).key) };
+            }
+            unsafe {
+                (*pair).key = key;
+                (*pair).value = value;
+            }
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 1;
+        }
+        rover = unsafe { (*rover).next };
+    }
+
+    newentry = alloc_test_malloc(std::mem::size_of::<HashTableEntry>() as libc::c_ulong)
+        as *mut HashTableEntry;
+
+    if newentry.is_null() {
+        hash_table = Box::into_raw(boxed_hash_table);
+        return 0;
+    }
+
+    let mut boxed_newentry = unsafe { Box::from_raw(newentry) };
+    boxed_newentry.pair.key = key;
+    boxed_newentry.pair.value = value;
+    boxed_newentry.next = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    let ref mut fresh1 = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    *fresh1 = newentry;
+    boxed_hash_table.entries = boxed_hash_table.entries.wrapping_add(1);
+    newentry = Box::into_raw(boxed_newentry);
+    hash_table = Box::into_raw(boxed_hash_table);
+
+    return 1;
+}
+
+2024-12-01 21:26:00 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:26:44 - INFO - LLM输出：
+2024-12-01 21:26:44 - INFO - pub extern "C" fn hash_table_insert(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+    mut value: HashTableValue,
+) -> libc::c_int {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut newentry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+
+    if (boxed_hash_table.entries as libc::c_ulong)
+        .wrapping_mul(3)
+        .wrapping_div(boxed_hash_table.table_size as libc::c_ulong)
+        > 0
+    {
+        if hash_table_enlarge(hash_table) == 0 {
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 0;
+        }
+    }
+
+    index = unsafe {
+        (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size)
+    };
+    rover = unsafe { *boxed_hash_table.table.offset(index as isize) };
+
+    while !rover.is_null() {
+        pair = unsafe { &mut (*rover).pair };
+        if unsafe { (boxed_hash_table.equal_func.unwrap())((*pair).key, key) != 0 } {
+            if boxed_hash_table.value_free_func.is_some() {
+                unsafe { (boxed_hash_table.value_free_func.unwrap())((*pair).value) };
+            }
+            if boxed_hash_table.key_free_func.is_some() {
+                unsafe { (boxed_hash_table.key_free_func.unwrap())((*pair).key) };
+            }
+            unsafe {
+                (*pair).key = key;
+                (*pair).value = value;
+            }
+            hash_table = Box::into_raw(boxed_hash_table);
+            return 1;
+        }
+        rover = unsafe { (*rover).next };
+    }
+
+    newentry = alloc_test_malloc(std::mem::size_of::<HashTableEntry>() as libc::c_ulong)
+        as *mut HashTableEntry;
+
+    if newentry.is_null() {
+        hash_table = Box::into_raw(boxed_hash_table);
+        return 0;
+    }
+
+    let mut boxed_newentry = unsafe { Box::from_raw(newentry) };
+    boxed_newentry.pair.key = key;
+    boxed_newentry.pair.value = value;
+    boxed_newentry.next = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    let ref mut fresh1 = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    *fresh1 = newentry;
+    boxed_hash_table.entries = boxed_hash_table.entries.wrapping_add(1);
+    newentry = Box::into_raw(boxed_newentry);
+    hash_table = Box::into_raw(boxed_hash_table);
+
+    return 1;
+}
+2024-12-01 21:26:44 - INFO - 替换并测试
+2024-12-01 21:26:46 - INFO - 测试未通过！
+2024-12-01 21:26:46 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+    Finished test [unoptimized + debuginfo] target(s) in 1.05s
+     Running unittests src/lib.rs (target/debug/deps/primary-bfb925db83312313)
+     Running tests/test_arraylist.rs (target/debug/deps/test_arraylist-9c7ee82c0ee90446)
+     Running tests/test_avl_tree.rs (target/debug/deps/test_avl_tree-ca6d8f514dc091da)
+     Running tests/test_binary_heap.rs (target/debug/deps/test_binary_heap-4e18bb3bd58bc88d)
+     Running tests/test_binomial_heap.rs (target/debug/deps/test_binomial_heap-b02d164796d96374)
+     Running tests/test_bloom_filter.rs (target/debug/deps/test_bloom_filter-6daa93a2eb55b2bc)
+     Running tests/test_compare_functions.rs (target/debug/deps/test_compare_functions-1253af407a0fda70)
+     Running tests/test_hash_functions.rs (target/debug/deps/test_hash_functions-e7038b38c73d1325)
+     Running tests/test_hash_table.rs (target/debug/deps/test_hash_table-b347a88da4be8cf9)
+error: test failed, to rerun pass '--test test_hash_table'
+
+Caused by:
+  process didn't exit successfully: `/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary/target/debug/deps/test_hash_table-b347a88da4be8cf9 --test-threads=1` (signal: 11, SIGSEGV: invalid memory reference)
+
+2024-12-01 21:26:46 - INFO - cnt=4 测试失败，还原重试
+2024-12-01 21:26:46 - INFO - 函数hash_table_insert第二轮优化失败
+2024-12-01 21:26:46 - INFO - prompt输入：
+2024-12-01 21:26:46 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_lookup(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+) -> HashTableValue {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+
+    
+    unsafe {
+        index = ((*hash_table).hash_func.unwrap())(key).wrapping_rem((*hash_table).table_size);
+        rover = *((*hash_table).table.offset(index as isize));
+    }
+
+    while !rover.is_null() {
+        
+        unsafe {
+            pair = &mut (*rover).pair;
+            if ((*hash_table).equal_func.unwrap())(key, (*pair).key) != 0 {
+                return (*pair).value;
+            }
+            rover = (*rover).next;
+        }
+    }
+
+    return std::ptr::null_mut();
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:26:46 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:27:04 - INFO - LLM输出：
+2024-12-01 21:27:04 - INFO - pub extern "C" fn hash_table_lookup(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+) -> HashTableValue {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+    index = (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size);
+    rover = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    while !rover.is_null() {
+        pair = unsafe { &mut (*rover).pair };
+        if (boxed_hash_table.equal_func.unwrap())(key, unsafe { (*pair).key }) != 0 {
+            hash_table = Box::into_raw(boxed_hash_table);
+            return unsafe { (*pair).value };
+        }
+        rover = unsafe { (*rover).next };
+    }
+    hash_table = Box::into_raw(boxed_hash_table);
+    return std::ptr::null_mut();
+}
+2024-12-01 21:27:04 - INFO - 替换并测试
+2024-12-01 21:27:04 - INFO - 测试未通过！
+2024-12-01 21:27:04 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:304:13
+    |
+304 |     index = (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:308:12
+    |
+308 |         if (boxed_hash_table.equal_func.unwrap())(key, unsafe { (*pair).key }) != 0 {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 2 previous errors
+
+2024-12-01 21:27:04 - INFO - cnt=0 测试失败，还原重试
+2024-12-01 21:27:04 - INFO - prompt输入：
+2024-12-01 21:27:04 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_lookup(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+) -> HashTableValue {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+
+    
+    unsafe {
+        index = ((*hash_table).hash_func.unwrap())(key).wrapping_rem((*hash_table).table_size);
+        rover = *((*hash_table).table.offset(index as isize));
+    }
+
+    while !rover.is_null() {
+        
+        unsafe {
+            pair = &mut (*rover).pair;
+            if ((*hash_table).equal_func.unwrap())(key, (*pair).key) != 0 {
+                return (*pair).value;
+            }
+            rover = (*rover).next;
+        }
+    }
+
+    return std::ptr::null_mut();
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+Here is your previous generation and it encountered the following errors.You should try to avoid.
+Previous Code:
+pub extern "C" fn hash_table_lookup(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+) -> HashTableValue {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+    index = (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size);
+    rover = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    while !rover.is_null() {
+        pair = unsafe { &mut (*rover).pair };
+        if (boxed_hash_table.equal_func.unwrap())(key, unsafe { (*pair).key }) != 0 {
+            hash_table = Box::into_raw(boxed_hash_table);
+            return unsafe { (*pair).value };
+        }
+        rover = unsafe { (*rover).next };
+    }
+    hash_table = Box::into_raw(boxed_hash_table);
+    return std::ptr::null_mut();
+}
+Error Message:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:304:13
+    |
+304 |     index = (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/hash_table.rs:308:12
+    |
+308 |         if (boxed_hash_table.equal_func.unwrap())(key, unsafe { (*pair).key }) != 0 {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 2 previous errors
+
+
+2024-12-01 21:27:04 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:27:22 - INFO - LLM输出：
+2024-12-01 21:27:22 - INFO - pub extern "C" fn hash_table_lookup(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+) -> HashTableValue {
+    let mut rover: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+    index = unsafe { (boxed_hash_table.hash_func.unwrap())(key).wrapping_rem(boxed_hash_table.table_size) };
+    rover = unsafe { *boxed_hash_table.table.offset(index as isize) };
+    while !rover.is_null() {
+        pair = unsafe { &mut (*rover).pair };
+        if unsafe { (boxed_hash_table.equal_func.unwrap())(key, (*pair).key) != 0 } {
+            hash_table = Box::into_raw(boxed_hash_table);
+            return unsafe { (*pair).value };
+        }
+        rover = unsafe { (*rover).next };
+    }
+    hash_table = Box::into_raw(boxed_hash_table);
+    return std::ptr::null_mut();
+}
+2024-12-01 21:27:22 - INFO - 替换并测试
+2024-12-01 21:27:25 - INFO - 所有测试通过！
+2024-12-01 21:27:25 - INFO - prompt输入：
+2024-12-01 21:27:25 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub unsafe extern "C" fn hash_table_remove(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+) -> libc::c_int {
+    let mut rover: *mut *mut HashTableEntry = 0 as *mut *mut HashTableEntry;
+    let mut entry: *mut HashTableEntry = 0 as *mut HashTableEntry;
+    let mut pair: *mut HashTablePair = 0 as *mut HashTablePair;
+    let mut index: libc::c_uint = 0;
+    let mut result: libc::c_int = 0;
+    index = (((*hash_table).hash_func).expect("non-null function pointer")(key))
+        .wrapping_rem((*hash_table).table_size);
+    result = 0 as libc::c_int;
+    rover = &mut *((*hash_table).table).offset(index as isize)
+        as *mut *mut HashTableEntry;
+    while !(*rover).is_null() {
+        pair = &mut (**rover).pair;
+        if ((*hash_table).equal_func)
+            .expect("non-null function pointer")(key, (*pair).key) != 0 as libc::c_int
+        {
+            entry = *rover;
+            *rover = (*entry).next;
+            hash_table_free_entry(hash_table, entry);
+            (*hash_table).entries = ((*hash_table).entries).wrapping_sub(1);
+            (*hash_table).entries;
+            result = 1 as libc::c_int;
+            break;
+        } else {
+            rover = &mut (**rover).next;
+        }
+    }
+    return result;
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:27:25 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:27:50 - INFO - LLM输出：
+2024-12-01 21:27:50 - INFO - pub unsafe extern "C" fn hash_table_remove(
+    mut hash_table: *mut HashTable,
+    mut key: HashTableKey,
+) -> libc::c_int {
+    let mut rover: *mut *mut HashTableEntry = std::ptr::null_mut();
+    let mut entry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut pair: *mut HashTablePair = std::ptr::null_mut();
+    let mut index: libc::c_uint = 0;
+    let mut result: libc::c_int = 0;
+    let mut boxed_hash_table = Box::from_raw(hash_table);
+    index = (boxed_hash_table.hash_func.expect("non-null function pointer")(key))
+        .wrapping_rem(boxed_hash_table.table_size);
+    result = 0;
+    rover = &mut *boxed_hash_table.table.offset(index as isize) as *mut *mut HashTableEntry;
+    while !(*rover).is_null() {
+        pair = &mut (**rover).pair;
+        if boxed_hash_table.equal_func
+            .expect("non-null function pointer")(key, (*pair).key) != 0
+        {
+            entry = *rover;
+            *rover = (**rover).next;
+            hash_table_free_entry(hash_table, entry);
+            boxed_hash_table.entries = boxed_hash_table.entries.wrapping_sub(1);
+            result = 1;
+            break;
+        } else {
+            rover = &mut (**rover).next;
+        }
+    }
+    hash_table = Box::into_raw(boxed_hash_table);
+    return result;
+}
+2024-12-01 21:27:50 - INFO - 替换并测试
+2024-12-01 21:27:53 - INFO - 所有测试通过！
+2024-12-01 21:27:53 - INFO - prompt输入：
+2024-12-01 21:27:53 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_num_entries(
+    hash_table: *mut HashTable,
+) -> libc::c_uint {
+    
+    unsafe {
+        return (*hash_table).entries;
+    }
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:27:53 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:27:59 - INFO - LLM输出：
+2024-12-01 21:27:59 - INFO - pub extern "C" fn hash_table_num_entries(
+    hash_table: *mut HashTable,
+) -> libc::c_uint {
+    let boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+    let entries = boxed_hash_table.entries;
+    let hash_table = Box::into_raw(boxed_hash_table);
+    entries
+}
+2024-12-01 21:27:59 - INFO - 替换并测试
+2024-12-01 21:28:02 - INFO - 所有测试通过！
+2024-12-01 21:28:02 - INFO - prompt输入：
+2024-12-01 21:28:02 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_iterate(
+    mut hash_table: *mut HashTable,
+    mut iterator: *mut HashTableIterator,
+) {
+    let mut chain: libc::c_uint = 0;
+
+    
+    unsafe {
+        (*iterator).hash_table = hash_table;
+        (*iterator).next_entry = std::ptr::null_mut();
+    }
+
+    chain = 0;
+    while chain < unsafe { (*hash_table).table_size } {
+        if !unsafe { *((*hash_table).table).offset(chain as isize) }.is_null() {
+            
+            unsafe {
+                (*iterator).next_entry = *((*hash_table).table).offset(chain as isize);
+                (*iterator).next_chain = chain;
+            }
+            break;
+        } else {
+            chain = chain.wrapping_add(1);
+        }
+    }
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:28:03 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:28:19 - INFO - LLM输出：
+2024-12-01 21:28:19 - INFO - pub extern "C" fn hash_table_iterate(
+    mut hash_table: *mut HashTable,
+    mut iterator: *mut HashTableIterator,
+) {
+    let mut chain: libc::c_uint = 0;
+    let mut boxed_hash_table = unsafe { Box::from_raw(hash_table) };
+    let mut boxed_iterator = unsafe { Box::from_raw(iterator) };
+
+    boxed_iterator.hash_table = hash_table;
+    boxed_iterator.next_entry = std::ptr::null_mut();
+
+    chain = 0;
+    while chain < boxed_hash_table.table_size {
+        if !unsafe { *boxed_hash_table.table.offset(chain as isize) }.is_null() {
+            boxed_iterator.next_entry = unsafe { *boxed_hash_table.table.offset(chain as isize) };
+            boxed_iterator.next_chain = chain;
+            break;
+        } else {
+            chain = chain.wrapping_add(1);
+        }
+    }
+
+    hash_table = Box::into_raw(boxed_hash_table);
+    iterator = Box::into_raw(boxed_iterator);
+}
+2024-12-01 21:28:19 - INFO - 替换并测试
+2024-12-01 21:28:22 - INFO - 所有测试通过！
+2024-12-01 21:28:22 - INFO - prompt输入：
+2024-12-01 21:28:22 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_iter_has_more(
+    iterator: *mut HashTableIterator,
+) -> libc::c_int {
+    
+    unsafe {
+        ((*iterator).next_entry != std::ptr::null_mut::<HashTableEntry>()) as libc::c_int
+    }
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:28:22 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:28:29 - INFO - LLM输出：
+2024-12-01 21:28:29 - INFO - pub extern "C" fn hash_table_iter_has_more(
+    iterator: *mut HashTableIterator,
+) -> libc::c_int {
+    let boxed_iterator = unsafe { Box::from_raw(iterator) };
+    let result = (boxed_iterator.next_entry != std::ptr::null_mut::<HashTableEntry>()) as libc::c_int;
+    let iterator = Box::into_raw(boxed_iterator);
+    result
+}
+2024-12-01 21:28:29 - INFO - 替换并测试
+2024-12-01 21:28:32 - INFO - 所有测试通过！
+2024-12-01 21:28:32 - INFO - prompt输入：
+2024-12-01 21:28:32 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+pub extern "C" fn hash_table_iter_next(
+    mut iterator: *mut HashTableIterator,
+) -> HashTablePair {
+    let mut current_entry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut hash_table: *mut HashTable = std::ptr::null_mut();
+    let mut pair: HashTablePair = HashTablePair {
+        key: std::ptr::null_mut(),
+        value: std::ptr::null_mut(),
+    };
+    let mut chain: libc::c_uint = 0;
+
+    
+    unsafe {
+        hash_table = (*iterator).hash_table;
+        if ((*iterator).next_entry).is_null() {
+            return pair;
+        }
+        current_entry = (*iterator).next_entry;
+        pair = (*current_entry).pair;
+        if !((*current_entry).next).is_null() {
+            (*iterator).next_entry = (*current_entry).next;
+        } else {
+            chain = ((*iterator).next_chain).wrapping_add(1);
+            (*iterator).next_entry = std::ptr::null_mut();
+            while chain < (*hash_table).table_size {
+                if !(*((*hash_table).table).offset(chain as isize)).is_null() {
+                    (*iterator).next_entry = *((*hash_table).table).offset(chain as isize);
+                    break;
+                } else {
+                    chain = chain.wrapping_add(1);
+                }
+            }
+            (*iterator).next_chain = chain;
+        }
+    }
+    return pair;
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:28:32 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:28:56 - INFO - LLM输出：
+2024-12-01 21:28:56 - INFO - pub extern "C" fn hash_table_iter_next(
+    mut iterator: *mut HashTableIterator,
+) -> HashTablePair {
+    let mut current_entry: *mut HashTableEntry = std::ptr::null_mut();
+    let mut hash_table: *mut HashTable = std::ptr::null_mut();
+    let mut pair: HashTablePair = HashTablePair {
+        key: std::ptr::null_mut(),
+        value: std::ptr::null_mut(),
+    };
+    let mut chain: libc::c_uint = 0;
+
+    let mut boxed_iterator = unsafe { Box::from_raw(iterator) };
+    hash_table = boxed_iterator.hash_table;
+    if boxed_iterator.next_entry.is_null() {
+        iterator = Box::into_raw(boxed_iterator);
+        return pair;
+    }
+    current_entry = boxed_iterator.next_entry;
+    pair = unsafe { (*current_entry).pair };
+    if !unsafe { (*current_entry).next }.is_null() {
+        boxed_iterator.next_entry = unsafe { (*current_entry).next };
+    } else {
+        chain = boxed_iterator.next_chain.wrapping_add(1);
+        boxed_iterator.next_entry = std::ptr::null_mut();
+        while chain < unsafe { (*hash_table).table_size } {
+            if !unsafe { *(*hash_table).table.offset(chain as isize) }.is_null() {
+                boxed_iterator.next_entry = unsafe { *(*hash_table).table.offset(chain as isize) };
+                break;
+            } else {
+                chain = chain.wrapping_add(1);
+            }
+        }
+        boxed_iterator.next_chain = chain;
+    }
+    iterator = Box::into_raw(boxed_iterator);
+    return pair;
+}
+2024-12-01 21:28:56 - INFO - 替换并测试
+2024-12-01 21:29:00 - INFO - 所有测试通过！
+2024-12-01 21:29:00 - INFO - prompt输入：
+2024-12-01 21:29:00 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion from raw pointer to Box type should occur after definition, do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+Ensure that for the same raw pointer, the conversion to Box type and back to the raw pointer is only done once. Do not repeatedly convert.
+Rust function:
+```rust
+extern "C" fn run_static_initializers() {
+    
+    unsafe {
+        hash_table_num_primes = (std::mem::size_of::<[libc::c_uint; 24]>()
+            as libc::c_ulong)
+            .wrapping_div(std::mem::size_of::<libc::c_int>() as libc::c_ulong)
+            as libc::c_uint;
+    }
+}
+```
+Following are other instructions you need to follow:
+1. The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+Static Global Variables:
+```rust
+static mut hash_table_primes: [libc::c_uint; 24] = [
+    193 as libc::c_int as libc::c_uint,
+    389 as libc::c_int as libc::c_uint,
+    769 as libc::c_int as libc::c_uint,
+    1543 as libc::c_int as libc::c_uint,
+    3079 as libc::c_int as libc::c_uint,
+    6151 as libc::c_int as libc::c_uint,
+    12289 as libc::c_int as libc::c_uint,
+    24593 as libc::c_int as libc::c_uint,
+    49157 as libc::c_int as libc::c_uint,
+    98317 as libc::c_int as libc::c_uint,
+    196613 as libc::c_int as libc::c_uint,
+    393241 as libc::c_int as libc::c_uint,
+    786433 as libc::c_int as libc::c_uint,
+    1572869 as libc::c_int as libc::c_uint,
+    3145739 as libc::c_int as libc::c_uint,
+    6291469 as libc::c_int as libc::c_uint,
+    12582917 as libc::c_int as libc::c_uint,
+    25165843 as libc::c_int as libc::c_uint,
+    50331653 as libc::c_int as libc::c_uint,
+    100663319 as libc::c_int as libc::c_uint,
+    201326611 as libc::c_int as libc::c_uint,
+    402653189 as libc::c_int as libc::c_uint,
+    805306457 as libc::c_int as libc::c_uint,
+    1610612741 as libc::c_int as libc::c_uint,
+];
+static mut hash_table_num_primes: libc::c_uint = 0;
+static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+```
+2. The declaration of extern C functions is also provided, and all functions except these are safe. If some called function's parameters are unsafe, use an unsafe block on the parameters instead of the entire function.
+Extern C Functions:
+```rust
+extern "C" {
+}
+```
+3. If there are other functions used as parameters in the Rust code, these functions are safe, so you can directly use them without unsafe block:
+Origin Code:
+```rust
+unsafe {
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+}
+```
+Optimized Code:
+```rust
+tree = avl_tree_new(
+        (Some(int_compare)),
+    );
+```
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+
+
+2024-12-01 21:29:00 - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 21:29:07 - INFO - LLM输出：
+2024-12-01 21:29:07 - INFO - extern "C" fn run_static_initializers() {
+    unsafe {
+        hash_table_num_primes = (std::mem::size_of::<[libc::c_uint; 24]>()
+            as libc::c_ulong)
+            .wrapping_div(std::mem::size_of::<libc::c_int>() as libc::c_ulong)
+            as libc::c_uint;
+    }
+}
+2024-12-01 21:29:07 - INFO - 替换并测试
+2024-12-01 21:29:10 - INFO - 所有测试通过！
+2024-12-01 21:29:10 - INFO - 第二轮优化完成，耗时508.2301940917969秒
+2024-12-01 21:29:10 - INFO - 统计safe指标
+2024-12-01 21:29:10 - INFO - remove s_test for test_avl_tree.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_bloom_filter.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_binomial_heap.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_trie.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_rb_tree.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_set.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_queue.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_compare_functions.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_hash_functions.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_slist.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_binary_heap.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_sortedarray.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_hash_table.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_list.rs
+2024-12-01 21:29:10 - INFO - remove s_test for test_arraylist.rs
+2024-12-01 21:29:11 - INFO - // safe API ratio is: 96 %
+// Safe code ratio is: 37 %
+

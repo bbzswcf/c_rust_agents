@@ -1,0 +1,2463 @@
+2024-12-01 19:33:19 - INFO - c2rust转换耗时4.76837158203125e-07秒
+2024-12-01 19:33:19 - INFO - 注释test_avl_tree.rs中的extern C函数声明，fail list=[]
+2024-12-01 19:33:19 - INFO - 注释test_avl_tree.rs中的全局结构体和类型声明
+2024-12-01 19:33:19 - INFO - 查找到0个结构体定义
+2024-12-01 19:33:19 - INFO - 未能在文件../primary/tests/test_avl_tree.rs中找到目标代码：
+#[derive(Copy, Clone)]
+#[repr(C)]
+2024-12-01 19:33:19 - INFO - 查找到0个type定义
+2024-12-01 19:33:19 - INFO - test_avl_tree.rs第二轮优化
+2024-12-01 19:33:19 - INFO - test file
+2024-12-01 19:33:19 - INFO - prompt输入：
+2024-12-01 19:33:19 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn find_subtree_height(mut node: *mut AVLTreeNode) -> libc::c_int {
+    let mut left_subtree: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right_subtree: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left_height: libc::c_int = 0;
+    let mut right_height: libc::c_int = 0;
+
+    if node.is_null() {
+        return 0;
+    }
+
+    
+    unsafe {
+        left_subtree = avl_tree_node_child(node, AVL_TREE_NODE_LEFT);
+        right_subtree = avl_tree_node_child(node, AVL_TREE_NODE_RIGHT);
+    }
+
+    left_height = find_subtree_height(left_subtree);
+    right_height = find_subtree_height(right_subtree);
+
+    if left_height > right_height {
+        left_height + 1
+    } else {
+        right_height + 1
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+2024-12-01 19:33:20 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:33:35 - INFO - LLM输出：
+2024-12-01 19:33:35 - INFO - pub extern "C" fn find_subtree_height(mut node: *mut AVLTreeNode) -> libc::c_int {
+    let mut left_subtree: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right_subtree: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left_height: libc::c_int = 0;
+    let mut right_height: libc::c_int = 0;
+
+    if node.is_null() {
+        return 0;
+    }
+
+    let node_box = unsafe { Box::from_raw(node) };
+    left_subtree = avl_tree_node_child(node, AVL_TREE_NODE_LEFT);
+    right_subtree = avl_tree_node_child(node, AVL_TREE_NODE_RIGHT);
+    node = Box::into_raw(node_box);
+
+    left_height = find_subtree_height(left_subtree);
+    right_height = find_subtree_height(right_subtree);
+
+    if left_height > right_height {
+        left_height + 1
+    } else {
+        right_height + 1
+    }
+}
+2024-12-01 19:33:35 - INFO - 替换并测试
+2024-12-01 19:33:38 - INFO - 所有测试通过！
+2024-12-01 19:33:38 - INFO - prompt输入：
+2024-12-01 19:33:38 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn validate_subtree(mut node: *mut AVLTreeNode) -> libc::c_int {
+    let mut left_node: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right_node: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left_height: libc::c_int = 0;
+    let mut right_height: libc::c_int = 0;
+    let mut key: *mut libc::c_int = std::ptr::null_mut();
+
+    if node.is_null() {
+        return 0;
+    }
+
+    
+    unsafe {
+        left_node = avl_tree_node_child(node, AVL_TREE_NODE_LEFT);
+        right_node = avl_tree_node_child(node, AVL_TREE_NODE_RIGHT);
+    }
+
+    if !left_node.is_null() {
+        
+        unsafe {
+            assert_eq!(avl_tree_node_parent(left_node), node, "avl_tree_node_parent(left_node) == node");
+        }
+    }
+
+    if !right_node.is_null() {
+        
+        unsafe {
+            assert_eq!(avl_tree_node_parent(right_node), node, "avl_tree_node_parent(right_node) == node");
+        }
+    }
+
+    left_height = validate_subtree(left_node);
+
+    
+    unsafe {
+        key = avl_tree_node_key(node) as *mut libc::c_int;
+        assert!(*key > counter, "*key > counter");
+        counter = *key;
+    }
+
+    right_height = validate_subtree(right_node);
+
+    
+    unsafe {
+        assert_eq!(avl_tree_subtree_height(left_node), left_height, "avl_tree_subtree_height(left_node) == left_height");
+        assert_eq!(avl_tree_subtree_height(right_node), right_height, "avl_tree_subtree_height(right_node) == right_height");
+    }
+
+    assert!(left_height - right_height < 2 && right_height - left_height < 2, "left_height - right_height < 2 && right_height - left_height < 2");
+
+    if left_height > right_height {
+        return left_height + 1;
+    } else {
+        return right_height + 1;
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+2024-12-01 19:33:38 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:34:16 - INFO - LLM输出：
+2024-12-01 19:34:16 - INFO - pub extern "C" fn validate_subtree(mut node: *mut AVLTreeNode) -> libc::c_int {
+    let mut left_node: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right_node: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left_height: libc::c_int = 0;
+    let mut right_height: libc::c_int = 0;
+    let mut key: *mut libc::c_int = std::ptr::null_mut();
+
+    if node.is_null() {
+        return 0;
+    }
+
+    let node_box = unsafe { Box::from_raw(node) };
+    left_node = avl_tree_node_child(node, AVL_TREE_NODE_LEFT);
+    right_node = avl_tree_node_child(node, AVL_TREE_NODE_RIGHT);
+    node = Box::into_raw(node_box);
+
+    if !left_node.is_null() {
+        let left_node_box = unsafe { Box::from_raw(left_node) };
+        assert_eq!(avl_tree_node_parent(left_node), node, "avl_tree_node_parent(left_node) == node");
+        left_node = Box::into_raw(left_node_box);
+    }
+
+    if !right_node.is_null() {
+        let right_node_box = unsafe { Box::from_raw(right_node) };
+        assert_eq!(avl_tree_node_parent(right_node), node, "avl_tree_node_parent(right_node) == node");
+        right_node = Box::into_raw(right_node_box);
+    }
+
+    left_height = validate_subtree(left_node);
+
+    let node_box = unsafe { Box::from_raw(node) };
+    key = avl_tree_node_key(node) as *mut libc::c_int;
+    assert!(*key > unsafe { counter }, "*key > counter");
+    unsafe { counter = *key };
+    node = Box::into_raw(node_box);
+
+    right_height = validate_subtree(right_node);
+
+    if !left_node.is_null() {
+        let left_node_box = unsafe { Box::from_raw(left_node) };
+        assert_eq!(avl_tree_subtree_height(left_node), left_height, "avl_tree_subtree_height(left_node) == left_height");
+        left_node = Box::into_raw(left_node_box);
+    }
+
+    if !right_node.is_null() {
+        let right_node_box = unsafe { Box::from_raw(right_node) };
+        assert_eq!(avl_tree_subtree_height(right_node), right_height, "avl_tree_subtree_height(right_node) == right_height");
+        right_node = Box::into_raw(right_node_box);
+    }
+
+    assert!(left_height - right_height < 2 && right_height - left_height < 2, "left_height - right_height < 2 && right_height - left_height < 2");
+
+    if left_height > right_height {
+        return left_height + 1;
+    } else {
+        return right_height + 1;
+    }
+}
+2024-12-01 19:34:16 - INFO - 替换并测试
+2024-12-01 19:34:16 - INFO - 测试未通过！
+2024-12-01 19:34:16 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+  --> tests/test_avl_tree.rs:86:13
+   |
+86 |     assert!(*key > unsafe { counter }, "*key > counter");
+   |             ^^^^ dereference of raw pointer
+   |
+   = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+2024-12-01 19:34:16 - INFO - cnt=0 测试失败，还原重试
+2024-12-01 19:34:16 - INFO - prompt输入：
+2024-12-01 19:34:16 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn validate_subtree(mut node: *mut AVLTreeNode) -> libc::c_int {
+    let mut left_node: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right_node: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left_height: libc::c_int = 0;
+    let mut right_height: libc::c_int = 0;
+    let mut key: *mut libc::c_int = std::ptr::null_mut();
+
+    if node.is_null() {
+        return 0;
+    }
+
+    
+    unsafe {
+        left_node = avl_tree_node_child(node, AVL_TREE_NODE_LEFT);
+        right_node = avl_tree_node_child(node, AVL_TREE_NODE_RIGHT);
+    }
+
+    if !left_node.is_null() {
+        
+        unsafe {
+            assert_eq!(avl_tree_node_parent(left_node), node, "avl_tree_node_parent(left_node) == node");
+        }
+    }
+
+    if !right_node.is_null() {
+        
+        unsafe {
+            assert_eq!(avl_tree_node_parent(right_node), node, "avl_tree_node_parent(right_node) == node");
+        }
+    }
+
+    left_height = validate_subtree(left_node);
+
+    
+    unsafe {
+        key = avl_tree_node_key(node) as *mut libc::c_int;
+        assert!(*key > counter, "*key > counter");
+        counter = *key;
+    }
+
+    right_height = validate_subtree(right_node);
+
+    
+    unsafe {
+        assert_eq!(avl_tree_subtree_height(left_node), left_height, "avl_tree_subtree_height(left_node) == left_height");
+        assert_eq!(avl_tree_subtree_height(right_node), right_height, "avl_tree_subtree_height(right_node) == right_height");
+    }
+
+    assert!(left_height - right_height < 2 && right_height - left_height < 2, "left_height - right_height < 2 && right_height - left_height < 2");
+
+    if left_height > right_height {
+        return left_height + 1;
+    } else {
+        return right_height + 1;
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+  --> tests/test_avl_tree.rs:86:13
+   |
+86 |     assert!(*key > unsafe { counter }, "*key > counter");
+   |             ^^^^ dereference of raw pointer
+   |
+   = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+
+2024-12-01 19:34:16 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:34:56 - INFO - LLM输出：
+2024-12-01 19:34:56 - INFO - pub extern "C" fn validate_subtree(mut node: *mut AVLTreeNode) -> libc::c_int {
+    let mut left_node: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right_node: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left_height: libc::c_int = 0;
+    let mut right_height: libc::c_int = 0;
+    let mut key: *mut libc::c_int = std::ptr::null_mut();
+
+    if node.is_null() {
+        return 0;
+    }
+
+    let node_box = unsafe { Box::from_raw(node) };
+    left_node = avl_tree_node_child(node, AVL_TREE_NODE_LEFT);
+    right_node = avl_tree_node_child(node, AVL_TREE_NODE_RIGHT);
+    node = Box::into_raw(node_box);
+
+    if !left_node.is_null() {
+        let left_node_box = unsafe { Box::from_raw(left_node) };
+        assert_eq!(avl_tree_node_parent(left_node), node, "avl_tree_node_parent(left_node) == node");
+        left_node = Box::into_raw(left_node_box);
+    }
+
+    if !right_node.is_null() {
+        let right_node_box = unsafe { Box::from_raw(right_node) };
+        assert_eq!(avl_tree_node_parent(right_node), node, "avl_tree_node_parent(right_node) == node");
+        right_node = Box::into_raw(right_node_box);
+    }
+
+    left_height = validate_subtree(left_node);
+
+    let node_box = unsafe { Box::from_raw(node) };
+    key = avl_tree_node_key(node) as *mut libc::c_int;
+    assert!(unsafe { *key > counter }, "*key > counter");
+    unsafe { counter = *key };
+    node = Box::into_raw(node_box);
+
+    right_height = validate_subtree(right_node);
+
+    if !left_node.is_null() {
+        let left_node_box = unsafe { Box::from_raw(left_node) };
+        assert_eq!(avl_tree_subtree_height(left_node), left_height, "avl_tree_subtree_height(left_node) == left_height");
+        left_node = Box::into_raw(left_node_box);
+    }
+
+    if !right_node.is_null() {
+        let right_node_box = unsafe { Box::from_raw(right_node) };
+        assert_eq!(avl_tree_subtree_height(right_node), right_height, "avl_tree_subtree_height(right_node) == right_height");
+        right_node = Box::into_raw(right_node_box);
+    }
+
+    assert!(left_height - right_height < 2 && right_height - left_height < 2, "left_height - right_height < 2 && right_height - left_height < 2");
+
+    if left_height > right_height {
+        return left_height + 1;
+    } else {
+        return right_height + 1;
+    }
+}
+2024-12-01 19:34:56 - INFO - 替换并测试
+2024-12-01 19:34:59 - INFO - 所有测试通过！
+2024-12-01 19:34:59 - INFO - prompt输入：
+2024-12-01 19:34:59 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn validate_tree(mut tree: *mut AVLTree) {
+    let mut root_node: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut height: libc::c_int = 0;
+
+    
+    unsafe {
+        root_node = avl_tree_root_node(tree);
+    }
+
+    if !root_node.is_null() {
+        
+        unsafe {
+            height = find_subtree_height(root_node);
+            assert_eq!(avl_tree_subtree_height(root_node), height, "avl_tree_subtree_height(root_node) == height");
+        }
+    }
+
+    
+    unsafe {
+        counter = -(1 as libc::c_int);
+    }
+
+    
+    unsafe {
+        validate_subtree(root_node);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+2024-12-01 19:34:59 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:35:10 - INFO - LLM输出：
+2024-12-01 19:35:10 - INFO - pub extern "C" fn validate_tree(mut tree: *mut AVLTree) {
+    let mut root_node: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut height: libc::c_int = 0;
+
+    let tree_box = unsafe { Box::from_raw(tree) };
+    root_node = avl_tree_root_node(tree);
+    tree = Box::into_raw(tree_box);
+
+    if !root_node.is_null() {
+        let root_node_box = unsafe { Box::from_raw(root_node) };
+        height = find_subtree_height(root_node);
+        assert_eq!(avl_tree_subtree_height(root_node), height, "avl_tree_subtree_height(root_node) == height");
+        root_node = Box::into_raw(root_node_box);
+    }
+
+    unsafe {
+        counter = -(1 as libc::c_int);
+    }
+
+    unsafe {
+        validate_subtree(root_node);
+    }
+}
+2024-12-01 19:35:10 - INFO - 替换并测试
+2024-12-01 19:35:13 - INFO - 所有测试通过！
+2024-12-01 19:35:13 - INFO - prompt输入：
+2024-12-01 19:35:13 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn create_tree() -> *mut AVLTree {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option::<
+                    unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int,
+                >,
+                AVLTreeCompareFunc,
+            >(
+                Some(
+                    int_compare
+                        as unsafe extern "C" fn(
+                            *mut libc::c_void,
+                            *mut libc::c_void,
+                        ) -> libc::c_int,
+                ),
+            ),
+        );
+    }
+
+    i = 0;
+    while i < 1000 {
+        
+        unsafe {
+            test_array[i as usize] = i;
+            avl_tree_insert(
+                tree,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as AVLTreeKey,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    tree
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+2024-12-01 19:35:13 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:35:32 - INFO - LLM输出：
+2024-12-01 19:35:32 - INFO - pub extern "C" fn create_tree() -> *mut AVLTree {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option::<
+                unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int,
+            >,
+            AVLTreeCompareFunc,
+        >(
+            Some(
+                int_compare
+                    as unsafe extern "C" fn(
+                        *mut libc::c_void,
+                        *mut libc::c_void,
+                    ) -> libc::c_int,
+            ),
+        ),
+    );
+
+    i = 0;
+    while i < 1000 {
+        unsafe {
+            test_array[i as usize] = i;
+            avl_tree_insert(
+                tree,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as AVLTreeKey,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    tree
+}
+2024-12-01 19:35:32 - INFO - 替换并测试
+2024-12-01 19:35:32 - INFO - 测试未通过！
+2024-12-01 19:35:32 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:142:9
+    |
+142 | /         std::mem::transmute::<
+143 | |             Option::<
+144 | |                 unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int,
+145 | |             >,
+...   |
+154 | |             ),
+155 | |         ),
+    | |_________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+2024-12-01 19:35:32 - INFO - cnt=0 测试失败，还原重试
+2024-12-01 19:35:32 - INFO - prompt输入：
+2024-12-01 19:35:32 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn create_tree() -> *mut AVLTree {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option::<
+                    unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int,
+                >,
+                AVLTreeCompareFunc,
+            >(
+                Some(
+                    int_compare
+                        as unsafe extern "C" fn(
+                            *mut libc::c_void,
+                            *mut libc::c_void,
+                        ) -> libc::c_int,
+                ),
+            ),
+        );
+    }
+
+    i = 0;
+    while i < 1000 {
+        
+        unsafe {
+            test_array[i as usize] = i;
+            avl_tree_insert(
+                tree,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as AVLTreeKey,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    tree
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:142:9
+    |
+142 | /         std::mem::transmute::<
+143 | |             Option::<
+144 | |                 unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int,
+145 | |             >,
+...   |
+154 | |             ),
+155 | |         ),
+    | |_________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+
+2024-12-01 19:35:32 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:35:51 - INFO - LLM输出：
+2024-12-01 19:35:51 - INFO - pub extern "C" fn create_tree() -> *mut AVLTree {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option::<
+                    unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int,
+                >,
+                AVLTreeCompareFunc,
+            >(
+                Some(
+                    int_compare
+                        as unsafe extern "C" fn(
+                            *mut libc::c_void,
+                            *mut libc::c_void,
+                        ) -> libc::c_int,
+                ),
+            ),
+        );
+    }
+
+    i = 0;
+    while i < 1000 {
+        unsafe {
+            test_array[i as usize] = i;
+            avl_tree_insert(
+                tree,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as AVLTreeKey,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int
+                    as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    tree
+}
+2024-12-01 19:35:51 - INFO - 替换并测试
+2024-12-01 19:35:54 - INFO - 所有测试通过！
+2024-12-01 19:35:54 - INFO - prompt输入：
+2024-12-01 19:35:54 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn test_avl_tree_new() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+
+    
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    assert!(!tree.is_null(), "tree != NULL");
+
+    
+    unsafe {
+        assert!(avl_tree_root_node(tree).is_null(), "avl_tree_root_node(tree) == NULL");
+        assert_eq!(avl_tree_num_entries(tree), 0, "avl_tree_num_entries(tree) == 0");
+        avl_tree_free(tree);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+2024-12-01 19:35:54 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:36:08 - INFO - LLM输出：
+2024-12-01 19:36:08 - INFO - pub extern "C" fn test_avl_tree_new() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    let tree_box = unsafe { Box::from_raw(tree) };
+    assert!(!tree.is_null(), "tree != NULL");
+    assert!(avl_tree_root_node(tree).is_null(), "avl_tree_root_node(tree) == NULL");
+    assert_eq!(avl_tree_num_entries(tree), 0, "avl_tree_num_entries(tree) == 0");
+    tree = Box::into_raw(tree_box);
+    unsafe {
+        avl_tree_free(tree);
+    }
+}
+2024-12-01 19:36:08 - INFO - 替换并测试
+2024-12-01 19:36:11 - INFO - 所有测试通过！
+2024-12-01 19:36:11 - INFO - prompt输入：
+2024-12-01 19:36:11 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn test_avl_tree_insert_lookup() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut node: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut i: libc::c_uint = 0;
+    let mut value: *mut libc::c_int = std::ptr::null_mut();
+
+    
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < 1000 {
+        
+        unsafe {
+            test_array[i as usize] = i as libc::c_int;
+        }
+
+        
+        unsafe {
+            avl_tree_insert(
+                tree,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+                &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeValue,
+            );
+        }
+
+        
+        unsafe {
+            assert_eq!(avl_tree_num_entries(tree), i + 1);
+        }
+
+        
+        unsafe {
+            validate_tree(tree);
+        }
+
+        i += 1;
+    }
+
+    
+    unsafe {
+        assert!(!avl_tree_root_node(tree).is_null());
+    }
+
+    i = 0;
+    while i < 1000 {
+        
+        unsafe {
+            node = avl_tree_lookup_node(tree, &mut i as *mut libc::c_uint as AVLTreeKey);
+        }
+
+        assert!(!node.is_null());
+
+        
+        unsafe {
+            value = avl_tree_node_key(node) as *mut libc::c_int;
+        }
+
+        
+        unsafe {
+            assert_eq!(*value, i as libc::c_int);
+        }
+
+        
+        unsafe {
+            value = avl_tree_node_value(node) as *mut libc::c_int;
+        }
+
+        
+        unsafe {
+            assert_eq!(*value, i as libc::c_int);
+        }
+
+        i += 1;
+    }
+
+    i = 1100;
+
+    
+    unsafe {
+        assert!(avl_tree_lookup_node(tree, &mut i as *mut libc::c_uint as AVLTreeKey).is_null());
+    }
+
+    
+    unsafe {
+        avl_tree_free(tree);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+2024-12-01 19:36:11 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:36:39 - INFO - LLM输出：
+2024-12-01 19:36:39 - INFO - pub extern "C" fn test_avl_tree_insert_lookup() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut node: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut i: libc::c_uint = 0;
+    let mut value: *mut libc::c_int = std::ptr::null_mut();
+
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < 1000 {
+        unsafe {
+            test_array[i as usize] = i as libc::c_int;
+        }
+
+        avl_tree_insert(
+            tree,
+            unsafe { &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey },
+            unsafe { &mut *test_array.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeValue },
+        );
+
+        assert_eq!(avl_tree_num_entries(tree), i + 1);
+
+        validate_tree(tree);
+
+        i += 1;
+    }
+
+    assert!(!avl_tree_root_node(tree).is_null());
+
+    i = 0;
+    while i < 1000 {
+        node = avl_tree_lookup_node(tree, unsafe { &mut i as *mut libc::c_uint as AVLTreeKey });
+
+        assert!(!node.is_null());
+
+        value = avl_tree_node_key(node) as *mut libc::c_int;
+
+        assert_eq!(unsafe { *value }, i as libc::c_int);
+
+        value = avl_tree_node_value(node) as *mut libc::c_int;
+
+        assert_eq!(unsafe { *value }, i as libc::c_int);
+
+        i += 1;
+    }
+
+    i = 1100;
+
+    assert!(avl_tree_lookup_node(tree, unsafe { &mut i as *mut libc::c_uint as AVLTreeKey }).is_null());
+
+    avl_tree_free(tree);
+}
+2024-12-01 19:36:39 - INFO - 替换并测试
+2024-12-01 19:36:41 - INFO - 所有测试通过！
+2024-12-01 19:36:41 - INFO - prompt输入：
+2024-12-01 19:36:41 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn test_avl_tree_child() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut root: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut values: [libc::c_int; 3] = [1, 2, 3];
+    let mut p: *mut libc::c_int = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < 3 {
+        
+        unsafe {
+            avl_tree_insert(
+                tree,
+                &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+                &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    
+    unsafe {
+        root = avl_tree_root_node(tree);
+        p = avl_tree_node_value(root) as *mut libc::c_int;
+        assert!(*p == 2, "Expected *p to be 2");
+
+        left = avl_tree_node_child(root, AVL_TREE_NODE_LEFT);
+        p = avl_tree_node_value(left) as *mut libc::c_int;
+        assert!(*p == 1, "Expected *p to be 1");
+
+        right = avl_tree_node_child(root, AVL_TREE_NODE_RIGHT);
+        p = avl_tree_node_value(right) as *mut libc::c_int;
+        assert!(*p == 3, "Expected *p to be 3");
+
+        assert!(avl_tree_node_child(root, 10000).is_null(), "Expected avl_tree_node_child(root, 10000) to be NULL");
+        assert!(avl_tree_node_child(root, 2).is_null(), "Expected avl_tree_node_child(root, 2) to be NULL");
+
+        avl_tree_free(tree);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+2024-12-01 19:36:42 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:37:17 - INFO - LLM输出：
+2024-12-01 19:37:17 - INFO - pub extern "C" fn test_avl_tree_child() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut root: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut values: [libc::c_int; 3] = [1, 2, 3];
+    let mut p: *mut libc::c_int = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < 3 {
+        avl_tree_insert(
+            tree,
+            &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+            &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeValue,
+        );
+        i += 1;
+    }
+
+    let tree_box = unsafe { Box::from_raw(tree) };
+    root = avl_tree_root_node(tree);
+    let root_box = unsafe { Box::from_raw(root) };
+    p = avl_tree_node_value(root) as *mut libc::c_int;
+    assert!(*p == 2, "Expected *p to be 2");
+    root = Box::into_raw(root_box);
+
+    left = avl_tree_node_child(root, AVL_TREE_NODE_LEFT);
+    let left_box = unsafe { Box::from_raw(left) };
+    p = avl_tree_node_value(left) as *mut libc::c_int;
+    assert!(*p == 1, "Expected *p to be 1");
+    left = Box::into_raw(left_box);
+
+    right = avl_tree_node_child(root, AVL_TREE_NODE_RIGHT);
+    let right_box = unsafe { Box::from_raw(right) };
+    p = avl_tree_node_value(right) as *mut libc::c_int;
+    assert!(*p == 3, "Expected *p to be 3");
+    right = Box::into_raw(right_box);
+
+    assert!(avl_tree_node_child(root, 10000).is_null(), "Expected avl_tree_node_child(root, 10000) to be NULL");
+    assert!(avl_tree_node_child(root, 2).is_null(), "Expected avl_tree_node_child(root, 2) to be NULL");
+
+    tree = Box::into_raw(tree_box);
+    avl_tree_free(tree);
+}
+2024-12-01 19:37:17 - INFO - 替换并测试
+2024-12-01 19:37:18 - INFO - 测试未通过！
+2024-12-01 19:37:18 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:282:19
+    |
+282 |             &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:282:13
+    |
+282 |             &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:283:19
+    |
+283 |             &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeValue,
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:283:13
+    |
+283 |             &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeValue,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:292:13
+    |
+292 |     assert!(*p == 2, "Expected *p to be 2");
+    |             ^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:298:13
+    |
+298 |     assert!(*p == 1, "Expected *p to be 1");
+    |             ^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:304:13
+    |
+304 |     assert!(*p == 3, "Expected *p to be 3");
+    |             ^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 7 previous errors
+
+2024-12-01 19:37:18 - INFO - cnt=0 测试失败，还原重试
+2024-12-01 19:37:18 - INFO - prompt输入：
+2024-12-01 19:37:18 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn test_avl_tree_child() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut root: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut values: [libc::c_int; 3] = [1, 2, 3];
+    let mut p: *mut libc::c_int = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < 3 {
+        
+        unsafe {
+            avl_tree_insert(
+                tree,
+                &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+                &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    
+    unsafe {
+        root = avl_tree_root_node(tree);
+        p = avl_tree_node_value(root) as *mut libc::c_int;
+        assert!(*p == 2, "Expected *p to be 2");
+
+        left = avl_tree_node_child(root, AVL_TREE_NODE_LEFT);
+        p = avl_tree_node_value(left) as *mut libc::c_int;
+        assert!(*p == 1, "Expected *p to be 1");
+
+        right = avl_tree_node_child(root, AVL_TREE_NODE_RIGHT);
+        p = avl_tree_node_value(right) as *mut libc::c_int;
+        assert!(*p == 3, "Expected *p to be 3");
+
+        assert!(avl_tree_node_child(root, 10000).is_null(), "Expected avl_tree_node_child(root, 10000) to be NULL");
+        assert!(avl_tree_node_child(root, 2).is_null(), "Expected avl_tree_node_child(root, 2) to be NULL");
+
+        avl_tree_free(tree);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:282:19
+    |
+282 |             &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:282:13
+    |
+282 |             &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:283:19
+    |
+283 |             &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeValue,
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:283:13
+    |
+283 |             &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeValue,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:292:13
+    |
+292 |     assert!(*p == 2, "Expected *p to be 2");
+    |             ^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:298:13
+    |
+298 |     assert!(*p == 1, "Expected *p to be 1");
+    |             ^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:304:13
+    |
+304 |     assert!(*p == 3, "Expected *p to be 3");
+    |             ^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 7 previous errors
+
+
+2024-12-01 19:37:18 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:37:49 - INFO - LLM输出：
+2024-12-01 19:37:49 - INFO - pub extern "C" fn test_avl_tree_child() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut root: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut values: [libc::c_int; 3] = [1, 2, 3];
+    let mut p: *mut libc::c_int = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < 3 {
+        let value_ptr = values.as_mut_ptr().offset(i as isize);
+        unsafe {
+            avl_tree_insert(
+                tree,
+                value_ptr as *mut libc::c_int as AVLTreeKey,
+                value_ptr as *mut libc::c_int as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    unsafe {
+        root = avl_tree_root_node(tree);
+        p = avl_tree_node_value(root) as *mut libc::c_int;
+        assert!(*p == 2, "Expected *p to be 2");
+
+        left = avl_tree_node_child(root, AVL_TREE_NODE_LEFT);
+        p = avl_tree_node_value(left) as *mut libc::c_int;
+        assert!(*p == 1, "Expected *p to be 1");
+
+        right = avl_tree_node_child(root, AVL_TREE_NODE_RIGHT);
+        p = avl_tree_node_value(right) as *mut libc::c_int;
+        assert!(*p == 3, "Expected *p to be 3");
+
+        assert!(avl_tree_node_child(root, 10000).is_null(), "Expected avl_tree_node_child(root, 10000) to be NULL");
+        assert!(avl_tree_node_child(root, 2).is_null(), "Expected avl_tree_node_child(root, 2) to be NULL");
+
+        avl_tree_free(tree);
+    }
+}
+2024-12-01 19:37:49 - INFO - 替换并测试
+2024-12-01 19:37:49 - INFO - 测试未通过！
+2024-12-01 19:37:49 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:280:25
+    |
+280 |         let value_ptr = values.as_mut_ptr().offset(i as isize);
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+2024-12-01 19:37:49 - INFO - cnt=1 测试失败，还原重试
+2024-12-01 19:37:49 - INFO - prompt输入：
+2024-12-01 19:37:49 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn test_avl_tree_child() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut root: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut values: [libc::c_int; 3] = [1, 2, 3];
+    let mut p: *mut libc::c_int = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < 3 {
+        
+        unsafe {
+            avl_tree_insert(
+                tree,
+                &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+                &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    
+    unsafe {
+        root = avl_tree_root_node(tree);
+        p = avl_tree_node_value(root) as *mut libc::c_int;
+        assert!(*p == 2, "Expected *p to be 2");
+
+        left = avl_tree_node_child(root, AVL_TREE_NODE_LEFT);
+        p = avl_tree_node_value(left) as *mut libc::c_int;
+        assert!(*p == 1, "Expected *p to be 1");
+
+        right = avl_tree_node_child(root, AVL_TREE_NODE_RIGHT);
+        p = avl_tree_node_value(right) as *mut libc::c_int;
+        assert!(*p == 3, "Expected *p to be 3");
+
+        assert!(avl_tree_node_child(root, 10000).is_null(), "Expected avl_tree_node_child(root, 10000) to be NULL");
+        assert!(avl_tree_node_child(root, 2).is_null(), "Expected avl_tree_node_child(root, 2) to be NULL");
+
+        avl_tree_free(tree);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:280:25
+    |
+280 |         let value_ptr = values.as_mut_ptr().offset(i as isize);
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+
+2024-12-01 19:37:49 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:38:20 - INFO - LLM输出：
+2024-12-01 19:38:20 - INFO - pub extern "C" fn test_avl_tree_child() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut root: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut values: [libc::c_int; 3] = [1, 2, 3];
+    let mut p: *mut libc::c_int = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < 3 {
+        let value_ptr = values.as_mut_ptr().offset(i as isize);
+        unsafe {
+            avl_tree_insert(
+                tree,
+                value_ptr as AVLTreeKey,
+                value_ptr as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    unsafe {
+        root = avl_tree_root_node(tree);
+        let root_box = Box::from_raw(root);
+        p = avl_tree_node_value(root) as *mut libc::c_int;
+        assert!(*p == 2, "Expected *p to be 2");
+        root = Box::into_raw(root_box);
+
+        left = avl_tree_node_child(root, AVL_TREE_NODE_LEFT);
+        let left_box = Box::from_raw(left);
+        p = avl_tree_node_value(left) as *mut libc::c_int;
+        assert!(*p == 1, "Expected *p to be 1");
+        left = Box::into_raw(left_box);
+
+        right = avl_tree_node_child(root, AVL_TREE_NODE_RIGHT);
+        let right_box = Box::from_raw(right);
+        p = avl_tree_node_value(right) as *mut libc::c_int;
+        assert!(*p == 3, "Expected *p to be 3");
+        right = Box::into_raw(right_box);
+
+        assert!(avl_tree_node_child(root, 10000).is_null(), "Expected avl_tree_node_child(root, 10000) to be NULL");
+        assert!(avl_tree_node_child(root, 2).is_null(), "Expected avl_tree_node_child(root, 2) to be NULL");
+
+        avl_tree_free(tree);
+    }
+}
+2024-12-01 19:38:20 - INFO - 替换并测试
+2024-12-01 19:38:20 - INFO - 测试未通过！
+2024-12-01 19:38:20 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:280:25
+    |
+280 |         let value_ptr = values.as_mut_ptr().offset(i as isize);
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+2024-12-01 19:38:20 - INFO - cnt=2 测试失败，还原重试
+2024-12-01 19:38:20 - INFO - prompt输入：
+2024-12-01 19:38:20 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn test_avl_tree_child() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut root: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut values: [libc::c_int; 3] = [1, 2, 3];
+    let mut p: *mut libc::c_int = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < 3 {
+        
+        unsafe {
+            avl_tree_insert(
+                tree,
+                &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+                &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    
+    unsafe {
+        root = avl_tree_root_node(tree);
+        p = avl_tree_node_value(root) as *mut libc::c_int;
+        assert!(*p == 2, "Expected *p to be 2");
+
+        left = avl_tree_node_child(root, AVL_TREE_NODE_LEFT);
+        p = avl_tree_node_value(left) as *mut libc::c_int;
+        assert!(*p == 1, "Expected *p to be 1");
+
+        right = avl_tree_node_child(root, AVL_TREE_NODE_RIGHT);
+        p = avl_tree_node_value(right) as *mut libc::c_int;
+        assert!(*p == 3, "Expected *p to be 3");
+
+        assert!(avl_tree_node_child(root, 10000).is_null(), "Expected avl_tree_node_child(root, 10000) to be NULL");
+        assert!(avl_tree_node_child(root, 2).is_null(), "Expected avl_tree_node_child(root, 2) to be NULL");
+
+        avl_tree_free(tree);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:280:25
+    |
+280 |         let value_ptr = values.as_mut_ptr().offset(i as isize);
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+
+2024-12-01 19:38:21 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:38:50 - INFO - LLM输出：
+2024-12-01 19:38:50 - INFO - pub extern "C" fn test_avl_tree_child() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut root: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut values: [libc::c_int; 3] = [1, 2, 3];
+    let mut p: *mut libc::c_int = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < 3 {
+        let value_ptr = values.as_mut_ptr().offset(i as isize);
+        unsafe {
+            avl_tree_insert(
+                tree,
+                value_ptr as AVLTreeKey,
+                value_ptr as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    unsafe {
+        root = avl_tree_root_node(tree);
+        p = avl_tree_node_value(root) as *mut libc::c_int;
+        assert!(*p == 2, "Expected *p to be 2");
+
+        left = avl_tree_node_child(root, AVL_TREE_NODE_LEFT);
+        p = avl_tree_node_value(left) as *mut libc::c_int;
+        assert!(*p == 1, "Expected *p to be 1");
+
+        right = avl_tree_node_child(root, AVL_TREE_NODE_RIGHT);
+        p = avl_tree_node_value(right) as *mut libc::c_int;
+        assert!(*p == 3, "Expected *p to be 3");
+
+        assert!(avl_tree_node_child(root, 10000).is_null(), "Expected avl_tree_node_child(root, 10000) to be NULL");
+        assert!(avl_tree_node_child(root, 2).is_null(), "Expected avl_tree_node_child(root, 2) to be NULL");
+
+        avl_tree_free(tree);
+    }
+}
+2024-12-01 19:38:50 - INFO - 替换并测试
+2024-12-01 19:38:51 - INFO - 测试未通过！
+2024-12-01 19:38:51 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:280:25
+    |
+280 |         let value_ptr = values.as_mut_ptr().offset(i as isize);
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+2024-12-01 19:38:51 - INFO - cnt=3 测试失败，还原重试
+2024-12-01 19:38:51 - INFO - prompt输入：
+2024-12-01 19:38:51 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn test_avl_tree_child() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut root: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut values: [libc::c_int; 3] = [1, 2, 3];
+    let mut p: *mut libc::c_int = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < 3 {
+        
+        unsafe {
+            avl_tree_insert(
+                tree,
+                &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+                &mut *values.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    
+    unsafe {
+        root = avl_tree_root_node(tree);
+        p = avl_tree_node_value(root) as *mut libc::c_int;
+        assert!(*p == 2, "Expected *p to be 2");
+
+        left = avl_tree_node_child(root, AVL_TREE_NODE_LEFT);
+        p = avl_tree_node_value(left) as *mut libc::c_int;
+        assert!(*p == 1, "Expected *p to be 1");
+
+        right = avl_tree_node_child(root, AVL_TREE_NODE_RIGHT);
+        p = avl_tree_node_value(right) as *mut libc::c_int;
+        assert!(*p == 3, "Expected *p to be 3");
+
+        assert!(avl_tree_node_child(root, 10000).is_null(), "Expected avl_tree_node_child(root, 10000) to be NULL");
+        assert!(avl_tree_node_child(root, 2).is_null(), "Expected avl_tree_node_child(root, 2) to be NULL");
+
+        avl_tree_free(tree);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:280:25
+    |
+280 |         let value_ptr = values.as_mut_ptr().offset(i as isize);
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+
+2024-12-01 19:38:51 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:39:27 - INFO - LLM输出：
+2024-12-01 19:39:27 - INFO - pub extern "C" fn test_avl_tree_child() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut root: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut left: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut right: *mut AVLTreeNode = std::ptr::null_mut();
+    let mut values: [libc::c_int; 3] = [1, 2, 3];
+    let mut p: *mut libc::c_int = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < 3 {
+        let value_ptr = values.as_mut_ptr().offset(i as isize);
+        unsafe {
+            avl_tree_insert(
+                tree,
+                value_ptr as AVLTreeKey,
+                value_ptr as AVLTreeValue,
+            );
+        }
+        i += 1;
+    }
+
+    unsafe {
+        root = avl_tree_root_node(tree);
+        let root_box = Box::from_raw(root);
+        p = avl_tree_node_value(root) as *mut libc::c_int;
+        assert!(*p == 2, "Expected *p to be 2");
+        root = Box::into_raw(root_box);
+
+        left = avl_tree_node_child(root, AVL_TREE_NODE_LEFT);
+        let left_box = Box::from_raw(left);
+        p = avl_tree_node_value(left) as *mut libc::c_int;
+        assert!(*p == 1, "Expected *p to be 1");
+        left = Box::into_raw(left_box);
+
+        right = avl_tree_node_child(root, AVL_TREE_NODE_RIGHT);
+        let right_box = Box::from_raw(right);
+        p = avl_tree_node_value(right) as *mut libc::c_int;
+        assert!(*p == 3, "Expected *p to be 3");
+        right = Box::into_raw(right_box);
+
+        assert!(avl_tree_node_child(root, 10000).is_null(), "Expected avl_tree_node_child(root, 10000) to be NULL");
+        assert!(avl_tree_node_child(root, 2).is_null(), "Expected avl_tree_node_child(root, 2) to be NULL");
+
+        avl_tree_free(tree);
+    }
+}
+2024-12-01 19:39:27 - INFO - 替换并测试
+2024-12-01 19:39:27 - INFO - 测试未通过！
+2024-12-01 19:39:27 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:280:25
+    |
+280 |         let value_ptr = values.as_mut_ptr().offset(i as isize);
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+2024-12-01 19:39:27 - INFO - cnt=4 测试失败，还原重试
+2024-12-01 19:39:27 - INFO - 函数test_avl_tree_child第二轮优化失败
+2024-12-01 19:39:27 - INFO - prompt输入：
+2024-12-01 19:39:27 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn test_avl_tree_free() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+
+    
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+        avl_tree_free(tree);
+        tree = create_tree();
+        avl_tree_free(tree);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+2024-12-01 19:39:27 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:39:38 - INFO - LLM输出：
+2024-12-01 19:39:38 - INFO - pub extern "C" fn test_avl_tree_free() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+
+    tree = avl_tree_new(
+        std::mem::transmute::<
+            Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+            AVLTreeCompareFunc,
+        >(Some(int_compare)),
+    );
+    let tree_box = unsafe { Box::from_raw(tree) };
+    avl_tree_free(tree);
+    tree = Box::into_raw(tree_box);
+
+    tree = create_tree();
+    let tree_box = unsafe { Box::from_raw(tree) };
+    avl_tree_free(tree);
+    tree = Box::into_raw(tree_box);
+}
+2024-12-01 19:39:38 - INFO - 替换并测试
+2024-12-01 19:39:38 - INFO - 测试未通过！
+2024-12-01 19:39:38 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:319:9
+    |
+319 | /         std::mem::transmute::<
+320 | |             Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+321 | |             AVLTreeCompareFunc,
+322 | |         >(Some(int_compare)),
+    | |____________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+2024-12-01 19:39:38 - INFO - cnt=0 测试失败，还原重试
+2024-12-01 19:39:38 - INFO - prompt输入：
+2024-12-01 19:39:38 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn test_avl_tree_free() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+
+    
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+        avl_tree_free(tree);
+        tree = create_tree();
+        avl_tree_free(tree);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> tests/test_avl_tree.rs:319:9
+    |
+319 | /         std::mem::transmute::<
+320 | |             Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+321 | |             AVLTreeCompareFunc,
+322 | |         >(Some(int_compare)),
+    | |____________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+
+
+2024-12-01 19:39:38 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:39:49 - INFO - LLM输出：
+2024-12-01 19:39:49 - INFO - pub extern "C" fn test_avl_tree_free() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+    let tree_box = unsafe { Box::from_raw(tree) };
+    avl_tree_free(Box::into_raw(tree_box));
+
+    tree = create_tree();
+    let tree_box = unsafe { Box::from_raw(tree) };
+    avl_tree_free(Box::into_raw(tree_box));
+}
+2024-12-01 19:39:49 - INFO - 替换并测试
+2024-12-01 19:39:52 - INFO - 所有测试通过！
+2024-12-01 19:39:52 - INFO - prompt输入：
+2024-12-01 19:39:52 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn test_avl_tree_lookup() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+    let mut value: *mut libc::c_int = std::ptr::null_mut();
+
+    
+    unsafe {
+        tree = create_tree();
+    }
+
+    i = 0;
+    while i < 1000 {
+        
+        unsafe {
+            value = avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey) as *mut libc::c_int;
+        }
+        assert!(!value.is_null(), "value != NULL");
+        
+        unsafe {
+            assert_eq!(*value, i, "*value == i");
+        }
+        i += 1;
+    }
+
+    i = -1;
+    
+    unsafe {
+        assert!(avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey).is_null(), "avl_tree_lookup(tree, &i) == NULL");
+    }
+
+    i = 1001;
+    
+    unsafe {
+        assert!(avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey).is_null(), "avl_tree_lookup(tree, &i) == NULL");
+    }
+
+    i = 8724897;
+    
+    unsafe {
+        assert!(avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey).is_null(), "avl_tree_lookup(tree, &i) == NULL");
+    }
+
+    
+    unsafe {
+        avl_tree_free(tree);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+2024-12-01 19:39:52 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:40:10 - INFO - LLM输出：
+2024-12-01 19:40:10 - INFO - pub extern "C" fn test_avl_tree_lookup() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+    let mut value: *mut libc::c_int = std::ptr::null_mut();
+
+    tree = create_tree();
+    let tree_box = unsafe { Box::from_raw(tree) };
+
+    i = 0;
+    while i < 1000 {
+        value = avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey) as *mut libc::c_int;
+        assert!(!value.is_null(), "value != NULL");
+        assert_eq!(unsafe { *value }, i, "*value == i");
+        i += 1;
+    }
+
+    i = -1;
+    assert!(avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey).is_null(), "avl_tree_lookup(tree, &i) == NULL");
+
+    i = 1001;
+    assert!(avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey).is_null(), "avl_tree_lookup(tree, &i) == NULL");
+
+    i = 8724897;
+    assert!(avl_tree_lookup(tree, &mut i as *mut libc::c_int as AVLTreeKey).is_null(), "avl_tree_lookup(tree, &i) == NULL");
+
+    tree = Box::into_raw(tree_box);
+    avl_tree_free(tree);
+}
+2024-12-01 19:40:10 - INFO - 替换并测试
+2024-12-01 19:40:13 - INFO - 所有测试通过！
+2024-12-01 19:40:13 - INFO - prompt输入：
+2024-12-01 19:40:13 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn test_avl_tree_remove() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+    let mut x: libc::c_int = 0;
+    let mut y: libc::c_int = 0;
+    let mut z: libc::c_int = 0;
+    let mut value: libc::c_int = 0;
+    let mut expected_entries: libc::c_uint = 0;
+
+    
+    unsafe {
+        tree = create_tree();
+    }
+
+    i = 1000 + 100;
+    
+    unsafe {
+        assert_eq!(avl_tree_remove(tree, &mut i as *mut libc::c_int as AVLTreeKey), 0);
+    }
+
+    i = -1;
+    
+    unsafe {
+        assert_eq!(avl_tree_remove(tree, &mut i as *mut libc::c_int as AVLTreeKey), 0);
+    }
+
+    expected_entries = 1000;
+    x = 0;
+    while x < 10 {
+        y = 0;
+        while y < 10 {
+            z = 0;
+            while z < 10 {
+                value = z * 100 + (9 - y) * 10 + x;
+                
+                unsafe {
+                    assert_ne!(avl_tree_remove(tree, &mut value as *mut libc::c_int as AVLTreeKey), 0);
+                }
+                
+                unsafe {
+                    validate_tree(tree);
+                }
+                expected_entries = expected_entries.wrapping_sub(1);
+                
+                unsafe {
+                    assert_eq!(avl_tree_num_entries(tree), expected_entries);
+                }
+                z += 1;
+            }
+            y += 1;
+        }
+        x += 1;
+    }
+
+    
+    unsafe {
+        assert!(avl_tree_root_node(tree).is_null());
+    }
+
+    
+    unsafe {
+        avl_tree_free(tree);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+2024-12-01 19:40:13 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:40:35 - INFO - LLM输出：
+2024-12-01 19:40:35 - INFO - pub extern "C" fn test_avl_tree_remove() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut i: libc::c_int = 0;
+    let mut x: libc::c_int = 0;
+    let mut y: libc::c_int = 0;
+    let mut z: libc::c_int = 0;
+    let mut value: libc::c_int = 0;
+    let mut expected_entries: libc::c_uint = 0;
+
+    tree = create_tree();
+    let tree_box = unsafe { Box::from_raw(tree) };
+
+    i = 1000 + 100;
+    assert_eq!(avl_tree_remove(tree, &mut i as *mut libc::c_int as AVLTreeKey), 0);
+
+    i = -1;
+    assert_eq!(avl_tree_remove(tree, &mut i as *mut libc::c_int as AVLTreeKey), 0);
+
+    expected_entries = 1000;
+    x = 0;
+    while x < 10 {
+        y = 0;
+        while y < 10 {
+            z = 0;
+            while z < 10 {
+                value = z * 100 + (9 - y) * 10 + x;
+                assert_ne!(avl_tree_remove(tree, &mut value as *mut libc::c_int as AVLTreeKey), 0);
+                validate_tree(tree);
+                expected_entries = expected_entries.wrapping_sub(1);
+                assert_eq!(avl_tree_num_entries(tree), expected_entries);
+                z += 1;
+            }
+            y += 1;
+        }
+        x += 1;
+    }
+
+    assert!(avl_tree_root_node(tree).is_null());
+
+    tree = Box::into_raw(tree_box);
+    avl_tree_free(tree);
+}
+2024-12-01 19:40:35 - INFO - 替换并测试
+2024-12-01 19:40:38 - INFO - 所有测试通过！
+2024-12-01 19:40:38 - INFO - prompt输入：
+2024-12-01 19:40:38 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn test_avl_tree_to_array() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut entries: [libc::c_int; 10] = [
+        89, 23, 42, 4, 16, 15, 8, 99, 50, 30,
+    ];
+    let mut sorted: [libc::c_int; 10] = [
+        4, 8, 15, 16, 23, 30, 42, 50, 89, 99,
+    ];
+    let mut num_entries: libc::c_uint = (std::mem::size_of::<[libc::c_int; 10]>() as libc::c_ulong)
+        .wrapping_div(std::mem::size_of::<libc::c_int>() as libc::c_ulong)
+        as libc::c_uint;
+    let mut i: libc::c_uint = 0;
+    let mut array: *mut *mut libc::c_int = std::ptr::null_mut();
+
+    
+    unsafe {
+        tree = avl_tree_new(
+            std::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>,
+                AVLTreeCompareFunc,
+            >(Some(int_compare)),
+        );
+    }
+
+    i = 0;
+    while i < num_entries {
+        
+        unsafe {
+            avl_tree_insert(
+                tree,
+                &mut *entries.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+                std::ptr::null_mut(),
+            );
+        }
+        i = i.wrapping_add(1);
+    }
+
+    assert_eq!(unsafe { avl_tree_num_entries(tree) }, num_entries);
+
+    
+    unsafe {
+        array = avl_tree_to_array(tree) as *mut *mut libc::c_int;
+    }
+
+    i = 0;
+    while i < num_entries {
+        assert_eq!(unsafe { *(*array.offset(i as isize)) }, sorted[i as usize]);
+        i = i.wrapping_add(1);
+    }
+
+    
+    unsafe {
+        alloc_test_free(array as *mut libc::c_void);
+        avl_tree_free(tree);
+    }
+}
+Static Global Variables:
+pub static mut test_array: [libc::c_int; 1000] = [0; 1000];
+pub static mut counter: libc::c_int = 0;
+Extern C Functions:
+extern "C" {
+    pub type _AVLTree;
+    pub type _AVLTreeNode;
+    fn __assert_fail(
+        __assertion: *const libc::c_char,
+        __file: *const libc::c_char,
+        __line: libc::c_uint,
+        __function: *const libc::c_char,
+    ) -> !;
+                                                                    }
+
+2024-12-01 19:40:38 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 19:41:04 - INFO - LLM输出：
+2024-12-01 19:41:04 - INFO - pub extern "C" fn test_avl_tree_to_array() {
+    let mut tree: *mut AVLTree = std::ptr::null_mut();
+    let mut entries: [libc::c_int; 10] = [
+        89, 23, 42, 4, 16, 15, 8, 99, 50, 30,
+    ];
+    let mut sorted: [libc::c_int; 10] = [
+        4, 8, 15, 16, 23, 30, 42, 50, 89, 99,
+    ];
+    let mut num_entries: libc::c_uint = (std::mem::size_of::<[libc::c_int; 10]>() as libc::c_ulong)
+        .wrapping_div(std::mem::size_of::<libc::c_int>() as libc::c_ulong)
+        as libc::c_uint;
+    let mut i: libc::c_uint = 0;
+    let mut array: *mut *mut libc::c_int = std::ptr::null_mut();
+
+    tree = unsafe { avl_tree_new(std::mem::transmute::<Option<unsafe extern "C" fn(*mut libc::c_void, *mut libc::c_void) -> libc::c_int>, AVLTreeCompareFunc>(Some(int_compare))) };
+
+    i = 0;
+    while i < num_entries {
+        unsafe {
+            avl_tree_insert(
+                tree,
+                &mut *entries.as_mut_ptr().offset(i as isize) as *mut libc::c_int as AVLTreeKey,
+                std::ptr::null_mut(),
+            );
+        }
+        i = i.wrapping_add(1);
+    }
+
+    assert_eq!(unsafe { avl_tree_num_entries(tree) }, num_entries);
+
+    array = unsafe { avl_tree_to_array(tree) as *mut *mut libc::c_int };
+
+    i = 0;
+    while i < num_entries {
+        assert_eq!(unsafe { *(*array.offset(i as isize)) }, sorted[i as usize]);
+        i = i.wrapping_add(1);
+    }
+
+    unsafe {
+        alloc_test_free(array as *mut libc::c_void);
+        avl_tree_free(tree);
+    }
+}
+2024-12-01 19:41:04 - INFO - 替换并测试
+2024-12-01 19:41:06 - INFO - 所有测试通过！
+2024-12-01 19:41:06 - INFO - 第二轮优化完成，耗时466.9105668067932秒
+2024-12-01 19:41:06 - INFO - 统计safe指标
+2024-12-01 19:41:06 - INFO - remove s_test for test_avl_tree.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_bloom_filter.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_binomial_heap.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_trie.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_rb_tree.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_set.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_queue.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_compare_functions.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_hash_functions.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_slist.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_binary_heap.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_sortedarray.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_hash_table.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_list.rs
+2024-12-01 19:41:06 - INFO - remove s_test for test_arraylist.rs
+2024-12-01 19:41:07 - INFO - // safe API ratio is: 96 %
+// Safe code ratio is: 35 %
+

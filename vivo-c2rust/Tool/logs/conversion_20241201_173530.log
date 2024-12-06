@@ -1,0 +1,2873 @@
+2024-12-01 17:35:30 - INFO - c2rust转换耗时2.384185791015625e-07秒
+2024-12-01 17:35:30 - INFO - rb_tree.rs第二轮优化
+2024-12-01 17:35:30 - INFO - prompt输入：
+2024-12-01 17:35:30 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_node_side(mut node: *mut RBTreeNode) -> RBTreeNodeSide {
+    
+    unsafe {
+        if (*(*node).parent).children[RB_TREE_NODE_LEFT as usize] == node {
+            return RB_TREE_NODE_LEFT;
+        } else {
+            return RB_TREE_NODE_RIGHT;
+        }
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:35:30 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:35:37 - INFO - LLM输出：
+2024-12-01 17:35:37 - INFO - extern "C" fn rb_tree_node_side(mut node: *mut RBTreeNode) -> RBTreeNodeSide {
+    let boxed_node = unsafe { Box::from_raw(node) };
+    let parent = unsafe { Box::from_raw((*boxed_node).parent) };
+    let side = if parent.children[RB_TREE_NODE_LEFT as usize] == node {
+        RB_TREE_NODE_LEFT
+    } else {
+        RB_TREE_NODE_RIGHT
+    };
+    let _ = Box::into_raw(parent);
+    let _ = Box::into_raw(boxed_node);
+    side
+}
+2024-12-01 17:35:37 - INFO - 替换并测试
+2024-12-01 17:35:41 - INFO - 所有测试通过！
+2024-12-01 17:35:41 - INFO - prompt输入：
+2024-12-01 17:35:41 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_node_sibling(mut node: *mut RBTreeNode) -> *mut RBTreeNode {
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    
+    unsafe {
+        side = rb_tree_node_side(node);
+        return (*(*node).parent)
+            .children[(1 as libc::c_int as libc::c_uint).wrapping_sub(side as libc::c_uint)
+            as usize];
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:35:41 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:35:48 - INFO - LLM输出：
+2024-12-01 17:35:48 - INFO - extern "C" fn rb_tree_node_sibling(mut node: *mut RBTreeNode) -> *mut RBTreeNode {
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+    let boxed_node = unsafe { Box::from_raw(node) };
+    side = rb_tree_node_side(node);
+    let sibling = unsafe {
+        (*(*boxed_node).parent)
+            .children[(1 as libc::c_int as libc::c_uint).wrapping_sub(side as libc::c_uint)
+            as usize]
+    };
+    let node = Box::into_raw(boxed_node);
+    sibling
+}
+2024-12-01 17:35:48 - INFO - 替换并测试
+2024-12-01 17:35:52 - INFO - 所有测试通过！
+2024-12-01 17:35:52 - INFO - prompt输入：
+2024-12-01 17:35:52 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_node_uncle(
+    mut node: *mut RBTreeNode,
+) -> *mut RBTreeNode {
+    
+    unsafe {
+        rb_tree_node_sibling((*node).parent)
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:35:52 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:35:57 - INFO - LLM输出：
+2024-12-01 17:35:57 - INFO - pub extern "C" fn rb_tree_node_uncle(
+    mut node: *mut RBTreeNode,
+) -> *mut RBTreeNode {
+    let boxed_node = unsafe { Box::from_raw(node) };
+    let uncle = unsafe { rb_tree_node_sibling(boxed_node.parent) };
+    let node = Box::into_raw(boxed_node);
+    uncle
+}
+2024-12-01 17:35:57 - INFO - 替换并测试
+2024-12-01 17:36:00 - INFO - 所有测试通过！
+2024-12-01 17:36:00 - INFO - prompt输入：
+2024-12-01 17:36:00 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_node_replace(
+    mut tree: *mut RBTree,
+    mut node1: *mut RBTreeNode,
+    mut node2: *mut RBTreeNode,
+) {
+    let mut side: libc::c_int = 0;
+
+    
+    if !node2.is_null() {
+        unsafe {
+            (*node2).parent = (*node1).parent;
+        }
+    }
+
+    
+    unsafe {
+        if ((*node1).parent).is_null() {
+            (*tree).root_node = node2;
+        } else {
+            side = rb_tree_node_side(node1) as libc::c_int;
+            (*(*node1).parent).children[side as usize] = node2;
+        }
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:36:00 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:36:13 - INFO - LLM输出：
+2024-12-01 17:36:13 - INFO - extern "C" fn rb_tree_node_replace(
+    mut tree: *mut RBTree,
+    mut node1: *mut RBTreeNode,
+    mut node2: *mut RBTreeNode,
+) {
+    let mut side: libc::c_int = 0;
+
+    if !node2.is_null() {
+        let boxed_node2 = unsafe { Box::from_raw(node2) };
+        boxed_node2.parent = unsafe { (*node1).parent };
+        node2 = Box::into_raw(boxed_node2);
+    }
+
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    let boxed_node1 = unsafe { Box::from_raw(node1) };
+
+    if boxed_node1.parent.is_null() {
+        boxed_tree.root_node = node2;
+    } else {
+        side = rb_tree_node_side(node1) as libc::c_int;
+        unsafe {
+            (*boxed_node1.parent).children[side as usize] = node2;
+        }
+    }
+
+    tree = Box::into_raw(boxed_tree);
+    node1 = Box::into_raw(boxed_node1);
+}
+2024-12-01 17:36:13 - INFO - 替换并测试
+2024-12-01 17:36:14 - INFO - 测试未通过！
+2024-12-01 17:36:14 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0594]: cannot assign to `boxed_node2.parent`, as `boxed_node2` is not declared as mutable
+  --> src/rb_tree.rs:78:9
+   |
+77 |         let boxed_node2 = unsafe { Box::from_raw(node2) };
+   |             ----------- help: consider changing this to be mutable: `mut boxed_node2`
+78 |         boxed_node2.parent = unsafe { (*node1).parent };
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+error[E0594]: cannot assign to `boxed_tree.root_node`, as `boxed_tree` is not declared as mutable
+  --> src/rb_tree.rs:86:9
+   |
+82 |     let boxed_tree = unsafe { Box::from_raw(tree) };
+   |         ---------- help: consider changing this to be mutable: `mut boxed_tree`
+...
+86 |         boxed_tree.root_node = node2;
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+For more information about this error, try `rustc --explain E0594`.
+error: could not compile `primary` due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 2 previous errors
+
+2024-12-01 17:36:14 - INFO - cnt=0 测试失败，还原重试
+2024-12-01 17:36:14 - INFO - prompt输入：
+2024-12-01 17:36:14 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_node_replace(
+    mut tree: *mut RBTree,
+    mut node1: *mut RBTreeNode,
+    mut node2: *mut RBTreeNode,
+) {
+    let mut side: libc::c_int = 0;
+
+    
+    if !node2.is_null() {
+        unsafe {
+            (*node2).parent = (*node1).parent;
+        }
+    }
+
+    
+    unsafe {
+        if ((*node1).parent).is_null() {
+            (*tree).root_node = node2;
+        } else {
+            side = rb_tree_node_side(node1) as libc::c_int;
+            (*(*node1).parent).children[side as usize] = node2;
+        }
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0594]: cannot assign to `boxed_node2.parent`, as `boxed_node2` is not declared as mutable
+  --> src/rb_tree.rs:78:9
+   |
+77 |         let boxed_node2 = unsafe { Box::from_raw(node2) };
+   |             ----------- help: consider changing this to be mutable: `mut boxed_node2`
+78 |         boxed_node2.parent = unsafe { (*node1).parent };
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+error[E0594]: cannot assign to `boxed_tree.root_node`, as `boxed_tree` is not declared as mutable
+  --> src/rb_tree.rs:86:9
+   |
+82 |     let boxed_tree = unsafe { Box::from_raw(tree) };
+   |         ---------- help: consider changing this to be mutable: `mut boxed_tree`
+...
+86 |         boxed_tree.root_node = node2;
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+For more information about this error, try `rustc --explain E0594`.
+error: could not compile `primary` due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 2 previous errors
+
+
+2024-12-01 17:36:14 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:36:26 - INFO - LLM输出：
+2024-12-01 17:36:26 - INFO - extern "C" fn rb_tree_node_replace(
+    mut tree: *mut RBTree,
+    mut node1: *mut RBTreeNode,
+    mut node2: *mut RBTreeNode,
+) {
+    let mut side: libc::c_int = 0;
+
+    if !node2.is_null() {
+        let mut boxed_node2 = unsafe { Box::from_raw(node2) };
+        boxed_node2.parent = unsafe { (*node1).parent };
+        node2 = Box::into_raw(boxed_node2);
+    }
+
+    let mut boxed_tree = unsafe { Box::from_raw(tree) };
+    if unsafe { (*node1).parent.is_null() } {
+        boxed_tree.root_node = node2;
+    } else {
+        side = rb_tree_node_side(node1) as libc::c_int;
+        unsafe {
+            (*(*node1).parent).children[side as usize] = node2;
+        }
+    }
+    tree = Box::into_raw(boxed_tree);
+}
+2024-12-01 17:36:26 - INFO - 替换并测试
+2024-12-01 17:36:29 - INFO - 所有测试通过！
+2024-12-01 17:36:29 - INFO - prompt输入：
+2024-12-01 17:36:29 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_rotate(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+    mut direction: RBTreeNodeSide,
+) -> *mut RBTreeNode {
+    let mut new_root: *mut RBTreeNode = std::ptr::null_mut();
+
+    
+    unsafe {
+        new_root = (*node).children[(1 - direction as libc::c_uint) as usize];
+        rb_tree_node_replace(tree, node, new_root);
+        (*node).children[(1 - direction as libc::c_uint) as usize] = (*new_root).children[direction as usize];
+        (*new_root).children[direction as usize] = node;
+        (*node).parent = new_root;
+
+        if !(*node).children[(1 - direction as libc::c_uint) as usize].is_null() {
+            (*(*node).children[(1 - direction as libc::c_uint) as usize]).parent = node;
+        }
+    }
+
+    new_root
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:36:29 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:36:45 - INFO - LLM输出：
+2024-12-01 17:36:45 - INFO - extern "C" fn rb_tree_rotate(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+    mut direction: RBTreeNodeSide,
+) -> *mut RBTreeNode {
+    let mut new_root: *mut RBTreeNode = std::ptr::null_mut();
+
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    let boxed_node = unsafe { Box::from_raw(node) };
+
+    new_root = boxed_node.children[(1 - direction as libc::c_uint) as usize];
+    rb_tree_node_replace(tree, node, new_root);
+    boxed_node.children[(1 - direction as libc::c_uint) as usize] = unsafe { (*new_root).children[direction as usize] };
+    unsafe { (*new_root).children[direction as usize] = node };
+    boxed_node.parent = new_root;
+
+    if !boxed_node.children[(1 - direction as libc::c_uint) as usize].is_null() {
+        unsafe { (*boxed_node.children[(1 - direction as libc::c_uint) as usize]).parent = node };
+    }
+
+    tree = Box::into_raw(boxed_tree);
+    node = Box::into_raw(boxed_node);
+
+    new_root
+}
+2024-12-01 17:36:45 - INFO - 替换并测试
+2024-12-01 17:36:45 - INFO - 测试未通过！
+2024-12-01 17:36:45 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0594]: cannot assign to `boxed_node.children[_]`, as `boxed_node` is not declared as mutable
+   --> src/rb_tree.rs:105:5
+    |
+101 |     let boxed_node = unsafe { Box::from_raw(node) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_node`
+...
+105 |     boxed_node.children[(1 - direction as libc::c_uint) as usize] = unsafe { (*new_root).children[direction as usize] };
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+error[E0594]: cannot assign to `boxed_node.parent`, as `boxed_node` is not declared as mutable
+   --> src/rb_tree.rs:107:5
+    |
+101 |     let boxed_node = unsafe { Box::from_raw(node) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_node`
+...
+107 |     boxed_node.parent = new_root;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+For more information about this error, try `rustc --explain E0594`.
+error: could not compile `primary` due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 2 previous errors
+
+2024-12-01 17:36:45 - INFO - cnt=0 测试失败，还原重试
+2024-12-01 17:36:45 - INFO - prompt输入：
+2024-12-01 17:36:45 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_rotate(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+    mut direction: RBTreeNodeSide,
+) -> *mut RBTreeNode {
+    let mut new_root: *mut RBTreeNode = std::ptr::null_mut();
+
+    
+    unsafe {
+        new_root = (*node).children[(1 - direction as libc::c_uint) as usize];
+        rb_tree_node_replace(tree, node, new_root);
+        (*node).children[(1 - direction as libc::c_uint) as usize] = (*new_root).children[direction as usize];
+        (*new_root).children[direction as usize] = node;
+        (*node).parent = new_root;
+
+        if !(*node).children[(1 - direction as libc::c_uint) as usize].is_null() {
+            (*(*node).children[(1 - direction as libc::c_uint) as usize]).parent = node;
+        }
+    }
+
+    new_root
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0594]: cannot assign to `boxed_node.children[_]`, as `boxed_node` is not declared as mutable
+   --> src/rb_tree.rs:105:5
+    |
+101 |     let boxed_node = unsafe { Box::from_raw(node) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_node`
+...
+105 |     boxed_node.children[(1 - direction as libc::c_uint) as usize] = unsafe { (*new_root).children[direction as usize] };
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+error[E0594]: cannot assign to `boxed_node.parent`, as `boxed_node` is not declared as mutable
+   --> src/rb_tree.rs:107:5
+    |
+101 |     let boxed_node = unsafe { Box::from_raw(node) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_node`
+...
+107 |     boxed_node.parent = new_root;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+For more information about this error, try `rustc --explain E0594`.
+error: could not compile `primary` due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 2 previous errors
+
+
+2024-12-01 17:36:45 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:37:01 - INFO - LLM输出：
+2024-12-01 17:37:01 - INFO - extern "C" fn rb_tree_rotate(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+    mut direction: RBTreeNodeSide,
+) -> *mut RBTreeNode {
+    let mut new_root: *mut RBTreeNode = std::ptr::null_mut();
+
+    unsafe {
+        new_root = (*node).children[(1 - direction as libc::c_uint) as usize];
+        rb_tree_node_replace(tree, node, new_root);
+    }
+
+    let mut boxed_node = unsafe { Box::from_raw(node) };
+    let mut boxed_new_root = unsafe { Box::from_raw(new_root) };
+
+    boxed_node.children[(1 - direction as libc::c_uint) as usize] = boxed_new_root.children[direction as usize];
+    boxed_new_root.children[direction as usize] = node;
+    boxed_node.parent = new_root;
+
+    if !boxed_node.children[(1 - direction as libc::c_uint) as usize].is_null() {
+        unsafe {
+            (*boxed_node.children[(1 - direction as libc::c_uint) as usize]).parent = node;
+        }
+    }
+
+    node = Box::into_raw(boxed_node);
+    new_root = Box::into_raw(boxed_new_root);
+
+    new_root
+}
+2024-12-01 17:37:01 - INFO - 替换并测试
+2024-12-01 17:37:04 - INFO - 所有测试通过！
+2024-12-01 17:37:04 - INFO - prompt输入：
+2024-12-01 17:37:04 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_new(
+    mut compare_func: RBTreeCompareFunc,
+) -> *mut RBTree {
+    let mut new_tree: *mut RBTree = std::ptr::null_mut();
+
+    
+    unsafe {
+        new_tree = alloc_test_malloc(std::mem::size_of::<RBTree>() as libc::c_ulong)
+            as *mut RBTree;
+    }
+
+    if new_tree.is_null() {
+        return std::ptr::null_mut();
+    }
+
+    
+    unsafe {
+        (*new_tree).root_node = std::ptr::null_mut();
+        (*new_tree).num_nodes = 0;
+        (*new_tree).compare_func = compare_func;
+    }
+
+    new_tree
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:37:05 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:37:13 - INFO - LLM输出：
+2024-12-01 17:37:13 - INFO - pub extern "C" fn rb_tree_new(
+    mut compare_func: RBTreeCompareFunc,
+) -> *mut RBTree {
+    let new_tree: *mut RBTree = unsafe {
+        alloc_test_malloc(std::mem::size_of::<RBTree>() as libc::c_ulong)
+            as *mut RBTree
+    };
+
+    if new_tree.is_null() {
+        return std::ptr::null_mut();
+    }
+
+    let mut boxed_tree = unsafe { Box::from_raw(new_tree) };
+    boxed_tree.root_node = std::ptr::null_mut();
+    boxed_tree.num_nodes = 0;
+    boxed_tree.compare_func = compare_func;
+    let new_tree = Box::into_raw(boxed_tree);
+
+    new_tree
+}
+2024-12-01 17:37:13 - INFO - 替换并测试
+2024-12-01 17:37:17 - INFO - 所有测试通过！
+2024-12-01 17:37:17 - INFO - prompt输入：
+2024-12-01 17:37:17 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_free_subtree(mut node: *mut RBTreeNode) {
+    if !node.is_null() {
+        
+        unsafe {
+            rb_tree_free_subtree(
+                (*node).children[RB_TREE_NODE_LEFT as libc::c_int as usize],
+            );
+            rb_tree_free_subtree(
+                (*node).children[RB_TREE_NODE_RIGHT as libc::c_int as usize],
+            );
+            alloc_test_free(node as *mut libc::c_void);
+        }
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:37:17 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:37:25 - INFO - LLM输出：
+2024-12-01 17:37:25 - INFO - extern "C" fn rb_tree_free_subtree(mut node: *mut RBTreeNode) {
+    if !node.is_null() {
+        let boxed_node = unsafe { Box::from_raw(node) };
+        rb_tree_free_subtree(boxed_node.children[RB_TREE_NODE_LEFT as libc::c_int as usize]);
+        rb_tree_free_subtree(boxed_node.children[RB_TREE_NODE_RIGHT as libc::c_int as usize]);
+        alloc_test_free(node as *mut libc::c_void);
+        let node = Box::into_raw(boxed_node);
+    }
+}
+2024-12-01 17:37:25 - INFO - 替换并测试
+2024-12-01 17:37:28 - INFO - 所有测试通过！
+2024-12-01 17:37:28 - INFO - prompt输入：
+2024-12-01 17:37:28 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_free(mut tree: *mut RBTree) {
+    
+    unsafe {
+        rb_tree_free_subtree((*tree).root_node);
+        alloc_test_free(tree as *mut libc::c_void);
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:37:28 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:37:34 - INFO - LLM输出：
+2024-12-01 17:37:34 - INFO - pub extern "C" fn rb_tree_free(mut tree: *mut RBTree) {
+    if !tree.is_null() {
+        let boxed_tree = unsafe { Box::from_raw(tree) };
+        unsafe {
+            rb_tree_free_subtree(boxed_tree.root_node);
+            alloc_test_free(tree as *mut libc::c_void);
+        }
+        let tree = Box::into_raw(boxed_tree);
+    }
+}
+2024-12-01 17:37:34 - INFO - 替换并测试
+2024-12-01 17:37:37 - INFO - 所有测试通过！
+2024-12-01 17:37:37 - INFO - prompt输入：
+2024-12-01 17:37:37 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_insert_case1(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    
+    if unsafe { (*node).parent.is_null() } {
+        
+        unsafe {
+            (*node).color = RB_TREE_NODE_BLACK;
+        }
+    } else {
+        
+        unsafe {
+            rb_tree_insert_case2(tree, node);
+        }
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:37:37 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:37:45 - INFO - LLM输出：
+2024-12-01 17:37:45 - INFO - extern "C" fn rb_tree_insert_case1(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    let mut boxed_node = unsafe { Box::from_raw(node) };
+    if boxed_node.parent.is_null() {
+        boxed_node.color = RB_TREE_NODE_BLACK;
+    } else {
+        rb_tree_insert_case2(tree, node);
+    }
+    tree = Box::into_raw(boxed_tree);
+    node = Box::into_raw(boxed_node);
+}
+2024-12-01 17:37:45 - INFO - 替换并测试
+2024-12-01 17:37:48 - INFO - 所有测试通过！
+2024-12-01 17:37:48 - INFO - prompt输入：
+2024-12-01 17:37:48 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_insert_case2(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    
+    unsafe {
+        if (*(*node).parent).color as libc::c_uint != RB_TREE_NODE_BLACK as libc::c_int as libc::c_uint {
+            rb_tree_insert_case3(tree, node);
+        }
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:37:48 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:37:57 - INFO - LLM输出：
+2024-12-01 17:37:57 - INFO - extern "C" fn rb_tree_insert_case2(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    let boxed_node = unsafe { Box::from_raw(node) };
+    if boxed_node.parent.color as libc::c_uint != RB_TREE_NODE_BLACK as libc::c_int as libc::c_uint {
+        rb_tree_insert_case3(tree, node);
+    }
+    tree = Box::into_raw(boxed_tree);
+    node = Box::into_raw(boxed_node);
+}
+2024-12-01 17:37:57 - INFO - 替换并测试
+2024-12-01 17:37:58 - INFO - 测试未通过！
+2024-12-01 17:37:58 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0609]: no field `color` on type `*mut _RBTreeNode`
+   --> src/rb_tree.rs:184:26
+    |
+184 |     if boxed_node.parent.color as libc::c_uint != RB_TREE_NODE_BLACK as libc::c_int as libc::c_uint {
+    |        ------------------^^^^^
+    |        |
+    |        help: `boxed_node.parent` is a raw pointer; try dereferencing it: `(*boxed_node.parent).color`
+
+For more information about this error, try `rustc --explain E0609`.
+error: could not compile `primary` due to previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to previous error
+
+2024-12-01 17:37:58 - INFO - cnt=0 测试失败，还原重试
+2024-12-01 17:37:58 - INFO - prompt输入：
+2024-12-01 17:37:58 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_insert_case2(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    
+    unsafe {
+        if (*(*node).parent).color as libc::c_uint != RB_TREE_NODE_BLACK as libc::c_int as libc::c_uint {
+            rb_tree_insert_case3(tree, node);
+        }
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0609]: no field `color` on type `*mut _RBTreeNode`
+   --> src/rb_tree.rs:184:26
+    |
+184 |     if boxed_node.parent.color as libc::c_uint != RB_TREE_NODE_BLACK as libc::c_int as libc::c_uint {
+    |        ------------------^^^^^
+    |        |
+    |        help: `boxed_node.parent` is a raw pointer; try dereferencing it: `(*boxed_node.parent).color`
+
+For more information about this error, try `rustc --explain E0609`.
+error: could not compile `primary` due to previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to previous error
+
+
+2024-12-01 17:37:58 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:38:04 - INFO - LLM输出：
+2024-12-01 17:38:04 - INFO - extern "C" fn rb_tree_insert_case2(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    let boxed_node = unsafe { Box::from_raw(node) };
+    if unsafe { (*boxed_node.parent).color as libc::c_uint != RB_TREE_NODE_BLACK as libc::c_int as libc::c_uint } {
+        rb_tree_insert_case3(tree, node);
+    }
+    let node = Box::into_raw(boxed_node);
+}
+2024-12-01 17:38:04 - INFO - 替换并测试
+2024-12-01 17:38:07 - INFO - 所有测试通过！
+2024-12-01 17:38:07 - INFO - prompt输入：
+2024-12-01 17:38:07 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_insert_case3(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    let mut grandparent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut uncle: *mut RBTreeNode = std::ptr::null_mut();
+
+    
+    unsafe {
+        grandparent = (*(*node).parent).parent;
+        uncle = rb_tree_node_uncle(node);
+    }
+
+    if !uncle.is_null()
+        && unsafe { (*uncle).color as libc::c_uint == RB_TREE_NODE_RED as libc::c_int as libc::c_uint }
+    {
+        
+        unsafe {
+            (*(*node).parent).color = RB_TREE_NODE_BLACK;
+            (*uncle).color = RB_TREE_NODE_BLACK;
+            (*grandparent).color = RB_TREE_NODE_RED;
+        }
+        
+        unsafe {
+            rb_tree_insert_case1(tree, grandparent);
+        }
+    } else {
+        
+        unsafe {
+            rb_tree_insert_case4(tree, node);
+        }
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:38:07 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:38:24 - INFO - LLM输出：
+2024-12-01 17:38:24 - INFO - extern "C" fn rb_tree_insert_case3(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    let mut boxed_tree = unsafe { Box::from_raw(tree) };
+    let mut boxed_node = unsafe { Box::from_raw(node) };
+    let mut grandparent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut uncle: *mut RBTreeNode = std::ptr::null_mut();
+
+    grandparent = unsafe { (*boxed_node.parent).parent };
+    uncle = rb_tree_node_uncle(node);
+
+    if !uncle.is_null()
+        && unsafe { (*uncle).color as libc::c_uint == RB_TREE_NODE_RED as libc::c_int as libc::c_uint }
+    {
+        unsafe {
+            (*boxed_node.parent).color = RB_TREE_NODE_BLACK;
+            (*uncle).color = RB_TREE_NODE_BLACK;
+            (*grandparent).color = RB_TREE_NODE_RED;
+        }
+        rb_tree_insert_case1(tree, grandparent);
+    } else {
+        rb_tree_insert_case4(tree, node);
+    }
+
+    tree = Box::into_raw(boxed_tree);
+    node = Box::into_raw(boxed_node);
+}
+2024-12-01 17:38:24 - INFO - 替换并测试
+2024-12-01 17:38:27 - INFO - 所有测试通过！
+2024-12-01 17:38:27 - INFO - prompt输入：
+2024-12-01 17:38:27 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_insert_case4(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    let mut next_node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    
+    unsafe {
+        side = rb_tree_node_side(node);
+        if side as libc::c_uint != rb_tree_node_side((*node).parent) as libc::c_uint {
+            next_node = (*node).parent;
+            rb_tree_rotate(
+                tree,
+                (*node).parent,
+                (1 as libc::c_int as libc::c_uint).wrapping_sub(side as libc::c_uint)
+                    as RBTreeNodeSide,
+            );
+        } else {
+            next_node = node;
+        }
+    }
+
+    
+    unsafe {
+        rb_tree_insert_case5(tree, next_node);
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:38:27 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:38:44 - INFO - LLM输出：
+2024-12-01 17:38:44 - INFO - extern "C" fn rb_tree_insert_case4(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    let mut boxed_tree = unsafe { Box::from_raw(tree) };
+    let mut boxed_node = unsafe { Box::from_raw(node) };
+    let mut next_node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    side = rb_tree_node_side(boxed_node.as_mut());
+    if side as libc::c_uint != rb_tree_node_side(boxed_node.parent) as libc::c_uint {
+        next_node = boxed_node.parent;
+        rb_tree_rotate(
+            boxed_tree.as_mut(),
+            boxed_node.parent,
+            (1 as libc::c_int as libc::c_uint).wrapping_sub(side as libc::c_uint)
+                as RBTreeNodeSide,
+        );
+    } else {
+        next_node = boxed_node.as_mut();
+    }
+
+    rb_tree_insert_case5(boxed_tree.as_mut(), next_node);
+
+    tree = Box::into_raw(boxed_tree);
+    node = Box::into_raw(boxed_node);
+}
+2024-12-01 17:38:44 - INFO - 替换并测试
+2024-12-01 17:38:47 - INFO - 所有测试通过！
+2024-12-01 17:38:47 - INFO - prompt输入：
+2024-12-01 17:38:47 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_insert_case5(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut grandparent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    
+    unsafe {
+        parent = (*node).parent;
+        grandparent = (*parent).parent;
+        side = rb_tree_node_side(node);
+    }
+
+    
+    unsafe {
+        rb_tree_rotate(
+            tree,
+            grandparent,
+            (1 as libc::c_int as libc::c_uint).wrapping_sub(side as libc::c_uint)
+                as RBTreeNodeSide,
+        );
+        (*parent).color = RB_TREE_NODE_BLACK;
+        (*grandparent).color = RB_TREE_NODE_RED;
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:38:47 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:39:02 - INFO - LLM输出：
+2024-12-01 17:39:02 - INFO - extern "C" fn rb_tree_insert_case5(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut grandparent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    let boxed_node = unsafe { Box::from_raw(node) };
+    parent = boxed_node.parent;
+    let boxed_parent = unsafe { Box::from_raw(parent) };
+    grandparent = boxed_parent.parent;
+    let boxed_grandparent = unsafe { Box::from_raw(grandparent) };
+    side = rb_tree_node_side(node);
+
+    rb_tree_rotate(
+        tree,
+        grandparent,
+        (1 as libc::c_int as libc::c_uint).wrapping_sub(side as libc::c_uint)
+            as RBTreeNodeSide,
+    );
+    boxed_parent.color = RB_TREE_NODE_BLACK;
+    boxed_grandparent.color = RB_TREE_NODE_RED;
+
+    node = Box::into_raw(boxed_node);
+    parent = Box::into_raw(boxed_parent);
+    grandparent = Box::into_raw(boxed_grandparent);
+}
+2024-12-01 17:39:02 - INFO - 替换并测试
+2024-12-01 17:39:02 - INFO - 测试未通过！
+2024-12-01 17:39:02 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0594]: cannot assign to `boxed_parent.color`, as `boxed_parent` is not declared as mutable
+   --> src/rb_tree.rs:264:5
+    |
+253 |     let boxed_parent = unsafe { Box::from_raw(parent) };
+    |         ------------ help: consider changing this to be mutable: `mut boxed_parent`
+...
+264 |     boxed_parent.color = RB_TREE_NODE_BLACK;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+error[E0594]: cannot assign to `boxed_grandparent.color`, as `boxed_grandparent` is not declared as mutable
+   --> src/rb_tree.rs:265:5
+    |
+255 |     let boxed_grandparent = unsafe { Box::from_raw(grandparent) };
+    |         ----------------- help: consider changing this to be mutable: `mut boxed_grandparent`
+...
+265 |     boxed_grandparent.color = RB_TREE_NODE_RED;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+For more information about this error, try `rustc --explain E0594`.
+error: could not compile `primary` due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 2 previous errors
+
+2024-12-01 17:39:02 - INFO - cnt=0 测试失败，还原重试
+2024-12-01 17:39:02 - INFO - prompt输入：
+2024-12-01 17:39:02 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+extern "C" fn rb_tree_insert_case5(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut grandparent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    
+    unsafe {
+        parent = (*node).parent;
+        grandparent = (*parent).parent;
+        side = rb_tree_node_side(node);
+    }
+
+    
+    unsafe {
+        rb_tree_rotate(
+            tree,
+            grandparent,
+            (1 as libc::c_int as libc::c_uint).wrapping_sub(side as libc::c_uint)
+                as RBTreeNodeSide,
+        );
+        (*parent).color = RB_TREE_NODE_BLACK;
+        (*grandparent).color = RB_TREE_NODE_RED;
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0594]: cannot assign to `boxed_parent.color`, as `boxed_parent` is not declared as mutable
+   --> src/rb_tree.rs:264:5
+    |
+253 |     let boxed_parent = unsafe { Box::from_raw(parent) };
+    |         ------------ help: consider changing this to be mutable: `mut boxed_parent`
+...
+264 |     boxed_parent.color = RB_TREE_NODE_BLACK;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+error[E0594]: cannot assign to `boxed_grandparent.color`, as `boxed_grandparent` is not declared as mutable
+   --> src/rb_tree.rs:265:5
+    |
+255 |     let boxed_grandparent = unsafe { Box::from_raw(grandparent) };
+    |         ----------------- help: consider changing this to be mutable: `mut boxed_grandparent`
+...
+265 |     boxed_grandparent.color = RB_TREE_NODE_RED;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+For more information about this error, try `rustc --explain E0594`.
+error: could not compile `primary` due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 2 previous errors
+
+
+2024-12-01 17:39:02 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:39:19 - INFO - LLM输出：
+2024-12-01 17:39:19 - INFO - extern "C" fn rb_tree_insert_case5(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut grandparent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    unsafe {
+        parent = (*node).parent;
+        grandparent = (*parent).parent;
+        side = rb_tree_node_side(node);
+    }
+
+    let mut boxed_parent = unsafe { Box::from_raw(parent) };
+    let mut boxed_grandparent = unsafe { Box::from_raw(grandparent) };
+
+    unsafe {
+        rb_tree_rotate(
+            tree,
+            grandparent,
+            (1 as libc::c_int as libc::c_uint).wrapping_sub(side as libc::c_uint)
+                as RBTreeNodeSide,
+        );
+        boxed_parent.color = RB_TREE_NODE_BLACK;
+        boxed_grandparent.color = RB_TREE_NODE_RED;
+    }
+
+    parent = Box::into_raw(boxed_parent);
+    grandparent = Box::into_raw(boxed_grandparent);
+}
+2024-12-01 17:39:19 - INFO - 替换并测试
+2024-12-01 17:39:23 - INFO - 所有测试通过！
+2024-12-01 17:39:23 - INFO - prompt输入：
+2024-12-01 17:39:23 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_insert(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+    mut value: RBTreeValue,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut rover: *mut *mut RBTreeNode = std::ptr::null_mut();
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    
+    unsafe {
+        node = alloc_test_malloc(std::mem::size_of::<RBTreeNode>() as libc::c_ulong)
+            as *mut RBTreeNode;
+        if node.is_null() {
+            return std::ptr::null_mut();
+        }
+        (*node).key = key;
+        (*node).value = value;
+        (*node).color = RB_TREE_NODE_RED;
+        (*node).children[RB_TREE_NODE_LEFT as usize] = std::ptr::null_mut();
+        (*node).children[RB_TREE_NODE_RIGHT as usize] = std::ptr::null_mut();
+        parent = std::ptr::null_mut();
+        rover = &mut (*tree).root_node;
+        while !(*rover).is_null() {
+            parent = *rover;
+            if ((*tree).compare_func)
+                .expect("non-null function pointer")(value, (**rover).value)
+                < 0
+            {
+                side = RB_TREE_NODE_LEFT;
+            } else {
+                side = RB_TREE_NODE_RIGHT;
+            }
+            rover = &mut *((**rover).children).as_mut_ptr().offset(side as isize)
+                as *mut *mut RBTreeNode;
+        }
+        *rover = node;
+        (*node).parent = parent;
+        rb_tree_insert_case1(tree, node);
+        (*tree).num_nodes += 1;
+    }
+    node
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:39:23 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:39:56 - INFO - LLM输出：
+2024-12-01 17:39:56 - INFO - pub extern "C" fn rb_tree_insert(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+    mut value: RBTreeValue,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut rover: *mut *mut RBTreeNode = std::ptr::null_mut();
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    node = unsafe {
+        alloc_test_malloc(std::mem::size_of::<RBTreeNode>() as libc::c_ulong) as *mut RBTreeNode
+    };
+    if node.is_null() {
+        tree = Box::into_raw(boxed_tree);
+        return std::ptr::null_mut();
+    }
+    let mut boxed_node = unsafe { Box::from_raw(node) };
+    boxed_node.key = key;
+    boxed_node.value = value;
+    boxed_node.color = RB_TREE_NODE_RED;
+    boxed_node.children[RB_TREE_NODE_LEFT as usize] = std::ptr::null_mut();
+    boxed_node.children[RB_TREE_NODE_RIGHT as usize] = std::ptr::null_mut();
+    parent = std::ptr::null_mut();
+    rover = &mut boxed_tree.root_node;
+    while !(*rover).is_null() {
+        parent = *rover;
+        if (boxed_tree.compare_func)
+            .expect("non-null function pointer")(value, (**rover).value)
+            < 0
+        {
+            side = RB_TREE_NODE_LEFT;
+        } else {
+            side = RB_TREE_NODE_RIGHT;
+        }
+        rover = &mut *((**rover).children).as_mut_ptr().offset(side as isize)
+            as *mut *mut RBTreeNode;
+    }
+    *rover = node;
+    boxed_node.parent = parent;
+    rb_tree_insert_case1(tree, node);
+    boxed_tree.num_nodes += 1;
+    tree = Box::into_raw(boxed_tree);
+    node = Box::into_raw(boxed_node);
+    node
+}
+2024-12-01 17:39:56 - INFO - 替换并测试
+2024-12-01 17:39:57 - INFO - 测试未通过！
+2024-12-01 17:39:57 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0596]: cannot borrow `boxed_tree.root_node` as mutable, as `boxed_tree` is not declared as mutable
+   --> src/rb_tree.rs:300:13
+    |
+285 |     let boxed_tree = unsafe { Box::from_raw(tree) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_tree`
+...
+300 |     rover = &mut boxed_tree.root_node;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^ cannot borrow as mutable
+
+error[E0594]: cannot assign to `boxed_tree.num_nodes`, as `boxed_tree` is not declared as mutable
+   --> src/rb_tree.rs:317:5
+    |
+285 |     let boxed_tree = unsafe { Box::from_raw(tree) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_tree`
+...
+317 |     boxed_tree.num_nodes += 1;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:301:12
+    |
+301 |     while !(*rover).is_null() {
+    |            ^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:302:18
+    |
+302 |         parent = *rover;
+    |                  ^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:304:57
+    |
+304 |             .expect("non-null function pointer")(value, (**rover).value)
+    |                                                         ^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:303:12
+    |
+303 |           if (boxed_tree.compare_func)
+    |  ____________^
+304 | |             .expect("non-null function pointer")(value, (**rover).value)
+    | |________________________________________________________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:311:23
+    |
+311 |         rover = &mut *((**rover).children).as_mut_ptr().offset(side as isize)
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:311:23
+    |
+311 |         rover = &mut *((**rover).children).as_mut_ptr().offset(side as isize)
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:311:17
+    |
+311 |         rover = &mut *((**rover).children).as_mut_ptr().offset(side as isize)
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:314:5
+    |
+314 |     *rover = node;
+    |     ^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+Some errors have detailed explanations: E0133, E0594, E0596.
+For more information about an error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 10 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 10 previous errors
+
+2024-12-01 17:39:57 - INFO - cnt=0 测试失败，还原重试
+2024-12-01 17:39:57 - INFO - prompt输入：
+2024-12-01 17:39:57 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_insert(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+    mut value: RBTreeValue,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut rover: *mut *mut RBTreeNode = std::ptr::null_mut();
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    
+    unsafe {
+        node = alloc_test_malloc(std::mem::size_of::<RBTreeNode>() as libc::c_ulong)
+            as *mut RBTreeNode;
+        if node.is_null() {
+            return std::ptr::null_mut();
+        }
+        (*node).key = key;
+        (*node).value = value;
+        (*node).color = RB_TREE_NODE_RED;
+        (*node).children[RB_TREE_NODE_LEFT as usize] = std::ptr::null_mut();
+        (*node).children[RB_TREE_NODE_RIGHT as usize] = std::ptr::null_mut();
+        parent = std::ptr::null_mut();
+        rover = &mut (*tree).root_node;
+        while !(*rover).is_null() {
+            parent = *rover;
+            if ((*tree).compare_func)
+                .expect("non-null function pointer")(value, (**rover).value)
+                < 0
+            {
+                side = RB_TREE_NODE_LEFT;
+            } else {
+                side = RB_TREE_NODE_RIGHT;
+            }
+            rover = &mut *((**rover).children).as_mut_ptr().offset(side as isize)
+                as *mut *mut RBTreeNode;
+        }
+        *rover = node;
+        (*node).parent = parent;
+        rb_tree_insert_case1(tree, node);
+        (*tree).num_nodes += 1;
+    }
+    node
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0596]: cannot borrow `boxed_tree.root_node` as mutable, as `boxed_tree` is not declared as mutable
+   --> src/rb_tree.rs:300:13
+    |
+285 |     let boxed_tree = unsafe { Box::from_raw(tree) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_tree`
+...
+300 |     rover = &mut boxed_tree.root_node;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^ cannot borrow as mutable
+
+error[E0594]: cannot assign to `boxed_tree.num_nodes`, as `boxed_tree` is not declared as mutable
+   --> src/rb_tree.rs:317:5
+    |
+285 |     let boxed_tree = unsafe { Box::from_raw(tree) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_tree`
+...
+317 |     boxed_tree.num_nodes += 1;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:301:12
+    |
+301 |     while !(*rover).is_null() {
+    |            ^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:302:18
+    |
+302 |         parent = *rover;
+    |                  ^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:304:57
+    |
+304 |             .expect("non-null function pointer")(value, (**rover).value)
+    |                                                         ^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:303:12
+    |
+303 |           if (boxed_tree.compare_func)
+    |  ____________^
+304 | |             .expect("non-null function pointer")(value, (**rover).value)
+    | |________________________________________________________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:311:23
+    |
+311 |         rover = &mut *((**rover).children).as_mut_ptr().offset(side as isize)
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:311:23
+    |
+311 |         rover = &mut *((**rover).children).as_mut_ptr().offset(side as isize)
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:311:17
+    |
+311 |         rover = &mut *((**rover).children).as_mut_ptr().offset(side as isize)
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:314:5
+    |
+314 |     *rover = node;
+    |     ^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+Some errors have detailed explanations: E0133, E0594, E0596.
+For more information about an error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 10 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 10 previous errors
+
+
+2024-12-01 17:39:57 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:40:26 - INFO - LLM输出：
+2024-12-01 17:40:26 - INFO - pub extern "C" fn rb_tree_insert(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+    mut value: RBTreeValue,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut rover: *mut *mut RBTreeNode = std::ptr::null_mut();
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    node = unsafe {
+        alloc_test_malloc(std::mem::size_of::<RBTreeNode>() as libc::c_ulong) as *mut RBTreeNode
+    };
+    if node.is_null() {
+        return std::ptr::null_mut();
+    }
+    let mut boxed_node = unsafe { Box::from_raw(node) };
+    boxed_node.key = key;
+    boxed_node.value = value;
+    boxed_node.color = RB_TREE_NODE_RED;
+    boxed_node.children[RB_TREE_NODE_LEFT as usize] = std::ptr::null_mut();
+    boxed_node.children[RB_TREE_NODE_RIGHT as usize] = std::ptr::null_mut();
+    parent = std::ptr::null_mut();
+    let mut boxed_tree = unsafe { Box::from_raw(tree) };
+    rover = &mut boxed_tree.root_node;
+    while !unsafe { (*rover).is_null() } {
+        parent = unsafe { *rover };
+        if (boxed_tree.compare_func)
+            .expect("non-null function pointer")(value, unsafe { (**rover).value })
+            < 0
+        {
+            side = RB_TREE_NODE_LEFT;
+        } else {
+            side = RB_TREE_NODE_RIGHT;
+        }
+        rover = unsafe {
+            &mut *((**rover).children).as_mut_ptr().offset(side as isize) as *mut *mut RBTreeNode
+        };
+    }
+    *rover = node;
+    boxed_node.parent = parent;
+    rb_tree_insert_case1(tree, node);
+    boxed_tree.num_nodes += 1;
+    tree = Box::into_raw(boxed_tree);
+    node = Box::into_raw(boxed_node);
+    node
+}
+2024-12-01 17:40:26 - INFO - 替换并测试
+2024-12-01 17:40:26 - INFO - 测试未通过！
+2024-12-01 17:40:26 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:302:12
+    |
+302 |           if (boxed_tree.compare_func)
+    |  ____________^
+303 | |             .expect("non-null function pointer")(value, unsafe { (**rover).value })
+    | |___________________________________________________________________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:314:5
+    |
+314 |     *rover = node;
+    |     ^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 2 previous errors
+
+2024-12-01 17:40:26 - INFO - cnt=1 测试失败，还原重试
+2024-12-01 17:40:26 - INFO - prompt输入：
+2024-12-01 17:40:26 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_insert(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+    mut value: RBTreeValue,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut rover: *mut *mut RBTreeNode = std::ptr::null_mut();
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    
+    unsafe {
+        node = alloc_test_malloc(std::mem::size_of::<RBTreeNode>() as libc::c_ulong)
+            as *mut RBTreeNode;
+        if node.is_null() {
+            return std::ptr::null_mut();
+        }
+        (*node).key = key;
+        (*node).value = value;
+        (*node).color = RB_TREE_NODE_RED;
+        (*node).children[RB_TREE_NODE_LEFT as usize] = std::ptr::null_mut();
+        (*node).children[RB_TREE_NODE_RIGHT as usize] = std::ptr::null_mut();
+        parent = std::ptr::null_mut();
+        rover = &mut (*tree).root_node;
+        while !(*rover).is_null() {
+            parent = *rover;
+            if ((*tree).compare_func)
+                .expect("non-null function pointer")(value, (**rover).value)
+                < 0
+            {
+                side = RB_TREE_NODE_LEFT;
+            } else {
+                side = RB_TREE_NODE_RIGHT;
+            }
+            rover = &mut *((**rover).children).as_mut_ptr().offset(side as isize)
+                as *mut *mut RBTreeNode;
+        }
+        *rover = node;
+        (*node).parent = parent;
+        rb_tree_insert_case1(tree, node);
+        (*tree).num_nodes += 1;
+    }
+    node
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:302:12
+    |
+302 |           if (boxed_tree.compare_func)
+    |  ____________^
+303 | |             .expect("non-null function pointer")(value, unsafe { (**rover).value })
+    | |___________________________________________________________________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:314:5
+    |
+314 |     *rover = node;
+    |     ^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 2 previous errors
+
+
+2024-12-01 17:40:26 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:40:56 - INFO - LLM输出：
+2024-12-01 17:40:56 - INFO - pub extern "C" fn rb_tree_insert(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+    mut value: RBTreeValue,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut rover: *mut *mut RBTreeNode = std::ptr::null_mut();
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    node = unsafe {
+        alloc_test_malloc(std::mem::size_of::<RBTreeNode>() as libc::c_ulong) as *mut RBTreeNode
+    };
+    if node.is_null() {
+        tree = Box::into_raw(boxed_tree);
+        return std::ptr::null_mut();
+    }
+    let mut boxed_node = unsafe { Box::from_raw(node) };
+    boxed_node.key = key;
+    boxed_node.value = value;
+    boxed_node.color = RB_TREE_NODE_RED;
+    boxed_node.children[RB_TREE_NODE_LEFT as usize] = std::ptr::null_mut();
+    boxed_node.children[RB_TREE_NODE_RIGHT as usize] = std::ptr::null_mut();
+    parent = std::ptr::null_mut();
+    rover = &mut boxed_tree.root_node;
+    while !(*rover).is_null() {
+        parent = *rover;
+        if (boxed_tree.compare_func)
+            .expect("non-null function pointer")(value, unsafe { (**rover).value })
+            < 0
+        {
+            side = RB_TREE_NODE_LEFT;
+        } else {
+            side = RB_TREE_NODE_RIGHT;
+        }
+        rover = unsafe {
+            &mut *((**rover).children).as_mut_ptr().offset(side as isize) as *mut *mut RBTreeNode
+        };
+    }
+    *rover = node;
+    boxed_node.parent = parent;
+    rb_tree_insert_case1(tree, node);
+    boxed_tree.num_nodes += 1;
+    tree = Box::into_raw(boxed_tree);
+    node = Box::into_raw(boxed_node);
+    node
+}
+2024-12-01 17:40:56 - INFO - 替换并测试
+2024-12-01 17:40:56 - INFO - 测试未通过！
+2024-12-01 17:40:56 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0596]: cannot borrow `boxed_tree.root_node` as mutable, as `boxed_tree` is not declared as mutable
+   --> src/rb_tree.rs:300:13
+    |
+285 |     let boxed_tree = unsafe { Box::from_raw(tree) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_tree`
+...
+300 |     rover = &mut boxed_tree.root_node;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^ cannot borrow as mutable
+
+error[E0594]: cannot assign to `boxed_tree.num_nodes`, as `boxed_tree` is not declared as mutable
+   --> src/rb_tree.rs:318:5
+    |
+285 |     let boxed_tree = unsafe { Box::from_raw(tree) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_tree`
+...
+318 |     boxed_tree.num_nodes += 1;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:301:12
+    |
+301 |     while !(*rover).is_null() {
+    |            ^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:302:18
+    |
+302 |         parent = *rover;
+    |                  ^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:303:12
+    |
+303 |           if (boxed_tree.compare_func)
+    |  ____________^
+304 | |             .expect("non-null function pointer")(value, unsafe { (**rover).value })
+    | |___________________________________________________________________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:315:5
+    |
+315 |     *rover = node;
+    |     ^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+Some errors have detailed explanations: E0133, E0594, E0596.
+For more information about an error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 6 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 6 previous errors
+
+2024-12-01 17:40:56 - INFO - cnt=2 测试失败，还原重试
+2024-12-01 17:40:56 - INFO - prompt输入：
+2024-12-01 17:40:56 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_insert(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+    mut value: RBTreeValue,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut rover: *mut *mut RBTreeNode = std::ptr::null_mut();
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    
+    unsafe {
+        node = alloc_test_malloc(std::mem::size_of::<RBTreeNode>() as libc::c_ulong)
+            as *mut RBTreeNode;
+        if node.is_null() {
+            return std::ptr::null_mut();
+        }
+        (*node).key = key;
+        (*node).value = value;
+        (*node).color = RB_TREE_NODE_RED;
+        (*node).children[RB_TREE_NODE_LEFT as usize] = std::ptr::null_mut();
+        (*node).children[RB_TREE_NODE_RIGHT as usize] = std::ptr::null_mut();
+        parent = std::ptr::null_mut();
+        rover = &mut (*tree).root_node;
+        while !(*rover).is_null() {
+            parent = *rover;
+            if ((*tree).compare_func)
+                .expect("non-null function pointer")(value, (**rover).value)
+                < 0
+            {
+                side = RB_TREE_NODE_LEFT;
+            } else {
+                side = RB_TREE_NODE_RIGHT;
+            }
+            rover = &mut *((**rover).children).as_mut_ptr().offset(side as isize)
+                as *mut *mut RBTreeNode;
+        }
+        *rover = node;
+        (*node).parent = parent;
+        rb_tree_insert_case1(tree, node);
+        (*tree).num_nodes += 1;
+    }
+    node
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0596]: cannot borrow `boxed_tree.root_node` as mutable, as `boxed_tree` is not declared as mutable
+   --> src/rb_tree.rs:300:13
+    |
+285 |     let boxed_tree = unsafe { Box::from_raw(tree) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_tree`
+...
+300 |     rover = &mut boxed_tree.root_node;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^ cannot borrow as mutable
+
+error[E0594]: cannot assign to `boxed_tree.num_nodes`, as `boxed_tree` is not declared as mutable
+   --> src/rb_tree.rs:318:5
+    |
+285 |     let boxed_tree = unsafe { Box::from_raw(tree) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_tree`
+...
+318 |     boxed_tree.num_nodes += 1;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:301:12
+    |
+301 |     while !(*rover).is_null() {
+    |            ^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:302:18
+    |
+302 |         parent = *rover;
+    |                  ^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:303:12
+    |
+303 |           if (boxed_tree.compare_func)
+    |  ____________^
+304 | |             .expect("non-null function pointer")(value, unsafe { (**rover).value })
+    | |___________________________________________________________________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:315:5
+    |
+315 |     *rover = node;
+    |     ^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+Some errors have detailed explanations: E0133, E0594, E0596.
+For more information about an error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 6 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 6 previous errors
+
+
+2024-12-01 17:40:56 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:41:24 - INFO - LLM输出：
+2024-12-01 17:41:24 - INFO - pub extern "C" fn rb_tree_insert(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+    mut value: RBTreeValue,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut rover: *mut *mut RBTreeNode = std::ptr::null_mut();
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    let mut boxed_tree = unsafe { Box::from_raw(tree) };
+    node = unsafe {
+        alloc_test_malloc(std::mem::size_of::<RBTreeNode>() as libc::c_ulong) as *mut RBTreeNode
+    };
+    if node.is_null() {
+        tree = Box::into_raw(boxed_tree);
+        return std::ptr::null_mut();
+    }
+    let mut boxed_node = unsafe { Box::from_raw(node) };
+    boxed_node.key = key;
+    boxed_node.value = value;
+    boxed_node.color = RB_TREE_NODE_RED;
+    boxed_node.children[RB_TREE_NODE_LEFT as usize] = std::ptr::null_mut();
+    boxed_node.children[RB_TREE_NODE_RIGHT as usize] = std::ptr::null_mut();
+    parent = std::ptr::null_mut();
+    rover = &mut boxed_tree.root_node;
+    while !unsafe { (*rover).is_null() } {
+        parent = unsafe { *rover };
+        if (boxed_tree.compare_func)
+            .expect("non-null function pointer")(value, unsafe { (**rover).value })
+            < 0
+        {
+            side = RB_TREE_NODE_LEFT;
+        } else {
+            side = RB_TREE_NODE_RIGHT;
+        }
+        rover = unsafe {
+            &mut *((**rover).children).as_mut_ptr().offset(side as isize) as *mut *mut RBTreeNode
+        };
+    }
+    unsafe {
+        *rover = node;
+        boxed_node.parent = parent;
+    }
+    rb_tree_insert_case1(tree, node);
+    boxed_tree.num_nodes += 1;
+    tree = Box::into_raw(boxed_tree);
+    node
+}
+2024-12-01 17:41:24 - INFO - 替换并测试
+2024-12-01 17:41:24 - INFO - 测试未通过！
+2024-12-01 17:41:24 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:303:12
+    |
+303 |           if (boxed_tree.compare_func)
+    |  ____________^
+304 | |             .expect("non-null function pointer")(value, unsafe { (**rover).value })
+    | |___________________________________________________________________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to previous error
+
+2024-12-01 17:41:24 - INFO - cnt=3 测试失败，还原重试
+2024-12-01 17:41:24 - INFO - prompt输入：
+2024-12-01 17:41:24 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_insert(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+    mut value: RBTreeValue,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut rover: *mut *mut RBTreeNode = std::ptr::null_mut();
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    
+    unsafe {
+        node = alloc_test_malloc(std::mem::size_of::<RBTreeNode>() as libc::c_ulong)
+            as *mut RBTreeNode;
+        if node.is_null() {
+            return std::ptr::null_mut();
+        }
+        (*node).key = key;
+        (*node).value = value;
+        (*node).color = RB_TREE_NODE_RED;
+        (*node).children[RB_TREE_NODE_LEFT as usize] = std::ptr::null_mut();
+        (*node).children[RB_TREE_NODE_RIGHT as usize] = std::ptr::null_mut();
+        parent = std::ptr::null_mut();
+        rover = &mut (*tree).root_node;
+        while !(*rover).is_null() {
+            parent = *rover;
+            if ((*tree).compare_func)
+                .expect("non-null function pointer")(value, (**rover).value)
+                < 0
+            {
+                side = RB_TREE_NODE_LEFT;
+            } else {
+                side = RB_TREE_NODE_RIGHT;
+            }
+            rover = &mut *((**rover).children).as_mut_ptr().offset(side as isize)
+                as *mut *mut RBTreeNode;
+        }
+        *rover = node;
+        (*node).parent = parent;
+        rb_tree_insert_case1(tree, node);
+        (*tree).num_nodes += 1;
+    }
+    node
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:303:12
+    |
+303 |           if (boxed_tree.compare_func)
+    |  ____________^
+304 | |             .expect("non-null function pointer")(value, unsafe { (**rover).value })
+    | |___________________________________________________________________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to previous error
+
+
+2024-12-01 17:41:24 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:41:53 - INFO - LLM输出：
+2024-12-01 17:41:53 - INFO - pub extern "C" fn rb_tree_insert(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+    mut value: RBTreeValue,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut rover: *mut *mut RBTreeNode = std::ptr::null_mut();
+    let mut parent: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    node = unsafe {
+        alloc_test_malloc(std::mem::size_of::<RBTreeNode>() as libc::c_ulong) as *mut RBTreeNode
+    };
+    if node.is_null() {
+        tree = Box::into_raw(boxed_tree);
+        return std::ptr::null_mut();
+    }
+    let mut boxed_node = unsafe { Box::from_raw(node) };
+    boxed_node.key = key;
+    boxed_node.value = value;
+    boxed_node.color = RB_TREE_NODE_RED;
+    boxed_node.children[RB_TREE_NODE_LEFT as usize] = std::ptr::null_mut();
+    boxed_node.children[RB_TREE_NODE_RIGHT as usize] = std::ptr::null_mut();
+    parent = std::ptr::null_mut();
+    rover = &mut boxed_tree.root_node;
+    while !(*rover).is_null() {
+        parent = *rover;
+        if (boxed_tree.compare_func)
+            .expect("non-null function pointer")(value, unsafe { (**rover).value })
+            < 0
+        {
+            side = RB_TREE_NODE_LEFT;
+        } else {
+            side = RB_TREE_NODE_RIGHT;
+        }
+        rover = unsafe {
+            &mut *((**rover).children).as_mut_ptr().offset(side as isize) as *mut *mut RBTreeNode
+        };
+    }
+    *rover = node;
+    boxed_node.parent = parent;
+    rb_tree_insert_case1(tree, node);
+    boxed_tree.num_nodes += 1;
+    tree = Box::into_raw(boxed_tree);
+    node = Box::into_raw(boxed_node);
+    node
+}
+2024-12-01 17:41:53 - INFO - 替换并测试
+2024-12-01 17:41:53 - INFO - 测试未通过！
+2024-12-01 17:41:53 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0596]: cannot borrow `boxed_tree.root_node` as mutable, as `boxed_tree` is not declared as mutable
+   --> src/rb_tree.rs:300:13
+    |
+285 |     let boxed_tree = unsafe { Box::from_raw(tree) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_tree`
+...
+300 |     rover = &mut boxed_tree.root_node;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^ cannot borrow as mutable
+
+error[E0594]: cannot assign to `boxed_tree.num_nodes`, as `boxed_tree` is not declared as mutable
+   --> src/rb_tree.rs:318:5
+    |
+285 |     let boxed_tree = unsafe { Box::from_raw(tree) };
+    |         ---------- help: consider changing this to be mutable: `mut boxed_tree`
+...
+318 |     boxed_tree.num_nodes += 1;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:301:12
+    |
+301 |     while !(*rover).is_null() {
+    |            ^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:302:18
+    |
+302 |         parent = *rover;
+    |                  ^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:303:12
+    |
+303 |           if (boxed_tree.compare_func)
+    |  ____________^
+304 | |             .expect("non-null function pointer")(value, unsafe { (**rover).value })
+    | |___________________________________________________________________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:315:5
+    |
+315 |     *rover = node;
+    |     ^^^^^^^^^^^^^ dereference of raw pointer
+    |
+    = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+Some errors have detailed explanations: E0133, E0594, E0596.
+For more information about an error, try `rustc --explain E0133`.
+error: could not compile `primary` due to 6 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to 6 previous errors
+
+2024-12-01 17:41:53 - INFO - cnt=4 测试失败，还原重试
+2024-12-01 17:41:53 - INFO - 函数rb_tree_insert第二轮优化失败
+2024-12-01 17:41:53 - INFO - prompt输入：
+2024-12-01 17:41:53 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_lookup_node(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+    let mut diff: libc::c_int = 0;
+
+    
+    unsafe {
+        node = (*tree).root_node;
+    }
+
+    while !node.is_null() {
+        
+        unsafe {
+            diff = ((*tree).compare_func)
+                .expect("non-null function pointer")(key, (*node).key);
+        }
+
+        if diff == 0 {
+            return node;
+        } else if diff < 0 {
+            side = RB_TREE_NODE_LEFT;
+        } else {
+            side = RB_TREE_NODE_RIGHT;
+        }
+
+        
+        unsafe {
+            node = (*node).children[side as usize];
+        }
+    }
+
+    return std::ptr::null_mut();
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:41:54 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:42:10 - INFO - LLM输出：
+2024-12-01 17:42:10 - INFO - pub extern "C" fn rb_tree_lookup_node(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+    let mut diff: libc::c_int = 0;
+
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    node = boxed_tree.root_node;
+
+    while !node.is_null() {
+        diff = (boxed_tree.compare_func)
+            .expect("non-null function pointer")(key, unsafe { (*node).key });
+
+        if diff == 0 {
+            tree = Box::into_raw(boxed_tree);
+            return node;
+        } else if diff < 0 {
+            side = RB_TREE_NODE_LEFT;
+        } else {
+            side = RB_TREE_NODE_RIGHT;
+        }
+
+        node = unsafe { (*node).children[side as usize] };
+    }
+
+    tree = Box::into_raw(boxed_tree);
+    return std::ptr::null_mut();
+}
+2024-12-01 17:42:10 - INFO - 替换并测试
+2024-12-01 17:42:10 - INFO - 测试未通过！
+2024-12-01 17:42:10 - INFO -    Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:332:16
+    |
+332 |           diff = (boxed_tree.compare_func)
+    |  ________________^
+333 | |             .expect("non-null function pointer")(key, unsafe { (*node).key });
+    | |_____________________________________________________________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to previous error
+
+2024-12-01 17:42:10 - INFO - cnt=0 测试失败，还原重试
+2024-12-01 17:42:10 - INFO - prompt输入：
+2024-12-01 17:42:10 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_lookup_node(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+) -> *mut RBTreeNode {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+    let mut diff: libc::c_int = 0;
+
+    
+    unsafe {
+        node = (*tree).root_node;
+    }
+
+    while !node.is_null() {
+        
+        unsafe {
+            diff = ((*tree).compare_func)
+                .expect("non-null function pointer")(key, (*node).key);
+        }
+
+        if diff == 0 {
+            return node;
+        } else if diff < 0 {
+            side = RB_TREE_NODE_LEFT;
+        } else {
+            side = RB_TREE_NODE_RIGHT;
+        }
+
+        
+        unsafe {
+            node = (*node).children[side as usize];
+        }
+    }
+
+    return std::ptr::null_mut();
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+Your code should avoid following errors:
+   Compiling primary v0.1.0 (/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary)
+error[E0133]: call to unsafe function is unsafe and requires unsafe function or block
+   --> src/rb_tree.rs:332:16
+    |
+332 |           diff = (boxed_tree.compare_func)
+    |  ________________^
+333 | |             .expect("non-null function pointer")(key, unsafe { (*node).key });
+    | |_____________________________________________________________________________^ call to unsafe function
+    |
+    = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `primary` due to previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `primary` due to previous error
+
+
+2024-12-01 17:42:10 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:42:24 - INFO - LLM输出：
+2024-12-01 17:42:24 - INFO - pub extern "C" fn rb_tree_lookup_node(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+) -> *mut RBTreeNode {
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    let mut side: RBTreeNodeSide = RB_TREE_NODE_LEFT;
+    let mut diff: libc::c_int = 0;
+
+    node = boxed_tree.root_node;
+
+    while !node.is_null() {
+        diff = unsafe {
+            (boxed_tree.compare_func)
+                .expect("non-null function pointer")(key, (*node).key)
+        };
+
+        if diff == 0 {
+            tree = Box::into_raw(boxed_tree);
+            return node;
+        } else if diff < 0 {
+            side = RB_TREE_NODE_LEFT;
+        } else {
+            side = RB_TREE_NODE_RIGHT;
+        }
+
+        node = unsafe { (*node).children[side as usize] };
+    }
+
+    tree = Box::into_raw(boxed_tree);
+    return std::ptr::null_mut();
+}
+2024-12-01 17:42:24 - INFO - 替换并测试
+2024-12-01 17:42:28 - INFO - 所有测试通过！
+2024-12-01 17:42:28 - INFO - prompt输入：
+2024-12-01 17:42:28 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_lookup(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+) -> RBTreeValue {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+
+    
+    unsafe {
+        node = rb_tree_lookup_node(tree, key);
+    }
+
+    if node.is_null() {
+        return 0 as *mut libc::c_void;
+    } else {
+        
+        unsafe {
+            return (*node).value;
+        }
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:42:28 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:42:36 - INFO - LLM输出：
+2024-12-01 17:42:36 - INFO - pub extern "C" fn rb_tree_lookup(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+) -> RBTreeValue {
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+    node = rb_tree_lookup_node(tree, key);
+    let tree = Box::into_raw(boxed_tree);
+    if node.is_null() {
+        return 0 as *mut libc::c_void;
+    } else {
+        let boxed_node = unsafe { Box::from_raw(node) };
+        let value = boxed_node.value;
+        let node = Box::into_raw(boxed_node);
+        return value;
+    }
+}
+2024-12-01 17:42:36 - INFO - 替换并测试
+2024-12-01 17:42:39 - INFO - 所有测试通过！
+2024-12-01 17:42:39 - INFO - prompt输入：
+2024-12-01 17:42:39 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_remove_node(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:42:39 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:42:44 - INFO - LLM输出：
+2024-12-01 17:42:44 - INFO - pub extern "C" fn rb_tree_remove_node(
+    mut tree: *mut RBTree,
+    mut node: *mut RBTreeNode,
+) {
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    let boxed_node = unsafe { Box::from_raw(node) };
+    tree = Box::into_raw(boxed_tree);
+    node = Box::into_raw(boxed_node);
+}
+2024-12-01 17:42:44 - INFO - 替换并测试
+2024-12-01 17:42:48 - INFO - 所有测试通过！
+2024-12-01 17:42:48 - INFO - prompt输入：
+2024-12-01 17:42:48 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_remove(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+) -> libc::c_int {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+
+    
+    unsafe {
+        node = rb_tree_lookup_node(tree, key);
+    }
+
+    if node.is_null() {
+        return 0;
+    }
+
+    
+    unsafe {
+        rb_tree_remove_node(tree, node);
+    }
+
+    return 1;
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:42:48 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:42:58 - INFO - LLM输出：
+2024-12-01 17:42:58 - INFO - pub extern "C" fn rb_tree_remove(
+    mut tree: *mut RBTree,
+    mut key: RBTreeKey,
+) -> libc::c_int {
+    let mut node: *mut RBTreeNode = std::ptr::null_mut();
+
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    node = rb_tree_lookup_node(tree, key);
+    tree = Box::into_raw(boxed_tree);
+
+    if node.is_null() {
+        return 0;
+    }
+
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    rb_tree_remove_node(tree, node);
+    tree = Box::into_raw(boxed_tree);
+
+    return 1;
+}
+2024-12-01 17:42:58 - INFO - 替换并测试
+2024-12-01 17:43:01 - INFO - 所有测试通过！
+2024-12-01 17:43:01 - INFO - prompt输入：
+2024-12-01 17:43:01 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_root_node(mut tree: *mut RBTree) -> *mut RBTreeNode {
+    
+    unsafe {
+        return (*tree).root_node;
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:43:01 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:43:05 - INFO - LLM输出：
+2024-12-01 17:43:05 - INFO - pub extern "C" fn rb_tree_root_node(mut tree: *mut RBTree) -> *mut RBTreeNode {
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    let root_node = boxed_tree.root_node;
+    let tree = Box::into_raw(boxed_tree);
+    root_node
+}
+2024-12-01 17:43:05 - INFO - 替换并测试
+2024-12-01 17:43:08 - INFO - 所有测试通过！
+2024-12-01 17:43:08 - INFO - prompt输入：
+2024-12-01 17:43:08 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_node_key(mut node: *mut RBTreeNode) -> RBTreeKey {
+    
+    unsafe {
+        return (*node).key;
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:43:08 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:43:13 - INFO - LLM输出：
+2024-12-01 17:43:13 - INFO - pub extern "C" fn rb_tree_node_key(mut node: *mut RBTreeNode) -> RBTreeKey {
+    let boxed_node = unsafe { Box::from_raw(node) };
+    let key = boxed_node.key;
+    node = Box::into_raw(boxed_node);
+    key
+}
+2024-12-01 17:43:13 - INFO - 替换并测试
+2024-12-01 17:43:15 - INFO - 所有测试通过！
+2024-12-01 17:43:15 - INFO - prompt输入：
+2024-12-01 17:43:15 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_node_value(mut node: *mut RBTreeNode) -> RBTreeValue {
+    
+    unsafe {
+        return (*node).value;
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:43:16 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:43:19 - INFO - LLM输出：
+2024-12-01 17:43:19 - INFO - pub extern "C" fn rb_tree_node_value(mut node: *mut RBTreeNode) -> RBTreeValue {
+    let boxed_node = unsafe { Box::from_raw(node) };
+    let value = boxed_node.value;
+    let node = Box::into_raw(boxed_node);
+    value
+}
+2024-12-01 17:43:19 - INFO - 替换并测试
+2024-12-01 17:43:22 - INFO - 所有测试通过！
+2024-12-01 17:43:22 - INFO - prompt输入：
+2024-12-01 17:43:22 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_node_child(
+    mut node: *mut RBTreeNode,
+    mut side: RBTreeNodeSide,
+) -> *mut RBTreeNode {
+    if side as libc::c_uint == RB_TREE_NODE_LEFT as libc::c_int as libc::c_uint
+        || side as libc::c_uint == RB_TREE_NODE_RIGHT as libc::c_int as libc::c_uint
+    {
+        
+        unsafe {
+            return (*node).children[side as usize];
+        }
+    } else {
+        return std::ptr::null_mut();
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:43:22 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:43:30 - INFO - LLM输出：
+2024-12-01 17:43:30 - INFO - pub extern "C" fn rb_tree_node_child(
+    mut node: *mut RBTreeNode,
+    mut side: RBTreeNodeSide,
+) -> *mut RBTreeNode {
+    if side as libc::c_uint == RB_TREE_NODE_LEFT as libc::c_int as libc::c_uint
+        || side as libc::c_uint == RB_TREE_NODE_RIGHT as libc::c_int as libc::c_uint
+    {
+        let boxed_node = unsafe { Box::from_raw(node) };
+        let child = boxed_node.children[side as usize];
+        node = Box::into_raw(boxed_node);
+        return child;
+    } else {
+        return std::ptr::null_mut();
+    }
+}
+2024-12-01 17:43:30 - INFO - 替换并测试
+2024-12-01 17:43:34 - INFO - 所有测试通过！
+2024-12-01 17:43:34 - INFO - prompt输入：
+2024-12-01 17:43:34 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_node_parent(
+    mut node: *mut RBTreeNode,
+) -> *mut RBTreeNode {
+    
+    unsafe {
+        return (*node).parent;
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:43:34 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:43:37 - INFO - LLM输出：
+2024-12-01 17:43:37 - INFO - pub extern "C" fn rb_tree_node_parent(
+    mut node: *mut RBTreeNode,
+) -> *mut RBTreeNode {
+    let boxed_node = unsafe { Box::from_raw(node) };
+    let parent = boxed_node.parent;
+    let node = Box::into_raw(boxed_node);
+    parent
+}
+2024-12-01 17:43:37 - INFO - 替换并测试
+2024-12-01 17:43:40 - INFO - 所有测试通过！
+2024-12-01 17:43:40 - INFO - prompt输入：
+2024-12-01 17:43:40 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_to_array(mut tree: *mut RBTree) -> *mut RBTreeValue {
+    return std::ptr::null_mut();
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:43:40 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:43:43 - INFO - LLM输出：
+2024-12-01 17:43:43 - INFO - pub extern "C" fn rb_tree_to_array(mut tree: *mut RBTree) -> *mut RBTreeValue {
+    return std::ptr::null_mut();
+}
+2024-12-01 17:43:43 - INFO - 替换并测试
+2024-12-01 17:43:46 - INFO - 所有测试通过！
+2024-12-01 17:43:46 - INFO - prompt输入：
+2024-12-01 17:43:46 - INFO - 
+The following Rust function may define some raw pointers, or the parameters passed in may contain raw pointers.
+Before using these pointers in the code, convert them to Box type variables. If the raw pointers involve writing, the Box should be mutable. 
+Then convert read and write operations on the raw pointers to operations on the Box variables, minimizing the scope of the unsafe block in the function.
+Note that the conversion should occur before usage，do not modify the definition of the raw pointers.
+Before the function returns, convert the Box variables back to raw pointers to prevent the Box from being automatically dropped and to keep the function's return type unchanged.
+The declaration of static global variables is provided below, and read/write operations on these variables should be unsafe. 
+The declaration of extern C functions is also provided, and all functions except these are safe.
+Only convert functions, do not add context.
+Only output results, no need for explanation.
+Rust function:
+pub extern "C" fn rb_tree_num_entries(mut tree: *mut RBTree) -> libc::c_int {
+    
+    unsafe {
+        return (*tree).num_nodes;
+    }
+}
+Static Global Variables:
+
+Extern C Functions:
+extern "C" {
+}
+
+2024-12-01 17:43:46 - INFO - HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-01 17:43:50 - INFO - LLM输出：
+2024-12-01 17:43:50 - INFO - pub extern "C" fn rb_tree_num_entries(mut tree: *mut RBTree) -> libc::c_int {
+    let boxed_tree = unsafe { Box::from_raw(tree) };
+    let num_nodes = boxed_tree.num_nodes;
+    let tree = Box::into_raw(boxed_tree);
+    num_nodes
+}
+2024-12-01 17:43:50 - INFO - 替换并测试
+2024-12-01 17:43:53 - INFO - 所有测试通过！
+2024-12-01 17:43:53 - INFO - 第二轮优化完成，耗时503.0471215248108秒
+2024-12-01 17:43:53 - INFO - 统计safe指标
+2024-12-01 17:43:53 - INFO - remove s_test for test_avl_tree.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_bloom_filter.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_binomial_heap.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_trie.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_rb_tree.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_set.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_queue.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_compare_functions.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_hash_functions.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_slist.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_binary_heap.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_sortedarray.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_hash_table.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_list.rs
+2024-12-01 17:43:53 - INFO - remove s_test for test_arraylist.rs
+2024-12-01 17:43:54 - INFO - // safe API ratio is: 96 %
+// Safe code ratio is: 34 %
+
