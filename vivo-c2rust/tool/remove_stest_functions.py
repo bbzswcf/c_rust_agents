@@ -92,4 +92,4 @@ def remove_stest_functions(path):
                 file.write(file_content)
             
 if __name__ == "__main__":
-    remove_stest_functions("../primary")
+    remove_stest_functions("../output/primary")

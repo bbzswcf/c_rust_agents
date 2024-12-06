@@ -145,7 +145,7 @@ def save_functions_to_files(functions_dict, output_dir):
 # save_functions_to_files(result, "Rust_functions")
 
 if __name__ == "__main__":
-    result = split_rust_functions_in_file("/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary/src/avl_tree.rs")
+    result = split_rust_functions_in_file("/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/output/primary/src/avl_tree.rs")
     for func in result:
         print(f"\n函数名: {func['name']}")
         print("-" * 40)

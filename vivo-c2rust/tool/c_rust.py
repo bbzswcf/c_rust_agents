@@ -11,6 +11,7 @@ import re
 import logging
 import shutil
 import time
+import select
 
 
 agent = Agent(
@@ -19,10 +20,11 @@ agent = Agent(
     temperature=0.3,
     top_p=0.8
 )
-PROJ_PATH="../primary"
-SRC_PATH="../primary/src"
-TEST_PATH="../primary/tests"
-C_PATH="../01-Primary"
+PROJ_PATH="../output/primary"
+C2RUST_PATH=f"{PROJ_PATH}-c2rust"
+SRC_PATH=os.path.join(PROJ_PATH, "src")
+TEST_PATH=os.path.join(PROJ_PATH, "tests")
+C_PATH="../input/01-Primary"
 COMPARE_HASH_SRC_LIST = [
     f"{SRC_PATH}/compare_int.rs",
     f"{SRC_PATH}/compare_string.rs",
@@ -32,6 +34,8 @@ COMPARE_HASH_SRC_LIST = [
     f"{SRC_PATH}/hash_pointer.rs"
 ]
 MAX_ATTEMPS=7
+TEST_TIMEOUT=10
+FIRST_TEST_TIMEOUT=300
 
 def setup_logging():
     os.makedirs('logs', exist_ok=True)
@@ -60,20 +64,22 @@ def check_cur_path():
         return True
     return False
 
-def cargo_test():
+def cargo_test(timeout=TEST_TIMEOUT):
     current_directory = os.getcwd()
     os.chdir(f"{PROJ_PATH}")
     # 运行 cargo test 命令
     env = os.environ.copy()
     env["RUSTFLAGS"] = "-Awarnings"
+    command = ["cargo", "test", "--", "--test-threads=1"]
+    # 第一次构建，可能有crates更新   
     try:
         result = subprocess.run(
-            ["cargo", "test", "--", "--test-threads=1"],
+            command,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
             env=env,
-            timeout=10
+            timeout=timeout
         )
         os.chdir(current_directory)
         if result.returncode == 0:
@@ -86,6 +92,8 @@ def cargo_test():
             return (False, error_msg)
     except subprocess.TimeoutExpired:
         logging.info("超时")
+        if timeout == FIRST_TEST_TIMEOUT:
+            logging.info("可能是cargo crates未能更新，请在项目路径下手动运行cargo test -- --test-threads=1检查")
         os.chdir(current_directory)
         return (False, "Timeout error, Please ensure that your program does not cause errors or infinite loops.")
 
@@ -344,7 +352,7 @@ def remove_main_and_tests(file_path):
 
 # 从c2rust的翻译结果构造rust项目
 def construct_project():
-    if os.path.exists(f"{PROJ_PATH}-c2rust/src/src") and os.path.exists(f"{PROJ_PATH}-c2rust/src/test"):
+    if os.path.exists(f"{C2RUST_PATH}/src/src") and os.path.exists(f"{C2RUST_PATH}/src/test"):
         if not os.path.exists(f"{PROJ_PATH}"):
             logging.info("项目文件夹不存在，新建cargo项目")
             result = subprocess.run(
@@ -363,8 +371,8 @@ def construct_project():
             if os.path.exists(f"{PROJ_PATH}/tests"):
                 shutil.rmtree(f"{PROJ_PATH}/tests")
 
-        shutil.copytree(f"{PROJ_PATH}-c2rust/src/src", f"{PROJ_PATH}/src")
-        shutil.copytree(f"{PROJ_PATH}-c2rust/src/test", f"{PROJ_PATH}/tests")
+        shutil.copytree(f"{C2RUST_PATH}/src/src", f"{PROJ_PATH}/src")
+        shutil.copytree(f"{C2RUST_PATH}/src/test", f"{PROJ_PATH}/tests")
     os.remove(f"{PROJ_PATH}/tests/framework.rs")
     shutil.move(f"{PROJ_PATH}/tests/alloc_testing.rs", f"{PROJ_PATH}/src/alloc_testing.rs")
     if not os.path.exists(f"{PROJ_PATH}/count_safe_ratio.sh"):
@@ -384,6 +392,11 @@ if __name__ == "__main__":
         logging.info("请在tool目录下运行")
         exit(1)
     setup_logging()
+    if os.path.exists(C2RUST_PATH):
+        logging.info("c2rust文件夹存在，清空")
+        shutil.rmtree(C2RUST_PATH)
+    os.makedirs(C2RUST_PATH)
+
 
     # C代码预处理
     logging.info("预处理C代码")
@@ -392,7 +405,7 @@ if __name__ == "__main__":
     logging.info("c2rust转换")
     c2rust_start_time = time.time()
     result = subprocess.run(
-        ["../c2rust/target/debug/c2rust", "transpile", "--output-dir", f"{PROJ_PATH}-c2rust", f"{C_PATH}/compile_commands.json"],
+        ["../c2rust/target/debug/c2rust", "transpile", "--output-dir", f"{C2RUST_PATH}", f"{C_PATH}/compile_commands.json"],
         text=True,
     )
     if result.returncode == 0:
@@ -404,137 +417,137 @@ if __name__ == "__main__":
     logging.info("项目构建")
     construct_project()
     logging.info("c2rust 测试")
-    cargo_test()
+    cargo_test(FIRST_TEST_TIMEOUT)
 
-    # c2rust_end_time = time.time()
-    # logging.info(f"c2rust转换耗时{c2rust_end_time - c2rust_start_time}秒")
+    c2rust_end_time = time.time()
+    logging.info(f"c2rust转换耗时{c2rust_end_time - c2rust_start_time}秒")
 
-    # # 调试用
-    DEBUG_FLAG=False
+    # 调试用
+    DEBUG_FLAG=True
     DEBUG_TARGET="queue"
-    # # assert宏替换
-    # assert_start_time = time.time()
-    # for root, dirs, files in os.walk(TEST_PATH):
-    #     for file in files:
-    #         if DEBUG_FLAG and DEBUG_TARGET not in file:
-    #             continue
-    #         logging.info(f"注释{file}中的main函数")
-    #         remove_main_and_tests(os.path.join(root, file))
-    #         logging.info("assert宏替换")
-    #         assert_optimize(os.path.join(root, file))
-    # for root, dirs, files in os.walk(SRC_PATH):
-    #     for file in files:
-    #         if  DEBUG_FLAG and DEBUG_TARGET not in file:
-    #             continue
-    #         if "alloc_testing" in file:
-    #             logging.info("当前文件为alloc_testing，先进行assert替换")
-    #             assert_optimize(file_path = os.path.join(root, file))
+    # assert宏替换
+    assert_start_time = time.time()
+    for root, dirs, files in os.walk(TEST_PATH):
+        for file in files:
+            if DEBUG_FLAG and DEBUG_TARGET not in file:
+                continue
+            logging.info(f"注释{file}中的main函数")
+            remove_main_and_tests(os.path.join(root, file))
+            logging.info("assert宏替换")
+            assert_optimize(os.path.join(root, file))
+    for root, dirs, files in os.walk(SRC_PATH):
+        for file in files:
+            if  DEBUG_FLAG and DEBUG_TARGET not in file:
+                continue
+            if "alloc_testing" in file:
+                logging.info("当前文件为alloc_testing，先进行assert替换")
+                assert_optimize(file_path = os.path.join(root, file))
 
-    # assert_end_time = time.time()
-    # logging.info(f"assert宏替换完成，耗时{assert_end_time - assert_start_time}秒")
+    assert_end_time = time.time()
+    logging.info(f"assert宏替换完成，耗时{assert_end_time - assert_start_time}秒")
 
 
-    # # 第一轮优化
-    # first_start_time = time.time()
-    # for root, dirs, files in os.walk(SRC_PATH):
-    #     for file in files:
-    #         if  DEBUG_FLAG and DEBUG_TARGET not in file and "alloc_testing" not in file:
-    #             continue
-    #         module_name = file.split('.')[0]
-    #         file_path = os.path.join(root, file)
+    # 第一轮优化
+    first_start_time = time.time()
+    for root, dirs, files in os.walk(SRC_PATH):
+        for file in files:
+            if  DEBUG_FLAG and DEBUG_TARGET not in file and "alloc_testing" not in file:
+                continue
+            module_name = file.split('.')[0]
+            file_path = os.path.join(root, file)
 
-    #         logging.info(f"{file}第一轮优化")
-    #         fail_list = first_safe_optimize(file_path)
-    #         logging.info(f"第一轮优化失败函数：{fail_list}")
-    #         src_fail_dict[module_name] = fail_list
+            logging.info(f"{file}第一轮优化")
+            fail_list = first_safe_optimize(file_path)
+            logging.info(f"第一轮优化失败函数：{fail_list}")
+            src_fail_dict[module_name] = fail_list
 
-    # for root, dirs, files in os.walk(TEST_PATH):
-    #     for file in files:
-    #         if  DEBUG_FLAG and DEBUG_TARGET not in file and "alloc_testing" not in file:
-    #             continue
-    #         start_index = len("test_")
-    #         end_index = file.find(".rs")
-    #         module_name = file[start_index:end_index]
-    #         file_path = os.path.join(root, file)
+    for root, dirs, files in os.walk(TEST_PATH):
+        for file in files:
+            if  DEBUG_FLAG and DEBUG_TARGET not in file and "alloc_testing" not in file:
+                continue
+            start_index = len("test_")
+            end_index = file.find(".rs")
+            module_name = file[start_index:end_index]
+            file_path = os.path.join(root, file)
 
-    #         logging.info(f"{file}第一轮优化")
+            logging.info(f"{file}第一轮优化")
             
 
-    #         fail_list = first_safe_optimize(file_path)
-    #         logging.info(f"第一轮优化失败函数：{fail_list}")
-    #         test_fail_dict[module_name] = fail_list
-    # first_end_time = time.time()
-    # logging.info(f"第一轮优化完成，耗时{first_end_time - first_start_time}秒")
+            fail_list = first_safe_optimize(file_path)
+            logging.info(f"第一轮优化失败函数：{fail_list}")
+            test_fail_dict[module_name] = fail_list
+    first_end_time = time.time()
+    logging.info(f"第一轮优化完成，耗时{first_end_time - first_start_time}秒")
 
-    # logging.info("统计safe指标")
-    # remove_stest_functions(PROJ_PATH)
-    # # 执行脚本并捕获输出
-    # current_directory = os.getcwd()
-    # os.chdir(f"{PROJ_PATH}")
-    # process = subprocess.Popen([f"./count_safe_ratio.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    # # 获取输出和错误
-    # stdout, _ = process.communicate()
-    # logging.info(f"{stdout}")
-    # os.chdir(current_directory)
-    # add_stest_functions(PROJ_PATH)
+    logging.info("统计safe指标")
+    remove_stest_functions(PROJ_PATH)
+    # 执行脚本并捕获输出
+    current_directory = os.getcwd()
+    os.chdir(f"{PROJ_PATH}")
+    process = subprocess.Popen([f"./count_safe_ratio.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    # 获取输出和错误
+    stdout, _ = process.communicate()
+    logging.info(f"{stdout}")
+    os.chdir(current_directory)
+    add_stest_functions(PROJ_PATH)
     
-    # ignore = ["binomial_heap.rs","compare_string.rs","hash_table.rs","avl_tree.rs","hash_pointer.rs","compare_pointer.rs","sortedarray.rs",
-    #           "set.rs", "list.rs", "rb_tree.rs", "hash_string.rs", "alloc_testing.rs", "slist.rs"
-    #           ]
-    # # 第二轮优化
-    # second_start_time = time.time()
-    # for root, dirs, files in os.walk(SRC_PATH):
-    #     for file in files:
-    #         if  DEBUG_FLAG and DEBUG_TARGET not in file:
-    #             continue
-    #         if file in ignore:
-    #             continue
-    #         logging.info(f"{file}第二轮优化")
+    ignore = ["binomial_heap.rs","compare_string.rs","hash_table.rs","avl_tree.rs","hash_pointer.rs","compare_pointer.rs","sortedarray.rs",
+              "set.rs", "list.rs", "rb_tree.rs", "hash_string.rs", "alloc_testing.rs", "slist.rs"
+              ]
+    # 第二轮优化
+    second_start_time = time.time()
+    for root, dirs, files in os.walk(SRC_PATH):
+        for file in files:
+            if  DEBUG_FLAG and DEBUG_TARGET not in file:
+                continue
+            if file in ignore:
+                continue
+            logging.info(f"{file}第二轮优化")
 
-    #         module_name = file.split('.')[0]
-    #         file_path = os.path.join(root, file)
+            module_name = file.split('.')[0]
+            file_path = os.path.join(root, file)
 
-    #         remove_extern_declaration_for_srcfile(file_path)
-    #         second_safe_optimize(file_path)
+            remove_extern_declaration_for_srcfile(file_path)
+            second_safe_optimize(file_path)
 
 
-    # for root, dirs, files in os.walk(TEST_PATH):
-    #     for file in files:
-    #         if  DEBUG_FLAG and DEBUG_TARGET not in file:
-    #             continue
-    #         start_index = len("test_")
-    #         end_index = file.find(".rs")
-    #         module_name = file[start_index:end_index]
-    #         file_path = os.path.join(root, file)
+    for root, dirs, files in os.walk(TEST_PATH):
+        for file in files:
+            if  DEBUG_FLAG and DEBUG_TARGET not in file:
+                continue
+            start_index = len("test_")
+            end_index = file.find(".rs")
+            module_name = file[start_index:end_index]
+            file_path = os.path.join(root, file)
 
-    #         fail_list = []
-    #         # 获取src中转化失败的函数
-    #         # 移除（注释）test 文件中的extern C函数声明
-    #         if src_fail_dict.get(module_name):
-    #             fail_list += src_fail_dict[module_name]
-    #         if test_fail_dict.get(module_name):
-    #             fail_list += test_fail_dict[module_name]
-    #         logging.info(f"注释{file}中的extern C函数声明，fail list={fail_list}")
-    #         remove_extern_declaration_for_testfile(file_path, fail_list)
-    #         # 移除（注释）test 文件中的结构体声明（和src的重复定义了）
-    #         logging.info(f"注释{file}中的全局结构体和类型声明")
-    #         remove_struct_and_type_declaration(file_path)
+            fail_list = []
+            # 获取src中转化失败的函数
+            # 移除（注释）test 文件中的extern C函数声明
+            if src_fail_dict.get(module_name):
+                fail_list += src_fail_dict[module_name]
+            if test_fail_dict.get(module_name):
+                fail_list += test_fail_dict[module_name]
+            logging.info(f"注释{file}中的extern C函数声明，fail list={fail_list}")
+            remove_extern_declaration_for_testfile(file_path, fail_list)
+            # 移除（注释）test 文件中的结构体声明（和src的重复定义了）
+            logging.info(f"注释{file}中的全局结构体和类型声明")
+            remove_struct_and_type_declaration(file_path)
             
-    #         logging.info(f"{file}第二轮优化")
-    #         second_safe_optimize(file_path)
-    # second_end_time = time.time()
-    # logging.info(f"第二轮优化完成，耗时{second_end_time - second_start_time}秒")
+            logging.info(f"{file}第二轮优化")
+            second_safe_optimize(file_path)
+    second_end_time = time.time()
+    logging.info(f"第二轮优化完成，耗时{second_end_time - second_start_time}秒")
 
-    # logging.info("统计safe指标")
-    # remove_stest_functions(PROJ_PATH)
-    # # 执行脚本并捕获输出
-    # current_directory = os.getcwd()
-    # os.chdir(f"{PROJ_PATH}")
-    # process = subprocess.Popen([f"./count_safe_ratio.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    # # 获取输出和错误
-    # stdout, _ = process.communicate()
-    # logging.info(f"{stdout}")
-    # os.chdir(current_directory)
+    logging.info("统计safe指标")
+    remove_stest_functions(PROJ_PATH)
+    # 执行脚本并捕获输出
+    current_directory = os.getcwd()
+    os.chdir(f"{PROJ_PATH}")
+    process = subprocess.Popen([f"./count_safe_ratio.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    # 获取输出和错误
+    stdout, _ = process.communicate()
+    logging.info(f"{stdout}")
+    os.chdir(current_directory)
 
 
     

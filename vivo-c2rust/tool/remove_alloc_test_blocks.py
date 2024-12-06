@@ -23,10 +23,12 @@ def remove_alloc_test_blocks_in_code(code: str) -> str:
     if start_idx == -1:
         return code
 
-    end_idx = code.rfind('}')
+    # end_idx = code.rfind('}')
+    end_idx = code.find('}', start_idx)
     if end_idx == -1:
         return code
-
+    print('-' * 40)
+    print(code[:start_idx] + code[end_idx:])
     # Keep everything before alloc_test and after the last brace
     return code[:start_idx] + code[end_idx:]
 
@@ -87,6 +89,8 @@ def split_c_functions_in_file(file_path):
 
 def remove_alloc_test_blocks_in_file(file_path: str):
     functions = split_c_functions_in_file(file_path)
+    if functions == None:
+        return 
     for func in functions:
         origin_code = func['code']
         new_code = remove_alloc_test_blocks_in_code(origin_code)
@@ -95,6 +99,9 @@ def remove_alloc_test_blocks_in_file(file_path: str):
 def remove_alloc_test_blocks_in_dir(dir_path: str):
     for root, dirs, files in os.walk(dir_path):
         for file in files:
+            # 这个文件无需处理
+            if "alloc-testing" in file:
+                continue
             file_path = os.path.join(root, file)
             remove_alloc_test_blocks_in_file(file_path)
 
@@ -102,7 +109,7 @@ def remove_alloc_test_blocks_in_dir(dir_path: str):
 if __name__ == "__main__":
 
 
-    path = "/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/01-Primary/test-init/test-arraylist.c"
+    path = "/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/input/01-Primary/test/test-binomial-heap.c"
     # res = split_c_functions_in_file(path)
     # for func in res:
     #     if func['name'] == "test_arraylist_insert":

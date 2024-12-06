@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-PROJ_PATH = "../primary"
+PROJ_PATH = "../output/primary"
 def cargo_test():
     current_directory = os.getcwd()
     os.chdir(f"{PROJ_PATH}")

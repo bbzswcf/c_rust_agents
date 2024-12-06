@@ -169,7 +169,7 @@ def extract_function_names(path:str):
 
 
 if __name__ == "__main__":
-    path = "/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary/tests/test_arraylist.rs"
+    path = "/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/output/primary/tests/test_arraylist.rs"
     with open (path) as file:
         code = file.read()
 

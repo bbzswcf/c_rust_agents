@@ -68,6 +68,6 @@ def add_stest_functions(path):
         # break
 
 if __name__ == "__main__":
-    add_stest_functions("../primary")
+    add_stest_functions("../output/primary")
 
 

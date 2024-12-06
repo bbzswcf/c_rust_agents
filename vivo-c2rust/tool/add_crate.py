@@ -77,4 +77,4 @@ def add_crate_and_lib(path):
 
 
 if __name__ == "__main__":
-    add_crate_and_lib("../primary")
+    add_crate_and_lib("../output/primary")
