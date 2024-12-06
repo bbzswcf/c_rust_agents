@@ -4,16 +4,10 @@ from openai import OpenAI
 from LLM_config import *
 import time
 
-# siliconflow_key = "sk-ewfzqneuiyrzxbkautzrjsfulfxtyxwlunettvibwfxjbust"
-# siliconflow_key = siliconflow_key
-
-siliconflow_base_url = "https://api.siliconflow.cn/v1"
-deepseek_base_url = "https://api.deepseek.com/v1"
-
 
 # client = OpenAI(api_key=siliconflow_key, base_url=siliconflow_base_url)
 
-client = OpenAI(api_key=deepseek_key, base_url=deepseek_base_url)
+client = OpenAI(api_key=api_key, base_url=api_base_url)
 class Agent:
     def __init__(self, role: str, prompt: str, temperature: float, top_p: float):
         self.role = role
