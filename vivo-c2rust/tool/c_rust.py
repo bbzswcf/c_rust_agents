@@ -16,8 +16,8 @@ import time
 agent = Agent(
     role="代码优化",
     prompt="You are a proficient C and Rust advanced developer.",
-    temperature=0.2,
-    top_p=0.9
+    temperature=0.3,
+    top_p=0.8
 )
 PROJ_PATH="../primary"
 SRC_PATH="../primary/src"
@@ -31,7 +31,7 @@ COMPARE_HASH_SRC_LIST = [
     f"{SRC_PATH}/hash_string.rs",
     f"{SRC_PATH}/hash_pointer.rs"
 ]
-MAX_ATTEMPS=5
+MAX_ATTEMPS=7
 
 def setup_logging():
     os.makedirs('logs', exist_ok=True)
@@ -66,23 +66,28 @@ def cargo_test():
     # 运行 cargo test 命令
     env = os.environ.copy()
     env["RUSTFLAGS"] = "-Awarnings"
-    result = subprocess.run(
-        ["cargo", "test", "--", "--test-threads=1"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        env=env
-    )
-    os.chdir(current_directory)
-    # 检查命令的返回码
-    if result.returncode == 0:
-        logging.info("所有测试通过！")
-        return (True, "")
-    else:
-        logging.info("测试未通过！")
-        error_msg = result.stderr
-        print(error_msg)
-        return (False, error_msg)
+    try:
+        result = subprocess.run(
+            ["cargo", "test", "--", "--test-threads=1"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            env=env,
+            timeout=10
+        )
+        os.chdir(current_directory)
+        if result.returncode == 0:
+            logging.info("所有测试通过！")
+            return (True, "")
+        else:
+            logging.info("测试未通过！")
+            error_msg = result.stderr
+            logging.info(error_msg)
+            return (False, error_msg)
+    except subprocess.TimeoutExpired:
+        logging.info("超时")
+        os.chdir(current_directory)
+        return (False, "Timeout error, Please ensure that your program does not cause errors or infinite loops.")
 
 # 从```中提取rust代码
 # 返回代码/""
@@ -137,7 +142,7 @@ def comment_code(file_path, target_code):
 # 对指定的代码（origin_code）迭代优化
 # 需传入prompt（包括输入输出示例和user_ask）
 # 返回T/F
-def optimize(file_path, origin_code, user_ask, example_input=[], example_output=[]):
+def optimize(file_path, origin_code, user_ask, example_input=[], example_output=[], opt_round=-1):
     cnt = 0
     flag = False
     cur_user_ask = user_ask
@@ -161,7 +166,11 @@ def optimize(file_path, origin_code, user_ask, example_input=[], example_output=
         logging.info(f"cnt={cnt} 测试失败，还原重试")
         function_restore(file_path, origin_code=origin_code, new_code=output)
         cnt += 1
-        cur_user_ask = user_ask + f"\nError message:\n{error_msg}"
+        # 补充错误信息
+        if opt_round == 2 and "process didn't exit successfully" in error_msg:
+            cur_user_ask = user_ask + fix_prompt_memory.format(last_code=output)
+        else:
+            cur_user_ask = user_ask + fix_prompt.format(last_code=output, error_msg=error_msg)
     if flag:
         return True
     else:
@@ -180,7 +189,7 @@ def assert_optimize(file_path):
             logging.info(f"下列原函数未能在文件{file_path}中查找到：\n{origin_code}")
             continue
         user_ask = assert_optimize_prompt.format(rust_code=origin_code)
-        res = optimize(file_path, origin_code=origin_code, user_ask=user_ask)
+        res = optimize(file_path, origin_code=origin_code, user_ask=user_ask, opt_round=0)
         if not res:
             logging.info(f"函数{func['name']}assert优化失败")
 
@@ -206,7 +215,7 @@ def first_safe_optimize(file_path):
             continue
 
         user_ask = first_optimize_prompt.format(rust_code=origin_code)
-        res = optimize(file_path, origin_code=origin_code, user_ask=user_ask, example_input=example_input, example_output=example_output)
+        res = optimize(file_path, origin_code=origin_code, user_ask=user_ask, example_input=example_input, example_output=example_output, opt_round=1)
         if not res:
             logging.info(f"函数{func['name']}第一轮优化失败")
             fail_list.append(func['name'])
@@ -221,24 +230,54 @@ def second_safe_optimize(file_path):
     static_code = '\n'.join(extract_static_declaration(path=file_path))
     # 获取extern C部分，利用extract_rust_code去注释
     extern_code = extract_rust_code(extract_extern_declaration(path=file_path))
-    exmaple_in = second_optimize_prompt.format(rust_code=second_optimize_example_code, 
-                                            static_variables=second_optimize_example_static, 
-                                            extern_C=second_optimize_example_extern_C)
-    example_input = [
-        exmaple_in
-    ]
-    example_output = [
-        second_optimize_example_output
-    ]
+
+    if "test_" in file_path:
+        logging.info("test file")
+        example_in_1 = second_optimize_prompt.format(rust_code=test_second_opt_example_code_1, 
+                                                static_variables=test_second_opt_example_static_1, 
+                                                extern_C=test_second_opt_example_extern_C_1)
+        example_in_2 = second_optimize_prompt.format(rust_code=test_second_opt_example_code_2, 
+                                                static_variables=test_second_opt_example_static_2, 
+                                                extern_C=test_second_opt_example_extern_C_2)
+        example_input = [
+            example_in_1, example_in_2
+        ]
+        example_output = [
+            test_second_opt_example_output_1,test_second_opt_example_output_2
+        ]
+    else:
+        example_in_1 = second_optimize_prompt.format(rust_code=src_second_opt_example_code_1, 
+                                                static_variables=src_second_opt_example_static_1, 
+                                                extern_C=src_second_opt_example_extern_C_1)
+        example_in_2 = second_optimize_prompt.format(rust_code=src_second_opt_example_code_2, 
+                                                static_variables=src_second_opt_example_static_2, 
+                                                extern_C=src_second_opt_example_extern_C_2)
+        example_in_3 = second_optimize_prompt.format(rust_code=src_second_opt_example_code_3, 
+                                                static_variables=src_second_opt_example_static_3, 
+                                                extern_C=src_second_opt_example_extern_C_3)
+        example_input = [
+            example_in_1, example_in_2, example_in_3
+        ]
+        example_output = [
+            src_second_opt_example_output_1, src_second_opt_example_output_2, src_second_opt_example_output_3
+        ]
+    # for e in example_input:
+    #     print(e)
+    # for e in example_output:
+    #     print(e)
+    # print(example_input)
+    # print(example_output)
     for func in functions:
         if "s_test" in func['name'] or "out_of_memory" in func['name']:
             continue
+        # if "test_list_remove_data" not in func['name']:
+        #     continue
         origin_code = func['code']
         if origin_code not in origin_content:
             logging.info(f"下列原函数未能在文件{file_path}中查找到：\n{origin_code}")
             continue
         user_ask = second_optimize_prompt.format(rust_code=origin_code, static_variables=static_code, extern_C=extern_code)
-        res = optimize(file_path, origin_code=origin_code, user_ask=user_ask, example_input=example_input, example_output=example_output)
+        res = optimize(file_path, origin_code=origin_code, user_ask=user_ask, example_input=example_input, example_output=example_output, opt_round=2)
         if not res:
             logging.info(f"函数{func['name']}第二轮优化失败")
        
@@ -246,13 +285,14 @@ def second_safe_optimize(file_path):
 
 # 移除（注释）test 文件中的extern C函数声明
 # fail_list中为未能转为safe的函数名，保留其extern C声明
-def remove_extern_declaration(file_path, fail_list):
+def remove_extern_declaration_for_testfile(file_path, fail_list):
     # 文件名 test_avl_tree.rs
     file_name = os.path.basename(file_path)
     # 提取模块名 avl_tree
     start_index = len("test_")
     end_index = file_name.find(".rs")
     module_name = file_name[start_index:end_index]
+
     remove_list = set()
     for file in COMPARE_HASH_SRC_LIST:
         remove_list = remove_list | set(extract_function_names(file))
@@ -263,8 +303,16 @@ def remove_extern_declaration(file_path, fail_list):
     extern_decl = extract_extern_declaration(file_path)
     func_name_to_sig = extract_func_signature_from_extern_declaration(extern_decl)
     for func_name in func_name_to_sig.keys():
-        if func_name in remove_list or "run_tests" in func_name:
+        if func_name in remove_list or "run_tests" in func_name or "alloc_test" in func_name:
             comment_code(file_path=file_path, target_code=func_name_to_sig[func_name])
+
+def remove_extern_declaration_for_srcfile(file_path):
+    extern_decl = extract_extern_declaration(file_path)
+    func_name_to_sig = extract_func_signature_from_extern_declaration(extern_decl)
+    for func_name in func_name_to_sig.keys():
+        if "alloc_test" in func_name:
+            comment_code(file_path=file_path, target_code=func_name_to_sig[func_name])
+
 
 # 移除（注释）test 文件中的结构体声明
 def remove_struct_and_type_declaration(file_path):
@@ -280,6 +328,7 @@ def remove_struct_and_type_declaration(file_path):
     for type in type_codes:
         comment_code(file_path, type)
 
+# 移除测试文件中的main函数，以及与run_test相关的东西
 def remove_main_and_tests(file_path):
     functions = split_rust_functions_in_file(file_path)
     for func in functions:
@@ -289,11 +338,11 @@ def remove_main_and_tests(file_path):
 
     static_codes = extract_static_declaration(file_path)
     for static in static_codes:
-        print(static)
+        # print(static)
         if "UnitTestFunction" in static:
             comment_code(file_path, static)
 
-
+# 从c2rust的翻译结果构造rust项目
 def construct_project():
     if os.path.exists(f"{PROJ_PATH}-c2rust/src/src") and os.path.exists(f"{PROJ_PATH}-c2rust/src/test"):
         if not os.path.exists(f"{PROJ_PATH}"):
@@ -305,7 +354,7 @@ def construct_project():
                 text=True,
             )
             with open(f"{PROJ_PATH}/Cargo.toml", 'a') as file:
-                file.write('libc = "0.2"\n')
+                file.write('libc = "0.2.167"\n')
             shutil.rmtree(f"{PROJ_PATH}/src")
         else:
             logging.info("项目文件夹存在，移除src、tests目录")
@@ -322,7 +371,7 @@ def construct_project():
         shutil.copy("./count_safe_ratio.sh", f"{PROJ_PATH}")
         subprocess.run(['chmod', '+x', f"{PROJ_PATH}/count_safe_ratio.sh"])
 
-    add_crate(PROJ_PATH)
+    add_crate_and_lib(PROJ_PATH)
     add_stest_functions(PROJ_PATH)
     
 
@@ -339,7 +388,7 @@ if __name__ == "__main__":
     # C代码预处理
     logging.info("预处理C代码")
     remove_alloc_test_blocks_in_dir(f"{C_PATH}/test")
-
+    # C2Rust
     logging.info("c2rust转换")
     c2rust_start_time = time.time()
     result = subprocess.run(
@@ -351,272 +400,141 @@ if __name__ == "__main__":
     else:
         logging.info("c2rust 转换失败")
         exit(2)
-    
+    # 构建项目并测试
     logging.info("项目构建")
     construct_project()
     logging.info("c2rust 测试")
     cargo_test()
 
-    c2rust_end_time = time.time()
-    logging.info(f"c2rust转换耗时{c2rust_end_time - c2rust_start_time}秒")
+    # c2rust_end_time = time.time()
+    # logging.info(f"c2rust转换耗时{c2rust_end_time - c2rust_start_time}秒")
 
-    # assert宏替换
-    assert_start_time = time.time()
-    for root, dirs, files in os.walk(TEST_PATH):
-        for file in files:
-            # if "arraylist" not in file:
-            #     continue
-            logging.info(f"注释{file}中的main函数")
-            remove_main_and_tests(os.path.join(root, file))
-            logging.info("assert宏替换")
-            assert_optimize(os.path.join(root, file))
-    for root, dirs, files in os.walk(SRC_PATH):
-        for file in files:
-            # if "arraylist" not in file:
-            #     continue
-            if "alloc_testing" in file:
-                logging.info("当前文件为alloc_testing，先进行assert替换")
-                assert_optimize(file_path = os.path.join(root, file))
+    # # 调试用
+    DEBUG_FLAG=False
+    DEBUG_TARGET="queue"
+    # # assert宏替换
+    # assert_start_time = time.time()
+    # for root, dirs, files in os.walk(TEST_PATH):
+    #     for file in files:
+    #         if DEBUG_FLAG and DEBUG_TARGET not in file:
+    #             continue
+    #         logging.info(f"注释{file}中的main函数")
+    #         remove_main_and_tests(os.path.join(root, file))
+    #         logging.info("assert宏替换")
+    #         assert_optimize(os.path.join(root, file))
+    # for root, dirs, files in os.walk(SRC_PATH):
+    #     for file in files:
+    #         if  DEBUG_FLAG and DEBUG_TARGET not in file:
+    #             continue
+    #         if "alloc_testing" in file:
+    #             logging.info("当前文件为alloc_testing，先进行assert替换")
+    #             assert_optimize(file_path = os.path.join(root, file))
 
-    assert_end_time = time.time()
-    logging.info(f"assert宏替换完成，耗时{assert_end_time - assert_start_time}秒")
+    # assert_end_time = time.time()
+    # logging.info(f"assert宏替换完成，耗时{assert_end_time - assert_start_time}秒")
 
 
-    ## 第一轮优化
-    first_start_time = time.time()
-    for root, dirs, files in os.walk(SRC_PATH):
-        for file in files:
-            # if "arraylist" not in file:
-            #     continue
-            module_name = file.split('.')[0]
-            file_path = os.path.join(root, file)
+    # # 第一轮优化
+    # first_start_time = time.time()
+    # for root, dirs, files in os.walk(SRC_PATH):
+    #     for file in files:
+    #         if  DEBUG_FLAG and DEBUG_TARGET not in file and "alloc_testing" not in file:
+    #             continue
+    #         module_name = file.split('.')[0]
+    #         file_path = os.path.join(root, file)
 
-            logging.info(f"{file}第一轮优化")
-            fail_list = first_safe_optimize(file_path)
-            logging.info(f"第一轮优化失败函数：{fail_list}")
-            src_fail_dict[module_name] = fail_list
+    #         logging.info(f"{file}第一轮优化")
+    #         fail_list = first_safe_optimize(file_path)
+    #         logging.info(f"第一轮优化失败函数：{fail_list}")
+    #         src_fail_dict[module_name] = fail_list
 
-    for root, dirs, files in os.walk(TEST_PATH):
-        for file in files:
-            # if "arraylist" not in file:
-            #     continue
-            start_index = len("test_")
-            end_index = file.find(".rs")
-            module_name = file[start_index:end_index]
-            file_path = os.path.join(root, file)
+    # for root, dirs, files in os.walk(TEST_PATH):
+    #     for file in files:
+    #         if  DEBUG_FLAG and DEBUG_TARGET not in file and "alloc_testing" not in file:
+    #             continue
+    #         start_index = len("test_")
+    #         end_index = file.find(".rs")
+    #         module_name = file[start_index:end_index]
+    #         file_path = os.path.join(root, file)
 
-            logging.info(f"{file}第一轮优化")
+    #         logging.info(f"{file}第一轮优化")
             
 
-            fail_list = first_safe_optimize(file_path)
-            logging.info(f"第一轮优化失败函数：{fail_list}")
-            test_fail_dict[module_name] = fail_list
-    first_end_time = time.time()
-    logging.info(f"第一轮优化完成，耗时{first_end_time - first_start_time}秒")
+    #         fail_list = first_safe_optimize(file_path)
+    #         logging.info(f"第一轮优化失败函数：{fail_list}")
+    #         test_fail_dict[module_name] = fail_list
+    # first_end_time = time.time()
+    # logging.info(f"第一轮优化完成，耗时{first_end_time - first_start_time}秒")
 
-    logging.info("统计safe指标")
-    remove_stest_functions(PROJ_PATH)
-    # 执行脚本并捕获输出
-    current_directory = os.getcwd()
-    os.chdir(f"{PROJ_PATH}")
-    process = subprocess.Popen([f"./count_safe_ratio.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    # 获取输出和错误
-    stdout, _ = process.communicate()
-    logging.info(f"{stdout}")
-    os.chdir(current_directory)
-
-    add_stest_functions(PROJ_PATH)
+    # logging.info("统计safe指标")
+    # remove_stest_functions(PROJ_PATH)
+    # # 执行脚本并捕获输出
+    # current_directory = os.getcwd()
+    # os.chdir(f"{PROJ_PATH}")
+    # process = subprocess.Popen([f"./count_safe_ratio.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    # # 获取输出和错误
+    # stdout, _ = process.communicate()
+    # logging.info(f"{stdout}")
+    # os.chdir(current_directory)
+    # add_stest_functions(PROJ_PATH)
     
-    # 第二轮优化
-    # target_list = ["test_binomial_heap.rs", "test_compare_functions.rs", "test_hash_functions.rs", "test_set.rs", "test_sortedarray.rs"]
-    second_start_time = time.time()
-    for root, dirs, files in os.walk(SRC_PATH):
-        for file in files:
-            # if "arraylist" not in file:
-            #     continue
-            module_name = file.split('.')[0]
-            file_path = os.path.join(root, file)
+    # ignore = ["binomial_heap.rs","compare_string.rs","hash_table.rs","avl_tree.rs","hash_pointer.rs","compare_pointer.rs","sortedarray.rs",
+    #           "set.rs", "list.rs", "rb_tree.rs", "hash_string.rs", "alloc_testing.rs", "slist.rs"
+    #           ]
+    # # 第二轮优化
+    # second_start_time = time.time()
+    # for root, dirs, files in os.walk(SRC_PATH):
+    #     for file in files:
+    #         if  DEBUG_FLAG and DEBUG_TARGET not in file:
+    #             continue
+    #         if file in ignore:
+    #             continue
+    #         logging.info(f"{file}第二轮优化")
 
-            logging.info(f"{file}第二轮优化")
-            second_safe_optimize(file_path)
+    #         module_name = file.split('.')[0]
+    #         file_path = os.path.join(root, file)
+
+    #         remove_extern_declaration_for_srcfile(file_path)
+    #         second_safe_optimize(file_path)
 
 
-    for root, dirs, files in os.walk(TEST_PATH):
-        for file in files:
-            # if "arraylist" not in file:
-            #     continue
-            start_index = len("test_")
-            end_index = file.find(".rs")
-            module_name = file[start_index:end_index]
-            file_path = os.path.join(root, file)
+    # for root, dirs, files in os.walk(TEST_PATH):
+    #     for file in files:
+    #         if  DEBUG_FLAG and DEBUG_TARGET not in file:
+    #             continue
+    #         start_index = len("test_")
+    #         end_index = file.find(".rs")
+    #         module_name = file[start_index:end_index]
+    #         file_path = os.path.join(root, file)
 
-            fail_list = []
-            # 获取src中转化失败的函数
-            # 移除（注释）test 文件中的extern C函数声明
-            if src_fail_dict.get(module_name):
-                fail_list += src_fail_dict[module_name]
-            if test_fail_dict.get(module_name):
-                fail_list += test_fail_dict[module_name]
-            logging.info(f"注释{file}中的extern C函数声明，fail list={fail_list}")
-            remove_extern_declaration(file_path, fail_list)
-            # 移除（注释）test 文件中的结构体声明（和src的重复定义了）
-            logging.info(f"注释{file}中的全局结构体和类型声明")
-            remove_struct_and_type_declaration(file_path)
+    #         fail_list = []
+    #         # 获取src中转化失败的函数
+    #         # 移除（注释）test 文件中的extern C函数声明
+    #         if src_fail_dict.get(module_name):
+    #             fail_list += src_fail_dict[module_name]
+    #         if test_fail_dict.get(module_name):
+    #             fail_list += test_fail_dict[module_name]
+    #         logging.info(f"注释{file}中的extern C函数声明，fail list={fail_list}")
+    #         remove_extern_declaration_for_testfile(file_path, fail_list)
+    #         # 移除（注释）test 文件中的结构体声明（和src的重复定义了）
+    #         logging.info(f"注释{file}中的全局结构体和类型声明")
+    #         remove_struct_and_type_declaration(file_path)
             
-            logging.info(f"{file}第二轮优化")
-            second_safe_optimize(file_path)
-    second_end_time = time.time()
-    logging.info(f"第二轮优化完成，耗时{second_end_time - second_start_time}秒")
+    #         logging.info(f"{file}第二轮优化")
+    #         second_safe_optimize(file_path)
+    # second_end_time = time.time()
+    # logging.info(f"第二轮优化完成，耗时{second_end_time - second_start_time}秒")
 
-    logging.info("统计safe指标")
-    remove_stest_functions(PROJ_PATH)
-    # 执行脚本并捕获输出
-    current_directory = os.getcwd()
-    os.chdir(f"{PROJ_PATH}")
-    process = subprocess.Popen([f"./count_safe_ratio.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    # 获取输出和错误
-    stdout, _ = process.communicate()
-    logging.info(f"{stdout}")
-    os.chdir(current_directory)
+    # logging.info("统计safe指标")
+    # remove_stest_functions(PROJ_PATH)
+    # # 执行脚本并捕获输出
+    # current_directory = os.getcwd()
+    # os.chdir(f"{PROJ_PATH}")
+    # process = subprocess.Popen([f"./count_safe_ratio.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    # # 获取输出和错误
+    # stdout, _ = process.communicate()
+    # logging.info(f"{stdout}")
+    # os.chdir(current_directory)
 
 
     
-
-# example_input = [
-#     first_optimize_prompt.format(rust_code=src_codein_1)
-# ]
-# example_output = [
-#     first_optimize_prompt.format(rust_code=src_codeout_1)
-# ]
-
-# path = "/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary/src/alloc_testing.rs"
-# path = "/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary/tests/test_avl_tree.rs"
-# result = split_rust_functions_in_file(path)
-
-# for func in result:
-#     code = func['code']
-#     user_ask = first_optimize_prompt.format(rust_code=code)
-#     output = agent.generate_response(user_input=user_ask, example_input=example_input, example_output=example_output)
-#     with open(path,'r') as file:
-#         content = file.read()
-#     if (code in content):
-#         print ("定位到目标函数，替换写回")
-#         with open(path,'w') as file:
-#             file.write(content.replace(code, output))
-#     else:
-#         print("文件中未找到函数")
-#     print("项目测试")
-#     cargo_test()
-#     break
-
-
-
-# code = result[1]['code']
-# print(code)
-# code="""
-# pub unsafe extern "C" fn generate_arraylist() -> *mut ArrayList {
-#     let mut arraylist: *mut ArrayList = 0 as *mut ArrayList;
-#     let mut i: libc::c_int = 0;
-#     arraylist = arraylist_new(0 as libc::c_int as libc::c_uint);
-#     i = 0 as libc::c_int;
-#     while i < 4 as libc::c_int {
-#         arraylist_append(
-#             arraylist,
-#             &mut variable1 as *mut libc::c_int as ArrayListValue,
-#         );
-#         arraylist_append(
-#             arraylist,
-#             &mut variable2 as *mut libc::c_int as ArrayListValue,
-#         );
-#         arraylist_append(
-#             arraylist,
-#             &mut variable3 as *mut libc::c_int as ArrayListValue,
-#         );
-#         arraylist_append(
-#             arraylist,
-#             &mut variable4 as *mut libc::c_int as ArrayListValue,
-#         );
-#         i += 1;
-#         i;
-#     }
-#     return arraylist;
-# }
-# """
-# user_ask = assert_optimize_prompt.format(rust_code=code)
-# user_ask = first_optimize_prompt.format(rust_code=code)
-# # output = agent.generate_response(user_input=user_ask)
-# output = agent.generate_response(user_input=user_ask, example_input=example_input, example_output=example_output)
-# output = extract_rust_code(output)
-# print(output)
-# with open(path,'r') as file:
-#     content = file.read()
-# if (code in content):
-#     print ("定位到目标函数，替换写回")
-#     with open(path,'w') as file:
-#         file.write(content.replace(code, output))
-# else:
-#     print("文件中未找到函数")
-
-# cargo_test()
-
-# path = "/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary/tests/test_avl_tree.rs"
-# remove_extern_declaration(path, ["avl_tree_new", "avl_tree_node_child"])
-
-# path = "/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/primary/tests/test_arraylist.rs"
-# attribute="#[derive(Copy, Clone)]\n#[repr(C)]\n"
-# remove_struct_declaration(path)
-
-
-# rust_code = """
-# pub extern "C" fn generate_arraylist() -> *mut ArrayList {
-#     let mut arraylist: *mut ArrayList = std::ptr::null_mut();
-#     let mut i: libc::c_int = 0;
-
-    
-#     unsafe {
-#         arraylist = arraylist_new(0);
-#         i = 0;
-#         while i < 4 {
-#             arraylist_append(arraylist, &mut variable1 as *mut libc::c_int as ArrayListValue);
-#             arraylist_append(arraylist, &mut variable2 as *mut libc::c_int as ArrayListValue);
-#             arraylist_append(arraylist, &mut variable3 as *mut libc::c_int as ArrayListValue);
-#             arraylist_append(arraylist, &mut variable4 as *mut libc::c_int as ArrayListValue);
-#             i += 1;
-#         }
-#     }
-
-#     arraylist
-# }
-# """
-# static_code = """
-# pub static mut variable1: libc::c_int = 0;
-# pub static mut variable2: libc::c_int = 0;
-# pub static mut variable3: libc::c_int = 0;
-# pub static mut variable4: libc::c_int = 0;
-# """
-# extern_code = """
-# extern "C" {
-#     fn __assert_fail(
-#         __assertion: *const libc::c_char,
-#         __file: *const libc::c_char,
-#         __line: libc::c_uint,
-#         __function: *const libc::c_char,
-#     ) -> !;
-#     fn run_tests(tests_0: *mut UnitTestFunction);
-# }
-# """
-
-# exmaple_in = second_optimize_prompt.format(rust_code=second_optimize_example_code, 
-#                                             static_variables=second_optimize_example_static, 
-#                                             extern_C=second_optimize_example_extern_C)
-# example_input = [
-#     exmaple_in
-# ]
-# example_output = [
-#     second_optimize_example_output
-# ]
-
-# user_ask = second_optimize_prompt.format(rust_code=rust_code, static_variables=static_code, extern_C=extern_code)
-# print(user_ask)
-# output = agent.generate_response(user_input=user_ask, example_input=example_input, example_output=example_output)
-# output = extract_rust_code(output)

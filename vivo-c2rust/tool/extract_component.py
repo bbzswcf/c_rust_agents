@@ -12,6 +12,8 @@ def extract_extern_declaration(path:str):
     # 解析代码
     with open (path) as file:
         code = file.read()
+    if code.strip() == '':
+        return ""
     tree = parser.parse(bytes(code, 'utf8'))
     # 查找extern C声明部分的代码
     def traverse(node):
@@ -24,7 +26,7 @@ def extract_extern_declaration(path:str):
             if res:
                 return res
     result = traverse(tree.root_node) 
-    return result
+    return result if result else ""
 
 # 从extern C的声明块中逐个提取函数签名
 # 传入code，返回dict（函数名到签名代码的映射）
@@ -34,6 +36,8 @@ def extract_func_signature_from_extern_declaration(code:str):
     language = Language(dll_path, 'rust')
     parser = Parser()
     parser.set_language(language)
+    if code.strip() == '':
+        return {}
     # 解析代码
     tree = parser.parse(bytes(code, 'utf8'))
     results = {}
@@ -67,6 +71,8 @@ def extract_struct_declaration(path:str):
     # 解析代码
     with open (path) as file:
         code = file.read()
+    if code.strip() == '':
+        return []
     tree = parser.parse(bytes(code, 'utf8'))
     results = []
 
@@ -91,6 +97,8 @@ def extract_static_declaration(path:str):
     # 解析代码
     with open (path) as file:
         code = file.read()
+    if code.strip() == '':
+        return []
     tree = parser.parse(bytes(code, 'utf8'))
     results = []
     def traverse(node):
@@ -116,6 +124,8 @@ def extract_type_declaration(path:str):
     # 解析代码
     with open (path) as file:
         code = file.read()
+    if code.strip() == '':
+        return []
     tree = parser.parse(bytes(code, 'utf8'))
     results = []
 
@@ -139,6 +149,8 @@ def extract_function_names(path:str):
     # 解析代码
     with open (path) as file:
         code = file.read()
+    if code.strip() == '':
+        return []
     tree = parser.parse(bytes(code, 'utf8'))
     results = []
     def traverse(node):

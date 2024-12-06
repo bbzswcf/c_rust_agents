@@ -21,6 +21,26 @@ fn {func_name}() {{
 }}
 """
 
+# test_func_2="""
+
+#     #[test]
+#     fn {func_name}() {{
+#         unsafe {{
+#             {content}
+#         }}
+#     }}
+# """
+
+# test_ignore_func_2="""
+#     #[test]
+#     #[ignore]
+#     fn {func_name}() {{
+#         unsafe {{
+#             {content}
+#         }}
+#     }}
+# """
+
 
 def remove_stest_functions(path):
     metadata_file_path = './c_metadata.json'
@@ -61,6 +81,12 @@ def remove_stest_functions(path):
                 else:
                     func_code = test_func.format(func_name=f"s_{f}", content = content)
                 file_content = file_content.replace(func_code, "")
+
+                # if "test_rb_tree_remove" in f or "test_rb_tree_to_array" in f:
+                #     func_code_2 = test_ignore_func_2.format(func_name=f"s_{f}", content = content)
+                # else:
+                #     func_code_2 = test_func_2.format(func_name=f"s_{f}", content = content)
+                # file_content = file_content.replace(func_code_2, "")
 
             with open(path, 'w') as file:
                 file.write(file_content)

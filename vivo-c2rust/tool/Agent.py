@@ -8,10 +8,12 @@ import time
 # siliconflow_key = siliconflow_key
 
 siliconflow_base_url = "https://api.siliconflow.cn/v1"
+deepseek_base_url = "https://api.deepseek.com/v1"
 
 
-client = OpenAI(api_key=siliconflow_key, base_url=siliconflow_base_url)
+# client = OpenAI(api_key=siliconflow_key, base_url=siliconflow_base_url)
 
+client = OpenAI(api_key=deepseek_key, base_url=deepseek_base_url)
 class Agent:
     def __init__(self, role: str, prompt: str, temperature: float, top_p: float):
         self.role = role
@@ -36,7 +38,8 @@ class Agent:
             
             try:
                 response = client.chat.completions.create(
-                    model="deepseek-ai/DeepSeek-V2.5",
+                    # model="deepseek-ai/DeepSeek-V2.5",
+                    model="deepseek-chat",
                     messages=message_list,
                     temperature=self.temperature,
                     top_p=self.top_p,

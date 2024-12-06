@@ -4,10 +4,9 @@
 import json
 import os
 import logging
-metadata_file_path = './c_metadata.json'
 
 
-def add_crate(path):
+def add_crate_and_lib(path):
     PROJ_DIR = path
     TEST_DIR = os.path.join(PROJ_DIR, "tests")
     SRC_DIR = os.path.join(PROJ_DIR, "src")
@@ -29,31 +28,12 @@ def add_crate(path):
 
 
 
-    # 打开文件并读取内容
-    with open(metadata_file_path, 'r') as file:
-        metadata = json.load(file)
-
-    for key, value in metadata.items():
-        if "test" not in key:
-            continue
-        filename = key.split('/')[1]
-        filename = filename.replace('-', '_')
-        if "cpp" in filename:
-            filename = filename.replace('.cpp', '.rs')
-        else:
-            filename = filename.replace('.c', '.rs')
-        func_signatures = value["func_signatures"]
-        func_signatures = [func for func in func_signatures if "test" in func]
-        func_names = [s.split(' ')[-1].split('(')[0] for s in func_signatures]
-        
-        # print(func_names)
-        # content = '\n\t\t'.join([f"{func_name}();" for func_name in func_names])
-        # print(content)
-        path = os.path.join(TEST_DIR, filename)
-        if os.path.isfile(path):
-            logging.info(f"add import for {filename}")
-            with open(path, 'r') as file:
-                lines = file.readlines()
+    for root, dirs, files in os.walk(TEST_DIR):
+        for file in files:
+            logging.info(f"add import for {file}")
+            path = os.path.join(root, file)
+            with open(path, 'r') as f:
+                lines = f.readlines()
             for i, line in enumerate(lines):
                 if line.strip() == '' or line.startswith("#"):
                     continue
@@ -63,15 +43,38 @@ def add_crate(path):
                 lines.insert(i, "use primary::compare_int::*;\n")
                 lines.insert(i, "use primary::compare_string::*;\n")
                 lines.insert(i, "use primary::compare_pointer::*;\n")
-                if "compare_functions" not in filename and "hash_functions" not in filename and "cpp" not in filename:
-                    lines.insert(i, f"use primary::{filename.removesuffix('.rs').removeprefix('test_')}::*;\n")
+                if "compare_functions" not in file and "hash_functions" not in file and "cpp" not in file:
+                    lines.insert(i, f"use primary::{file.removesuffix('.rs').removeprefix('test_')}::*;\n")
+                lines.insert(i, "use primary::alloc_testing::*;\n")
                 lines.insert(i, "extern crate libc;\n")
                 break
-            with open(path, 'w') as file:
-                file.writelines(lines)
+            with open(path, 'w') as f:
+                f.writelines(lines)
 
-                    
-        # break
+    ignore=["compare_int.rs","compare_string.rs","compare_pointer.rs",
+        "hash_int.rs","hash_string.rs","hash_pointer.rs"]
+    for root, dirs, files in os.walk(SRC_DIR):
+        for file in files:
+            logging.info(f"add import for {file}")
+            # print(f"add import for {file}")
+            if "alloc_testing.rs" in file or "lib.rs" in file:
+                continue
+            if file in ignore:
+                continue
+            path = os.path.join(root, file)
+            with open(path, 'r') as f:
+                lines = f.readlines()
+            for i, line in enumerate(lines):
+                if line.strip() == '' or line.startswith("#"):
+                    continue
+                lines.insert(i, "use crate::alloc_testing::*;\n")
+                lines.insert(i, "use std::mem;\n")
+                break
+            with open(path, 'w') as f:
+                f.writelines(lines)
+
+
+
 
 if __name__ == "__main__":
-    add_crate("../primary")
+    add_crate_and_lib("../primary")
