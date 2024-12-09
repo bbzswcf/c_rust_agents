@@ -3,4 +3,4 @@
 api_base_url = "https://api.siliconflow.cn/v1"
 api_key = "sk-fsaryljvbhpbzxndzkuwdmackwyfqzwatljrntinnojeiwmt"
 # llm_model = "deepseek-chat"
-llm_model = "deepseek-ai/DeepSeek-V2.5"
+model = "deepseek-ai/DeepSeek-V2.5"
