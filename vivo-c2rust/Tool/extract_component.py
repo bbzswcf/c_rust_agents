@@ -4,12 +4,14 @@ from tree_sitter_c_config import rust_parser
 # 提取extern C声明部分的代码
 # 传入文件路径，返回 str
 def extract_extern_declaration(path:str):
-    parser = rust_parser
-    # 解析代码
+    if not os.path.exists(path):
+        return None
     with open (path) as file:
         code = file.read()
     if code.strip() == '':
-        return ""
+        return None
+    
+    parser = rust_parser
     tree = parser.parse(bytes(code, 'utf8'))
     # 查找extern C声明部分的代码
     def traverse(node):
@@ -27,10 +29,11 @@ def extract_extern_declaration(path:str):
 # 从extern C的声明块中逐个提取函数签名
 # 传入code，返回dict（函数名到签名代码的映射）
 def extract_func_signature_from_extern_declaration(code:str):
+    if code.strip() == '':
+        return None
+    
     # 加载parser
     parser = rust_parser
-    if code.strip() == '':
-        return {}
     # 解析代码
     tree = parser.parse(bytes(code, 'utf8'))
     results = {}
@@ -52,17 +55,19 @@ def extract_func_signature_from_extern_declaration(code:str):
     traverse(tree.root_node) 
     return results
         
-
 # 提取全局结构体定义
 # 传入文件路径，返回 str[]
 def extract_struct_declaration(path:str):
-    # 加载parser
-    parser = rust_parser
+    if not os.path.exists(path):
+        return None
     # 解析代码
     with open (path) as file:
         code = file.read()
     if code.strip() == '':
-        return []
+        return None
+    
+    # 加载parser
+    parser = rust_parser
     tree = parser.parse(bytes(code, 'utf8'))
     results = []
 
@@ -79,13 +84,16 @@ def extract_struct_declaration(path:str):
 # 提取静态变量定义
 # 传入文件路径，返回 str[]
 def extract_static_declaration(path:str):
-    # 加载parser
-    parser = rust_parser
+    if not os.path.exists(path):
+        return None
     # 解析代码
     with open (path) as file:
         code = file.read()
     if code.strip() == '':
-        return []
+        return None
+    
+    # 加载parser
+    parser = rust_parser
     tree = parser.parse(bytes(code, 'utf8'))
     results = []
     def traverse(node):
@@ -101,15 +109,18 @@ def extract_static_declaration(path:str):
     traverse(tree.root_node) 
     return results
 
+# 提取静态类型定义
+# 传入文件路径，返回 str[]
 def extract_type_declaration(path:str):
-    # 加载parser
-    parser = rust_parser
-    # 解析代码
-    # 解析代码
+    if not os.path.exists(path):
+        return None
     with open (path) as file:
         code = file.read()
     if code.strip() == '':
-        return []
+        return None
+    
+    # 加载parser
+    parser = rust_parser
     tree = parser.parse(bytes(code, 'utf8'))
     results = []
 
@@ -123,15 +134,18 @@ def extract_type_declaration(path:str):
     traverse(tree.root_node) 
     return results
 
-
+# 提取所有函数名
+# 传入文件路径，返回 str[]
 def extract_function_names(path:str):
-    # 加载parser
-    parser = rust_parser
-    # 解析代码
+    if not os.path.exists(path):
+        return None
     with open (path) as file:
         code = file.read()
     if code.strip() == '':
         return []
+    
+    # 加载parser
+    parser = rust_parser
     tree = parser.parse(bytes(code, 'utf8'))
     results = []
     def traverse(node):
@@ -150,9 +164,9 @@ def extract_function_names(path:str):
 
 
 if __name__ == "__main__":
-    path = "/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/output/primary/tests/test_arraylist.rs"
-    with open (path) as file:
-        code = file.read()
+    # path = "/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/output/primary/tests/test_arraylist.rs"
+    # with open (path) as file:
+    #     code = file.read()
 
     # extern_code = extract_extern_declaration(path)
     # print(extern_code)
@@ -178,12 +192,12 @@ if __name__ == "__main__":
 
 
 
-    results = extract_type_declaration(path)
-    # print(results)
-    for res in results:
-        print(res)
-        if res in code:
-            print("find")
+    # results = extract_type_declaration(path)
+    # # print(results)
+    # for res in results:
+    #     print(res)
+    #     if res in code:
+    #         print("find")
     
 
     # path = "/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/cal-safe-ratio/primary/src/arraylist.rs"
@@ -202,6 +216,7 @@ if __name__ == "__main__":
     # module_name = file_name[start_index:end_index]
     # print(module_name)
 
-
+    results = extract_extern_declaration('./test.rs')
+    print(results)
 
 # todo：删除结构体定义和这俩#[derive(Copy, Clone)] #[repr(C)]，删除extern函数定义，提取static item/extern C补进prompt

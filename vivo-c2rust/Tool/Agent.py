@@ -33,7 +33,7 @@ class Agent:
             try:
                 response = client.chat.completions.create(
                     # model="deepseek-ai/DeepSeek-V2.5",
-                    model="deepseek-chat",
+                    model=llm_model,
                     messages=message_list,
                     temperature=self.temperature,
                     top_p=self.top_p,

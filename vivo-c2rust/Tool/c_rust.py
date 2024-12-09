@@ -134,7 +134,7 @@ def function_restore(file_path, origin_code, new_code):
         file.write(content.replace(new_code, origin_code))
     return True
 
-# 将文件中的指定代码注释掉（每行前加//)
+# 将文件中的指定代码注释掉（每行前加//) or 直接移除
 # 返回F/T
 def comment_code(file_path, target_code):
     with open(file_path,'r') as file:
@@ -237,9 +237,12 @@ def second_safe_optimize(file_path):
         origin_content = file.read()
 
     # 获取静态变量
-    static_code = '\n'.join(extract_static_declaration(path=file_path))
+    res = extract_static_declaration(path=file_path)
+    static_code = '\n'.join(res) if res else ""
+
     # 获取extern C部分，利用extract_rust_code去注释
-    extern_code = extract_rust_code(extract_extern_declaration(path=file_path))
+    res = extract_extern_declaration(path=file_path)
+    extern_code = extract_rust_code(res if res else "")
 
     if "test_" in file_path:
         logging.info("test file")
@@ -305,35 +308,47 @@ def remove_extern_declaration_for_testfile(file_path, fail_list):
 
     remove_list = set()
     for file in COMPARE_HASH_SRC_LIST:
-        remove_list = remove_list | set(extract_function_names(file))
+        res = extract_function_names(file)
+        if res:
+            remove_list = remove_list | set(res)
     if "hash_functions" not in module_name and "compare_functions" not in module_name:
-        remove_list = remove_list | set(extract_function_names(f"{SRC_PATH}/{module_name}.rs"))
+        res = extract_function_names(f"{SRC_PATH}/{module_name}.rs")
+        if res:
+            remove_list = remove_list | set(res)
     remove_list = remove_list - set(fail_list)
 
-    extern_decl = extract_extern_declaration(file_path)
+    res = extract_extern_declaration(file_path)
+    extern_decl = res if res else ""
     func_name_to_sig = extract_func_signature_from_extern_declaration(extern_decl)
-    for func_name in func_name_to_sig.keys():
-        if func_name in remove_list or "run_tests" in func_name or "alloc_test" in func_name:
-            comment_code(file_path=file_path, target_code=func_name_to_sig[func_name])
+    if func_name_to_sig:
+        for func_name in func_name_to_sig.keys():
+            if func_name in remove_list or "run_tests" in func_name or "alloc_test" in func_name:
+                comment_code(file_path=file_path, target_code=func_name_to_sig[func_name])
 
 def remove_extern_declaration_for_srcfile(file_path):
-    extern_decl = extract_extern_declaration(file_path)
+    res = extract_extern_declaration(file_path)
+    extern_decl = res if res else ""
+
     func_name_to_sig = extract_func_signature_from_extern_declaration(extern_decl)
-    for func_name in func_name_to_sig.keys():
-        if "alloc_test" in func_name:
-            comment_code(file_path=file_path, target_code=func_name_to_sig[func_name])
+    if func_name_to_sig:
+        for func_name in func_name_to_sig.keys():
+            if "alloc_test" in func_name:
+                comment_code(file_path=file_path, target_code=func_name_to_sig[func_name])
 
 
 # 移除（注释）test 文件中的结构体声明
 def remove_struct_and_type_declaration(file_path):
-    struct_codes = extract_struct_declaration(file_path)
+    res = extract_struct_declaration(file_path)
+    struct_codes = res if res else []
+
     logging.info(f"查找到{len(struct_codes)}个结构体定义")
     for struct in struct_codes:
         comment_code(file_path, struct)
     attribute="#[derive(Copy, Clone)]\n#[repr(C)]"
     comment_code(file_path, attribute)
 
-    type_codes = extract_type_declaration(file_path)
+    res = extract_type_declaration(file_path)
+    type_codes = res if res else []
     logging.info(f"查找到{len(type_codes)}个type定义")
     for type in type_codes:
         comment_code(file_path, type)
@@ -346,7 +361,8 @@ def remove_main_and_tests(file_path):
             func_code = func['code']
             comment_code(file_path, func_code)
 
-    static_codes = extract_static_declaration(file_path)
+    res = extract_static_declaration(file_path)
+    static_codes = res if res else []
     for static in static_codes:
         # print(static)
         if "UnitTestFunction" in static:
@@ -402,22 +418,35 @@ def make_c_project():
     else:
         return False
 
+def c2rust_convert():
+    if os.path.exists(C2RUST_OUTPUT_PATH):
+        logging.info("c2rust输出文件夹存在，清空")
+        shutil.rmtree(C2RUST_OUTPUT_PATH)
+    os.makedirs(C2RUST_OUTPUT_PATH)
+    result = subprocess.run(
+        [C2RUST_PATH, "transpile", "--output-dir", f"{C2RUST_OUTPUT_PATH}", f"{C_PATH}/compile_commands.json"],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        text=True,
+    )
+    if result.returncode == 0:
+        return True
+    else:
+        return False
+
 
 src_fail_dict = {}
 test_fail_dict = {}
 if __name__ == "__main__":
     # 全是相对路径，确认一下工作目录
     setup_logging()
-    if os.path.exists(C2RUST_OUTPUT_PATH):
-        logging.info("c2rust输出文件夹存在，清空")
-        shutil.rmtree(C2RUST_OUTPUT_PATH)
-    os.makedirs(C2RUST_OUTPUT_PATH)
+    
 
     # 编译命令文件
+    logging.info("编译C代码")
     if not make_c_project():
-        logging.info("C 代码编译失败")
+        logging.info("C代码编译失败")
         exit(1)
-    logging.info("C 代码编译成功")
+    logging.info("C代码编译成功")
 
     # C代码预处理
     logging.info("预处理C代码")
@@ -425,12 +454,18 @@ if __name__ == "__main__":
     # C2Rust
     logging.info("c2rust转换")
     c2rust_start_time = time.time()
-    result = subprocess.run(
-        [C2RUST_PATH, "transpile", "--output-dir", f"{C2RUST_OUTPUT_PATH}", f"{C_PATH}/compile_commands.json"],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-        text=True,
-    )
-    if result.returncode == 0:
+    # result = subprocess.run(
+    #     [C2RUST_PATH, "transpile", "--output-dir", f"{C2RUST_OUTPUT_PATH}", f"{C_PATH}/compile_commands.json"],
+    #     stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    #     text=True,
+    # )
+    # if result.returncode == 0:
+    #     logging.info("c2rust 转换成功")
+    # else:
+    #     logging.info("c2rust 转换失败")
+    #     exit(2)
+    res = c2rust_convert()
+    if res == True:
         logging.info("c2rust 转换成功")
     else:
         logging.info("c2rust 转换失败")

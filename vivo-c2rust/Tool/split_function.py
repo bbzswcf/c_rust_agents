@@ -3,14 +3,7 @@ from tree_sitter_c_config import rust_parser
 
 def split_rust_functions_in_file(file_path):
     if os.path.isfile(file_path):
-        try:
-            # 直接使用 dll 文件路径创建 Language 对象
-            parser = rust_parser
-            
-        except Exception as e:
-            print(f"加载语言时出错: {e}")
-            raise e
-    
+        parser = rust_parser
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 code = f.read()
@@ -53,24 +46,26 @@ def split_rust_functions_in_file(file_path):
         return None
 
 
-def split_rust_functions(folder_path):
-    """
-    使用tree-sitter解析Rust文件并提取所有函数
-    """
-    # 存储结果的字典
-    result = {}
+# def split_rust_functions(folder_path):
+#     """
+#     使用tree-sitter解析Rust文件并提取所有函数
+#     """
+#     # 存储结果的字典
+#     result = {}
      
-    # 遍历文件夹中的所有Rust文件
-    for root, dirs, files in os.walk(folder_path):
-        for file in files:
-            if file.endswith('.rs'):
-                file_path = os.path.join(root, file)
-                res = split_rust_functions_in_file(file_path=file_path)
-                if res:
-                    result[file_path] = res
-                else:
-                    print(f"处理文件{file_path}异常返回")
-    return result
+#     # 遍历文件夹中的所有Rust文件
+#     for root, dirs, files in os.walk(folder_path):
+#         for file in files:
+#             if file.endswith('.rs'):
+#                 file_path = os.path.join(root, file)
+#                 res = split_rust_functions_in_file(file_path=file_path)
+#                 if res:
+#                     result[file_path] = res
+#                 else:
+#                     print(f"处理文件{file_path}异常返回")
+#     return result
+
+
 
 # 'name': function_name
 # 'code': function_code
@@ -93,34 +88,36 @@ def print_functions(functions_dict):
             print(func['code'])
             print("-" * 40)
 
-def save_functions_to_files(functions_dict, output_dir):
-    """
-    将提取的函数保存到单独的文件中
+
+
+# def save_functions_to_files(functions_dict, output_dir):
+#     """
+#     将提取的函数保存到单独的文件中
     
-    Args:
-        functions_dict: 从split_rust_functions返回的字典
-        output_dir: 输出目录的路径
-    """
-    # 确保输出目录存在
-    os.makedirs(output_dir, exist_ok=True)
+#     Args:
+#         functions_dict: 从split_rust_functions返回的字典
+#         output_dir: 输出目录的路径
+#     """
+#     # 确保输出目录存在
+#     os.makedirs(output_dir, exist_ok=True)
     
-    for file_path, functions in functions_dict.items():
-        base_name = os.path.basename(file_path)
-        file_name_without_ext = os.path.splitext(base_name)[0]
+#     for file_path, functions in functions_dict.items():
+#         base_name = os.path.basename(file_path)
+#         file_name_without_ext = os.path.splitext(base_name)[0]
         
-        file_dir = os.path.join(output_dir, file_name_without_ext)
-        os.makedirs(file_dir, exist_ok=True)
+#         file_dir = os.path.join(output_dir, file_name_without_ext)
+#         os.makedirs(file_dir, exist_ok=True)
         
-        for func in functions:
-            # 清理文件名
-            safe_function_name = "".join(c for c in func['name'] if c.isalnum() or c in '_-')
-            if not safe_function_name:  # 如果函数名清理后为空，直接跳过
-                continue
+#         for func in functions:
+#             # 清理文件名
+#             safe_function_name = "".join(c for c in func['name'] if c.isalnum() or c in '_-')
+#             if not safe_function_name:  # 如果函数名清理后为空，直接跳过
+#                 continue
             
-            output_file = os.path.join(file_dir, f"{safe_function_name}.rs")
+#             output_file = os.path.join(file_dir, f"{safe_function_name}.rs")
             
-            with open(output_file, 'w', encoding='utf-8') as f:
-                f.write(func['code'])
+#             with open(output_file, 'w', encoding='utf-8') as f:
+#                 f.write(func['code'])
 
 # 修改使用示例:
 # result = split_rust_functions(folder_path="/mnt/sda/xc/C2Rust/c_rust_agents/vivo-c2rust/cal-safe-ratio/init/")

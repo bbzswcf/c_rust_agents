@@ -1,2 +1,6 @@
-api_base_url = "https://api.deepseek.com/v1"
-api_key = "sk-49857e84aa8044f6b2ee10158ede60ff"
+# api_base_url = "https://api.deepseek.com/v1"
+# api_key = "sk-2a1432bca3b648d48e3f3ca13ee9fb7a"
+api_base_url = "https://api.siliconflow.cn/v1"
+api_key = "sk-fsaryljvbhpbzxndzkuwdmackwyfqzwatljrntinnojeiwmt"
+# llm_model = "deepseek-chat"
+llm_model = "deepseek-ai/DeepSeek-V2.5"
