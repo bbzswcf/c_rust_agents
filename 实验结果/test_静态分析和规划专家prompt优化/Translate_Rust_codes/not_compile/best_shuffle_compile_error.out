@@ -1,4 +1,0 @@
-Rust 程序运行失败:
-thread 'main' panicked at /mnt/sda/xc/C2Rust/c_rust_agents/temp_main.rs:66:45:
-index out of bounds: the len is 11 but the index is 11
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
