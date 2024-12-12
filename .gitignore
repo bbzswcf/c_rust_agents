@@ -2,10 +2,13 @@ __pycache__/
 .idea/
 .vscode/
 
-Tool/rag_db
-Tool/rag_db_test
 Tool/logs/
 Tool/c_metadata_all.json
+Tool/LLM_config.py
 
+Tool/rag_db/*
+!Tool/rag_db/.gitkeep
+Tool/rag_db_test/*
+!Tool/rag_db_test/.gitkeep
 Tool/tree_sitter/build/*
 !Tool/tree_sitter/build/.gitkeep
