@@ -1,0 +1,10 @@
+python-version >= "3.8"
+chardet==5.2.0
+langchain==0.3.3
+langchain-community==0.3.2
+langchain-openai==0.2.2
+tree_sitter==0.20.1
+openai==1.55.3
+tenacity==8.5.0
+chromadb==0.5.15
+pytest==8.3.4

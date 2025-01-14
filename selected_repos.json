@@ -1,0 +1,2319 @@
+[
+  {
+    "name": "neovide",
+    "url": "https://github.com/neovide/neovide",
+    "stars": 13227,
+    "description": "No Nonsense Neovim Client in Rust",
+    "commit_id": "99b1100348b70102aa0ffe942ec521b12e8803a3"
+  },
+  {
+    "name": "wasm-bindgen",
+    "url": "https://github.com/rustwasm/wasm-bindgen",
+    "stars": 7905,
+    "description": "Facilitating high-level interactions between Wasm modules and JavaScript",
+    "commit_id": "e09c6fa4be7e0ca058ae9d3c0d7413b27c4ca7ae"
+  },
+  {
+    "name": "wezterm",
+    "url": "https://github.com/wez/wezterm",
+    "stars": 18424,
+    "description": "A GPU-accelerated cross-platform terminal emulator and multiplexer written by @wez and implemented in Rust",
+    "commit_id": "6f375e29a2c4d70b8b51956edd494693196c6692"
+  },
+  {
+    "name": "foundry",
+    "url": "https://github.com/foundry-rs/foundry",
+    "stars": 8414,
+    "description": "Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.",
+    "commit_id": "0d5ad758e08fc5ddbd2069f068093c4a94347d1c"
+  },
+  {
+    "name": "napi-rs",
+    "url": "https://github.com/napi-rs/napi-rs",
+    "stars": 6250,
+    "description": "A framework for building compiled Node.js add-ons in Rust via Node-API",
+    "commit_id": "24da4e6ffb3f7a1d96fd6ff80cf4ee0f967cf783"
+  },
+  {
+    "name": "oxc",
+    "url": "https://github.com/oxc-project/oxc",
+    "stars": 12823,
+    "description": "⚓ A collection of JavaScript tools written in Rust.",
+    "commit_id": "ac097e916051288cc982136e4e22c2766cb4bd91"
+  },
+  {
+    "name": "bore",
+    "url": "https://github.com/ekzhang/bore",
+    "stars": 8721,
+    "description": "🕳 bore is a simple CLI tool for making tunnels to localhost",
+    "commit_id": "baa42d0f7b382d65a57bfab4e35500fe9644696a"
+  },
+  {
+    "name": "rustlings",
+    "url": "https://github.com/rust-lang/rustlings",
+    "stars": 55116,
+    "description": ":crab: Small exercises to get you used to reading and writing Rust code!",
+    "commit_id": "26cf4989a2d9ffe6464e737ec341305384c86080"
+  },
+  {
+    "name": "pueue",
+    "url": "https://github.com/Nukesor/pueue",
+    "stars": 5130,
+    "description": ":stars: Manage your shell commands.",
+    "commit_id": "8d376804a27bac3e22450085913e280ec57b4dad"
+  },
+  {
+    "name": "rustup",
+    "url": "https://github.com/rust-lang/rustup",
+    "stars": 6215,
+    "description": "The Rust toolchain installer",
+    "commit_id": "dc9d072c34eccbee2d9249daea177b9c4263c5da"
+  },
+  {
+    "name": "sqlx",
+    "url": "https://github.com/launchbadge/sqlx",
+    "stars": 13679,
+    "description": "🧰 The Rust SQL Toolkit. An async, pure Rust SQL crate featuring compile-time checked queries without a DSL. Supports PostgreSQL, MySQL, and SQLite.",
+    "commit_id": "9f6ea96e03d814b5394660addaf89fcca947d6f0"
+  },
+  {
+    "name": "zellij",
+    "url": "https://github.com/zellij-org/zellij",
+    "stars": 22285,
+    "description": "A terminal workspace with batteries included",
+    "commit_id": "1923bace46698e311538c7cd30f3572af78b3cd1"
+  },
+  {
+    "name": "parity-ethereum",
+    "url": "https://github.com/openethereum/parity-ethereum",
+    "stars": 6827,
+    "description": "The fast, light, and robust client for Ethereum-like networks.",
+    "commit_id": "55c90d4016505317034e3e98f699af07f5404b63"
+  },
+  {
+    "name": "kata-containers",
+    "url": "https://github.com/kata-containers/kata-containers",
+    "stars": 5679,
+    "description": "Kata Containers is an open source project and community working to build a standard implementation of lightweight Virtual Machines (VMs) that feel and perform like containers, but provide the workload isolation and security advantages of VMs. https://katacontainers.io/",
+    "commit_id": "2c6126d3ab708e480b5aad1e7f7adbe22ffaa539"
+  },
+  {
+    "name": "ffsend",
+    "url": "https://github.com/timvisee/ffsend",
+    "stars": 7017,
+    "description": ":mailbox_with_mail: Easily and securely share files from the command line. A fully featured Firefox Send client.",
+    "commit_id": "238f1f54d7bde88c0e525dd0d5c4c6aa251a3634"
+  },
+  {
+    "name": "feroxbuster",
+    "url": "https://github.com/epi052/feroxbuster",
+    "stars": 6069,
+    "description": "A fast, simple, recursive content discovery tool written in Rust.",
+    "commit_id": "3b0e530fb4ed8162d4f63e4953718ff40262b21d"
+  },
+  {
+    "name": "lucet",
+    "url": "https://github.com/bytecodealliance/lucet",
+    "stars": 4058,
+    "description": "Lucet, the Sandboxing WebAssembly Compiler.",
+    "commit_id": "d0b358c5b4177f6d7382ef4e88e688bca19b4b8d"
+  },
+  {
+    "name": "shuttle",
+    "url": "https://github.com/shuttle-hq/shuttle",
+    "stars": 6167,
+    "description": "Build & ship backends without writing any infrastructure files.",
+    "commit_id": "52525c106601c2363ee35f1626dc6d912c87ec6d"
+  },
+  {
+    "name": "fish-shell",
+    "url": "https://github.com/fish-shell/fish-shell",
+    "stars": 26577,
+    "description": "The user-friendly command line shell.",
+    "commit_id": "541f8b47bf3214e0a4845fa2064ccb40c3c67a6a"
+  },
+  {
+    "name": "navi",
+    "url": "https://github.com/denisidoro/navi",
+    "stars": 15289,
+    "description": "An interactive cheatsheet tool for the command-line",
+    "commit_id": "089be801b229e27dca7ea9d547726fe0f9a90e96"
+  },
+  {
+    "name": "sd",
+    "url": "https://github.com/chmln/sd",
+    "stars": 5974,
+    "description": "Intuitive find & replace CLI (sed alternative)",
+    "commit_id": "3dc437add84f07b63c44ba1c92fd6866c5c9d3e9"
+  },
+  {
+    "name": "carbonyl",
+    "url": "https://github.com/fathyb/carbonyl",
+    "stars": 14793,
+    "description": "Chromium running inside your terminal",
+    "commit_id": "ab80a276b1bd1c2c8dcefc8f248415dfc61dc2bf"
+  },
+  {
+    "name": "sccache",
+    "url": "https://github.com/mozilla/sccache",
+    "stars": 5910,
+    "description": "Sccache is a ccache-like tool. It is used as a compiler wrapper and avoids compilation when possible. Sccache has the capability to utilize caching in remote storage environments, including various cloud storage options, or alternatively, in local storage.",
+    "commit_id": "6bc815456247292c5d770d9a54f0afbc99cf7326"
+  },
+  {
+    "name": "nushell",
+    "url": "https://github.com/nushell/nushell",
+    "stars": 33040,
+    "description": "A new type of shell",
+    "commit_id": "e0685315b4e605f046b5417d851f752ff31774d1"
+  },
+  {
+    "name": "glazewm",
+    "url": "https://github.com/glzr-io/glazewm",
+    "stars": 6905,
+    "description": "GlazeWM is a tiling window manager for Windows inspired by i3wm.",
+    "commit_id": "ac4ae082fa399ca524717de50fd403f81f9b4894"
+  },
+  {
+    "name": "dura",
+    "url": "https://github.com/tkellogg/dura",
+    "stars": 4311,
+    "description": "You shouldn't ever lose your work if you're using Git",
+    "commit_id": "b4a51b912839cf9b82cac08503358e72f3b25411"
+  },
+  {
+    "name": "rust-blog",
+    "url": "https://github.com/pretzelhammer/rust-blog",
+    "stars": 7671,
+    "description": "Educational blog posts for Rust beginners",
+    "commit_id": "b7c37efa5bcfc2a49bb8bf1a34ecdb97e702434e"
+  },
+  {
+    "name": "cube",
+    "url": "https://github.com/cube-js/cube",
+    "stars": 18081,
+    "description": "📊  Cube — Universal semantic layer platform for AI, BI, spreadsheets, and embedded analytics",
+    "commit_id": "e1911d4ff4c754d7d7e0d3f2bd6116d7531004c8"
+  },
+  {
+    "name": "neon",
+    "url": "https://github.com/neondatabase/neon",
+    "stars": 15506,
+    "description": "Neon: Serverless Postgres. We separated storage and compute to offer autoscaling, code-like database branching, and scale to zero.",
+    "commit_id": "9c53b41245e3aecba30c2e05df4eeabe45fd39ac"
+  },
+  {
+    "name": "universal-android-debloater",
+    "url": "https://github.com/0x192/universal-android-debloater",
+    "stars": 15916,
+    "description": "Cross-platform GUI written in Rust using ADB to debloat non-rooted android devices. Improve your privacy, the security and battery life of your device.",
+    "commit_id": "11f27c671cba278d71296cdef4c5a5dba06add5e"
+  },
+  {
+    "name": "lunatic",
+    "url": "https://github.com/lunatic-solutions/lunatic",
+    "stars": 4656,
+    "description": "Lunatic is an Erlang-inspired runtime for WebAssembly",
+    "commit_id": "fc046ed65fecfdb580922c8df409881ca12b9052"
+  },
+  {
+    "name": "idiomatic-rust",
+    "url": "https://github.com/mre/idiomatic-rust",
+    "stars": 6695,
+    "description": "🦀 A peer-reviewed collection of articles/talks/repos which teach concise, idiomatic Rust.",
+    "commit_id": "7fab42ec805be6562e3ace769b86910f83b1fb70"
+  },
+  {
+    "name": "alacritty",
+    "url": "https://github.com/alacritty/alacritty",
+    "stars": 56976,
+    "description": "A cross-platform, OpenGL terminal emulator.",
+    "commit_id": "8591a9421d0a100af16cd50b4610bc55506fb14f"
+  },
+  {
+    "name": "ncspot",
+    "url": "https://github.com/hrkfdn/ncspot",
+    "stars": 5144,
+    "description": "Cross-platform ncurses Spotify client written in Rust, inspired by ncmpc and the likes.",
+    "commit_id": "e89f540dad8179d067f060105a80c1ff016c14b3"
+  },
+  {
+    "name": "helix",
+    "url": "https://github.com/helix-editor/helix",
+    "stars": 34376,
+    "description": "A post-modern modal text editor.",
+    "commit_id": "355e38162624fdd411bd19b1ca19e5e2733159ba"
+  },
+  {
+    "name": "mini-redis",
+    "url": "https://github.com/tokio-rs/mini-redis",
+    "stars": 4020,
+    "description": "Incomplete Redis client and server implementation using Tokio - for learning purposes only",
+    "commit_id": "e186482ca00f8d884ddcbe20417f3654d03315a4"
+  },
+  {
+    "name": "openobserve",
+    "url": "https://github.com/openobserve/openobserve",
+    "stars": 13818,
+    "description": "🚀 10x easier, 🚀 140x lower storage cost, 🚀 high performance,  🚀 petabyte scale - Elasticsearch/Splunk/Datadog alternative for 🚀 (logs, metrics, traces, RUM, Error tracking, Session replay).",
+    "commit_id": "ecc383efd3a21f83bf5f76e40bfea884777862af"
+  },
+  {
+    "name": "crossbeam",
+    "url": "https://github.com/crossbeam-rs/crossbeam",
+    "stars": 7546,
+    "description": "Tools for concurrent programming in Rust",
+    "commit_id": "00283fb1818174c25b02d7f1c883c5e19f8506a4"
+  },
+  {
+    "name": "readyset",
+    "url": "https://github.com/readysettech/readyset",
+    "stars": 4595,
+    "description": "Readyset is a MySQL and Postgres wire-compatible caching layer that sits in front of existing databases to speed up queries and horizontally scale read throughput. Under the hood, ReadySet caches the results of cached select statements and incrementally updates these results over time as the underlying data changes.",
+    "commit_id": "9ff3e1baa2ad5285f0939b973e35e3bb1e66b39a"
+  },
+  {
+    "name": "hurl",
+    "url": "https://github.com/Orange-OpenSource/hurl",
+    "stars": 13461,
+    "description": "Hurl, run and test HTTP requests with plain text.",
+    "commit_id": "ab29198641db248daa20a1258aa2eab042161150"
+  },
+  {
+    "name": "warp",
+    "url": "https://github.com/seanmonstar/warp",
+    "stars": 9647,
+    "description": "A super-easy, composable, web server framework for warp speeds.",
+    "commit_id": "1cbf029b1867505e1e6f75ae9674613ae3533710"
+  },
+  {
+    "name": "actix",
+    "url": "https://github.com/actix/actix",
+    "stars": 8693,
+    "description": "Actor framework for Rust.",
+    "commit_id": "67dd419e6265a2137ed4f34d97505e91ff0202ea"
+  },
+  {
+    "name": "lancedb",
+    "url": "https://github.com/lancedb/lancedb",
+    "stars": 5035,
+    "description": "Developer-friendly, serverless vector database for AI applications. Easily add long-term memory to your LLM apps!",
+    "commit_id": "59b57055e78c723b84793688eeb108105026df37"
+  },
+  {
+    "name": "cheats.rs",
+    "url": "https://github.com/ralfbiedert/cheats.rs",
+    "stars": 4185,
+    "description": "Rust Language Cheat Sheet - https://cheats.rs",
+    "commit_id": "129ca9c67bf5981b6e513a7bad5fbaf641e26e7a"
+  },
+  {
+    "name": "boringtun",
+    "url": "https://github.com/cloudflare/boringtun",
+    "stars": 6167,
+    "description": "Userspace WireGuard® Implementation in Rust",
+    "commit_id": "64a2fc7c63e5f5a9aa5b8e1fbcefd504778ad118"
+  },
+  {
+    "name": "sonic",
+    "url": "https://github.com/valeriansaliou/sonic",
+    "stars": 20198,
+    "description": "🦔 Fast, lightweight & schema-less search backend. An alternative to Elasticsearch that runs on a few MBs of RAM.",
+    "commit_id": "a2bf0c54eee7bb68f55df434b8ef3cc81df5400d"
+  },
+  {
+    "name": "monolith",
+    "url": "https://github.com/Y2Z/monolith",
+    "stars": 11350,
+    "description": "⬛️ CLI tool for saving complete web pages as a single HTML file",
+    "commit_id": "4a5f85ba97f8a688e13e2faaf29c758b1f5805ed"
+  },
+  {
+    "name": "leptos",
+    "url": "https://github.com/leptos-rs/leptos",
+    "stars": 17109,
+    "description": "Build fast web applications with Rust.",
+    "commit_id": "f9533ab75b296b3ec1fa051fffa8efdcf7e39a3c"
+  },
+  {
+    "name": "espanso",
+    "url": "https://github.com/espanso/espanso",
+    "stars": 10212,
+    "description": "Cross-platform Text Expander written in Rust",
+    "commit_id": "78c1be643ba6169e01c0995b8fec3ce6f583037e"
+  },
+  {
+    "name": "WASI",
+    "url": "https://github.com/WebAssembly/WASI",
+    "stars": 4959,
+    "description": "WebAssembly System Interface",
+    "commit_id": "d93b745005555dd952fa22956c48df7bb37f822d"
+  },
+  {
+    "name": "miniserve",
+    "url": "https://github.com/svenstaro/miniserve",
+    "stars": 6240,
+    "description": "🌟 For when you really just want to serve some files over HTTP right now!",
+    "commit_id": "987cf3fa674903427159ff3fb3068fe13f5bea5c"
+  },
+  {
+    "name": "hickory-dns",
+    "url": "https://github.com/hickory-dns/hickory-dns",
+    "stars": 4131,
+    "description": "A Rust based DNS client, server, and resolver",
+    "commit_id": "5ec78723506a559761586281824fa56d0efb89a5"
+  },
+  {
+    "name": "webrtc",
+    "url": "https://github.com/webrtc-rs/webrtc",
+    "stars": 4237,
+    "description": "A pure Rust implementation of WebRTC",
+    "commit_id": "1291594284f99706739e224913dc4bcd0c09a5e1"
+  },
+  {
+    "name": "biome",
+    "url": "https://github.com/biomejs/biome",
+    "stars": 16014,
+    "description": "A toolchain for web projects, aimed to provide functionalities to maintain them. Biome offers formatter and linter, usable via CLI and LSP.",
+    "commit_id": "ec1e9e8d7ae573c0f0ed01d9519b1bb16180fd46"
+  },
+  {
+    "name": "burn",
+    "url": "https://github.com/tracel-ai/burn",
+    "stars": 9196,
+    "description": "Burn is a new comprehensive dynamic Deep Learning Framework built using Rust with extreme flexibility, compute efficiency and portability as its primary goals.",
+    "commit_id": "60f70cf506adef0b433be6ea020d951e7465c765"
+  },
+  {
+    "name": "rust-web-framework-comparison",
+    "url": "https://github.com/flosse/rust-web-framework-comparison",
+    "stars": 5167,
+    "description": "A comparison of some web frameworks and libs written in Rust",
+    "commit_id": "3808cb75eb3e5fbdbd6b532853e212051641c8d1"
+  },
+  {
+    "name": "Rocket",
+    "url": "https://github.com/rwf2/Rocket",
+    "stars": 24712,
+    "description": "A web framework for Rust.",
+    "commit_id": "28891e8072136f4641a33fb8c3f2aafce9d88d5b"
+  },
+  {
+    "name": "anki",
+    "url": "https://github.com/ankitects/anki",
+    "stars": 19332,
+    "description": "Anki's shared backend and web components, and the Qt frontend",
+    "commit_id": "5637390b501e92a46160557e581f8e1ccd79b1ce"
+  },
+  {
+    "name": "axum",
+    "url": "https://github.com/tokio-rs/axum",
+    "stars": 19656,
+    "description": "Ergonomic and modular web framework built with Tokio, Tower, and Hyper",
+    "commit_id": "ab8d0088d02711f9f7c2cf2d69bfd85d9b87f1f4"
+  },
+  {
+    "name": "check-if-email-exists",
+    "url": "https://github.com/reacherhq/check-if-email-exists",
+    "stars": 4369,
+    "description": "Check if an email address exists without sending any email, written in Rust. Comes with a ⚙️ HTTP backend.",
+    "commit_id": "b1377db2b32155d766a09a76864fc9b0990833e6"
+  },
+  {
+    "name": "rspack",
+    "url": "https://github.com/web-infra-dev/rspack",
+    "stars": 10380,
+    "description": "The fast Rust-based web bundler with webpack-compatible API 🦀️",
+    "commit_id": "715bccc11cf6a532387795d2d4b682c098b1c273"
+  },
+  {
+    "name": "diem",
+    "url": "https://github.com/diem/diem",
+    "stars": 16701,
+    "description": "Diem’s mission is to build a trusted and innovative financial network that empowers people and businesses around the world.",
+    "commit_id": "fc4714a8ea273b6efe8b13dbce72ea60aad9a16c"
+  },
+  {
+    "name": "rolldown",
+    "url": "https://github.com/rolldown/rolldown",
+    "stars": 9140,
+    "description": "Fast Rust bundler for JavaScript/TypeScript with Rollup-compatible API.",
+    "commit_id": "f85bcfa2aea16327ec3fb77119ce08e96802a007"
+  },
+  {
+    "name": "tokio",
+    "url": "https://github.com/tokio-rs/tokio",
+    "stars": 27398,
+    "description": "A runtime for writing reliable asynchronous applications with Rust. Provides I/O, networking, scheduling, timers, ...",
+    "commit_id": "b54b9d43385eafcf3fe609949e20f885f5d62db1"
+  },
+  {
+    "name": "tonic",
+    "url": "https://github.com/hyperium/tonic",
+    "stars": 10191,
+    "description": "A native gRPC client & server implementation with async/await support.",
+    "commit_id": "a8c1e39600772b240d54b8adfaed03e7879643aa"
+  },
+  {
+    "name": "websocat",
+    "url": "https://github.com/vi/websocat",
+    "stars": 7242,
+    "description": "Command-line client for WebSockets, like netcat (or curl) for ws:// with advanced socat-like functions",
+    "commit_id": "83c4375ac9a0475b7a8f3b75e49290f4486a4914"
+  },
+  {
+    "name": "innernet",
+    "url": "https://github.com/tonarino/innernet",
+    "stars": 5034,
+    "description": "A private network system that uses WireGuard under the hood.",
+    "commit_id": "b2e414984e007121ce8b7f84877bfe935d209c17"
+  },
+  {
+    "name": "crab",
+    "url": "https://github.com/crablang/crab",
+    "stars": 5137,
+    "description": "A community fork of a language named after a plant fungus. All of the memory-safe features you love, now with 100% less bureaucracy! ",
+    "commit_id": "6a1079e3b2389ad2b486af575a94faf09c35a057"
+  },
+  {
+    "name": "tealdeer",
+    "url": "https://github.com/tealdeer-rs/tealdeer",
+    "stars": 4564,
+    "description": "A very fast implementation of tldr in Rust.",
+    "commit_id": "1d9153e37e131ca56071213ba40ec01b16158ebf"
+  },
+  {
+    "name": "quickwit",
+    "url": "https://github.com/quickwit-oss/quickwit",
+    "stars": 8413,
+    "description": "Cloud-native search engine for observability. An open-source alternative to Datadog, Elasticsearch, Loki, and Tempo.",
+    "commit_id": "3ce58e702b8853f47391726295031afbbb9c7165"
+  },
+  {
+    "name": "pyo3",
+    "url": "https://github.com/PyO3/pyo3",
+    "stars": 12633,
+    "description": "Rust bindings for the Python interpreter",
+    "commit_id": "ea8c461ac1568890f9f1e4f710e94ebefc7a8dd0"
+  },
+  {
+    "name": "leo",
+    "url": "https://github.com/ProvableHQ/leo",
+    "stars": 4792,
+    "description": "🦁 The Leo Programming Language. A Programming Language for Formally Verified, Zero-Knowledge Applications",
+    "commit_id": "26ce60d995c52182868b62e499ae62d53984c7b2"
+  },
+  {
+    "name": "just",
+    "url": "https://github.com/casey/just",
+    "stars": 22756,
+    "description": "🤖 Just a command runner",
+    "commit_id": "20192d4910e13d3c81638546ab5a61f515b3a5e7"
+  },
+  {
+    "name": "git-absorb",
+    "url": "https://github.com/tummychow/git-absorb",
+    "stars": 4788,
+    "description": "git commit --fixup, but automatic",
+    "commit_id": "090d8749774d355025b0c12266b76ceacdb47c4e"
+  },
+  {
+    "name": "typst",
+    "url": "https://github.com/typst/typst",
+    "stars": 36159,
+    "description": "A new markup-based typesetting system that is powerful and easy to learn.",
+    "commit_id": "69536853589016b60efef4d9e39f8bb811040980"
+  },
+  {
+    "name": "rustls",
+    "url": "https://github.com/rustls/rustls",
+    "stars": 6318,
+    "description": "A modern TLS library in Rust",
+    "commit_id": "e9459358965cc5b51be11964143fd17e834dac9e"
+  },
+  {
+    "name": "rye",
+    "url": "https://github.com/astral-sh/rye",
+    "stars": 13915,
+    "description": "a Hassle-Free Python Experience",
+    "commit_id": "d67cac134f70fdcc6965d4ccb2633b286c494229"
+  },
+  {
+    "name": "paru",
+    "url": "https://github.com/Morganamilo/paru",
+    "stars": 6330,
+    "description": "Feature packed AUR helper",
+    "commit_id": "c9c4a23db6761fc9a7893752582a3e7c3917a95e"
+  },
+  {
+    "name": "procs",
+    "url": "https://github.com/dalance/procs",
+    "stars": 5226,
+    "description": "A modern replacement for ps written in Rust",
+    "commit_id": "d3132729b42c337169d8849ddbff5e6a35abd61a"
+  },
+  {
+    "name": "rnote",
+    "url": "https://github.com/flxzt/rnote",
+    "stars": 8447,
+    "description": "Sketch and take handwritten notes.",
+    "commit_id": "d3758fb13eba73022f6174460541e5e398929d0f"
+  },
+  {
+    "name": "xplr",
+    "url": "https://github.com/sayanarijit/xplr",
+    "stars": 4247,
+    "description": "A hackable, minimal, fast TUI file explorer",
+    "commit_id": "dd731ebd3d08d321f887b5f36def7f4c419bd8f1"
+  },
+  {
+    "name": "bat",
+    "url": "https://github.com/sharkdp/bat",
+    "stars": 50188,
+    "description": "A cat(1) clone with wings.",
+    "commit_id": "3e07483f7a5b54ce574485ce38792c70a675e05d"
+  },
+  {
+    "name": "tantivy",
+    "url": "https://github.com/quickwit-oss/tantivy",
+    "stars": 12305,
+    "description": "Tantivy is a full-text search engine library inspired by Apache Lucene and written in Rust",
+    "commit_id": "c39d91f82774dd7af0cf87f6e1b419b66d270b0b"
+  },
+  {
+    "name": "clash-nyanpasu",
+    "url": "https://github.com/libnyanpasu/clash-nyanpasu",
+    "stars": 9821,
+    "description": "Clash Nyanpasu～(∠・ω< )⌒☆​",
+    "commit_id": "269e7bae76aaab283f79445f75064c53be228112"
+  },
+  {
+    "name": "hexyl",
+    "url": "https://github.com/sharkdp/hexyl",
+    "stars": 9223,
+    "description": "A command-line hex viewer",
+    "commit_id": "dbed12e423b00f208f166794d7778e631c6f4eb8"
+  },
+  {
+    "name": "polars",
+    "url": "https://github.com/pola-rs/polars",
+    "stars": 30996,
+    "description": "Dataframes powered by a multithreaded, vectorized query engine, written in Rust",
+    "commit_id": "ff00869e8b089268143b46eab45874f61ea9c31d"
+  },
+  {
+    "name": "awesome-rust",
+    "url": "https://github.com/rust-unofficial/awesome-rust",
+    "stars": 47632,
+    "description": "A curated list of Rust code and resources.",
+    "commit_id": "b26c88bfb5dc53306ff9ecb25b79131a8eb4f005"
+  },
+  {
+    "name": "RustPython",
+    "url": "https://github.com/RustPython/RustPython",
+    "stars": 19327,
+    "description": "A Python Interpreter written in Rust",
+    "commit_id": "01f7536b36a94b1ab479253b8227c5151136bfff"
+  },
+  {
+    "name": "ruff",
+    "url": "https://github.com/astral-sh/ruff",
+    "stars": 33925,
+    "description": "An extremely fast Python linter and code formatter, written in Rust.",
+    "commit_id": "089a98e9049f1c2f047ef8771c5f0245627bdef6"
+  },
+  {
+    "name": "rapier",
+    "url": "https://github.com/dimforge/rapier",
+    "stars": 4161,
+    "description": "2D and 3D physics engines focused on performance.",
+    "commit_id": "cf77b5bf574f8363794f979510deec5c08e58401"
+  },
+  {
+    "name": "image",
+    "url": "https://github.com/image-rs/image",
+    "stars": 5050,
+    "description": "Encoding and decoding images in Rust",
+    "commit_id": "2125965fdc23ea0544fd585f6e934cc7762c1f51"
+  },
+  {
+    "name": "amethyst",
+    "url": "https://github.com/amethyst/amethyst",
+    "stars": 7997,
+    "description": "Data-oriented and data-driven game engine written in Rust",
+    "commit_id": "69c62327b66593a09fe53076fdcbc38c0499f018"
+  },
+  {
+    "name": "imageflow",
+    "url": "https://github.com/imazen/imageflow",
+    "stars": 4192,
+    "description": "High-performance image manipulation for web servers. Includes imageflow_server, imageflow_tool, and libimageflow",
+    "commit_id": "96527bbff02e6365a7efd585f25fcdd46fe72603"
+  },
+  {
+    "name": "wgpu",
+    "url": "https://github.com/gfx-rs/wgpu",
+    "stars": 12924,
+    "description": "A cross-platform, safe, pure-Rust graphics API.",
+    "commit_id": "53f40794f275329a48efc7d1c637c91b8e51327d"
+  },
+  {
+    "name": "qdrant",
+    "url": "https://github.com/qdrant/qdrant",
+    "stars": 21036,
+    "description": "Qdrant - High-performance, massive-scale Vector Database and Vector Search Engine for the next generation of AI. Also available in the cloud https://cloud.qdrant.io/",
+    "commit_id": "27260abda78509e1a3e8822c8d8819c4fe189f5b"
+  },
+  {
+    "name": "toydb",
+    "url": "https://github.com/erikgrinaker/toydb",
+    "stars": 6275,
+    "description": "Distributed SQL database in Rust, written as an educational project",
+    "commit_id": "f979d3d869fc880f417130d8f68395369b317b66"
+  },
+  {
+    "name": "fselect",
+    "url": "https://github.com/jhspetersson/fselect",
+    "stars": 4035,
+    "description": "Find files with SQL-like queries",
+    "commit_id": "edeec7b2065d3a1e42e9630f65bfd9bebae2b795"
+  },
+  {
+    "name": "tikv",
+    "url": "https://github.com/tikv/tikv",
+    "stars": 15402,
+    "description": "Distributed transactional key-value database, originally created to complement TiDB",
+    "commit_id": "7ef4aa9549f136cabdac7e5177f39fe16631b514"
+  },
+  {
+    "name": "limbo",
+    "url": "https://github.com/tursodatabase/limbo",
+    "stars": 7279,
+    "description": "Limbo is a work-in-progress, in-process OLTP database management system, compatible with SQLite.",
+    "commit_id": "8387e7903c6f869711bba4bf39637273d9124040"
+  },
+  {
+    "name": "sled",
+    "url": "https://github.com/spacejam/sled",
+    "stars": 8231,
+    "description": "the champagne of beta embedded databases",
+    "commit_id": "005c023ca94d424d8e630125e4c21320ed160031"
+  },
+  {
+    "name": "100-exercises-to-learn-rust",
+    "url": "https://github.com/mainmatter/100-exercises-to-learn-rust",
+    "stars": 6379,
+    "description": "A self-paced course to learn Rust, one exercise at a time.",
+    "commit_id": "3f60de3712c3c6a7fea7821896cc2c6f338470c1"
+  },
+  {
+    "name": "magika",
+    "url": "https://github.com/google/magika",
+    "stars": 8227,
+    "description": "Detect file content types with deep learning",
+    "commit_id": "43871b15b190fe5c95ea882855948b33599364f8"
+  },
+  {
+    "name": "solana",
+    "url": "https://github.com/solana-labs/solana",
+    "stars": 13464,
+    "description": "Web-Scale Blockchain for fast, secure, scalable, decentralized apps and marketplaces.",
+    "commit_id": "27eff8408b7223bb3c4ab70523f8a8dca3ca6645"
+  },
+  {
+    "name": "htmlq",
+    "url": "https://github.com/mgdm/htmlq",
+    "stars": 7154,
+    "description": "Like jq, but for HTML.",
+    "commit_id": "6e31bc814332b2521f0316d0ed9bf0a1c521b6e6"
+  },
+  {
+    "name": "mail-server",
+    "url": "https://github.com/stalwartlabs/mail-server",
+    "stars": 5625,
+    "description": "Secure & Modern All-in-One Mail Server (IMAP, JMAP, POP3, SMTP)",
+    "commit_id": "3a8dd723a646bba08608e395f5080b56eaa303d4"
+  },
+  {
+    "name": "gfx",
+    "url": "https://github.com/gfx-rs/gfx",
+    "stars": 5362,
+    "description": "[maintenance mode] A low-overhead Vulkan-like GPU API for Rust.",
+    "commit_id": "bc77309afdb0829605982370a3e17382c5968071"
+  },
+  {
+    "name": "cve-rs",
+    "url": "https://github.com/Speykious/cve-rs",
+    "stars": 4134,
+    "description": "Blazingly 🔥 fast 🚀 memory vulnerabilities, written in 100% safe Rust. 🦀",
+    "commit_id": "80d3a0e1ec2dbfc653d0b52c7456247eb605a0db"
+  },
+  {
+    "name": "llm",
+    "url": "https://github.com/rustformers/llm",
+    "stars": 6090,
+    "description": "[Unmaintained, see README] An ecosystem of Rust libraries for working with large language models",
+    "commit_id": "b11ffb14fde039f068c808df8dcbd1257a01b8db"
+  },
+  {
+    "name": "wstunnel",
+    "url": "https://github.com/erebe/wstunnel",
+    "stars": 4410,
+    "description": "Tunnel all your traffic over Websocket or HTTP2 - Bypass firewalls/DPI - Static binary available ",
+    "commit_id": "fab129b51627380decebf74e8f8fa6191f58c55a"
+  },
+  {
+    "name": "aptos-core",
+    "url": "https://github.com/aptos-labs/aptos-core",
+    "stars": 6220,
+    "description": "Aptos is a layer 1 blockchain built to support the widespread use of blockchain through better technology and user experience.",
+    "commit_id": "2bea962eac4743db6cc0ae2e8a2fd7fcc323b121"
+  },
+  {
+    "name": "leaf_1",
+    "url": "https://github.com/eycorsican/leaf",
+    "stars": 2436,
+    "description": "A versatile and efficient proxy framework with nice features suitable for various use cases.",
+    "commit_id": "8bc305c342aa5a31651e44c2986155e78f6d1db4"
+  },
+  {
+    "name": "cargo-make",
+    "url": "https://github.com/sagiegurari/cargo-make",
+    "stars": 2618,
+    "description": "Rust task runner and build tool.",
+    "commit_id": "53dd1276df8ddeea1f8318a99603723768b4b979"
+  },
+  {
+    "name": "geph4-client",
+    "url": "https://github.com/geph-official/geph4-client",
+    "stars": 2870,
+    "description": "Geph (迷霧通) is a modular Internet censorship circumvention system designed specifically to deal with national filtering. ",
+    "commit_id": "811d5743ebb0028a6a0a693f553b6cf6725c2b54"
+  },
+  {
+    "name": "valence",
+    "url": "https://github.com/valence-rs/valence",
+    "stars": 2863,
+    "description": "A Rust framework for building Minecraft servers.",
+    "commit_id": "8f3f84d557dacddd7faddb2ad724185ecee2e482"
+  },
+  {
+    "name": "racer",
+    "url": "https://github.com/racer-rust/racer",
+    "stars": 3357,
+    "description": "Rust Code Completion utility",
+    "commit_id": "a457c235b545c5251570cda8fec1edeab05ab1d4"
+  },
+  {
+    "name": "trunk",
+    "url": "https://github.com/trunk-rs/trunk",
+    "stars": 3599,
+    "description": "Build, bundle & ship your Rust WASM application to the web.",
+    "commit_id": "d4d92c44d815ce44d1f36518077ed3dbfa524c09"
+  },
+  {
+    "name": "Pumpkin",
+    "url": "https://github.com/Snowiiii/Pumpkin",
+    "stars": 3544,
+    "description": "Empowering everyone to host fast and efficient Minecraft servers.",
+    "commit_id": "cc0f30848ea597ef702558cb1e5fc57ed2a20372"
+  },
+  {
+    "name": "joshuto",
+    "url": "https://github.com/kamiyaa/joshuto",
+    "stars": 3490,
+    "description": "ranger-like terminal file manager written in Rust",
+    "commit_id": "e26204763b3ccd8da02e3b7d3bb6e22ab653d690"
+  },
+  {
+    "name": "jaq",
+    "url": "https://github.com/01mf02/jaq",
+    "stars": 2902,
+    "description": "A jq clone focussed on correctness, speed, and simplicity",
+    "commit_id": "75b58e81a4f47d370474237bc77fe92e24368667"
+  },
+  {
+    "name": "ouch",
+    "url": "https://github.com/ouch-org/ouch",
+    "stars": 2314,
+    "description": "Painless compression and decompression in the terminal",
+    "commit_id": "28d0933d6c07c1a6224dfe40e0b00526e1dd920a"
+  },
+  {
+    "name": "weggli",
+    "url": "https://github.com/weggli-rs/weggli",
+    "stars": 2352,
+    "description": "weggli is a fast and robust semantic search tool for C and C++ codebases. It is designed to help security researchers identify interesting functionality in large codebases.",
+    "commit_id": "bb45066004d281268b5408655df4978b7d921acd"
+  },
+  {
+    "name": "Findomain",
+    "url": "https://github.com/Findomain/Findomain",
+    "stars": 3357,
+    "description": "The fastest and complete solution for domain recognition. Supports screenshoting, port scan, HTTP check, data import from other tools, subdomain monitoring, alerts via Discord, Slack and Telegram, multiple API Keys for sources and much more.",
+    "commit_id": "fa3ae843bacc0917d64f8b313915925117f6c36e"
+  },
+  {
+    "name": "Rust_1",
+    "url": "https://github.com/TheAlgorithms/Rust",
+    "stars": 23046,
+    "description": " All Algorithms implemented in Rust ",
+    "commit_id": "7903120b1397bfb73e8027ea42616c4849566e28"
+  },
+  {
+    "name": "crossterm",
+    "url": "https://github.com/crossterm-rs/crossterm",
+    "stars": 3327,
+    "description": "Cross platform terminal library rust",
+    "commit_id": "e104a7cb400910609cdde36f322e3905c4baa805"
+  },
+  {
+    "name": "ludusavi",
+    "url": "https://github.com/mtkennerly/ludusavi",
+    "stars": 2861,
+    "description": "Backup tool for PC game saves",
+    "commit_id": "b42bbbd30834371a2dd496bec86ab9d98718d594"
+  },
+  {
+    "name": "percy",
+    "url": "https://github.com/chinedufn/percy",
+    "stars": 2276,
+    "description": "Build frontend browser apps with Rust + WebAssembly. Supports server side rendering.",
+    "commit_id": "b3a3eec66ad5908fb067c89bcf6cafbe8a69ed9a"
+  },
+  {
+    "name": "itertools",
+    "url": "https://github.com/rust-itertools/itertools",
+    "stars": 2792,
+    "description": "Extra iterator adaptors, iterator methods, free functions, and macros.",
+    "commit_id": "f80883b8e01cba2f8ef872cd33d6eda1a471db4c"
+  },
+  {
+    "name": "mini-lsm",
+    "url": "https://github.com/skyzh/mini-lsm",
+    "stars": 2950,
+    "description": "A tutorial of building an LSM-Tree storage engine in a week.",
+    "commit_id": "23802b23dda7664079b97170a00641be7b68a22b"
+  },
+  {
+    "name": "skytable",
+    "url": "https://github.com/skytable/skytable",
+    "stars": 2468,
+    "description": "Skytable is a modern scalable NoSQL database with BlueQL, designed for performance, scalability and flexibility. Skytable gives you spaces, models, data types, complex collections and more to build powerful experiences",
+    "commit_id": "fca996eb4e67559d55cffbf552505f7d9a9e4cfc"
+  },
+  {
+    "name": "hubris",
+    "url": "https://github.com/oxidecomputer/hubris",
+    "stars": 3055,
+    "description": "A lightweight, memory-protected, message-passing kernel for deeply embedded systems.",
+    "commit_id": "11da9c04aea6035dca305588628e52a8d673e135"
+  },
+  {
+    "name": "sysinfo",
+    "url": "https://github.com/GuillaumeGomez/sysinfo",
+    "stars": 2267,
+    "description": "Cross-platform library to fetch system information",
+    "commit_id": "98ccbfad5cc0b09159613f40406cf55c600e0023"
+  },
+  {
+    "name": "erdtree",
+    "url": "https://github.com/solidiquis/erdtree",
+    "stars": 2405,
+    "description": "A modern, cross-platform, multi-threaded, and general purpose filesystem and disk-usage utility that is aware of .gitignore and hidden file rules.",
+    "commit_id": "77199d97c3f14cfaf66a3c0c54c06d1f28d7e7ca"
+  },
+  {
+    "name": "weld",
+    "url": "https://github.com/weld-project/weld",
+    "stars": 2995,
+    "description": "High-performance runtime for data analytics applications",
+    "commit_id": "dcbba9a45ae2a190b31badec530ea54a58437606"
+  },
+  {
+    "name": "bastion",
+    "url": "https://github.com/bastion-rs/bastion",
+    "stars": 2810,
+    "description": "Highly-available Distributed Fault-tolerant Runtime",
+    "commit_id": "48d4c73edbf149e9048dedf7cd5c1e890788709c"
+  },
+  {
+    "name": "shadow-tls",
+    "url": "https://github.com/ihciah/shadow-tls",
+    "stars": 2340,
+    "description": "A proxy to expose real tls handshake to the firewall",
+    "commit_id": "dee3a5a819d6f56cfdd56c44a0d42be186c44238"
+  },
+  {
+    "name": "trippy",
+    "url": "https://github.com/fujiapple852/trippy",
+    "stars": 3973,
+    "description": "A network diagnostic tool ",
+    "commit_id": "ecc3bd2d4b74fa6ebe76514c4bc69651c64db648"
+  },
+  {
+    "name": "rhai",
+    "url": "https://github.com/rhaiscript/rhai",
+    "stars": 3903,
+    "description": "Rhai - An embedded scripting language for Rust.",
+    "commit_id": "42d35a31265ce4e681b5f7644a7298392d75d635"
+  },
+  {
+    "name": "pgrx",
+    "url": "https://github.com/pgcentralfoundation/pgrx",
+    "stars": 3748,
+    "description": "Build Postgres Extensions with Rust!",
+    "commit_id": "eda75496a08dbf5b1077694a9d1d3b5100d6aead"
+  },
+  {
+    "name": "binsider",
+    "url": "https://github.com/orhun/binsider",
+    "stars": 2877,
+    "description": "Analyze ELF binaries like a boss 😼🕵️‍♂️",
+    "commit_id": "b3c54871e044ee22a8a7b840b1731528b7c438ee"
+  },
+  {
+    "name": "martin",
+    "url": "https://github.com/maplibre/martin",
+    "stars": 2364,
+    "description": "Blazing fast and lightweight PostGIS, MBtiles and PMtiles tile server, tile generation, and mbtiles tooling.",
+    "commit_id": "40fe091c4469d582c8ae28cd420d88ce4ac313ff"
+  },
+  {
+    "name": "headway",
+    "url": "https://github.com/headwaymaps/headway",
+    "stars": 2639,
+    "description": "Self-hostable maps stack, powered by OpenStreetMap.",
+    "commit_id": "5ac79d4b5f94b02eaa4418ea43b646331747082a"
+  },
+  {
+    "name": "asterinas",
+    "url": "https://github.com/asterinas/asterinas",
+    "stars": 2502,
+    "description": "Asterinas is a secure, fast, and general-purpose OS kernel, written in Rust and providing Linux-compatible ABI.",
+    "commit_id": "6f98c4900d1d9c0986b32128a44ed669bd707b2e"
+  },
+  {
+    "name": "rustpad",
+    "url": "https://github.com/ekzhang/rustpad",
+    "stars": 3532,
+    "description": "Efficient and minimal collaborative code editor, self-hosted, no database required",
+    "commit_id": "cbc5df8b4b2914fa1f13e328b0acd7649985c723"
+  },
+  {
+    "name": "rust-postgres",
+    "url": "https://github.com/sfackler/rust-postgres",
+    "stars": 3550,
+    "description": "Native PostgreSQL driver for the Rust programming language",
+    "commit_id": "d7ccc7e398755addf13096b55bdab49c2cc96156"
+  },
+  {
+    "name": "redb",
+    "url": "https://github.com/cberner/redb",
+    "stars": 3427,
+    "description": "An embedded key-value database in pure Rust",
+    "commit_id": "ae8f08ce953f3603ce103b4bf6d413c3045a6628"
+  },
+  {
+    "name": "IronCalc",
+    "url": "https://github.com/ironcalc/IronCalc",
+    "stars": 2182,
+    "description": "Main engine of the IronCalc ecosystem",
+    "commit_id": "36f915b193c9fde952dac74ba2efcd0073584123"
+  },
+  {
+    "name": "touchHLE",
+    "url": "https://github.com/touchHLE/touchHLE",
+    "stars": 2769,
+    "description": "High-level emulator for iPhone OS apps. This repo is used for issues, releases and CI. Submit patches at: https://review.gerrithub.io/admin/repos/touchHLE/touchHLE",
+    "commit_id": "6841a6e3265209ca81ab84054219046430b0708e"
+  },
+  {
+    "name": "Theseus",
+    "url": "https://github.com/theseus-os/Theseus",
+    "stars": 2938,
+    "description": "Theseus is a modern OS written from scratch in Rust that explores 𝐢𝐧𝐭𝐫𝐚𝐥𝐢𝐧𝐠𝐮𝐚𝐥 𝐝𝐞𝐬𝐢𝐠𝐧: closing the semantic gap between compiler and hardware by maximally leveraging the power of language safety and affine types. Theseus aims to shift OS responsibilities like resource management into the compiler.",
+    "commit_id": "1fbfe567075a65ed749b6680db1aeb538819c70c"
+  },
+  {
+    "name": "iggy",
+    "url": "https://github.com/iggy-rs/iggy",
+    "stars": 2142,
+    "description": "Iggy is the persistent message streaming platform written in Rust, supporting QUIC, TCP and HTTP transport protocols, capable of processing millions of messages per second.",
+    "commit_id": "f92b36098cd60909b3ef7ab8c491cd22bd5d5ce7"
+  },
+  {
+    "name": "workers-rs",
+    "url": "https://github.com/cloudflare/workers-rs",
+    "stars": 2648,
+    "description": "Write Cloudflare Workers in 100% Rust via WebAssembly",
+    "commit_id": "5c31380201f58c074f6d31e8b92ecae4be424fc0"
+  },
+  {
+    "name": "rls",
+    "url": "https://github.com/rust-lang/rls",
+    "stars": 3510,
+    "description": "Repository for the Rust Language Server (aka RLS)",
+    "commit_id": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc"
+  },
+  {
+    "name": "tunnelto",
+    "url": "https://github.com/agrinman/tunnelto",
+    "stars": 2113,
+    "description": "Expose your local web server to the internet with a public URL.",
+    "commit_id": "06428f13c638180dd349a4c42a17b569ab51a25f"
+  },
+  {
+    "name": "ethers-rs",
+    "url": "https://github.com/gakonst/ethers-rs",
+    "stars": 2516,
+    "description": "Complete Ethereum & Celo library and wallet implementation in Rust. https://docs.rs/ethers",
+    "commit_id": "6e2ff0ef8af8c0ee3c21b7e1960f8c025bcd5588"
+  },
+  {
+    "name": "javy",
+    "url": "https://github.com/bytecodealliance/javy",
+    "stars": 2324,
+    "description": "JS to WebAssembly toolchain",
+    "commit_id": "26a21ce52b695957ab925924331982c9ae358115"
+  },
+  {
+    "name": "sqlsync",
+    "url": "https://github.com/orbitinghail/sqlsync",
+    "stars": 2416,
+    "description": "SQLSync is a collaborative offline-first wrapper around SQLite. It is designed to synchronize web application state between users, devices, and the edge.",
+    "commit_id": "e8ad1168a2931087b308a8db1a0edba2d73bc213"
+  },
+  {
+    "name": "microbin",
+    "url": "https://github.com/szabodanika/microbin",
+    "stars": 2747,
+    "description": "A secure, configurable file-sharing and URL shortening web app written in Rust.",
+    "commit_id": "24be6cdeb6e7096a899a38998d5cb299c129f5da"
+  },
+  {
+    "name": "termion",
+    "url": "https://github.com/redox-os/termion",
+    "stars": 2116,
+    "description": "Mirror of https://gitlab.redox-os.org/redox-os/termion",
+    "commit_id": "50895d6a822a6cc8db64710d11c72d958d45c67a"
+  },
+  {
+    "name": "Plume",
+    "url": "https://github.com/Plume-org/Plume",
+    "stars": 2118,
+    "description": "Federated blogging application, thanks to ActivityPub (now on https://git.joinplu.me/ — this is just a mirror)",
+    "commit_id": "b486178a422defa0d5a6efdf1893fa7edfbb803d"
+  },
+  {
+    "name": "stdweb",
+    "url": "https://github.com/koute/stdweb",
+    "stars": 3448,
+    "description": "A standard library for the client-side Web",
+    "commit_id": "9b418d98df6fafaa4d4b87b04c304d0220292055"
+  },
+  {
+    "name": "perseus",
+    "url": "https://github.com/framesurge/perseus",
+    "stars": 2185,
+    "description": "A state-driven web development framework for Rust with full support for server-side rendering and static generation.",
+    "commit_id": "d27f5014983e54d5161246363139f116bb7c824c"
+  },
+  {
+    "name": "jsr",
+    "url": "https://github.com/jsr-io/jsr",
+    "stars": 2572,
+    "description": "The open-source package registry for modern JavaScript and TypeScript",
+    "commit_id": "998ffece8674e03f080a69234b628a433ed306ce"
+  },
+  {
+    "name": "sozu",
+    "url": "https://github.com/sozu-proxy/sozu",
+    "stars": 3149,
+    "description": "Sōzu HTTP reverse proxy, configurable at runtime, fast and safe, built in Rust. It is awesome!",
+    "commit_id": "c5ff06a12bd514e06ab28965052d0ad1e19c45b3"
+  },
+  {
+    "name": "lychee",
+    "url": "https://github.com/lycheeverse/lychee",
+    "stars": 2313,
+    "description": "⚡ Fast, async, stream-based link checker written in Rust. Finds broken URLs and mail addresses inside Markdown, HTML, reStructuredText, websites and more!",
+    "commit_id": "1501b379e0e5eb29426d24296437daf502b16a6c"
+  },
+  {
+    "name": "linfa",
+    "url": "https://github.com/rust-ml/linfa",
+    "stars": 3812,
+    "description": "A Rust machine learning framework.",
+    "commit_id": "b807674fa3af19f67f83504cab3ed7653af30ba2"
+  },
+  {
+    "name": "sycamore",
+    "url": "https://github.com/sycamore-rs/sycamore",
+    "stars": 2911,
+    "description": "A library for creating reactive web apps in Rust and WebAssembly",
+    "commit_id": "0decedf7b295edb96cc3b3b0f4bb8210d2c832a0"
+  },
+  {
+    "name": "komodo",
+    "url": "https://github.com/mbecker20/komodo",
+    "stars": 2141,
+    "description": "🦎 a tool to build and deploy software on many servers 🦎",
+    "commit_id": "ab8777460dff75fec8f4ad5789bb22a19680c899"
+  },
+  {
+    "name": "granian",
+    "url": "https://github.com/emmett-framework/granian",
+    "stars": 2976,
+    "description": "A Rust HTTP server for Python applications",
+    "commit_id": "1ad12784678671e283c3539dcfe7e5bcea63ac5f"
+  },
+  {
+    "name": "teloxide",
+    "url": "https://github.com/teloxide/teloxide",
+    "stars": 3253,
+    "description": "🤖 An elegant Telegram bots framework for Rust",
+    "commit_id": "94db1757dc96116f4756a586fcbce3ac5ebd0c59"
+  },
+  {
+    "name": "universal-android-debloater-next-generation",
+    "url": "https://github.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation",
+    "stars": 2749,
+    "description": "Cross-platform GUI written in Rust using ADB to debloat non-rooted Android devices. Improve your privacy, the security and battery life of your device.",
+    "commit_id": "beeaf9476915ef4a52584f7c978f9bf6e0418048"
+  },
+  {
+    "name": "nix",
+    "url": "https://github.com/nix-rust/nix",
+    "stars": 2699,
+    "description": "Rust friendly bindings to *nix APIs",
+    "commit_id": "5ef78a8b17a893e7534a4c02d34f636cfe4d87e0"
+  },
+  {
+    "name": "rust-protobuf",
+    "url": "https://github.com/stepancheg/rust-protobuf",
+    "stars": 2822,
+    "description": "Rust implementation of Google protocol buffers",
+    "commit_id": "a5421213fbfbbe03ae776006db316671017e3ace"
+  },
+  {
+    "name": "OpenSK",
+    "url": "https://github.com/google/OpenSK",
+    "stars": 3042,
+    "description": "OpenSK is an open-source implementation for security keys written in Rust that supports both FIDO U2F and FIDO2 standards.",
+    "commit_id": "1474ac5c6c2f7bd7904bcf24ab664ca8e3b48edc"
+  },
+  {
+    "name": "jarvis",
+    "url": "https://github.com/Priler/jarvis",
+    "stars": 2253,
+    "description": "Voice assistant made as an experiment using neural networks for things like STT/TTS/Wake Word/NLU etc.",
+    "commit_id": "15eacbd20f0842a795d1a67462dea47b5fd6c09e"
+  },
+  {
+    "name": "parking_lot",
+    "url": "https://github.com/Amanieu/parking_lot",
+    "stars": 2791,
+    "description": "Compact and efficient synchronization primitives for Rust. Also provides an API for creating custom synchronization primitives.",
+    "commit_id": "ca920b31312839013b4455aba1d53a4aede21b2f"
+  },
+  {
+    "name": "spyglass",
+    "url": "https://github.com/spyglass-search/spyglass",
+    "stars": 2605,
+    "description": "A personal search engine:  Create a searchable library from your personal documents, interests, and more!",
+    "commit_id": "dcd6f55d71e644c92a24d03afa572e770a665350"
+  },
+  {
+    "name": "chainsaw",
+    "url": "https://github.com/WithSecureLabs/chainsaw",
+    "stars": 2927,
+    "description": "Rapidly Search and Hunt through Windows Forensic Artefacts",
+    "commit_id": "f81de5b30acb5c5fcb58805c90dc2a73228b6fcc"
+  },
+  {
+    "name": "pushpin",
+    "url": "https://github.com/fastly/pushpin",
+    "stars": 3672,
+    "description": "A proxy server for adding push to your API, used at the core of Fastly's Fanout service",
+    "commit_id": "6a431f27b9b398d0e305e88af9b399796f42b1e6"
+  },
+  {
+    "name": "chrono",
+    "url": "https://github.com/chronotope/chrono",
+    "stars": 3371,
+    "description": "Date and time library for Rust",
+    "commit_id": "8b863490d88ba098038392c8aa930012ffd0c439"
+  },
+  {
+    "name": "tera",
+    "url": "https://github.com/Keats/tera",
+    "stars": 3607,
+    "description": "A template engine for Rust based on Jinja2/Django",
+    "commit_id": "ae13d7ce39d732aae3f68435ed52c60732fe0ee0"
+  },
+  {
+    "name": "gluon",
+    "url": "https://github.com/gluon-lang/gluon",
+    "stars": 3236,
+    "description": "A static, type inferred and embeddable language written in Rust.",
+    "commit_id": "6085b002e67fb473ab69fbd210433b0e8f7e7750"
+  },
+  {
+    "name": "glium",
+    "url": "https://github.com/glium/glium",
+    "stars": 3525,
+    "description": "Safe OpenGL wrapper for the Rust language.",
+    "commit_id": "c5314004183c98a60a2f9cf5ca07b3b373e4627b"
+  },
+  {
+    "name": "cargo-watch",
+    "url": "https://github.com/watchexec/cargo-watch",
+    "stars": 2801,
+    "description": "Watches over your Cargo project's source.",
+    "commit_id": "58e792b99fade3b0c0ad198fd9627dcd4817eb37"
+  },
+  {
+    "name": "pua-lang",
+    "url": "https://github.com/flaneur2020/pua-lang",
+    "stars": 3280,
+    "description": "a dialect of The Monkey Programming Language",
+    "commit_id": "513b7cf820d81b7de63e3d1d8de925701d60c2a9"
+  },
+  {
+    "name": "angle-grinder",
+    "url": "https://github.com/rcoh/angle-grinder",
+    "stars": 3527,
+    "description": "Slice and dice logs on the command line",
+    "commit_id": "50032e0c3d171dfecf13bc2ec6af45ff3daef0a5"
+  },
+  {
+    "name": "cargo-expand",
+    "url": "https://github.com/dtolnay/cargo-expand",
+    "stars": 2719,
+    "description": "Subcommand to show result of macro expansion",
+    "commit_id": "786dd97fc50fb671807828a6fc59871b28e40860"
+  },
+  {
+    "name": "freenet-core",
+    "url": "https://github.com/freenet/freenet-core",
+    "stars": 2289,
+    "description": "Declare your digital independence",
+    "commit_id": "9a0d8017c5d4e6f8d27b1d4ad6225d4d2e0d447a"
+  },
+  {
+    "name": "unreal-rust",
+    "url": "https://github.com/MaikKlein/unreal-rust",
+    "stars": 2124,
+    "description": "Rust integration for Unreal Engine 5",
+    "commit_id": "21f00062189d9cf31e92fb171a1b5d49dd67733d"
+  },
+  {
+    "name": "gptcommit",
+    "url": "https://github.com/zurawiki/gptcommit",
+    "stars": 2345,
+    "description": "A git prepare-commit-msg hook for authoring commit messages with GPT-3.",
+    "commit_id": "94eeb2f009317049049fec9db7decd5ac6fe84bd"
+  },
+  {
+    "name": "bincode",
+    "url": "https://github.com/bincode-org/bincode",
+    "stars": 2753,
+    "description": "A binary encoder / decoder implementation in Rust.",
+    "commit_id": "29d8d84d3269f6e9b122c0ef6d8ea300dee3048f"
+  },
+  {
+    "name": "vello",
+    "url": "https://github.com/linebender/vello",
+    "stars": 2443,
+    "description": "A GPU compute-centric 2D renderer.",
+    "commit_id": "8a84a4abf7aaabdb7de82e3d9d86ed427ad21638"
+  },
+  {
+    "name": "erg",
+    "url": "https://github.com/erg-lang/erg",
+    "stars": 2707,
+    "description": "A statically typed language compatible with Python",
+    "commit_id": "03c5321fb3b93981b428ddd0ad2de68c992a4b16"
+  },
+  {
+    "name": "mdcat",
+    "url": "https://github.com/swsnr/mdcat",
+    "stars": 2230,
+    "description": "cat for markdown",
+    "commit_id": "9a182039deffe2de18fccbc5359198eef1d21fa4"
+  },
+  {
+    "name": "topgrade",
+    "url": "https://github.com/r-darwish/topgrade",
+    "stars": 3339,
+    "description": "Upgrade everything",
+    "commit_id": "cc7e607a1ab8389a2cc8ab63d442cdeda8b8f0ff"
+  },
+  {
+    "name": "habitat",
+    "url": "https://github.com/habitat-sh/habitat",
+    "stars": 2611,
+    "description": "Modern applications with built-in automation",
+    "commit_id": "5b9adebbdc71e35f897837a1876be0a6542dfc10"
+  },
+  {
+    "name": "rbspy",
+    "url": "https://github.com/rbspy/rbspy",
+    "stars": 2511,
+    "description": "Sampling CPU profiler for Ruby",
+    "commit_id": "ee44f9ee61c7919d53fd601fe7051c7153237a20"
+  },
+  {
+    "name": "nickel",
+    "url": "https://github.com/tweag/nickel",
+    "stars": 2450,
+    "description": "Better configuration for less",
+    "commit_id": "c412b24789a8c8b9a7a4cb1222f80015f147e32b"
+  },
+  {
+    "name": "delta-rs",
+    "url": "https://github.com/delta-io/delta-rs",
+    "stars": 2393,
+    "description": "A native Rust library for Delta Lake, with bindings into Python",
+    "commit_id": "2272ff7051a013b0e0a3b45234e3b69168b1fe3b"
+  },
+  {
+    "name": "rust-bitcoin",
+    "url": "https://github.com/rust-bitcoin/rust-bitcoin",
+    "stars": 2187,
+    "description": "Rust Bitcoin library",
+    "commit_id": "229aa0141ad9dad6278ecef84dc226bf4dde05af"
+  },
+  {
+    "name": "structopt",
+    "url": "https://github.com/TeXitoi/structopt",
+    "stars": 2711,
+    "description": "Parse command line arguments by defining a struct.",
+    "commit_id": "c753c8d0951407e3f6c7388a86082e39eca3f6b5"
+  },
+  {
+    "name": "zksync-era",
+    "url": "https://github.com/matter-labs/zksync-era",
+    "stars": 3122,
+    "description": "zkSync era",
+    "commit_id": "ea18999aec502a0bfc55a6ffcc50493b16b63823"
+  },
+  {
+    "name": "r4cppp",
+    "url": "https://github.com/nrc/r4cppp",
+    "stars": 3666,
+    "description": "Rust for C++ programmers",
+    "commit_id": "3cea93b7e2c18d131c0ad10b3d4d9c3638aece75"
+  },
+  {
+    "name": "awesome-alternatives-in-rust",
+    "url": "https://github.com/TaKO8Ki/awesome-alternatives-in-rust",
+    "stars": 3803,
+    "description": "A curated list of replacements for existing software written in Rust",
+    "commit_id": "df09e69ca8a1609dd66c3e10e8917d44927b7105"
+  },
+  {
+    "name": "Kooha",
+    "url": "https://github.com/SeaDve/Kooha",
+    "stars": 2659,
+    "description": "Elegantly record your screen",
+    "commit_id": "53b79d3fae9a9e31400a11d37275f39ad87f57e5"
+  },
+  {
+    "name": "lyon",
+    "url": "https://github.com/nical/lyon",
+    "stars": 2369,
+    "description": "2D graphics rendering on the GPU in rust using path tessellation.",
+    "commit_id": "85885c08e34aa66d7da82e3efc6153ba18abb662"
+  },
+  {
+    "name": "resvg",
+    "url": "https://github.com/linebender/resvg",
+    "stars": 2889,
+    "description": "An SVG rendering library.",
+    "commit_id": "cf024df1e0e94abbe604f1395a2307702c9955d5"
+  },
+  {
+    "name": "rivet",
+    "url": "https://github.com/rivet-gg/rivet",
+    "stars": 2184,
+    "description": "🔩 The only backend your multiplayer game needs. Open-source & self-hostable.",
+    "commit_id": "cf4d3315a0008c01b3c99eaee60be5a258224038"
+  },
+  {
+    "name": "nixpacks",
+    "url": "https://github.com/railwayapp/nixpacks",
+    "stars": 2709,
+    "description": "App source + Nix packages + Docker = Image",
+    "commit_id": "c42c9e97b57d4255606e9cbeddc1f5e1a8700b31"
+  },
+  {
+    "name": "silicon",
+    "url": "https://github.com/Aloxaf/silicon",
+    "stars": 3186,
+    "description": "Create beautiful image of your source code.",
+    "commit_id": "adf96cb7a79f90f038c2ef6a219e4579b3d445fd"
+  },
+  {
+    "name": "rbatis",
+    "url": "https://github.com/rbatis/rbatis",
+    "stars": 2320,
+    "description": "Rust Compile Time ORM with Async Dynamic SQL",
+    "commit_id": "2ffe68313a0130a4f3352bfd1aa6bf1f4d48748c"
+  },
+  {
+    "name": "gobang",
+    "url": "https://github.com/TaKO8Ki/gobang",
+    "stars": 2959,
+    "description": "A cross-platform TUI database management tool written in Rust",
+    "commit_id": "7b1b5f7eba3ea98a5d254a12ea31f383ee7737d1"
+  },
+  {
+    "name": "GQL",
+    "url": "https://github.com/AmrDeveloper/GQL",
+    "stars": 3320,
+    "description": " Git Query language is a SQL like language to perform queries on .git files with supports of most of SQL features such as grouping, ordering and aggregations functions",
+    "commit_id": "6858d8cf1c673065d8a0462dd2a4a675072a4988"
+  },
+  {
+    "name": "trustfall",
+    "url": "https://github.com/obi1kenobi/trustfall",
+    "stars": 2445,
+    "description": "A query engine for any combination of data sources. Query your files and APIs as if they were databases!",
+    "commit_id": "2a32a88e098e787a2c027f475575663e5da0cc50"
+  },
+  {
+    "name": "pg_graphql",
+    "url": "https://github.com/supabase/pg_graphql",
+    "stars": 2931,
+    "description": "GraphQL support for PostgreSQL ",
+    "commit_id": "77c0eb5edc2ba79ee7efe6793902a54507341809"
+  },
+  {
+    "name": "rainfrog",
+    "url": "https://github.com/achristmascarl/rainfrog",
+    "stars": 2903,
+    "description": "🐸 a database management tui for postgres",
+    "commit_id": "b55b9b397fc688a8d3769b3e1781cfe986dabd1b"
+  },
+  {
+    "name": "graph-node",
+    "url": "https://github.com/graphprotocol/graph-node",
+    "stars": 2931,
+    "description": "Graph Node indexes data from blockchains such as Ethereum and serves it over GraphQL",
+    "commit_id": "1d29605f4c09a172ab4846cc122e88fb1dbc0e44"
+  },
+  {
+    "name": "cozo",
+    "url": "https://github.com/cozodb/cozo",
+    "stars": 3459,
+    "description": "A transactional, relational-graph-vector database that uses Datalog for query. The hippocampus for AI!",
+    "commit_id": "481af058abac9444ea8c9c52c78f096ed4b5bfc4"
+  },
+  {
+    "name": "html5ever",
+    "url": "https://github.com/servo/html5ever",
+    "stars": 2174,
+    "description": "High-performance browser-grade HTML5 parser",
+    "commit_id": "7b806cc9dd325ab7e851dfba1e408001af3ffc8b"
+  },
+  {
+    "name": "rust-bert",
+    "url": "https://github.com/guillaume-be/rust-bert",
+    "stars": 2698,
+    "description": "Rust native ready-to-use NLP pipelines and transformer-based models (BERT, DistilBERT, GPT2,...)",
+    "commit_id": "411c224cfc427f1b7b7fb6c1e449505427ba3d92"
+  },
+  {
+    "name": "typeshare",
+    "url": "https://github.com/1Password/typeshare",
+    "stars": 2432,
+    "description": "Typeshare is the ultimate tool for synchronizing your type definitions between Rust and other languages for seamless FFI.",
+    "commit_id": "b6e6bf1b8459ea9239a46db173d8fef03f88a044"
+  },
+  {
+    "name": "openvas-scanner",
+    "url": "https://github.com/greenbone/openvas-scanner",
+    "stars": 3472,
+    "description": "This repository contains the scanner component for Greenbone Community Edition.",
+    "commit_id": "a9e3aadc508ed3799d1dcf696927cd864339091a"
+  },
+  {
+    "name": "namada",
+    "url": "https://github.com/anoma/namada",
+    "stars": 2420,
+    "description": "Rust implementation of Namada, a Proof-of-Stake L1 for interchain asset-agnostic privacy",
+    "commit_id": "b6fcfb2156865ea91fc676f8d6e1bcabf8283227"
+  },
+  {
+    "name": "native-windows-gui",
+    "url": "https://github.com/gabdube/native-windows-gui",
+    "stars": 1982,
+    "description": "A light windows GUI toolkit for rust",
+    "commit_id": "a6c96e8de5d01fe7bb566d737622dfead3cd1aed"
+  },
+  {
+    "name": "kondo",
+    "url": "https://github.com/tbillington/kondo",
+    "stars": 1839,
+    "description": "Cleans dependencies and build artifacts from your projects.",
+    "commit_id": "302092cb31866004dcc100692cbb7c4194ed9506"
+  },
+  {
+    "name": "presenterm",
+    "url": "https://github.com/mfontanini/presenterm",
+    "stars": 1640,
+    "description": "A markdown terminal slideshow tool",
+    "commit_id": "1809efb536ed66b093f0bda4bc1a78d747d83c28"
+  },
+  {
+    "name": "vagga",
+    "url": "https://github.com/tailhook/vagga",
+    "stars": 1865,
+    "description": "Vagga is a containerization tool without daemons",
+    "commit_id": "275b540cec12a1c721c121be58cf5a6d63fa8863"
+  },
+  {
+    "name": "crush",
+    "url": "https://github.com/liljencrantz/crush",
+    "stars": 1837,
+    "description": "Crush is a command line shell that is also a powerful modern programming language.",
+    "commit_id": "e4f9815ef890c1456a5bf90aeb08a88cdc0d94e8"
+  },
+  {
+    "name": "reshape",
+    "url": "https://github.com/fabianlindfors/reshape",
+    "stars": 1734,
+    "description": "An easy-to-use, zero-downtime schema migration tool for Postgres",
+    "commit_id": "a771c64299a20c1459cec155c2d2e1657ee90381"
+  },
+  {
+    "name": "cargo-deny",
+    "url": "https://github.com/EmbarkStudios/cargo-deny",
+    "stars": 1805,
+    "description": "❌ Cargo plugin for linting your dependencies 🦀",
+    "commit_id": "e7a25119f2b2c202e4042ce59e3f9a16cbe5874b"
+  },
+  {
+    "name": "mainframer",
+    "url": "https://github.com/buildfoundation/mainframer",
+    "stars": 1732,
+    "description": "Tool for remote builds. Sync project to remote machine, execute command, sync back.",
+    "commit_id": "80695e57a4978f8b5ac474ceae0612422c09d7ab"
+  },
+  {
+    "name": "plz-cli",
+    "url": "https://github.com/m1guelpf/plz-cli",
+    "stars": 1587,
+    "description": "Copilot for your terminal",
+    "commit_id": "102d009af658941701158ca377f8763724871876"
+  },
+  {
+    "name": "rudr",
+    "url": "https://github.com/oam-dev/rudr",
+    "stars": 1534,
+    "description": "A Kubernetes implementation of the Open Application Model specification",
+    "commit_id": "f193ac54ca6d5a7ac330a8490fecd5d7cc8659e3"
+  },
+  {
+    "name": "openethereum",
+    "url": "https://github.com/openethereum/openethereum",
+    "stars": 1644,
+    "description": "(deprecated) The fast, light, and robust client for the Ethereum mainnet. ",
+    "commit_id": "6c2d392d867b058ff867c4373e40850ca3f96969"
+  },
+  {
+    "name": "gitu",
+    "url": "https://github.com/altsem/gitu",
+    "stars": 1871,
+    "description": "A TUI Git client inspired by Magit",
+    "commit_id": "0f02879be30ccd6dfe2bcf6a66a0e7958ee9d20c"
+  },
+  {
+    "name": "sauron",
+    "url": "https://github.com/ivanceras/sauron",
+    "stars": 1986,
+    "description": "A versatile web framework and library for building client-side and server-side web applications",
+    "commit_id": "8ec2fe5878e14af8298d1cd87a944c2984972425"
+  },
+  {
+    "name": "proptest",
+    "url": "https://github.com/proptest-rs/proptest",
+    "stars": 1752,
+    "description": "Hypothesis-like property testing for Rust",
+    "commit_id": "b844446df7fdc5253c4d71cf77500ee8063cff2d"
+  },
+  {
+    "name": "git-interactive-rebase-tool",
+    "url": "https://github.com/MitMaro/git-interactive-rebase-tool",
+    "stars": 1600,
+    "description": "Native cross-platform full feature terminal-based sequence editor for git interactive rebase.",
+    "commit_id": "baf75ac4d2e2c4385e79c02d36aa1147312d77e2"
+  },
+  {
+    "name": "taskwarrior-tui",
+    "url": "https://github.com/kdheepak/taskwarrior-tui",
+    "stars": 1541,
+    "description": "`taskwarrior-tui`: A terminal user interface for taskwarrior",
+    "commit_id": "42880607b4ced906b8e426ab5645d504d223d68e"
+  },
+  {
+    "name": "inquire",
+    "url": "https://github.com/mikaelmello/inquire",
+    "stars": 2086,
+    "description": "A Rust library for building interactive prompts",
+    "commit_id": "446ce3d134a7e5e6158ecbd4ceb24e3c13abde61"
+  },
+  {
+    "name": "parseable",
+    "url": "https://github.com/parseablehq/parseable",
+    "stars": 1931,
+    "description": "Parseable is a disk less, cloud native database for logs, observability, security, and compliance. Parseable is built with focus on simplicity & resource efficiency.",
+    "commit_id": "82a09eb86dde0e9985471556a69a99a5134fce4e"
+  },
+  {
+    "name": "helios",
+    "url": "https://github.com/a16z/helios",
+    "stars": 1907,
+    "description": "A fast, secure, and portable multichain light client for Ethereum",
+    "commit_id": "8cd29787857303c6f455c08e948a694cc2e8f46d"
+  },
+  {
+    "name": "zenoh",
+    "url": "https://github.com/eclipse-zenoh/zenoh",
+    "stars": 1567,
+    "description": "zenoh unifies data in motion, data in-use, data at rest and computations. It carefully blends traditional pub/sub with geo-distributed storages, queries and computations, while retaining a level of time and space efficiency that is well beyond any of the mainstream stacks.",
+    "commit_id": "9640d2245204ebcb2ed3f424a5178f832315df7b"
+  },
+  {
+    "name": "spiceai",
+    "url": "https://github.com/spiceai/spiceai",
+    "stars": 1950,
+    "description": "A self-hostable CDN for databases. Spice provides a unified SQL query interface and portable runtime to locally materialize, accelerate, and query datasets across databases, data warehouses, and data lakes.",
+    "commit_id": "d21603282d9987dd1f121ff0de74fecf1fe03ab7"
+  },
+  {
+    "name": "miniquad",
+    "url": "https://github.com/not-fl3/miniquad",
+    "stars": 1609,
+    "description": "Cross platform rendering in Rust",
+    "commit_id": "b4fa8fe551e4749953fa6ebbd75d93b861ed3b78"
+  },
+  {
+    "name": "sn0int",
+    "url": "https://github.com/kpcyrd/sn0int",
+    "stars": 2092,
+    "description": "Semi-automatic OSINT framework and package manager",
+    "commit_id": "9b16b67fb0ed4cde346dd016cff3b7e81f196f96"
+  },
+  {
+    "name": "baml",
+    "url": "https://github.com/BoundaryML/baml",
+    "stars": 1612,
+    "description": "BAML is a language that helps you get structured data from LLMs, with the best DX possible. Works with all languages. Check out the promptfiddle.com playground",
+    "commit_id": "8cac1ef24e78b7f537b1aabf393d1b2a0e400ca2"
+  },
+  {
+    "name": "choose",
+    "url": "https://github.com/theryangeary/choose",
+    "stars": 1886,
+    "description": "A human-friendly and fast alternative to cut and (sometimes) awk",
+    "commit_id": "c6cb007f2b854ba6ca4c65657c2052866f026f32"
+  },
+  {
+    "name": "boxxy",
+    "url": "https://github.com/queer/boxxy",
+    "stars": 1615,
+    "description": "boxxy puts bad Linux applications in a box with only their files.",
+    "commit_id": "4941c8843e6c605d955d00c59ccf7c568f224171"
+  },
+  {
+    "name": "rumqtt",
+    "url": "https://github.com/bytebeamio/rumqtt",
+    "stars": 1677,
+    "description": "The MQTT ecosystem in rust",
+    "commit_id": "4262e6a2d9c150c4c51c3d5efdaaaf085adc1633"
+  },
+  {
+    "name": "embedded-hal",
+    "url": "https://github.com/rust-embedded/embedded-hal",
+    "stars": 2076,
+    "description": "A Hardware Abstraction Layer (HAL) for embedded systems",
+    "commit_id": "9941a6468853c447c892ab64eb78109f0198910d"
+  },
+  {
+    "name": "octox",
+    "url": "https://github.com/o8vm/octox",
+    "stars": 1504,
+    "description": "Unix-like OS in Rust inspired by xv6-riscv",
+    "commit_id": "c2ad4b53be8c24b3164d0bd100f872fbc56704bc"
+  },
+  {
+    "name": "fornjot",
+    "url": "https://github.com/hannobraun/fornjot",
+    "stars": 2077,
+    "description": "Early-stage b-rep CAD kernel, written in the Rust programming language.",
+    "commit_id": "cb165bae2e42b9bfc14ede7df6baf4dbf8d941a6"
+  },
+  {
+    "name": "docker-compose-wait",
+    "url": "https://github.com/ufoscout/docker-compose-wait",
+    "stars": 1634,
+    "description": "A simple script to wait for other docker images to be started while using docker-compose (or Kubernetes or docker stack or whatever)",
+    "commit_id": "974af37ab0f61e2af0cb5c2c64415f43cf9e1475"
+  },
+  {
+    "name": "cosmic-text",
+    "url": "https://github.com/pop-os/cosmic-text",
+    "stars": 1654,
+    "description": "Pure Rust multi-line text handling",
+    "commit_id": "1f4065c1c3399efad58841082212f7c039b58480"
+  },
+  {
+    "name": "cnosdb",
+    "url": "https://github.com/cnosdb/cnosdb",
+    "stars": 1675,
+    "description": "A cloud-native open source distributed time series database with high performance, high compression ratio and high availability. http://www.cnosdb.cloud",
+    "commit_id": "36e2c651f0a78dbd56e60598b5e1548e8c8e3016"
+  },
+  {
+    "name": "canvas",
+    "url": "https://github.com/Brooooooklyn/canvas",
+    "stars": 1816,
+    "description": "High performance skia binding to Node.js. Zero system dependencies and pure npm packages without any postinstall scripts nor node-gyp.",
+    "commit_id": "03d0090475567406eee66b53e4711114578d2ea3"
+  },
+  {
+    "name": "mun",
+    "url": "https://github.com/mun-lang/mun",
+    "stars": 1905,
+    "description": "Source code for the Mun language and runtime.",
+    "commit_id": "ba2a7b2ad117c7b79225c56602f6224e96691f93"
+  },
+  {
+    "name": "rquickshare",
+    "url": "https://github.com/Martichou/rquickshare",
+    "stars": 1572,
+    "description": "Rust implementation of NearbyShare/QuickShare from Android for Linux and macOS.",
+    "commit_id": "93b20dd5e3face5fa2e217ec1b8b2c0a877e3745"
+  },
+  {
+    "name": "blueboat",
+    "url": "https://github.com/losfair/blueboat",
+    "stars": 1926,
+    "description": "All-in-one, multi-tenant serverless JavaScript runtime.",
+    "commit_id": "7b451f709049620715d54543e6f9cc9280f87c72"
+  },
+  {
+    "name": "tao",
+    "url": "https://github.com/tauri-apps/tao",
+    "stars": 1670,
+    "description": "The TAO of cross-platform windowing. A library in Rust built for Tauri.",
+    "commit_id": "d0e46ade989e0087d6023a4736dfaf46b74df69a"
+  },
+  {
+    "name": "folderify",
+    "url": "https://github.com/lgarron/folderify",
+    "stars": 1578,
+    "description": ":file_folder: Generate pixel-perfect macOS folder icons in the native style.",
+    "commit_id": "9e2d643155cc2f6a6a6f95ba82ab406478ebd2ad"
+  },
+  {
+    "name": "typed-html",
+    "url": "https://github.com/bodil/typed-html",
+    "stars": 1869,
+    "description": "Type checked JSX for Rust",
+    "commit_id": "e18d328951b6b9216976d180f3dea2e6600a3982"
+  },
+  {
+    "name": "ureq",
+    "url": "https://github.com/algesten/ureq",
+    "stars": 1744,
+    "description": "A simple, safe HTTP client",
+    "commit_id": "e6a549d719d81bd065e1a2a422b1208643ca87d4"
+  },
+  {
+    "name": "fantoccini",
+    "url": "https://github.com/jonhoo/fantoccini",
+    "stars": 1695,
+    "description": "A high-level API for programmatically interacting with web pages through WebDriver.",
+    "commit_id": "452cda5e243ca12dd3412b9b7a23fcce667948e3"
+  },
+  {
+    "name": "mako",
+    "url": "https://github.com/umijs/mako",
+    "stars": 1927,
+    "description": "An extremely fast, production-grade web bundler based on Rust.",
+    "commit_id": "5fd4f76250075778fe90773b3c082831925d9728"
+  },
+  {
+    "name": "rustc_codegen_cranelift",
+    "url": "https://github.com/rust-lang/rustc_codegen_cranelift",
+    "stars": 1651,
+    "description": "Cranelift based backend for rustc",
+    "commit_id": "ad2b9ac18da37196cc96f6ccef504aba76e7163c"
+  },
+  {
+    "name": "mCaptcha",
+    "url": "https://github.com/mCaptcha/mCaptcha",
+    "stars": 1741,
+    "description": "A no-nonsense CAPTCHA system with seamless UX | Backend component",
+    "commit_id": "9922c233220751e9611b42414ecd82fcde757480"
+  },
+  {
+    "name": "ServerStatus-Rust",
+    "url": "https://github.com/zdz/ServerStatus-Rust",
+    "stars": 1945,
+    "description": "✨ Rust 版 ServerStatus 探针、威力加强版",
+    "commit_id": "03b626d6bfe42004ebd79b9dbce316028ca8719f"
+  },
+  {
+    "name": "pavex",
+    "url": "https://github.com/LukeMathWalker/pavex",
+    "stars": 1795,
+    "description": "An easy-to-use Rust framework for building robust and performant APIs",
+    "commit_id": "b089134fc01c92640de15795f61fb43fff86aa14"
+  },
+  {
+    "name": "wasmer-python",
+    "url": "https://github.com/wasmerio/wasmer-python",
+    "stars": 2046,
+    "description": "🐍🕸 WebAssembly runtime for Python",
+    "commit_id": "9d3f2ddd59f612da2273a70237db8fffb610aa20"
+  },
+  {
+    "name": "rust-websocket",
+    "url": "https://github.com/websockets-rs/rust-websocket",
+    "stars": 1554,
+    "description": "A WebSocket (RFC6455) library written in Rust",
+    "commit_id": "2bbeca93954298aac87adbdff958ff9cfa9a4af2"
+  },
+  {
+    "name": "wonnx",
+    "url": "https://github.com/webonnx/wonnx",
+    "stars": 1672,
+    "description": "A WebGPU-accelerated ONNX inference run-time written 100% in Rust, ready for native and the web",
+    "commit_id": "c62f5d336c152102882a163ebc1eb18e63550de8"
+  },
+  {
+    "name": "MCHPRS",
+    "url": "https://github.com/MCHPR/MCHPRS",
+    "stars": 1734,
+    "description": "A multithreaded Minecraft server built for redstone.",
+    "commit_id": "76b9b8cf575ee4419eca5c2cd9dac56405a2cafe"
+  },
+  {
+    "name": "geo",
+    "url": "https://github.com/georust/geo",
+    "stars": 1586,
+    "description": "Rust geospatial primitives & algorithms",
+    "commit_id": "785c1d8f33d1022c5620affeb2cbc096c532493c"
+  },
+  {
+    "name": "sniprun",
+    "url": "https://github.com/michaelb/sniprun",
+    "stars": 1518,
+    "description": "A neovim plugin to run lines/blocs of code (independently of the rest of the file), supporting multiples languages",
+    "commit_id": "67ac2d84d03f3b857d59571ff5fefb6080dffa2d"
+  },
+  {
+    "name": "tungstenite-rs",
+    "url": "https://github.com/snapview/tungstenite-rs",
+    "stars": 1959,
+    "description": "Lightweight stream-based WebSocket implementation for Rust.",
+    "commit_id": "b7a7817efcf3d539fee1f0740f090b6f51874a01"
+  },
+  {
+    "name": "CYFS",
+    "url": "https://github.com/buckyos/CYFS",
+    "stars": 1995,
+    "description": "CYFS is the next-generation technology to build real Web3 by upgrading the basic protocol of Web (TCP/IP+DNS+HTTP),is short for CYberFileSystem. https://www.cyfs.com/, cyfs://cyfs/index_en.html.",
+    "commit_id": "e030188895096fd8d91d48753877729f4d37dd24"
+  },
+  {
+    "name": "plane",
+    "url": "https://github.com/jamsocket/plane",
+    "stars": 1778,
+    "description": "A distributed system for running WebSocket services at scale.",
+    "commit_id": "31f2cf54e894072dd624e83a6b489fb171bb05f6"
+  },
+  {
+    "name": "lol-html",
+    "url": "https://github.com/cloudflare/lol-html",
+    "stars": 1534,
+    "description": "Low output latency streaming HTML parser/rewriter with CSS selector-based API",
+    "commit_id": "33ab3b8b431ac5630edbf221dec551b7033fbccc"
+  },
+  {
+    "name": "grpc-rs",
+    "url": "https://github.com/tikv/grpc-rs",
+    "stars": 1805,
+    "description": "The gRPC library for Rust built on C Core library and futures",
+    "commit_id": "246308142af9bc61dd637de088607df3856c4991"
+  },
+  {
+    "name": "rlua",
+    "url": "https://github.com/mlua-rs/rlua",
+    "stars": 1735,
+    "description": "High level Lua bindings to Rust",
+    "commit_id": "16fa3be9029177b857ad86d7a9b7e8025e9d6f7b"
+  },
+  {
+    "name": "rezolus",
+    "url": "https://github.com/twitter/rezolus",
+    "stars": 1570,
+    "description": "Systems performance telemetry",
+    "commit_id": "c0f0ceeeca5fa0980cacd1bdb9938263bca79084"
+  },
+  {
+    "name": "lopdf",
+    "url": "https://github.com/J-F-Liu/lopdf",
+    "stars": 1682,
+    "description": "A Rust library for PDF document manipulation.",
+    "commit_id": "34e2d2072069c58a40703666dae1e13086ffd074"
+  },
+  {
+    "name": "code",
+    "url": "https://github.com/rust-in-action/code",
+    "stars": 1912,
+    "description": "Source code for the book Rust in Action",
+    "commit_id": "19c4349758b57bdb233e186746bfec03ad9ea88d"
+  },
+  {
+    "name": "revm",
+    "url": "https://github.com/bluealloy/revm",
+    "stars": 1693,
+    "description": "Rust implementation of the Ethereum Virtual Machine.",
+    "commit_id": "4a1d633413baef109386c05a493e4a76400e6cc9"
+  },
+  {
+    "name": "champ-r",
+    "url": "https://github.com/cangzhang/champ-r",
+    "stars": 1739,
+    "description": "🐶 Yet another League of Legends helper",
+    "commit_id": "5519ed1751ca56ce8d9c699d7cce420c22f9742a"
+  },
+  {
+    "name": "rust-for-node-developers",
+    "url": "https://github.com/Mercateo/rust-for-node-developers",
+    "stars": 1772,
+    "description": "An introduction to the Rust programming language for Node developers.",
+    "commit_id": "4a14f616d36f4d9c0f2a7e717f6bf2ac37863541"
+  },
+  {
+    "name": "flowistry",
+    "url": "https://github.com/willcrichton/flowistry",
+    "stars": 1916,
+    "description": "Flowistry is an IDE plugin for Rust that helps you focus on relevant code.",
+    "commit_id": "612c008ace22cfd3e358ba6ff76e80a3c450a6e1"
+  },
+  {
+    "name": "bacon",
+    "url": "https://github.com/Canop/bacon",
+    "stars": 2026,
+    "description": "background code checker",
+    "commit_id": "bf5a0e9c8f071f296086c7bd5eb79d0366531467"
+  },
+  {
+    "name": "nphysics",
+    "url": "https://github.com/dimforge/nphysics",
+    "stars": 1631,
+    "description": "2 and 3-dimensional rigid body physics engine for Rust.",
+    "commit_id": "65aa85c5470a5da85e0c13652ce58400ae2e2201"
+  },
+  {
+    "name": "rsedis",
+    "url": "https://github.com/seppo0010/rsedis",
+    "stars": 1774,
+    "description": "Redis re-implemented in Rust.",
+    "commit_id": "e50029606295cb9e0980c04a09f5bf888afa309a"
+  },
+  {
+    "name": "cfonts",
+    "url": "https://github.com/dominikwilkowski/cfonts",
+    "stars": 1613,
+    "description": "Sexy fonts for the console",
+    "commit_id": "c06c10d4127aa6805570b2337f00cc3edc867a90"
+  },
+  {
+    "name": "pixels",
+    "url": "https://github.com/parasyte/pixels",
+    "stars": 1823,
+    "description": "A tiny hardware-accelerated pixel frame buffer. 🦀",
+    "commit_id": "d4df286d3f886e9b12fb36f731555c3be66c8ebd"
+  },
+  {
+    "name": "cargo-generate",
+    "url": "https://github.com/cargo-generate/cargo-generate",
+    "stars": 2013,
+    "description": "cargo, make me a project",
+    "commit_id": "483c89fd2234056f28bf84f05c6f8ac890e23a7c"
+  },
+  {
+    "name": "nexus-zkvm",
+    "url": "https://github.com/nexus-xyz/nexus-zkvm",
+    "stars": 2067,
+    "description": "The Nexus zkVM: The zero-knowledge virtual machine",
+    "commit_id": "315938cfd29d66ddfa7526d793f63b8b114d09e8"
+  },
+  {
+    "name": "zz",
+    "url": "https://github.com/zetzit/zz",
+    "stars": 1598,
+    "description": "🍺🐙  ZetZ a zymbolic verifier and tranzpiler to bare metal C",
+    "commit_id": "5a86bbd0a5676cc4644942174bb5b29cae58a2c8"
+  },
+  {
+    "name": "vizia",
+    "url": "https://github.com/vizia/vizia",
+    "stars": 1643,
+    "description": "A declarative GUI library written in Rust",
+    "commit_id": "17f619905ae89551913f8d29ac4f58d6400e9ae5"
+  },
+  {
+    "name": "rust-phf",
+    "url": "https://github.com/rust-phf/rust-phf",
+    "stars": 1855,
+    "description": "Compile time static maps for Rust",
+    "commit_id": "999e6a260f03d82aa9d159465113294e7ed019e7"
+  },
+  {
+    "name": "dum",
+    "url": "https://github.com/egoist/dum",
+    "stars": 1525,
+    "description": "An npm scripts runner written in Rust.",
+    "commit_id": "b57d8bab567d856021023248098f39bb8644e27a"
+  },
+  {
+    "name": "zerocopy",
+    "url": "https://github.com/google/zerocopy",
+    "stars": 1642,
+    "description": null,
+    "commit_id": "89c652ab68ca2e21bd1ffda342869c68fe6756b0"
+  },
+  {
+    "name": "learn-rust-for-fe",
+    "url": "https://github.com/i5ting/learn-rust-for-fe",
+    "stars": 1737,
+    "description": "Rust是未来前端基础设施",
+    "commit_id": "678e26a661965b7a4f2328ce347d731e2452f7e6"
+  },
+  {
+    "name": "naga",
+    "url": "https://github.com/gfx-rs/naga",
+    "stars": 1546,
+    "description": "Universal shader translation in Rust",
+    "commit_id": "d0f28c0b1a3c772e55e68db1c47eff5131cb6732"
+  },
+  {
+    "name": "lazy-static.rs",
+    "url": "https://github.com/rust-lang-nursery/lazy-static.rs",
+    "stars": 1947,
+    "description": "A small macro for defining lazy evaluated static variables in Rust.",
+    "commit_id": "cc81425f478f20eb286b3698ade99a99dd41a084"
+  },
+  {
+    "name": "minijinja",
+    "url": "https://github.com/mitsuhiko/minijinja",
+    "stars": 1716,
+    "description": "MiniJinja is a powerful but minimal dependency template engine for Rust compatible with Jinja/Jinja2",
+    "commit_id": "d1ce496e101239bdfba01e29f407f0a57b8e4aed"
+  },
+  {
+    "name": "kibi",
+    "url": "https://github.com/ilai-deutel/kibi",
+    "stars": 1588,
+    "description": "A text editor in ≤1024 lines of code, written in Rust",
+    "commit_id": "7c46dc759d6de38a9752b62b67e36495b44d2071"
+  },
+  {
+    "name": "rand",
+    "url": "https://github.com/rust-random/rand",
+    "stars": 1693,
+    "description": "A Rust library for random number generation.",
+    "commit_id": "c681dfc345b3f24852a3931d3ba3adda2356336d"
+  },
+  {
+    "name": "tabled",
+    "url": "https://github.com/zhiburt/tabled",
+    "stars": 2050,
+    "description": "An easy to use library for pretty print tables of Rust structs and enums.",
+    "commit_id": "74e280d2a72b3cd6ff2b33444663c676e3edc8e3"
+  },
+  {
+    "name": "diamond-types",
+    "url": "https://github.com/josephg/diamond-types",
+    "stars": 1620,
+    "description": "The world's fastest CRDT. WIP.",
+    "commit_id": "00f722d6ebdc9f3aec94d4406d9856b385939eae"
+  },
+  {
+    "name": "im-rs",
+    "url": "https://github.com/bodil/im-rs",
+    "stars": 1505,
+    "description": "Assorted immutable collection datatypes for Rust",
+    "commit_id": "71331eadac64654bc56f598647ab544197cb1319"
+  },
+  {
+    "name": "uiua",
+    "url": "https://github.com/uiua-lang/uiua",
+    "stars": 1677,
+    "description": "A stack-based array programming language",
+    "commit_id": "df796abcb098f3f6e7878e0c406d8a67aaab3df7"
+  },
+  {
+    "name": "smartgpt",
+    "url": "https://github.com/Cormanz/smartgpt",
+    "stars": 1758,
+    "description": "A program that provides LLMs with the ability to complete complex tasks using plugins.",
+    "commit_id": "a259aa2412c406c4b6a29ec239eee750b3ef5dca"
+  },
+  {
+    "name": "xiu",
+    "url": "https://github.com/harlanc/xiu",
+    "stars": 1886,
+    "description": " A simple,high performance and secure live media server in pure Rust (RTMP[cluster]/RTSP/WebRTC[whip/whep]/HTTP-FLV/HLS).🦀",
+    "commit_id": "2dc721e2292550a7fb8a521716930d4fdb6eba35"
+  },
+  {
+    "name": "avian",
+    "url": "https://github.com/Jondolf/avian",
+    "stars": 1619,
+    "description": "ECS-driven 2D and 3D physics engine for the Bevy game engine.",
+    "commit_id": "b47c30c5ef231e3ce27435b56604b638ba5f9f4e"
+  },
+  {
+    "name": "rodio",
+    "url": "https://github.com/RustAudio/rodio",
+    "stars": 1822,
+    "description": "Rust audio playback library",
+    "commit_id": "f91fadc74b5aea98b57ab31f0a9e0f6fbc618316"
+  },
+  {
+    "name": "rust-skia",
+    "url": "https://github.com/rust-skia/rust-skia",
+    "stars": 1495,
+    "description": "Rust Bindings for the Skia Graphics Library",
+    "commit_id": "f0c147bb64e89b3b4414c4d78c4904c597940bbc"
+  },
+  {
+    "name": "kcl",
+    "url": "https://github.com/kcl-lang/kcl",
+    "stars": 1746,
+    "description": "KCL Programming Language (CNCF Sandbox Project). https://kcl-lang.io",
+    "commit_id": "bc74f86d4af33d0e3591c7dcda748535ab436469"
+  },
+  {
+    "name": "trieve",
+    "url": "https://github.com/devflowinc/trieve",
+    "stars": 1705,
+    "description": "All-in-one infrastructure for search, recommendations, RAG, and analytics offered via API",
+    "commit_id": "a225fe31f9bfbd58bbdbaa28c66c61baf18234fa"
+  },
+  {
+    "name": "redbpf",
+    "url": "https://github.com/foniod/redbpf",
+    "stars": 1710,
+    "description": "Rust library for building and running BPF/eBPF modules",
+    "commit_id": "55331987dc31a26feb192e4a668bf9bfc336e1e0"
+  },
+  {
+    "name": "connector-x",
+    "url": "https://github.com/sfu-db/connector-x",
+    "stars": 2039,
+    "description": "Fastest library to load data from DB to DataFrames in Rust and Python",
+    "commit_id": "8c09358aee3bafcb04c62090f15b30ee99725908"
+  },
+  {
+    "name": "dfdx",
+    "url": "https://github.com/coreylowman/dfdx",
+    "stars": 1759,
+    "description": "Deep learning in Rust, with shape checked tensors and neural networks",
+    "commit_id": "4722a99d303f347d6088d95867d007c75ca6dd78"
+  },
+  {
+    "name": "rCore-Tutorial-v3",
+    "url": "https://github.com/rcore-os/rCore-Tutorial-v3",
+    "stars": 1672,
+    "description": "Let's write an OS which can run on RISC-V in Rust from scratch!",
+    "commit_id": "fb2a6a04e5c3c712f116a3b2cd81a9a4b2040f89"
+  },
+  {
+    "name": "fe",
+    "url": "https://github.com/ethereum/fe",
+    "stars": 1624,
+    "description": "Emerging smart contract language for the Ethereum blockchain.",
+    "commit_id": "c2dc82d45afc6f4d2b7080c0a6d22877b1f8ccee"
+  },
+  {
+    "name": "lettre",
+    "url": "https://github.com/lettre/lettre",
+    "stars": 1899,
+    "description": "a mailer library for Rust",
+    "commit_id": "de075153b0152e36ca1f918b38a694325afaaefb"
+  },
+  {
+    "name": "mentat",
+    "url": "https://github.com/mozilla/mentat",
+    "stars": 1654,
+    "description": "UNMAINTAINED A persistent, relational store inspired by Datomic and DataScript.",
+    "commit_id": "e55376e98b3a7f841dcb2abd6273947f8661ffc8"
+  },
+  {
+    "name": "ic",
+    "url": "https://github.com/dfinity/ic",
+    "stars": 1590,
+    "description": "Internet Computer blockchain source: the client/replica software run by nodes",
+    "commit_id": "4cb976532dc054153c8eef82b6f030cf1f6ab916"
+  },
+  {
+    "name": "opencv-rust",
+    "url": "https://github.com/twistedfall/opencv-rust",
+    "stars": 2038,
+    "description": "Rust bindings for OpenCV 3 & 4",
+    "commit_id": "b22dfa43b63430783bb45f2609868acf4966b316"
+  },
+  {
+    "name": "scaphandre",
+    "url": "https://github.com/hubblo-org/scaphandre",
+    "stars": 1667,
+    "description": "⚡ Energy consumption metrology agent. Let \"scaph\" dive and bring back the metrics that will help you make your systems and applications more sustainable !",
+    "commit_id": "e09dfcc7abd28291e783643e366393325fad3f6d"
+  },
+  {
+    "name": "toast",
+    "url": "https://github.com/stepchowfun/toast",
+    "stars": 1570,
+    "description": "Containerize your development and continuous integration environments. 🥂",
+    "commit_id": "dc42a95dab4514d87ae7814e986547f21f2a3551"
+  },
+  {
+    "name": "luminal",
+    "url": "https://github.com/jafioti/luminal",
+    "stars": 1493,
+    "description": "Deep learning at the speed of light.",
+    "commit_id": "d311003e8eec47a121ab13b326fc322da57e2b89"
+  },
+  {
+    "name": "taplo",
+    "url": "https://github.com/tamasfe/taplo",
+    "stars": 1508,
+    "description": "A TOML toolkit written in Rust",
+    "commit_id": "a8bc571ee28775e7d5ad84c2ea87cf5b61ab42f5"
+  },
+  {
+    "name": "nft_ptr",
+    "url": "https://github.com/zhuowei/nft_ptr",
+    "stars": 1990,
+    "description": "C++ `std::unique_ptr` that represents each object as an NFT on the Ethereum blockchain",
+    "commit_id": "5df5c6ca6fbcc741a79f907214eb9703227d0191"
+  },
+  {
+    "name": "dora",
+    "url": "https://github.com/dora-rs/dora",
+    "stars": 1625,
+    "description": "DORA (Dataflow-Oriented Robotic Architecture) is middleware designed to streamline and simplify the creation of AI-based robotic applications. It offers low latency, composable, and distributed dataflow capabilities. Applications are modeled as directed graphs, also referred to as pipelines.",
+    "commit_id": "d2eb7777a174d4cad464bc01213bbbf23f593c53"
+  }
+]
