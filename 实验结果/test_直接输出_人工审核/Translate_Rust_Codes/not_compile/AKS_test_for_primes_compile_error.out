@@ -1,9 +1,0 @@
-Rust 编译失败:
-error: expected one of `)`, `,`, `@`, or `|`, found `=`
-  --> D:\code\rscode\C_Rust_BETA\temp_main.rs:10:12
-   |
-10 |     for (i = 0; i < n as usize; c[0] = -c[0], i += 1) {
-   |            ^ expected one of `)`, `,`, `@`, or `|`
-
-error: aborting due to 1 previous error
-
